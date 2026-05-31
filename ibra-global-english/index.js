@@ -253,4 +253,66 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
   });
+
+  // 8. WebMCP Agent Tools Registration
+  if (window.navigator && window.navigator.modelContext && window.navigator.modelContext.registerTool) {
+    try {
+      window.navigator.modelContext.registerTool({
+        name: "get_program_details",
+        description: "Get details about kids, teens and Calistung programs at Ibra Global English.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            program: {
+              type: "string",
+              description: "Name of the program (Kids Program, Teens Program, Fun Calistung)"
+            }
+          }
+        },
+        execute: async (args) => {
+          const program = args.program ? args.program.toLowerCase() : "";
+          if (program.includes("kids")) {
+            return "Kids Program (5-12 tahun): Pembelajaran interaktif dengan menyanyi, bermain, dan mewarnai untuk membangun kecintaan berbahasa Inggris sejak dini.";
+          } else if (program.includes("teen")) {
+            return "Teens Program (13-17 tahun): Fokus pada speaking, diskusi kelompok, presentasi, dan tata bahasa (grammar) untuk membantu sekolah dan masa depan.";
+          } else if (program.includes("calistung")) {
+            return "Fun Calistung (5-7 tahun): Bimbingan membaca, menulis, dan berhitung yang dikemas secara seru dan ramah anak.";
+          }
+          return "Pilihan program: Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun).";
+        }
+      });
+
+      window.navigator.modelContext.registerTool({
+        name: "register_course",
+        description: "Register a new student for a course at Ibra Global English.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            name: { type: "string", description: "Full name of the student" },
+            whatsapp: { type: "string", description: "WhatsApp contact number" },
+            program: { type: "string", description: "Selected course program (Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun))" }
+          },
+          required: ["name", "whatsapp"]
+        },
+        execute: async (args) => {
+          const nameInput = document.getElementById('name-input');
+          const whatsappInput = document.getElementById('whatsapp-input');
+          const programSelect = document.getElementById('program-select');
+          if (nameInput) nameInput.value = args.name;
+          if (whatsappInput) whatsappInput.value = args.whatsapp;
+          if (programSelect && args.program) {
+            programSelect.value = args.program;
+          }
+          const form = document.getElementById('registration-form');
+          if (form) {
+            form.dispatchEvent(new Event('submit'));
+            return `Pendaftaran untuk ${args.name} berhasil diisi dan diarahkan ke WhatsApp.`;
+          }
+          return "Pendaftaran gagal karena form tidak ditemukan.";
+        }
+      });
+    } catch (err) {
+      console.error("Failed to register WebMCP tools:", err);
+    }
+  }
 });
