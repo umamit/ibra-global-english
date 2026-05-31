@@ -100,18 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodedMessage}`;
     
-    // Display feedback to user before redirecting
-    const submitBtn = registrationForm.querySelector('.form-btn');
-    const originalBtnText = submitBtn.innerHTML;
-    
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>Mengalihkan ke WhatsApp...</span>';
-    
-    setTimeout(() => {
-      window.open(whatsappUrl, '_blank');
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalBtnText;
-      registrationForm.reset();
-    }, 1000);
+    // Open WhatsApp directly in a new tab (instantly, to bypass browser popup blockers)
+    const newWindow = window.open(whatsappUrl, '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+      // Fallback: If pop-up is blocked, redirect the current window
+      window.location.href = whatsappUrl;
+    }
+    registrationForm.reset();
   });
 });
