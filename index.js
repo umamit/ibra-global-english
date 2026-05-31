@@ -70,6 +70,48 @@ document.addEventListener('DOMContentLoaded', () => {
     revealObserver.observe(element);
   });
 
+  // Stats Count Up Observer
+  const countElements = document.querySelectorAll('.count-up');
+  
+  const animateCount = (el) => {
+    const target = parseInt(el.getAttribute('data-target'), 10);
+    const duration = 2000; // 2 seconds
+    const start = 0;
+    const startTime = performance.now();
+    
+    const updateCount = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = progress * (2 - progress); // Ease Out Quad
+      
+      const currentVal = Math.floor(easeProgress * (target - start) + start);
+      el.textContent = currentVal;
+      
+      if (progress < 1) {
+        requestAnimationFrame(updateCount);
+      } else {
+        el.textContent = target;
+      }
+    };
+    
+    requestAnimationFrame(updateCount);
+  };
+  
+  const countObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCount(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.2
+  });
+  
+  countElements.forEach(el => {
+    countObserver.observe(el);
+  });
+
   // 4. Registration Form Handlers & WhatsApp Redirect
   const registrationForm = document.getElementById('registration-form');
   
