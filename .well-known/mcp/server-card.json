@@ -1,0 +1,27 @@
+{
+  "mcpVersion": "1.0.0",
+  "serverInfo": {
+    "name": "Ibra Global English WebMCP Server",
+    "version": "1.0.0"
+  },
+  "transports": [
+    {
+      "type": "webmcp",
+      "endpoint": "https://ibraglobalenglish.com/"
+    }
+  ],
+  "capabilities": {
+    "tools": {
+      "list": [
+        {
+          "name": "get_program_details",
+          "description": "Get details about kids, teens and Calistung programs at Ibra Global English."
+        },
+        {
+          "name": "register_course",
+          "description": "Register a new student for a course at Ibra Global English."
+        }
+      ]
+    }
+  }
+}

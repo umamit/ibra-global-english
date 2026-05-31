@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "webmcp-course-registration",
+      "type": "skill-md",
+      "description": "Exposes WebMCP tools to register students and fetch program details from the webpage context.",
+      "url": "https://ibraglobalenglish.com/index.html",
+      "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
