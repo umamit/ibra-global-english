@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "ibraglobalenglish",
+  "name": "ibra-global-english",
   "compatibility_date": "2026-05-31",
   "observability": {
     "enabled": true
