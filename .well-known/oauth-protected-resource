@@ -1,0 +1,7 @@
+{
+  "resource": "https://ibraglobalenglish.com/api",
+  "authorization_servers": [
+    "https://ibraglobalenglish.com"
+  ],
+  "scopes_supported": ["read", "write"]
+}
