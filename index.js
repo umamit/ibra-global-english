@@ -181,4 +181,34 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // 7. Dark Mode Toggle Functionality
+  const themeToggle = document.getElementById('theme-toggle');
+  
+  // Check local storage or system preferences
+  const savedTheme = localStorage.getItem('theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeToggle.setAttribute('aria-label', 'Aktifkan Mode Terang');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    themeToggle.setAttribute('aria-label', 'Aktifkan Mode Gelap');
+  }
+  
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    let newTheme = 'light';
+    
+    if (currentTheme === 'light') {
+      newTheme = 'dark';
+      themeToggle.setAttribute('aria-label', 'Aktifkan Mode Terang');
+    } else {
+      themeToggle.setAttribute('aria-label', 'Aktifkan Mode Gelap');
+    }
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  });
 });
