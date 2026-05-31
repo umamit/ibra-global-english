@@ -820,6 +820,15 @@ section {
   color: var(--color-gray-600);
 }
 
+.contact-email-link {
+  transition: color var(--transition-fast);
+}
+
+.contact-email-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
 /* Registration Form Panel */
 .form-panel {
   background: linear-gradient(135deg, var(--color-bg-teal-50) 0%, var(--color-white) 100%);
