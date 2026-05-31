@@ -100,12 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodedMessage}`;
     
-    // Open WhatsApp directly in a new tab (instantly, to bypass browser popup blockers)
-    const newWindow = window.open(whatsappUrl, '_blank');
-    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-      // Fallback: If pop-up is blocked, redirect the current window
-      window.location.href = whatsappUrl;
-    }
+    // Redirect the current window directly to WhatsApp (100% bulletproof against pop-up blockers)
+    window.location.href = whatsappUrl;
     registrationForm.reset();
   });
 });
