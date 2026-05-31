@@ -104,4 +104,52 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = whatsappUrl;
     registrationForm.reset();
   });
+
+  // 5. Gallery Lightbox Functionality
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const lightboxModal = document.getElementById('lightbox-modal');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const lightboxClose = document.getElementById('lightbox-close');
+
+  galleryItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const fullSrc = item.getAttribute('data-src');
+      const captionText = item.getAttribute('data-caption');
+      
+      lightboxImg.src = fullSrc;
+      lightboxImg.alt = captionText;
+      lightboxCaption.textContent = captionText;
+      
+      lightboxModal.classList.add('active');
+      lightboxModal.setAttribute('aria-hidden', 'false');
+    });
+  });
+
+  function closeLightbox() {
+    lightboxModal.classList.remove('active');
+    lightboxModal.setAttribute('aria-hidden', 'true');
+    // Clear image src after transition to avoid flicker on next open
+    setTimeout(() => {
+      lightboxImg.src = '';
+      lightboxImg.alt = '';
+      lightboxCaption.textContent = '';
+    }, 300);
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  
+  // Close on background click
+  lightboxModal.addEventListener('click', (e) => {
+    if (e.target === lightboxModal) {
+      closeLightbox();
+    }
+  });
+
+  // Close on ESC key press
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightboxModal.classList.contains('active')) {
+      closeLightbox();
+    }
+  });
 });
