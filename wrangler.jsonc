@@ -1,12 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "ibra-global-english",
+  "name": "ibraglobalenglish",
   "compatibility_date": "2026-05-31",
   "observability": {
     "enabled": true
   },
   "assets": {
-    "directory": "ibra-global-english"
+    "directory": "ibraglobalenglish"
   },
   "compatibility_flags": [
     "nodejs_compat"
