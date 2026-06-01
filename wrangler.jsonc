@@ -6,7 +6,7 @@
     "enabled": true
   },
   "assets": {
-    "directory": "ibra-global-english"
+    "directory": "."
   },
   "compatibility_flags": [
     "nodejs_compat"
