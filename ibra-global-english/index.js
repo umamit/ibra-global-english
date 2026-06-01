@@ -51,24 +51,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 3. Scroll Reveal Observer (Intersection Observer)
-  const revealElements = document.querySelectorAll('.scroll-reveal');
-  
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-        observer.unobserve(entry.target); // Reveal only once
+  // 3. Initialize Animate On Scroll (AOS)
+  if (typeof AOS !== 'undefined') {
+    // Dynamically map old scroll-reveal classes to data-aos attributes
+    const revealElements = document.querySelectorAll('.scroll-reveal');
+    revealElements.forEach(el => {
+      if (el.classList.contains('reveal-left')) {
+        el.setAttribute('data-aos', 'fade-right');
+      } else if (el.classList.contains('reveal-right')) {
+        el.setAttribute('data-aos', 'fade-left');
+      } else if (el.classList.contains('reveal-scale')) {
+        el.setAttribute('data-aos', 'zoom-in');
+      } else {
+        el.setAttribute('data-aos', 'fade-up');
       }
     });
-  }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  });
 
-  revealElements.forEach(element => {
-    revealObserver.observe(element);
-  });
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-quad',
+      once: true,
+      offset: 50
+    });
+  }
 
   // Stats Count Up Observer
   const countElements = document.querySelectorAll('.count-up');
