@@ -1578,6 +1578,7 @@ section,
 .highlight-reveal {
   position: relative;
   display: inline-block;
+  z-index: 1;
 }
 
 .highlight-reveal::after {
