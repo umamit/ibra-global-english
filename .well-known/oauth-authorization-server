@@ -8,12 +8,13 @@
   "id_token_signing_alg_values_supported": ["RS256"],
   "grant_types_supported": ["authorization_code"],
   "agent_auth": {
-    "skill": "https://www.ibraglobalenglish.uk/index.html",
+    "skill": "https://www.ibraglobalenglish.uk/auth.md",
     "register_uri": "https://www.ibraglobalenglish.uk/oauth/register",
+    "claim_uri": "https://www.ibraglobalenglish.uk/oauth/claim",
+    "revocation_uri": "https://www.ibraglobalenglish.uk/oauth/revoke",
     "identity_types_supported": ["anonymous"],
     "anonymous": {
-      "credential_types_supported": ["bearer_token"],
-      "claim_uri": "https://www.ibraglobalenglish.uk/oauth/claim"
+      "credential_types_supported": ["api_key"]
     }
   }
 }
