@@ -1,4 +1,4 @@
-# Agent Authentication & Registration - Ibra Global English
+# auth.md - Agent Authentication & Registration - Ibra Global English
 
 This page provides guidance for AI agents interacting with the Ibra Global English website and tools.
 
