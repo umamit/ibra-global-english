@@ -7,7 +7,7 @@
   "transports": [
     {
       "type": "webmcp",
-      "endpoint": "https://ibraglobalenglish.com/"
+      "endpoint": "https://www.ibraglobalenglish.uk/"
     }
   ],
   "capabilities": {

@@ -1,16 +1,16 @@
 {
   "linkset": [
     {
-      "anchor": "https://ibraglobalenglish.com/",
+      "anchor": "https://www.ibraglobalenglish.uk/",
       "service-desc": [
         {
-          "href": "https://ibraglobalenglish.com/.well-known/mcp/server-card.json",
+          "href": "https://www.ibraglobalenglish.uk/.well-known/mcp/server-card.json",
           "type": "application/json"
         }
       ],
       "service-doc": [
         {
-          "href": "https://ibraglobalenglish.com/index.html#contact",
+          "href": "https://www.ibraglobalenglish.uk/index.html#contact",
           "type": "text/html"
         }
       ]
