@@ -1,5 +1,4 @@
 /* Custom Premium Styles for Ibra Global English Clone */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
   /* Color System */
@@ -1602,6 +1601,16 @@ section,
 [data-theme="dark"] .highlight-reveal::after {
   background-color: var(--color-yellow);
   opacity: 0.25;
+}
+
+/* Accessibility Focus Outline Styles */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
 
