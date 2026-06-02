@@ -123,6 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
   registrationForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
+    // Honeypot anti-spam check
+    const honeypot = document.getElementById('honeypot-input').value;
+    if (honeypot) {
+      console.warn('Spam submission detected.');
+      registrationForm.reset();
+      return;
+    }
+    
     const name = document.getElementById('name-input').value.trim();
     const whatsapp = document.getElementById('whatsapp-input').value.trim();
     const program = document.getElementById('program-select').value;
