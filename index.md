@@ -1,6 +1,6 @@
-# Ibra Global English
+# Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik di Pulau Taliabu
 
-Belajar Seru Lancar Bicara. Kursus Bahasa Inggris Offline Terbaik di Bobong.
+Belajar Seru Lancar Bicara. Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu.
 
 ## Tentang Kami
 Ibra Global English menawarkan kursus bahasa Inggris offline dengan metode pembelajaran yang menyenangkan dan efektif untuk anak-anak dan remaja. Kami fokus pada peningkatan kemampuan speaking secara aktif dan interaktif bersama tutor berpengalaman.
