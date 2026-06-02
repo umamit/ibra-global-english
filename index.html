@@ -53,6 +53,11 @@
   }
   </script>
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://unpkg.com">
+  
   <link rel="icon" type="image/png" href="./assets/favicon.png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
@@ -130,7 +135,7 @@
       
       <div class="hero-image-container scroll-reveal reveal-right">
         <div class="hero-card">
-          <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop" alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" class="hero-img">
+          <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop" alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" class="hero-img" fetchpriority="high" loading="eager">
         </div>
         <div class="hero-stats-badge">
           <div class="badge-icon">
@@ -306,7 +311,7 @@
       <div class="gallery-grid">
         <!-- Gallery Item 1 -->
         <div class="gallery-item scroll-reveal" data-src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1000&auto=format&fit=crop" data-caption="Kegiatan Belajar Kelompok Anak-Anak">
-          <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&auto=format&fit=crop" alt="Anak-anak belajar berkelompok dengan menyenangkan">
+          <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&auto=format&fit=crop" alt="Anak-anak belajar berkelompok dengan menyenangkan" loading="lazy">
           <div class="gallery-overlay">
             <h4>Kids Interactive Study</h4>
             <p>Belajar seru melalui aktivitas kelompok</p>
@@ -315,7 +320,7 @@
 
         <!-- Gallery Item 2 -->
         <div class="gallery-item scroll-reveal" data-src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1000&auto=format&fit=crop" data-caption="Latihan Percakapan (Speaking Practice) Kelas Dewasa">
-          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop" alt="Siswa kelas dewasa sedang berlatih percakapan">
+          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop" alt="Siswa kelas dewasa sedang berlatih percakapan" loading="lazy">
           <div class="gallery-overlay">
             <h4>Speaking Practice Session</h4>
             <p>Membangun kepercayaan diri berbicara di depan umum</p>
@@ -324,7 +329,7 @@
 
         <!-- Gallery Item 3 -->
         <div class="gallery-item scroll-reveal" data-src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1000&auto=format&fit=crop" data-caption="Penjelasan Materi oleh Experienced Teacher">
-          <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=600&auto=format&fit=crop" alt="Pengajar menjelaskan materi di papan tulis">
+          <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=600&auto=format&fit=crop" alt="Pengajar menjelaskan materi di papan tulis" loading="lazy">
           <div class="gallery-overlay">
             <h4>Experienced Teaching</h4>
             <p>Materi disampaikan dengan metode yang mudah dipahami</p>
@@ -333,7 +338,7 @@
 
         <!-- Gallery Item 4 -->
         <div class="gallery-item scroll-reveal" data-src="./assets/fun_classroom_games.jpg" data-caption="Aktivitas Games & Kuis Interaktif">
-          <img src="./assets/fun_classroom_games.jpg" alt="Siswa tersenyum gembira saat mengikuti kuis">
+          <img src="./assets/fun_classroom_games.jpg" alt="Siswa tersenyum gembira saat mengikuti kuis" loading="lazy">
           <div class="gallery-overlay">
             <h4>Fun Classroom Games</h4>
             <p>Belajar aktif tanpa rasa bosan</p>
@@ -342,7 +347,7 @@
 
         <!-- Gallery Item 5 -->
         <div class="gallery-item scroll-reveal" data-src="./assets/interactive_study_group.jpg" data-caption="Suasana Belajar Kelompok di Kelas">
-          <img src="./assets/interactive_study_group.jpg" alt="Siswa belajar bersama dengan ceria">
+          <img src="./assets/interactive_study_group.jpg" alt="Siswa belajar bersama dengan ceria" loading="lazy">
           <div class="gallery-overlay">
             <h4>Interactive Study Group</h4>
             <p>Kolaborasi aktif antar siswa dalam memecahkan soal</p>
@@ -351,7 +356,7 @@
 
         <!-- Gallery Item 6 -->
         <div class="gallery-item scroll-reveal" data-src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1000&auto=format&fit=crop" data-caption="Diskusi Kelompok Kelas Teens Program">
-          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop" alt="Siswa remaja sedang berdiskusi kelompok">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop" alt="Siswa remaja sedang berdiskusi kelompok" loading="lazy">
           <div class="gallery-overlay">
             <h4>Teens Project Discussion</h4>
             <p>Meningkatkan kemampuan tata bahasa dan menulis bersama</p>
@@ -562,7 +567,7 @@
   <footer>
     <div class="container footer-content">
       <div class="footer-logo">
-        <img src="./assets/logo.png" alt="Ibra Global English Logo">
+        <img src="./assets/logo.png" alt="Ibra Global English Logo" loading="lazy">
         <div class="footer-logo-text">
           <h3>Ibra Global English</h3>
           <p>Belajar Seru Lancar Bicara</p>
