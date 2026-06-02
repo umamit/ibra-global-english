@@ -1,7 +1,7 @@
 {
-  "resource": "https://ibraglobalenglish.com/api",
+  "resource": "https://www.ibraglobalenglish.uk/api",
   "authorization_servers": [
-    "https://ibraglobalenglish.com"
+    "https://www.ibraglobalenglish.uk"
   ],
   "scopes_supported": ["read", "write"],
   "bearer_methods_supported": ["header"]

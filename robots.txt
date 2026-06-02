@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Content-Signal: ai-train=no, search=yes, ai-input=no
 
-Sitemap: https://ibraglobalenglish.com/sitemap.xml
+Sitemap: https://www.ibraglobalenglish.uk/sitemap.xml
