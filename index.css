@@ -80,6 +80,32 @@ body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
+/* Custom Scrollbar Styles for Modern Browsers */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-gray-100);
+}
+
+/* Chrome, Safari, and Edge scrollbar overrides */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border: 2px solid var(--color-gray-100);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-dark);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -1611,6 +1637,52 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 3px;
+}
+
+/* Print Stylesheet for paper outputs */
+@media print {
+  *, *::before, *::after {
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  /* Hide interactive layouts and components on paper */
+  #header,
+  .mobile-nav,
+  .social-float-group,
+  .hero-actions,
+  .cta-actions,
+  .lightbox-modal,
+  .theme-toggle,
+  .menu-toggle,
+  .hero-stats-badge {
+    display: none !important;
+  }
+  
+  /* Simplify layout spacings for page output */
+  .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  section {
+    padding: 2rem 0 !important;
+    page-break-inside: avoid;
+  }
+  
+  h2, h3 {
+    page-break-after: avoid;
+  }
 }
 
 
