@@ -845,11 +845,15 @@ section {
   color: var(--color-gray-600);
 }
 
-.contact-email-link {
+.contact-email-link,
+.contact-phone-link,
+.contact-address-link {
   transition: color var(--transition-fast);
 }
 
-.contact-email-link:hover {
+.contact-email-link:hover,
+.contact-phone-link:hover,
+.contact-address-link:hover {
   color: var(--color-primary);
   text-decoration: underline;
 }
