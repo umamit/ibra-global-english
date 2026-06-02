@@ -31,7 +31,7 @@ class AgentReadyServer < WEBrick::HTTPServlet::FileHandler
     end
     
     # Ensure correct content types for well-known json files and auth endpoints
-    if path.include?('.well-known') && (path.end_with?('.json') || path.include?('openid-configuration') || path.include?('oauth-protected-resource') || path.include?('http-message-signatures-directory'))
+    if path.include?('.well-known') && (path.end_with?('.json') || path.include?('openid-configuration') || path.include?('oauth-protected-resource') || path.include?('oauth-authorization-server') || path.include?('http-message-signatures-directory'))
       super(req, res)
       res['Content-Type'] = 'application/json; charset=utf-8'
       return

@@ -3,5 +3,6 @@
   "authorization_servers": [
     "https://ibraglobalenglish.com"
   ],
-  "scopes_supported": ["read", "write"]
+  "scopes_supported": ["read", "write"],
+  "bearer_methods_supported": ["header"]
 }
