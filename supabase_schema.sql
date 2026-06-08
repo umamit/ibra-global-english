@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('admin', 'parent')),
+  email TEXT, -- Menyimpan alamat email pendaftar untuk memudahkan Admin
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -82,11 +83,12 @@ BEGIN
     full_name_val := COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1));
   END IF;
 
-  INSERT INTO public.profiles (id, full_name, role)
+  INSERT INTO public.profiles (id, full_name, role, email)
   VALUES (
     new.id,
     full_name_val,
-    default_role
+    default_role,
+    new.email
   );
   RETURN NEW;
 END;
@@ -99,6 +101,23 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- =====================================================================
+-- 2b. KEAMANAN SECURITY DEFINER (Mencegah Infinite Recursion)
+-- =====================================================================
+
+-- Fungsi pembantu untuk mengecek apakah pengguna aktif adalah admin.
+-- Ditandai dengan SECURITY DEFINER agar berjalan melewati RLS tabel profiles,
+-- sehingga menghindari bug "infinite recursion" pada PostgreSQL.
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================================
 -- 3. ROW LEVEL SECURITY (RLS) POLICIES
 -- =====================================================================
 
@@ -108,17 +127,13 @@ ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
 
--- KEBASAN / KEBIJAKAN UNTUK TABEL: profiles
--- Admin bisa melakukan apa saja.
+-- KEBIJAKAN UNTUK TABEL: profiles
+-- Admin memiliki akses penuh.
 CREATE POLICY "Admins have full access to profiles" 
 ON public.profiles FOR ALL 
 TO authenticated 
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE public.profiles.id = auth.uid() AND public.profiles.role = 'admin'
-  )
-);
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
 
 -- Pengguna terautentikasi dapat membaca profil mereka sendiri.
 CREATE POLICY "Users can view their own profile" 
@@ -133,23 +148,13 @@ TO authenticated
 USING (auth.uid() = id);
 
 
--- KEBASAN / KEBIJAKAN UNTUK TABEL: students
+-- KEBIJAKAN UNTUK TABEL: students
 -- Admin memiliki akses penuh.
 CREATE POLICY "Admins have full access to students" 
 ON public.students FOR ALL 
 TO authenticated 
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE public.profiles.id = auth.uid() AND public.profiles.role = 'admin'
-  )
-)
-WITH CHECK (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE public.profiles.id = auth.uid() AND public.profiles.role = 'admin'
-  )
-);
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
 
 -- Orang Tua dapat membaca data siswa yang merupakan anak mereka (parent_id cocok).
 CREATE POLICY "Parents can view their own students" 
@@ -158,23 +163,13 @@ TO authenticated
 USING (parent_id = auth.uid());
 
 
--- KEBASAN / KEBIJAKAN UNTUK TABEL: attendance
+-- KEBIJAKAN UNTUK TABEL: attendance
 -- Admin memiliki akses penuh.
 CREATE POLICY "Admins have full access to attendance" 
 ON public.attendance FOR ALL 
 TO authenticated 
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE public.profiles.id = auth.uid() AND public.profiles.role = 'admin'
-  )
-)
-WITH CHECK (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE public.profiles.id = auth.uid() AND public.profiles.role = 'admin'
-  )
-);
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
 
 -- Orang Tua dapat membaca riwayat absensi anak-anak mereka.
 CREATE POLICY "Parents can view their own children attendance" 
@@ -188,23 +183,13 @@ USING (
 );
 
 
--- KEBASAN / KEBIJAKAN UNTUK TABEL: reports
+-- KEBIJAKAN UNTUK TABEL: reports
 -- Admin memiliki akses penuh.
 CREATE POLICY "Admins have full access to reports" 
 ON public.reports FOR ALL 
 TO authenticated 
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE public.profiles.id = auth.uid() AND public.profiles.role = 'admin'
-  )
-)
-WITH CHECK (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE public.profiles.id = auth.uid() AND public.profiles.role = 'admin'
-  )
-);
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
 
 -- Orang Tua dapat membaca rapor belajar digital anak-anak mereka.
 CREATE POLICY "Parents can view their own children reports" 
