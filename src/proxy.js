@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
 export async function proxy(request) {
-  const url = new URL(request.url);
-  const path = url.pathname;
-  const isHome = (path === "/" || path === "/index.html");
+  const { pathname } = request.nextUrl;
+  const acceptHeader = request.headers.get("accept") || "";
 
-  // 1. Handle Homepage discovery and markdown negotiation
+  // =====================================================================
+  // 1. NEGOSIASI KONTEN MARKDOWN UNTUK AGEN AI (Accept: text/markdown)
+  // =====================================================================
+  const isHome = (pathname === "/" || pathname === "/index.html");
   if (isHome) {
-    const acceptHeader = request.headers.get("accept") || "";
-
-    // Check for Markdown content negotiation
     if (acceptHeader.includes("text/markdown")) {
       try {
-        // Fetch static index.md from public directory via local URL
+        // Fetch static index.md dari folder public melalui URL lokal
         const mdUrl = new URL("/index.md", request.url);
         const mdRes = await fetch(mdUrl);
         if (mdRes.ok) {
@@ -33,12 +33,107 @@ export async function proxy(request) {
           });
         }
       } catch (err) {
-        console.error("Failed to negotiate markdown in middleware:", err);
+        console.error("Gagal melakukan negosiasi markdown di proxy:", err);
       }
     }
+  }
 
-    // Standard homepage request: Proceed, and append agent discovery Link header
+  // =====================================================================
+  // 2. TIMPA CONTENT-TYPE UNTUK FILE DI DIRECTORY .WELL-KNOWN
+  // =====================================================================
+  if (pathname.startsWith("/.well-known")) {
     const response = NextResponse.next();
+    if (pathname.endsWith(".json") || pathname.includes("openid-configuration") || pathname.includes("oauth-protected-resource") || pathname.includes("oauth-authorization-server") || pathname.includes("http-message-signatures-directory")) {
+      response.headers.set("Content-Type", "application/json; charset=utf-8");
+    } else if (pathname === "/.well-known/api-catalog") {
+      response.headers.set("Content-Type", "application/linkset+json; charset=utf-8");
+    }
+    return response;
+  }
+
+  // =====================================================================
+  // 3. AUTENTIKASI SUPABASE & PROTEKSI RUTE BERBASIS PERAN (ROLE-BASED RBAC)
+  // =====================================================================
+  
+  // Lewati pemeriksaan sesi cookie Supabase untuk aset-aset statis biasa
+  const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico)$/);
+  if (isStaticAsset) {
+    return NextResponse.next();
+  }
+
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
+
+  // Buat klien Supabase khusus proxy (middleware)
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  // Ambil data user aktif secara aman
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Dapatkan peran pengguna dari metadata (efisien, tanpa query database tambahan)
+  const role = user?.user_metadata?.role;
+
+  // Proteksi rute Admin (/admin*)
+  if (pathname.startsWith("/admin")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "admin") {
+      // Jika bukan admin, redirect ke login dengan parameter error
+      return NextResponse.redirect(new URL("/login?error=unauthorized_admin", request.url));
+    }
+  }
+
+  // Proteksi rute Orang Tua (/parent*)
+  if (pathname.startsWith("/parent")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "parent") {
+      // Jika bukan orang tua, redirect ke login dengan parameter error
+      return NextResponse.redirect(new URL("/login?error=unauthorized_parent", request.url));
+    }
+  }
+
+  // Pengalihan cerdas jika pengguna sudah masuk dan membuka halaman login (/login)
+  if (pathname === "/login") {
+    if (user) {
+      if (role === "admin") {
+        return NextResponse.redirect(new URL("/admin", request.url));
+      } else {
+        return NextResponse.redirect(new URL("/parent", request.url));
+      }
+    }
+  }
+
+  // Selalu tambahkan header penemuan agen AI (Link header) pada halaman HTML beranda utama
+  if (isHome) {
     response.headers.set(
       "Link",
       [
@@ -47,27 +142,18 @@ export async function proxy(request) {
         "</.well-known/mcp/server-card.json>; rel=\"mcp-server-card\""
       ].join(", ")
     );
-    return response;
   }
 
-  // 2. Override Content-Types for .well-known files if requested
-  if (path.startsWith("/.well-known")) {
-    const response = NextResponse.next();
-    if (path.endsWith(".json") || path.includes("openid-configuration") || path.includes("oauth-protected-resource") || path.includes("oauth-authorization-server") || path.includes("http-message-signatures-directory")) {
-      response.headers.set("Content-Type", "application/json; charset=utf-8");
-    } else if (path === "/.well-known/api-catalog") {
-      response.headers.set("Content-Type", "application/linkset+json; charset=utf-8");
-    }
-    return response;
-  }
-
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
   matcher: [
-    "/",
-    "/index.html",
-    "/.well-known/:path*",
+    /*
+     * Jalankan proxy pada semua jalur request, kecuali:
+     * - berkas statis internal Next.js (_next/static, _next/image)
+     * - favicon.ico
+     */
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };
