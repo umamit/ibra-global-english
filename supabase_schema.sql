@@ -362,6 +362,62 @@ CREATE INDEX IF NOT EXISTS idx_tuition_payments_student_id ON public.tuition_pay
 CREATE INDEX IF NOT EXISTS idx_academic_schedules_start_time ON public.academic_schedules(start_time);
 
 -- =====================================================================
+-- 7. KONFIGURASI STORAGE BUCKETS DAN KEBIJAKAN (POLICIES)
+-- =====================================================================
+
+-- Buat bucket penyimpanan jika belum ada (gallery-uploads dan spp-receipts)
+INSERT INTO storage.buckets (id, name, public)
+VALUES 
+  ('gallery-uploads', 'gallery-uploads', true),
+  ('spp-receipts', 'spp-receipts', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Kebijakan RLS untuk Storage - gallery-uploads (Hanya Admin yang bisa modifikasi, Publik bisa baca)
+DROP POLICY IF EXISTS "Public Access - gallery-uploads" ON storage.objects;
+CREATE POLICY "Public Access - gallery-uploads"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'gallery-uploads');
+
+DROP POLICY IF EXISTS "Admin Upload - gallery-uploads" ON storage.objects;
+CREATE POLICY "Admin Upload - gallery-uploads"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'gallery-uploads' AND public.is_admin());
+
+DROP POLICY IF EXISTS "Admin Update - gallery-uploads" ON storage.objects;
+CREATE POLICY "Admin Update - gallery-uploads"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'gallery-uploads' AND public.is_admin())
+WITH CHECK (bucket_id = 'gallery-uploads' AND public.is_admin());
+
+DROP POLICY IF EXISTS "Admin Delete - gallery-uploads" ON storage.objects;
+CREATE POLICY "Admin Delete - gallery-uploads"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'gallery-uploads' AND public.is_admin());
+
+
+-- Kebijakan RLS untuk Storage - spp-receipts (Pengguna Terautentikasi bisa upload, Publik bisa baca)
+DROP POLICY IF EXISTS "Public Access - spp-receipts" ON storage.objects;
+CREATE POLICY "Public Access - spp-receipts"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'spp-receipts');
+
+DROP POLICY IF EXISTS "Authenticated Upload - spp-receipts" ON storage.objects;
+CREATE POLICY "Authenticated Upload - spp-receipts"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'spp-receipts');
+
+DROP POLICY IF EXISTS "Admin Delete - spp-receipts" ON storage.objects;
+CREATE POLICY "Admin Delete - spp-receipts"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'spp-receipts' AND public.is_admin());
+
+
+-- =====================================================================
 -- Catatan Penting untuk Administrator:
 -- Untuk menetapkan peran pengguna pertama sebagai 'admin', Anda dapat
 -- mendaftar melalui aplikasi secara normal (default: parent), lalu
@@ -369,4 +425,5 @@ CREATE INDEX IF NOT EXISTS idx_academic_schedules_start_time ON public.academic_
 --
 -- UPDATE public.profiles SET role = 'admin' WHERE id = 'UUID_AKUN_ANDA';
 -- =====================================================================
+
 
