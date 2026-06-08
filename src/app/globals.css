@@ -2,18 +2,18 @@
 
 :root {
   /* Color System */
-  --color-primary: #4a9ba8;
-  --color-primary-dark: #3d8894;
-  --color-primary-light: #e6f3f5;
+  --color-primary: #216c7e;
+  --color-primary-dark: #164d57;
+  --color-primary-light: #f0f7f8;
   --color-accent: #A68849;
   --color-accent-light: #f3ede2;
   --color-yellow: #facc15;
   --color-green: #22c55e;
   --color-green-light: #dcfce7;
   
-  --color-bg-teal-50: #f0fdfa;
-  --color-bg-teal-100: #ccfbf1;
-  --color-bg-teal-200: #99f6e4;
+  --color-bg-teal-50: #f0f7f8;
+  --color-bg-teal-100: #dbeef1;
+  --color-bg-teal-200: #b7dbe1;
   
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
@@ -54,8 +54,8 @@
   --radius-full: 9999px;
   
   /* Header Backgrounds - Premium Soft Teal Glassmorphism */
-  --color-header-bg: rgba(230, 243, 245, 0.85);
-  --color-header-bg-scrolled: rgba(230, 243, 245, 0.95);
+  --color-header-bg: rgba(240, 247, 248, 0.85);
+  --color-header-bg-scrolled: rgba(240, 247, 248, 0.95);
 }
 
 /* Reset & Base Styles */
