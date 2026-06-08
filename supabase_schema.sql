@@ -211,6 +211,79 @@ CREATE INDEX IF NOT EXISTS idx_attendance_date ON public.attendance(date);
 CREATE INDEX IF NOT EXISTS idx_reports_student_id ON public.reports(student_id);
 
 -- =====================================================================
+-- 5. TABEL TAMBAHAN UNTUK CMS LANDING PAGE DINAMIS
+-- =====================================================================
+
+-- TABEL: landing_settings (Konfigurasi Landing Page)
+CREATE TABLE IF NOT EXISTS public.landing_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- TABEL: testimonials (Testimoni Landing Page)
+CREATE TABLE IF NOT EXISTS public.testimonials (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  rating INTEGER NOT NULL DEFAULT 5 CHECK (rating >= 1 AND rating <= 5),
+  text TEXT NOT NULL,
+  author TEXT NOT NULL,
+  role TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- TABEL: gallery (Galeri Landing Page)
+CREATE TABLE IF NOT EXISTS public.gallery (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  image_url TEXT NOT NULL,
+  caption TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Aktifkan RLS pada tabel-tabel baru
+ALTER TABLE public.landing_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.gallery ENABLE ROW LEVEL SECURITY;
+
+-- Kebijakan RLS untuk public.landing_settings
+CREATE POLICY "Allow public read access to landing_settings" 
+ON public.landing_settings FOR SELECT 
+USING (true);
+
+CREATE POLICY "Allow admin full access to landing_settings" 
+ON public.landing_settings FOR ALL 
+TO authenticated 
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
+
+-- Kebijakan RLS untuk public.testimonials
+CREATE POLICY "Allow public read access to testimonials" 
+ON public.testimonials FOR SELECT 
+USING (true);
+
+CREATE POLICY "Allow admin full access to testimonials" 
+ON public.testimonials FOR ALL 
+TO authenticated 
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
+
+-- Kebijakan RLS untuk public.gallery
+CREATE POLICY "Allow public read access to gallery" 
+ON public.gallery FOR SELECT 
+USING (true);
+
+CREATE POLICY "Allow admin full access to gallery" 
+ON public.gallery FOR ALL 
+TO authenticated 
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
+
+-- Buat indeks untuk optimalisasi pencarian/kinerja
+CREATE INDEX IF NOT EXISTS idx_gallery_created_at ON public.gallery(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_testimonials_created_at ON public.testimonials(created_at DESC);
+
+-- =====================================================================
 -- Catatan Penting untuk Administrator:
 -- Untuk menetapkan peran pengguna pertama sebagai 'admin', Anda dapat
 -- mendaftar melalui aplikasi secara normal (default: parent), lalu

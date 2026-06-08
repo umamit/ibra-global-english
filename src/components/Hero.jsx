@@ -1,15 +1,59 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createClient } from "../utils/supabase/client";
 import CountUp from "./CountUp";
 
 export default function Hero() {
+  const supabase = createClient();
+  const [heroTitle, setHeroTitle] = useState("Ibra Global English Bobong");
+  const [heroSubtitle, setHeroSubtitle] = useState("Belajar Seru | Lancar Bicara");
+  const [heroDesc, setHeroDesc] = useState("Kursus bahasa Inggris offline terbaik di Bobong, Pulau Taliabu. Dengan metode pembelajaran yang menyenangkan dan efektif untuk tingkatkan kemampuan speaking Anda bersama tutor berpengalaman!");
+  const [heroImage, setHeroImage] = useState("https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop");
+
+  useEffect(() => {
+    async function fetchHeroSettings() {
+      try {
+        const { data, error } = await supabase
+          .from('landing_settings')
+          .select('key, value');
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const settings = {};
+          data.forEach(item => {
+            settings[item.key] = item.value;
+          });
+          if (settings.hero_title) setHeroTitle(settings.hero_title);
+          if (settings.hero_subtitle) setHeroSubtitle(settings.hero_subtitle);
+          if (settings.hero_desc) setHeroDesc(settings.hero_desc);
+          if (settings.hero_image) setHeroImage(settings.hero_image);
+        }
+      } catch (e) {
+        console.warn("Gagal memuat pengaturan hero dari database. Menggunakan data default (statis).", e);
+      }
+    }
+    fetchHeroSettings();
+  }, []);
+
+  const renderSubtitle = (text) => {
+    if (text.includes('|')) {
+      const [part1, part2] = text.split('|');
+      return (
+        <>
+          {part1} <span className="highlight-reveal">{part2}</span>
+        </>
+      );
+    }
+    return text;
+  };
+
   return (
     <section id="home" className="hero">
       <div className="container hero-grid">
         <div className="hero-content" data-aos="fade-right">
-          <h2>Ibra Global English Bobong</h2>
-          <p className="hero-subtitle">Belajar Seru <span className="highlight-reveal">Lancar Bicara</span></p>
-          <p className="hero-desc">Kursus bahasa Inggris offline terbaik di Bobong, Pulau Taliabu. Dengan metode pembelajaran yang menyenangkan dan efektif untuk tingkatkan kemampuan speaking Anda bersama tutor berpengalaman!</p>
+          <h2>{heroTitle}</h2>
+          <p className="hero-subtitle">{renderSubtitle(heroSubtitle)}</p>
+          <p className="hero-desc">{heroDesc}</p>
           <div className="hero-actions">
             <a href="#contact" className="btn-primary">Daftar Gratis</a>
             <a href="#programs" className="btn-secondary">Lihat Program</a>
@@ -19,7 +63,7 @@ export default function Hero() {
         <div className="hero-image-container" data-aos="fade-left">
           <div className="hero-card">
             <img 
-              src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop" 
+              src={heroImage} 
               alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" 
               className="hero-img" 
               fetchPriority="high" 

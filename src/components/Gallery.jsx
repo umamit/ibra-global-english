@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createClient } from "../utils/supabase/client";
+
 const GALLERY_DATA = [
   {
     title: "Kids Interactive Study",
@@ -58,6 +61,36 @@ const GALLERY_DATA = [
 ];
 
 export default function Gallery({ onOpenLightbox }) {
+  const supabase = createClient();
+  const [galleryItems, setGalleryItems] = useState(GALLERY_DATA);
+
+  useEffect(() => {
+    async function fetchGallery() {
+      try {
+        const { data, error } = await supabase
+          .from('gallery')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const mappedData = data.map((item, index) => ({
+            title: item.title,
+            desc: item.description || "",
+            thumb: item.image_url,
+            full: item.image_url,
+            caption: item.caption || item.title,
+            delay: (index % 6) * 100,
+            alt: item.caption || item.title
+          }));
+          setGalleryItems(mappedData);
+        }
+      } catch (e) {
+        console.warn("Gagal memuat galeri dari database. Menggunakan data default (statis).", e);
+      }
+    }
+    fetchGallery();
+  }, []);
+
   return (
     <section id="gallery" className="gallery-section">
       <div className="container">
@@ -67,7 +100,7 @@ export default function Gallery({ onOpenLightbox }) {
         </div>
         
         <div className="gallery-grid">
-          {GALLERY_DATA.map((item, idx) => (
+          {galleryItems.map((item, idx) => (
             <div 
               key={idx}
               className="gallery-item" 
