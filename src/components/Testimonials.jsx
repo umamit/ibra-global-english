@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createClient } from "../utils/supabase/client";
+
 const TESTIMONIALS_DATA = [
   {
     rating: 5,
@@ -25,6 +28,34 @@ const TESTIMONIALS_DATA = [
 ];
 
 export default function Testimonials() {
+  const supabase = createClient();
+  const [testimonials, setTestimonials] = useState(TESTIMONIALS_DATA);
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      try {
+        const { data, error } = await supabase
+          .from('testimonials')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const mappedData = data.map((item, index) => ({
+            rating: item.rating || 5,
+            text: item.text,
+            author: item.author,
+            role: item.role,
+            delay: (index % 3) * 100
+          }));
+          setTestimonials(mappedData);
+        }
+      } catch (e) {
+        console.warn("Gagal memuat testimoni dari database. Menggunakan data default (statis).", e);
+      }
+    }
+    fetchTestimonials();
+  }, []);
+
   return (
     <section id="testimonials" className="testimonials-section">
       <div className="container">
@@ -34,7 +65,7 @@ export default function Testimonials() {
         </div>
         
         <div className="testimonials-grid">
-          {TESTIMONIALS_DATA.map((t, idx) => (
+          {testimonials.map((t, idx) => (
             <div key={idx} className="testimonial-card" data-aos="fade-up" data-aos-delay={t.delay}>
               <div className="testimonial-rating">
                 {[...Array(t.rating)].map((_, i) => (

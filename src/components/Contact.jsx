@@ -1,6 +1,42 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createClient } from "../utils/supabase/client";
+
 export default function Contact({ form, setForm, honeypot, setHoneypot }) {
+  const supabase = createClient();
+  const [address, setAddress] = useState("Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
+  const [phone, setPhone] = useState("+62 813-5700-1357");
+  const [rawPhone, setRawPhone] = useState("6281357001357");
+  const [email, setEmail] = useState("contact@ibraglobalenglish.uk");
+
+  useEffect(() => {
+    async function fetchContactSettings() {
+      try {
+        const { data, error } = await supabase
+          .from('landing_settings')
+          .select('key, value');
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const settings = {};
+          data.forEach(item => {
+            settings[item.key] = item.value;
+          });
+          if (settings.contact_address) setAddress(settings.contact_address);
+          if (settings.contact_phone) {
+            setPhone(settings.contact_phone);
+            const cleaned = settings.contact_phone.replace(/[^0-9]/g, "");
+            setRawPhone(cleaned);
+          }
+          if (settings.contact_email) setEmail(settings.contact_email);
+        }
+      } catch (e) {
+        console.warn("Gagal memuat pengaturan kontak dari database. Menggunakan data default (statis).", e);
+      }
+    }
+    fetchContactSettings();
+  }, []);
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
@@ -21,7 +57,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot }) {
       return;
     }
 
-    const targetPhone = "6281357001357";
+    const targetPhone = rawPhone;
     const message = `Halo Ibra Global English, saya ingin mendaftar kursus.\n\n*Nama Lengkap:* ${form.name}\n*Nomor WhatsApp:* ${form.whatsapp}\n*Program yang Diminati:* ${form.program}`;
     const encodedMessage = encodeURIComponent(message);
     
@@ -48,8 +84,8 @@ export default function Contact({ form, setForm, honeypot, setHoneypot }) {
               <div className="contact-details">
                 <h4>Alamat</h4>
                 <p>
-                  <a href="https://www.google.com/maps/search/?api=1&query=Ibra+Global+English+Bobong" target="_blank" rel="noopener noreferrer" className="contact-address-link">
-                    Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah
+                  <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`} target="_blank" rel="noopener noreferrer" className="contact-address-link">
+                    {address}
                   </a>
                 </p>
               </div>
@@ -64,8 +100,8 @@ export default function Contact({ form, setForm, honeypot, setHoneypot }) {
               <div className="contact-details">
                 <h4>Telepon</h4>
                 <p>
-                  <a href="tel:+6281357001357" className="contact-phone-link">
-                    +62 813-5700-1357
+                  <a href={`tel:${rawPhone}`} className="contact-phone-link">
+                    {phone}
                   </a>
                 </p>
               </div>
@@ -81,8 +117,8 @@ export default function Contact({ form, setForm, honeypot, setHoneypot }) {
               <div className="contact-details">
                 <h4>Email</h4>
                 <p>
-                  <a href="mailto:contact@ibraglobalenglish.uk" className="contact-email-link">
-                    contact@ibraglobalenglish.uk
+                  <a href={`mailto:${email}`} className="contact-email-link">
+                    {email}
                   </a>
                 </p>
               </div>
