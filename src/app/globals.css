@@ -10,6 +10,9 @@
   --color-yellow: #facc15;
   --color-green: #22c55e;
   --color-green-light: #dcfce7;
+  --color-red: #ef4444;
+  --color-red-dark: #b91c1c;
+  --color-red-light: #fee2e2;
   
   --color-bg-teal-50: #f0f7f8;
   --color-bg-teal-100: #dbeef1;
@@ -2033,6 +2036,34 @@ textarea:focus-visible {
   background-color: var(--color-primary-light);
   border-color: var(--color-primary);
   color: var(--color-primary-dark);
+}
+
+.btn-portal-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background-color: transparent;
+  border: 1px solid var(--color-red);
+  color: var(--color-red);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-portal-danger:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+  border-color: var(--color-red-dark);
+  color: var(--color-red-dark);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn-portal-danger:active {
+  transform: translateY(0);
 }
 
 /* Form Controls */
