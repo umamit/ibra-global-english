@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function middleware(request) {
+export async function proxy(request) {
   const url = new URL(request.url);
   const path = url.pathname;
   const isHome = (path === "/" || path === "/index.html");
