@@ -13,6 +13,7 @@ export default function StudentManagement() {
   const [activeTab, setActiveTab] = useState("students"); // 'students' or 'parents'
 
   // Form State
+  const [editingStudentId, setEditingStudentId] = useState(null);
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [program, setProgram] = useState("Kids Program");
@@ -63,7 +64,27 @@ export default function StudentManagement() {
     fetchData();
   }, []);
 
-  const handleAddStudent = async (e) => {
+  const handleOpenAddModal = () => {
+    setEditingStudentId(null);
+    setName("");
+    setAge("");
+    setProgram("Kids Program");
+    setParentId("");
+    setErrorMsg("");
+    setModalOpen(true);
+  };
+
+  const handleOpenEditModal = (student) => {
+    setEditingStudentId(student.id);
+    setName(student.name);
+    setAge(student.age.toString());
+    setProgram(student.program);
+    setParentId(student.parent_id || "");
+    setErrorMsg("");
+    setModalOpen(true);
+  };
+
+  const handleSaveStudent = async (e) => {
     e.preventDefault();
     setErrorMsg("");
     setSubmitting(true);
@@ -82,21 +103,33 @@ export default function StudentManagement() {
         parent_id: parentId || null,
       };
 
-      const { error } = await supabase
-        .from("students")
-        .insert(studentPayload);
+      if (editingStudentId) {
+        // Edit mode (Update)
+        const { error } = await supabase
+          .from("students")
+          .update(studentPayload)
+          .eq("id", editingStudentId);
 
-      if (error) throw error;
+        if (error) throw error;
+      } else {
+        // Add mode (Insert)
+        const { error } = await supabase
+          .from("students")
+          .insert(studentPayload);
+
+        if (error) throw error;
+      }
 
       // Reset form & reload
       setName("");
       setAge("");
       setProgram("Kids Program");
       setParentId("");
+      setEditingStudentId(null);
       setModalOpen(false);
       fetchData();
     } catch (err) {
-      setErrorMsg(err.message || "Gagal menambahkan data siswa.");
+      setErrorMsg(err.message || "Gagal menyimpan data siswa.");
     } finally {
       setSubmitting(false);
     }
@@ -148,7 +181,7 @@ export default function StudentManagement() {
         </div>
         <div className="topbar-user">
           {activeTab === "students" && (
-            <button className="btn-portal-primary" onClick={() => setModalOpen(true)}>
+            <button className="btn-portal-primary" onClick={handleOpenAddModal}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               <span>Tambah Siswa</span>
             </button>
@@ -277,12 +310,24 @@ export default function StudentManagement() {
                       )}
                     </td>
                     <td style={{ textAlign: "right" }}>
-                      <button
-                        className="btn-portal-danger"
-                        onClick={() => handleDeleteStudent(student.id, student.name)}
-                      >
-                        Hapus
-                      </button>
+                      <div style={{ display: "inline-flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+                        <button
+                          className="btn-portal-outline"
+                          style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
+                          onClick={() => handleOpenEditModal(student)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          className="btn-portal-danger"
+                          style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
+                          onClick={() => handleDeleteStudent(student.id, student.name)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                          <span>Hapus</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -354,12 +399,12 @@ export default function StudentManagement() {
         </div>
       )}
 
-      {/* Modal Form Tambah Siswa */}
+      {/* Modal Form Tambah/Edit Siswa */}
       {modalOpen && (
         <div className="portal-modal-overlay">
           <div className="portal-modal">
             <div className="portal-modal-header">
-              <h2 className="portal-modal-title">Tambah Siswa Baru</h2>
+              <h2 className="portal-modal-title">{editingStudentId ? "Edit Data Siswa" : "Tambah Siswa Baru"}</h2>
               <button className="btn-close-modal" onClick={() => setModalOpen(false)}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
@@ -371,7 +416,7 @@ export default function StudentManagement() {
               </div>
             )}
 
-            <form onSubmit={handleAddStudent}>
+            <form onSubmit={handleSaveStudent}>
               <div className="form-group" style={{ marginBottom: "1.25rem" }}>
                 <label className="form-label">Nama Lengkap Siswa</label>
                 <input
@@ -448,7 +493,7 @@ export default function StudentManagement() {
                   className="btn-portal-primary"
                   disabled={submitting}
                 >
-                  <span>{submitting ? "Menyimpan..." : "Simpan Data Siswa"}</span>
+                  <span>{submitting ? "Menyimpan..." : (editingStudentId ? "Simpan Perubahan" : "Simpan Data Siswa")}</span>
                 </button>
               </div>
             </form>
