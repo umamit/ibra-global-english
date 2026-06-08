@@ -15,6 +15,21 @@ export default function DailyAttendance() {
   // Peta absensi lokal: { [studentId]: { status: 'hadir'|'sakit'|'izin'|'alfa', notes: '...' } }
   const [attendanceMap, setAttendanceMap] = useState({});
 
+  const getIndonesianDay = (dateStr) => {
+    if (!dateStr) return "-";
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    return days[date.getDay()];
+  };
+
+  const getIndonesianDate = (dateStr) => {
+    if (!dateStr) return "-";
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  };
+
   useEffect(() => {
     // Set default date ke hari ini (zona waktu lokal)
     const today = new Date();
@@ -134,7 +149,7 @@ export default function DailyAttendance() {
         <div className="topbar-title">
           <h1>Absensi Harian</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-            Pencatatan kehadiran kelas tutor harian
+            Pencatatan kehadiran kelas tutor harian untuk <strong style={{ color: "var(--color-primary-dark)" }}>{selectedDate ? `${getIndonesianDay(selectedDate)}, ${getIndonesianDate(selectedDate)}` : "-"}</strong>
           </p>
         </div>
         <div className="topbar-user" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
