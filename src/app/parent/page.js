@@ -26,6 +26,21 @@ export default function ParentPortal() {
     alfa: 0,
   });
 
+  const getIndonesianDay = (dateStr) => {
+    if (!dateStr) return "-";
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    return days[date.getDay()];
+  };
+
+  const getIndonesianDate = (dateStr) => {
+    if (!dateStr) return "-";
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  };
+
   const handleLogout = async () => {
     if (confirm("Apakah Anda yakin ingin keluar dari portal Orang Tua?")) {
       await supabase.auth.signOut();
@@ -307,30 +322,32 @@ export default function ParentPortal() {
               </div>
             </div>
 
-            {/* Grid Informasi Utama */}
-            <div style={{ display: "grid", gridTemplateColumns: "380px 1fr", gap: "2rem" }}>
+            {/* Grid Informasi Utama - Stacking for maximum horizontal space */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
               
-              {/* Kolom Kiri: Riwayat Kehadiran */}
-              <div>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1rem" }}>Riwayat Kehadiran</h3>
+              {/* Seksi: Riwayat Kehadiran */}
+              <div className="portal-card" style={{ padding: "2rem" }}>
+                <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
+                  Riwayat Kehadiran Siswa
+                </h3>
                 
                 {/* Ringkasan Statistik */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.5rem", marginBottom: "1.5rem" }}>
-                  <div style={{ textAlign: "center", padding: "0.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)" }}>
-                    <p style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--color-green)" }}>{attendanceStats.hadir}</p>
-                    <p style={{ fontSize: "0.65rem", fontWeight: "700", textTransform: "uppercase" }}>Hadir</p>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
+                  <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                    <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-green)" }}>{attendanceStats.hadir}</p>
+                    <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Hadir</p>
                   </div>
-                  <div style={{ textAlign: "center", padding: "0.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)" }}>
-                    <p style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--color-yellow)" }}>{attendanceStats.sakit}</p>
-                    <p style={{ fontSize: "0.65rem", fontWeight: "700", textTransform: "uppercase" }}>Sakit</p>
+                  <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                    <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-yellow)" }}>{attendanceStats.sakit}</p>
+                    <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Sakit</p>
                   </div>
-                  <div style={{ textAlign: "center", padding: "0.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)" }}>
-                    <p style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--color-primary)" }}>{attendanceStats.izin}</p>
-                    <p style={{ fontSize: "0.65rem", fontWeight: "700", textTransform: "uppercase" }}>Izin</p>
+                  <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                    <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary)" }}>{attendanceStats.izin}</p>
+                    <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Izin</p>
                   </div>
-                  <div style={{ textAlign: "center", padding: "0.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)" }}>
-                    <p style={{ fontSize: "1.1rem", fontWeight: "900", color: "#ef4444" }}>{attendanceStats.alfa}</p>
-                    <p style={{ fontSize: "0.65rem", fontWeight: "700", textTransform: "uppercase" }}>Alfa</p>
+                  <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                    <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "#ef4444" }}>{attendanceStats.alfa}</p>
+                    <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Alfa</p>
                   </div>
                 </div>
 
@@ -339,25 +356,33 @@ export default function ParentPortal() {
                   <table className="portal-table">
                     <thead>
                       <tr>
+                        <th>No</th>
+                        <th>Nama Siswa</th>
+                        <th>Hari</th>
                         <th>Tanggal</th>
-                        <th>Status</th>
+                        <th>Status Kehadiran</th>
+                        <th>Keterangan / Catatan</th>
                       </tr>
                     </thead>
                     <tbody>
                       {attendance.length === 0 ? (
                         <tr>
-                          <td colSpan="2" style={{ textAlign: "center", padding: "2rem 0", color: "var(--color-gray-500)" }}>
-                            Belum ada riwayat absensi.
+                          <td colSpan="6" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+                            Belum ada riwayat absensi untuk siswa ini.
                           </td>
                         </tr>
                       ) : (
-                        attendance.map((log) => (
+                        attendance.map((log, idx) => (
                           <tr key={log.id}>
-                            <td style={{ fontSize: "0.85rem", fontWeight: "600" }}>
-                              {new Date(log.date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
-                            </td>
+                            <td style={{ fontWeight: "700" }}>{idx + 1}</td>
+                            <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{selectedChild?.name}</td>
+                            <td style={{ fontWeight: "600", color: "var(--color-primary-dark)" }}>{getIndonesianDay(log.date)}</td>
+                            <td>{getIndonesianDate(log.date)}</td>
                             <td>
                               <span className={`badge-${log.status}`}>{log.status}</span>
+                            </td>
+                            <td style={{ fontSize: "0.85rem", fontStyle: log.notes ? "normal" : "italic", color: log.notes ? "var(--color-gray-800)" : "var(--color-gray-400)" }}>
+                              {log.notes || "-"}
                             </td>
                           </tr>
                         ))
@@ -367,9 +392,11 @@ export default function ParentPortal() {
                 </div>
               </div>
 
-              {/* Kolom Kanan: Rapor Evaluasi Modul */}
+              {/* Seksi: Rapor Evaluasi Modul */}
               <div>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1rem" }}>Rapor Belajar Digital</h3>
+                <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.25rem" }}>
+                  Rapor Belajar Digital
+                </h3>
                 
                 {reports.length === 0 ? (
                   <div className="portal-card" style={{ padding: "3rem", textAlign: "center" }}>
