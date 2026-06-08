@@ -276,6 +276,27 @@ header.scrolled .nav-container {
   transform: translateY(-1px);
 }
 
+.nav-btn-outline {
+  background-color: transparent;
+  color: var(--color-primary-dark);
+  border: 2px solid var(--color-primary);
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.nav-btn-outline:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
 /* Mobile Menu Button */
 .menu-toggle {
   display: none;
