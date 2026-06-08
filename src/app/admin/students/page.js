@@ -10,6 +10,7 @@ export default function StudentManagement() {
   const [parents, setParents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("students"); // 'students' or 'parents'
 
   // Form State
   const [name, setName] = useState("");
@@ -42,10 +43,10 @@ export default function StudentManagement() {
       if (errS) throw errS;
       setStudents(studentData || []);
 
-      // Fetch parents to populate the link dropdown
+      // Fetch parents to populate the link dropdown and parent account list
       const { data: parentData, error: errP } = await supabase
         .from("profiles")
-        .select("id, full_name")
+        .select("id, full_name, email, created_at")
         .eq("role", "parent")
         .order("full_name", { ascending: true });
 
@@ -117,21 +118,111 @@ export default function StudentManagement() {
     }
   };
 
+  // Format date to localized Indonesian style
+  const formatIndonesianDate = (dateStr) => {
+    if (!dateStr) return "-";
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return "-";
+      const day = d.getDate();
+      const months = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      const month = months[d.getMonth()];
+      const year = d.getFullYear();
+      return `${day} ${month} ${year}`;
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
   return (
     <div>
       <div className="dashboard-topbar">
         <div className="topbar-title">
-          <h1>Kelola Siswa</h1>
+          <h1>Kelola Akademik</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Database utama bimbingan belajar Ibra Global English Bobong
           </p>
         </div>
         <div className="topbar-user">
-          <button className="btn-portal-primary" onClick={() => setModalOpen(true)}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Tambah Siswa</span>
-          </button>
+          {activeTab === "students" && (
+            <button className="btn-portal-primary" onClick={() => setModalOpen(true)}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Tambah Siswa</span>
+            </button>
+          )}
         </div>
+      </div>
+
+      {/* Tab Switcher */}
+      <div style={{ 
+        display: "flex", 
+        borderBottom: "2px solid var(--color-gray-100)", 
+        marginBottom: "1.75rem",
+        gap: "0.5rem"
+      }}>
+        <button
+          onClick={() => setActiveTab("students")}
+          style={{
+            background: "none",
+            border: "none",
+            padding: "0.75rem 1.25rem",
+            fontWeight: activeTab === "students" ? "800" : "500",
+            color: activeTab === "students" ? "var(--color-primary-dark)" : "var(--color-gray-500)",
+            borderBottom: activeTab === "students" ? "3px solid var(--color-primary)" : "3px solid transparent",
+            marginBottom: "-2px",
+            cursor: "pointer",
+            fontSize: "1rem",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            transition: "all 0.2s ease"
+          }}
+        >
+          <span>Daftar Siswa</span>
+          <span style={{ 
+            fontSize: "0.75rem", 
+            backgroundColor: activeTab === "students" ? "var(--color-primary-light)" : "var(--color-gray-100)",
+            color: activeTab === "students" ? "var(--color-primary-dark)" : "var(--color-gray-600)",
+            padding: "0.15rem 0.5rem",
+            borderRadius: "10px",
+            fontWeight: "700"
+          }}>
+            {students.length}
+          </span>
+        </button>
+        <button
+          onClick={() => setActiveTab("parents")}
+          style={{
+            background: "none",
+            border: "none",
+            padding: "0.75rem 1.25rem",
+            fontWeight: activeTab === "parents" ? "800" : "500",
+            color: activeTab === "parents" ? "var(--color-primary-dark)" : "var(--color-gray-500)",
+            borderBottom: activeTab === "parents" ? "3px solid var(--color-primary)" : "3px solid transparent",
+            marginBottom: "-2px",
+            cursor: "pointer",
+            fontSize: "1rem",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            transition: "all 0.2s ease"
+          }}
+        >
+          <span>Daftar Orang Tua (Pendaftar Baru)</span>
+          <span style={{ 
+            fontSize: "0.75rem", 
+            backgroundColor: activeTab === "parents" ? "var(--color-primary-light)" : "var(--color-gray-100)",
+            color: activeTab === "parents" ? "var(--color-primary-dark)" : "var(--color-gray-600)",
+            padding: "0.15rem 0.5rem",
+            borderRadius: "10px",
+            fontWeight: "700"
+          }}>
+            {parents.length}
+          </span>
+        </button>
       </div>
 
       {loading ? (
@@ -140,9 +231,9 @@ export default function StudentManagement() {
             <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
           </svg>
-          <p>Memuat database siswa...</p>
+          <p>Memuat database...</p>
         </div>
-      ) : (
+      ) : activeTab === "students" ? (
         <div className="table-wrapper">
           <table className="portal-table">
             <thead>
@@ -195,6 +286,68 @@ export default function StudentManagement() {
                     </td>
                   </tr>
                 ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="table-wrapper">
+          <table className="portal-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Lengkap</th>
+                <th>Alamat Email</th>
+                <th>Tanggal Terdaftar</th>
+                <th>Siswa / Anak Terhubung</th>
+                <th style={{ textAlign: "center" }}>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {parents.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+                    Belum ada akun orang tua yang terdaftar di portal.
+                  </td>
+                </tr>
+              ) : (
+                parents.map((parent, idx) => {
+                  // Find children connected to this parent
+                  const connectedChildren = students.filter(s => s.parent_id === parent.id);
+                  return (
+                    <tr key={parent.id}>
+                      <td style={{ fontWeight: "700" }}>{idx + 1}</td>
+                      <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{parent.full_name}</td>
+                      <td>{parent.email || <span style={{ color: "var(--color-gray-400)", fontStyle: "italic" }}>Tidak tersedia</span>}</td>
+                      <td>{formatIndonesianDate(parent.created_at)}</td>
+                      <td>
+                        {connectedChildren.length > 0 ? (
+                          <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
+                            {connectedChildren.map(child => (
+                              <span key={child.id} className="user-badge" style={{ backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", padding: "0.15rem 0.5rem", fontSize: "0.8rem", fontWeight: "700" }}>
+                                {child.name}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span style={{ color: "var(--color-red)", fontStyle: "italic", fontSize: "0.85rem", fontWeight: "600" }}>
+                            Belum terhubung ke siswa mana pun
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <span className="user-badge" style={{ 
+                          backgroundColor: connectedChildren.length > 0 ? "var(--color-green-light)" : "rgba(239, 68, 68, 0.1)", 
+                          color: connectedChildren.length > 0 ? "var(--color-green)" : "var(--color-red)",
+                          padding: "0.25rem 0.65rem",
+                          fontWeight: "700"
+                        }}>
+                          {connectedChildren.length > 0 ? "Aktif" : "Menunggu Hubung"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
