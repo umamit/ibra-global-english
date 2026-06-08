@@ -284,6 +284,84 @@ CREATE INDEX IF NOT EXISTS idx_gallery_created_at ON public.gallery(created_at D
 CREATE INDEX IF NOT EXISTS idx_testimonials_created_at ON public.testimonials(created_at DESC);
 
 -- =====================================================================
+-- 6. TABEL-TABEL NEXT LEVEL (KEUANGAN, TES PENEMPATAN, & JADWAL)
+-- =====================================================================
+
+-- TABEL: tuition_payments (Pembayaran SPP)
+CREATE TABLE IF NOT EXISTS public.tuition_payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
+  month TEXT NOT NULL, -- Format: "YYYY-MM" (contoh: "2026-06")
+  amount INTEGER NOT NULL DEFAULT 150000, -- Nominal rupiah
+  status TEXT NOT NULL DEFAULT 'belum_bayar' CHECK (status IN ('lunas', 'belum_bayar', 'menunggu_konfirmasi')),
+  payment_method TEXT CHECK (payment_method IN ('Transfer Bank', 'Tunai', 'Lainnya')),
+  receipt_url TEXT, -- Tautan gambar bukti transfer di Supabase Storage
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  CONSTRAINT unique_student_payment_per_month UNIQUE (student_id, month)
+);
+
+-- TABEL: placement_test_submissions (Hasil Tes Penempatan Publik)
+CREATE TABLE IF NOT EXISTS public.placement_test_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  whatsapp_number TEXT NOT NULL,
+  score INTEGER NOT NULL,
+  level TEXT NOT NULL CHECK (level IN ('Beginner', 'Intermediate', 'Advanced')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'contacted', 'enrolled')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- TABEL: academic_schedules (Kalender Jadwal Kelas & Kegiatan)
+CREATE TABLE IF NOT EXISTS public.academic_schedules (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  type TEXT NOT NULL CHECK (type IN ('class', 'event', 'holiday')),
+  program TEXT DEFAULT 'All' CHECK (program IN ('Kids Program', 'Teens Program', 'Fun Calistung', 'All')),
+  start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  instructor TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Aktifkan RLS
+ALTER TABLE public.tuition_payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.placement_test_submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.academic_schedules ENABLE ROW LEVEL SECURITY;
+
+-- KEBIJAKAN RLS: tuition_payments
+CREATE POLICY "Admins have full access to tuition_payments"
+ON public.tuition_payments FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+CREATE POLICY "Parents can view their children payments"
+ON public.tuition_payments FOR SELECT TO authenticated
+USING (student_id IN (SELECT id FROM public.students WHERE parent_id = auth.uid()));
+
+CREATE POLICY "Parents can insert/update payment receipts for their children"
+ON public.tuition_payments FOR ALL TO authenticated
+USING (student_id IN (SELECT id FROM public.students WHERE parent_id = auth.uid()));
+
+-- KEBIJAKAN RLS: placement_test_submissions
+CREATE POLICY "Allow anyone to insert placement test submissions"
+ON public.placement_test_submissions FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Admins have full access to placement_test_submissions"
+ON public.placement_test_submissions FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- KEBIJAKAN RLS: academic_schedules
+CREATE POLICY "Admins have full access to academic_schedules"
+ON public.academic_schedules FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+CREATE POLICY "Allow authenticated users to view academic schedules"
+ON public.academic_schedules FOR SELECT TO authenticated USING (true);
+
+-- Indeks Tambahan
+CREATE INDEX IF NOT EXISTS idx_tuition_payments_student_id ON public.tuition_payments(student_id);
+CREATE INDEX IF NOT EXISTS idx_academic_schedules_start_time ON public.academic_schedules(start_time);
+
+-- =====================================================================
 -- Catatan Penting untuk Administrator:
 -- Untuk menetapkan peran pengguna pertama sebagai 'admin', Anda dapat
 -- mendaftar melalui aplikasi secara normal (default: parent), lalu
@@ -291,3 +369,4 @@ CREATE INDEX IF NOT EXISTS idx_testimonials_created_at ON public.testimonials(cr
 --
 -- UPDATE public.profiles SET role = 'admin' WHERE id = 'UUID_AKUN_ANDA';
 -- =====================================================================
+
