@@ -75,6 +75,7 @@ export default function Header({ theme, toggleTheme }) {
               <svg className="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
             </button>
             
+            <a href="/login" className="nav-btn-outline nav-btn-desktop" style={{ marginRight: "0.75rem" }}>Portal Login</a>
             <a href="#contact" className="nav-btn nav-btn-desktop">Daftar Sekarang</a>
             
             <button 
@@ -113,6 +114,7 @@ export default function Header({ theme, toggleTheme }) {
             <a href="#testimonials" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Testimoni</a>
             <a href="#faq" className="mobile-link" onClick={() => setIsMenuOpen(false)}>FAQ</a>
             <a href="#contact" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Kontak</a>
+            <a href="/login" className="mobile-link" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary-dark)", fontWeight: "700" }}>Login Portal</a>
           </nav>
           <a href="#contact" className="mobile-nav-btn mobile-link" onClick={() => setIsMenuOpen(false)}>Daftar Sekarang</a>
         </div>
