@@ -4,3 +4,11 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# node modules and build outputs
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.log
