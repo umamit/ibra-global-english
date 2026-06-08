@@ -1,0 +1,21 @@
+{
+  "short_name": "Ibra English",
+  "name": "Ibra Global English Bobong",
+  "icons": [
+    {
+      "src": "./assets/favicon.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0b0f17",
+  "theme_color": "#4a9ba8",
+  "display": "standalone",
+  "orientation": "portrait"
+}
