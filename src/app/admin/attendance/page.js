@@ -189,7 +189,7 @@ export default function DailyAttendance() {
       ) : (
         <div>
           <div className="table-wrapper">
-            <table className="portal-table">
+            <table className="portal-table attendance-table">
               <thead>
                 <tr>
                   <th>No</th>
