@@ -2443,4 +2443,241 @@ textarea:focus-visible {
   }
 }
 
+/* ==========================================
+   SMARTPHONE RESPONSIVE OVERRIDES
+   ========================================== */
+
+@media (max-width: 768px) {
+  /* Table-to-Cards Transformation */
+  .portal-table.student-table,
+  .portal-table.parent-table,
+  .portal-table.attendance-table,
+  .portal-table.parent-attendance-table,
+  .portal-table.report-table {
+    display: block;
+    width: 100%;
+    border: none;
+  }
+  
+  .portal-table.student-table thead,
+  .portal-table.parent-table thead,
+  .portal-table.attendance-table thead,
+  .portal-table.parent-attendance-table thead,
+  .portal-table.report-table thead {
+    display: none; /* Hide standard headers */
+  }
+  
+  .portal-table.student-table tbody,
+  .portal-table.parent-table tbody,
+  .portal-table.attendance-table tbody,
+  .portal-table.parent-attendance-table tbody,
+  .portal-table.report-table tbody {
+    display: block;
+    width: 100%;
+  }
+  
+  .portal-table.student-table tr,
+  .portal-table.parent-table tr,
+  .portal-table.attendance-table tr,
+  .portal-table.parent-attendance-table tr,
+  .portal-table.report-table tr {
+    display: block;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+  }
+  
+  /* Dark Mode Row Border Adjustment */
+  [data-theme="dark"] .portal-table.student-table tr,
+  [data-theme="dark"] .portal-table.parent-table tr,
+  [data-theme="dark"] .portal-table.attendance-table tr,
+  [data-theme="dark"] .portal-table.parent-attendance-table tr,
+  [data-theme="dark"] .portal-table.report-table tr {
+    background-color: #0f172a;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .portal-table.student-table tr:hover,
+  .portal-table.parent-table tr:hover,
+  .portal-table.attendance-table tr:hover,
+  .portal-table.parent-attendance-table tr:hover,
+  .portal-table.report-table tr:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary-dark);
+  }
+  
+  .portal-table.student-table td,
+  .portal-table.parent-table td,
+  .portal-table.attendance-table td,
+  .portal-table.parent-attendance-table td,
+  .portal-table.report-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-gray-100);
+    text-align: right;
+    font-size: 0.9rem;
+    gap: 1rem;
+  }
+  
+  [data-theme="dark"] .portal-table.student-table td,
+  [data-theme="dark"] .portal-table.parent-table td,
+  [data-theme="dark"] .portal-table.attendance-table td,
+  [data-theme="dark"] .portal-table.parent-attendance-table td,
+  [data-theme="dark"] .portal-table.report-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .portal-table.student-table td:last-child,
+  .portal-table.parent-table td:last-child,
+  .portal-table.attendance-table td:last-child,
+  .portal-table.parent-attendance-table td:last-child,
+  .portal-table.report-table td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  /* Pseudo elements for injection labels */
+  .portal-table.student-table td::before,
+  .portal-table.parent-table td::before,
+  .portal-table.attendance-table td::before,
+  .portal-table.parent-attendance-table td::before,
+  .portal-table.report-table td::before {
+    font-weight: 700;
+    color: var(--color-gray-500);
+    text-align: left;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  
+  [data-theme="dark"] .portal-table.student-table td::before,
+  [data-theme="dark"] .portal-table.parent-table td::before,
+  [data-theme="dark"] .portal-table.attendance-table td::before,
+  [data-theme="dark"] .portal-table.parent-attendance-table td::before,
+  [data-theme="dark"] .portal-table.report-table td::before {
+    color: #94a3b8;
+  }
+
+  /* 1. Student Table Labels */
+  .portal-table.student-table td:nth-child(1)::before { content: "No:"; }
+  .portal-table.student-table td:nth-child(2)::before { content: "Nama Siswa:"; }
+  .portal-table.student-table td:nth-child(3)::before { content: "Usia:"; }
+  .portal-table.student-table td:nth-child(4)::before { content: "Program Kursus:"; }
+  .portal-table.student-table td:nth-child(5)::before { content: "Orang Tua:"; }
+  .portal-table.student-table td:nth-child(6)::before { content: "Aksi:"; }
+
+  /* 2. Parent Table Labels */
+  .portal-table.parent-table td:nth-child(1)::before { content: "No:"; }
+  .portal-table.parent-table td:nth-child(2)::before { content: "Nama Lengkap:"; }
+  .portal-table.parent-table td:nth-child(3)::before { content: "Alamat Email:"; }
+  .portal-table.parent-table td:nth-child(4)::before { content: "Tanggal Terdaftar:"; }
+  .portal-table.parent-table td:nth-child(5)::before { content: "Anak Terhubung:"; }
+  .portal-table.parent-table td:nth-child(6)::before { content: "Status:"; }
+
+  /* 3. Attendance Table Labels */
+  .portal-table.attendance-table td:nth-child(1)::before { content: "No:"; }
+  .portal-table.attendance-table td:nth-child(2)::before { content: "Nama Siswa:"; }
+  .portal-table.attendance-table td:nth-child(3)::before { content: "Program Kursus:"; }
+  .portal-table.attendance-table td:nth-child(4)::before { content: "Status Kehadiran:"; }
+  .portal-table.attendance-table td:nth-child(5)::before { content: "Catatan / Keterangan:"; }
+
+  /* 4. Parent Attendance Table Labels */
+  .portal-table.parent-attendance-table td:nth-child(1)::before { content: "No:"; }
+  .portal-table.parent-attendance-table td:nth-child(2)::before { content: "Nama Siswa:"; }
+  .portal-table.parent-attendance-table td:nth-child(3)::before { content: "Hari:"; }
+  .portal-table.parent-attendance-table td:nth-child(4)::before { content: "Tanggal:"; }
+  .portal-table.parent-attendance-table td:nth-child(5)::before { content: "Status Kehadiran:"; }
+  .portal-table.parent-attendance-table td:nth-child(6)::before { content: "Keterangan / Catatan:"; }
+
+  /* 5. Report Table Labels */
+  .portal-table.report-table td:nth-child(1)::before { content: "No:"; }
+  .portal-table.report-table td:nth-child(2)::before { content: "Siswa:"; }
+  .portal-table.report-table td:nth-child(3)::before { content: "Modul:"; }
+  .portal-table.report-table td:nth-child(4)::before { content: "Speaking:"; }
+  .portal-table.report-table td:nth-child(5)::before { content: "Grammar:"; }
+  .portal-table.report-table td:nth-child(6)::before { content: "Vocabulary:"; }
+  .portal-table.report-table td:nth-child(7)::before { content: "Keaktifan:"; }
+  .portal-table.report-table td:nth-child(8)::before { content: "Review Tutor:"; }
+  .portal-table.report-table td:nth-child(9)::before { content: "Aksi:"; }
+
+  /* Inner align tweaks */
+  .portal-table.attendance-table td:nth-child(4) div {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem !important;
+  }
+  
+  .portal-table.report-table td:nth-child(8) {
+    max-width: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+  
+  /* Topbar structure improvements on mobile */
+  .dashboard-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+  
+  .topbar-title {
+    text-align: center;
+  }
+  
+  .topbar-user {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .topbar-user button,
+  .topbar-user select,
+  .topbar-user input {
+    width: 100% !important;
+    justify-content: center;
+  }
+}
+
+/* Modals & Dashboard padding refinements on small phones */
+@media (max-width: 576px) {
+  .dashboard-main {
+    padding: 1rem 0.75rem;
+  }
+  
+  .portal-modal {
+    max-height: calc(100vh - 2rem);
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-xl);
+  }
+  
+  .portal-modal-header {
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .portal-modal form {
+    padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+  
+  .portal-modal .auth-error-banner {
+    margin: 1rem 1.5rem 0 1.5rem;
+  }
+  
+  /* Additional adjustment for small phone stat grids */
+  .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+
 

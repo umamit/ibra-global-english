@@ -301,7 +301,7 @@ export default function ReportCardManagement() {
         </div>
       ) : (
         <div className="table-wrapper">
-          <table className="portal-table">
+          <table className="portal-table report-table">
             <thead>
               <tr>
                 <th>No</th>

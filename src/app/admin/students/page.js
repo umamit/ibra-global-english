@@ -268,7 +268,7 @@ export default function StudentManagement() {
         </div>
       ) : activeTab === "students" ? (
         <div className="table-wrapper">
-          <table className="portal-table">
+          <table className="portal-table student-table">
             <thead>
               <tr>
                 <th>No</th>
@@ -337,7 +337,7 @@ export default function StudentManagement() {
         </div>
       ) : (
         <div className="table-wrapper">
-          <table className="portal-table">
+          <table className="portal-table parent-table">
             <thead>
               <tr>
                 <th>No</th>

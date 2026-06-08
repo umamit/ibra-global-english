@@ -353,7 +353,7 @@ export default function ParentPortal() {
 
                 {/* List Kehadiran */}
                 <div className="table-wrapper" style={{ maxHeight: "400px", overflowY: "auto" }}>
-                  <table className="portal-table">
+                  <table className="portal-table parent-attendance-table">
                     <thead>
                       <tr>
                         <th>No</th>
