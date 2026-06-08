@@ -2723,5 +2723,344 @@ textarea:focus-visible {
   }
 }
 
+/* =====================================================================
+   PORTAL & LOGIN PREMIUM STYLES (Ibra Global English) - Ultra Minimalist
+   ===================================================================== */
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  background-image: radial-gradient(circle at center, rgba(74, 155, 168, 0.04) 0%, #ffffff 80%);
+  padding: 2rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: background-color var(--transition-normal);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 360px; /* Lebar lebih ramping untuk estetika minimalis */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  z-index: 10;
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-logo-img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  margin-bottom: 1.25rem;
+  transition: transform var(--transition-normal);
+}
+
+.auth-logo-img:hover {
+  transform: scale(1.05) rotate(-3deg);
+}
+
+.auth-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.auth-subtitle {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-gray-400);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Tab Switcher Minimalis */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-gray-100);
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.25rem;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.6rem 0;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-400);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+  top: 1px;
+  text-align: center;
+}
+
+.auth-tab:hover {
+  color: var(--color-gray-700);
+}
+
+.auth-tab.active {
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  border-bottom-color: var(--color-primary);
+}
+
+/* Banner Notifikasi Tipis */
+.auth-error-banner,
+.auth-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  animation: scaleIn 0.2s ease;
+}
+
+.auth-error-banner {
+  background-color: #fef2f2;
+  border: 1px solid rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.auth-success-banner {
+  background-color: #f0fdf4;
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+/* Elemen Isian Formulir Minimalis */
+.auth-card .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.auth-card .form-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-400);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.auth-card .form-input {
+  width: 100%;
+  padding: 0.8rem 0;
+  background-color: transparent !important;
+  border: none;
+  border-bottom: 1px solid var(--color-gray-200);
+  color: var(--color-gray-900);
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 0;
+  transition: border-color var(--transition-fast);
+}
+
+.auth-card .form-input::placeholder {
+  color: var(--color-gray-300);
+}
+
+.auth-card .form-input:focus {
+  outline: none;
+  border-bottom-color: var(--color-primary);
+  box-shadow: none; /* Tanpa ring glow besar untuk mempertahankan minimalisme */
+}
+
+/* Tombol Submit Premium */
+.auth-card .form-btn {
+  width: 100%;
+  background-color: var(--color-gray-900); /* Hitam pekat di mode terang */
+  color: #ffffff;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-top: 1rem;
+}
+
+.auth-card .form-btn:hover {
+  background-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.auth-card .form-btn:active {
+  transform: translateY(0);
+}
+
+/* Tombol Kembali dengan Animasi Panah Geser */
+.auth-back-link {
+  text-align: center;
+  margin-top: 2.25rem;
+}
+
+.auth-back-link a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-gray-400);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.auth-back-link a:hover {
+  color: var(--color-primary-dark);
+}
+
+.back-arrow-icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+  transition: transform var(--transition-fast);
+}
+
+.auth-back-link a:hover .back-arrow-icon {
+  transform: translateX(-4px);
+}
+
+/* Tombol Toggle Tema Melayang Minimalis */
+.auth-theme-toggle {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--color-gray-200);
+  background-color: #ffffff;
+  color: var(--color-gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.auth-theme-toggle:hover {
+  background-color: var(--color-gray-50);
+  color: var(--color-primary);
+  transform: scale(1.05);
+  border-color: var(--color-gray-300);
+}
+
+.auth-theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* =====================================================================
+   DARK THEME OVERRIDES (Ibra Global English) - Ultra Minimalist Auth
+   ===================================================================== */
+
+[data-theme="dark"] .auth-wrapper {
+  background-color: #090d16;
+  background-image: radial-gradient(circle at center, rgba(74, 155, 168, 0.05) 0%, #090d16 80%);
+}
+
+[data-theme="dark"] .auth-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .auth-subtitle {
+  color: var(--color-gray-500);
+}
+
+[data-theme="dark"] .auth-tabs {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .auth-tab:hover {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .auth-tab.active {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .auth-error-banner {
+  background-color: rgba(153, 27, 27, 0.15);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .auth-success-banner {
+  background-color: rgba(21, 128, 61, 0.15);
+  border-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+[data-theme="dark"] .auth-card .form-input {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .auth-card .form-input::placeholder {
+  color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .auth-card .form-input:focus {
+  border-bottom-color: var(--color-primary);
+}
+
+[data-theme="dark"] .auth-card .form-btn {
+  background-color: #ffffff; /* Putih bersih di mode gelap */
+  color: #090d16;
+}
+
+[data-theme="dark"] .auth-card .form-btn:hover {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .auth-back-link a:hover {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .auth-theme-toggle {
+  background-color: #121824;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-yellow);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .auth-theme-toggle:hover {
+  background-color: #1b2e3a;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+
+
 
 
