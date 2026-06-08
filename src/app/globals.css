@@ -53,9 +53,9 @@
   --radius-3xl: 2rem;
   --radius-full: 9999px;
   
-  /* Header Backgrounds */
-  --color-header-bg: rgba(255, 255, 255, 0.95);
-  --color-header-bg-scrolled: rgba(255, 255, 255, 0.98);
+  /* Header Backgrounds - Premium Soft Teal Glassmorphism */
+  --color-header-bg: rgba(230, 243, 245, 0.85);
+  --color-header-bg-scrolled: rgba(230, 243, 245, 0.95);
 }
 
 /* Reset & Base Styles */
@@ -141,8 +141,8 @@ header {
   left: 0;
   right: 0;
   background-color: var(--color-header-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-sm);
   z-index: 100;
   transition: var(--transition-normal);
@@ -151,15 +151,18 @@ header {
 header.scrolled {
   background-color: var(--color-header-bg-scrolled);
   box-shadow: var(--shadow-md);
-  padding-block: 0.75rem;
 }
 
 .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-block: 1rem;
+  padding-block: 1.25rem;
   transition: var(--transition-normal);
+}
+
+header.scrolled .nav-container {
+  padding-block: 0.625rem;
 }
 
 .logo-link {
@@ -172,6 +175,7 @@ header.scrolled {
   width: 3rem;
   height: 3rem;
   object-fit: contain;
+  transition: width var(--transition-normal), height var(--transition-normal);
 }
 
 .logo-text h1 {
@@ -179,6 +183,7 @@ header.scrolled {
   font-weight: 700;
   color: var(--color-primary);
   line-height: 1.2;
+  transition: font-size var(--transition-normal);
 }
 
 .logo-text p {
@@ -186,6 +191,36 @@ header.scrolled {
   color: var(--color-accent);
   font-weight: 600;
   letter-spacing: 0.05em;
+  transition: font-size var(--transition-normal), opacity var(--transition-normal);
+}
+
+@media (max-width: 480px) {
+  .logo-img {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .logo-text h1 {
+    font-size: 1.1rem;
+  }
+  
+  .logo-text p {
+    font-size: 0.65rem;
+  }
+  
+  .logo-link {
+    gap: 0.5rem;
+  }
+  
+  .nav-container {
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .logo-text p {
+    display: none;
+  }
 }
 
 .nav-links {
@@ -332,7 +367,7 @@ header.scrolled {
 
 /* Hero Section */
 .hero {
-  padding-top: 8rem;
+  padding-top: 8rem; /* Restored to 8rem to perfectly pad behind the fixed header */
   padding-bottom: 5rem;
   background: linear-gradient(135deg, var(--color-bg-teal-50) 0%, var(--color-white) 50%, var(--color-bg-teal-50) 100%);
   overflow: hidden;
@@ -1360,6 +1395,8 @@ footer {
   background-color: var(--color-gray-100);
   border: 1px solid var(--color-gray-200);
   transition: background-color var(--transition-fast), color var(--transition-fast), transform 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .theme-toggle:hover {
@@ -1368,16 +1405,35 @@ footer {
   transform: scale(1.05);
 }
 
-.theme-toggle .sun-icon {
-  display: none;
+.theme-toggle svg {
+  position: absolute;
+  top: calc(50% - 0.625rem);
+  left: calc(50% - 0.625rem);
   width: 1.25rem;
   height: 1.25rem;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+}
+
+/* Light mode defaults: moon is visible, sun is hidden/rotated */
+.theme-toggle .sun-icon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0);
 }
 
 .theme-toggle .moon-icon {
-  display: block;
-  width: 1.25rem;
-  height: 1.25rem;
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+/* Dark mode overrides: sun is visible, moon is hidden/rotated */
+[data-theme="dark"] .theme-toggle .sun-icon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+[data-theme="dark"] .theme-toggle .moon-icon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0);
 }
 
 /* Dark Mode Theme Variables Override */
@@ -1399,8 +1455,8 @@ footer {
   --color-primary-light: #162a33;
   --color-accent-light: #25231c;
   
-  --color-header-bg: rgba(18, 24, 36, 0.95);
-  --color-header-bg-scrolled: rgba(18, 24, 36, 0.98);
+  --color-header-bg: rgba(22, 42, 51, 0.85); /* Deep dark teal glassmorphism */
+  --color-header-bg-scrolled: rgba(22, 42, 51, 0.95);
 }
 
 [data-theme="dark"] body {
@@ -1417,13 +1473,7 @@ footer {
   background-color: var(--color-gray-200);
 }
 
-[data-theme="dark"] .theme-toggle .sun-icon {
-  display: block;
-}
 
-[data-theme="dark"] .theme-toggle .moon-icon {
-  display: none;
-}
 
 /* Smooth theme switching transitions */
 header, 
