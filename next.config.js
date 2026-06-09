@@ -6,8 +6,6 @@ const nextConfig = {
   turbopack: {},
   experimental: {
     cpus: 1,
-    isrMemoryCacheSize: 0,
-    disableOptimizedPackageImports: true,
   },
   
   // Disable static generation to avoid OOM
