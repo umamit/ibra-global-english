@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
 
   // Disable Turbopack warning and use Webpack for build
   turbopack: {},
   experimental: {
     cpus: 1,
-    optimizePackageImports: ['@supabase/supabase-js'],
     isrMemoryCacheSize: 0,
+    disableOptimizedPackageImports: true,
   },
   
   // Disable static generation to avoid OOM
@@ -15,14 +15,15 @@ const nextConfig = {
 
   outputFileTracingRoot: __dirname,
 
-  // Optimize Webpack build
-  webpack: (config, { isServer }) => {
-    config.optimization.minimize = true;
-
-    // Reduce memory during build
-    if (!isServer) {
-      config.optimization.splitChunks.chunks = 'all';
-      config.optimization.runtimeChunk = 'single';
+  // Minimal webpack config - disable all optimization
+  webpack: (config, { isServer, dev }) => {
+    // Disable optimization during build
+    if (!dev) {
+      config.optimization = {
+        minimize: false,
+        splitChunks: false,
+        runtimeChunk: false,
+      };
     }
 
     return config;
