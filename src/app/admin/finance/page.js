@@ -135,7 +135,7 @@ export default function AdminFinance() {
       showToast("Bukti pembayaran berhasil diunggah.");
     } catch (err) {
       console.error("Upload error:", err);
-      showToast("Gagal mengunggah bukti pembayaran.", "error");
+      showToast("Gagal mengunggah bukti pembayaran. Detail: " + (err.message || err), "error");
     }
   };
 
