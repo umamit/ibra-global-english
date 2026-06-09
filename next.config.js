@@ -7,7 +7,11 @@ const nextConfig = {
   experimental: {
     cpus: 1,
     optimizePackageImports: ['@supabase/supabase-js'],
+    isrMemoryCacheSize: 0,
   },
+  
+  // Disable static generation to avoid OOM
+  output: 'standalone',
 
   outputFileTracingRoot: __dirname,
 
