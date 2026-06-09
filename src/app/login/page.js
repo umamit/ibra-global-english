@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
@@ -17,24 +17,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorBanner] = useState("");
   const [successMsg, setSuccessBanner] = useState("");
-  const [theme, setTheme] = useState("light");
-
-  // Deteksi dan inisialisasi tema otomatis saat halaman dimuat
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
-    setTheme(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
-  }, []);
-
-  // Fungsi toggle tema mandiri
-  const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    document.documentElement.setAttribute("data-theme", nextTheme);
-    localStorage.setItem("theme", nextTheme);
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,30 +31,20 @@ export default function LoginPage() {
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          setErrorBanner("Email atau kata sandi yang Anda masukkan salah.");
-        } else {
-          setErrorBanner(error.message);
-        }
+        setErrorBanner(error.message.includes("Invalid") ? "Email atau kata sandi salah." : error.message);
         setLoading(false);
         return;
       }
 
-      const user = data.user;
-      const role = user?.user_metadata?.role || "parent";
-
-      setSuccessBanner("Masuk berhasil! Mengalihkan ke halaman dashboard...");
+      const role = data.user?.user_metadata?.role || "parent";
+      setSuccessBanner("Berhasil masuk!");
 
       setTimeout(() => {
-        if (role === "admin") {
-          router.push("/admin");
-        } else {
-          router.push("/parent");
-        }
+        router.push(role === "admin" ? "/admin" : "/parent");
         router.refresh();
-      }, 1000);
+      }, 800);
     } catch (err) {
-      setErrorBanner("Terjadi kesalahan sistem. Silakan coba beberapa saat lagi.");
+      setErrorBanner("Terjadi kesalahan. Coba lagi.");
       setLoading(false);
     }
   };
@@ -84,20 +56,17 @@ export default function LoginPage() {
     setSuccessBanner("");
 
     if (!fullName.trim()) {
-      setErrorBanner("Nama lengkap harus diisi.");
+      setErrorBanner("Nama harus diisi.");
       setLoading(false);
       return;
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            full_name: fullName.trim(),
-            role: "parent", // Default role
-          },
+          data: { full_name: fullName.trim(), role: "parent" },
         },
       });
 
@@ -107,134 +76,153 @@ export default function LoginPage() {
         return;
       }
 
-      setSuccessBanner("Pendaftaran berhasil! Akun Anda telah aktif, silakan masuk.");
+      setSuccessBanner("Daftar berhasil! Silakan masuk.");
       setFullName("");
       
-      // Auto switch to login tab after success
       setTimeout(() => {
         setIsRegister(false);
         setSuccessBanner("");
-      }, 2000);
+      }, 1500);
     } catch (err) {
-      setErrorBanner("Gagal mendaftar: " + err.message);
+      setErrorBanner("Gagal daftar: " + err.message);
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-wrapper">
-      {/* Floating Theme Toggle Button */}
-      <button onClick={toggleTheme} className="auth-theme-toggle" aria-label="Toggle theme">
-        {theme === "light" ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="theme-toggle-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="theme-toggle-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        )}
-      </button>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 p-4">
+      {/* Floating elements decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+      </div>
 
-      <div className="auth-card">
-        <div className="auth-header">
-          <img src="/assets/logo.png" alt="Ibra Global English Logo" className="auth-logo-img" />
-          <h1 className="auth-title">Portal Akademik</h1>
-          <p className="auth-subtitle">Ibra Global English Bobong</p>
-        </div>
-
-        {/* Tab Switcher */}
-        <div className="auth-tabs">
-          <button
-            type="button"
-            onClick={() => { setIsRegister(false); setErrorBanner(""); setSuccessBanner(""); }}
-            className={`auth-tab ${!isRegister ? "active" : ""}`}
-          >
-            Masuk Akun
-          </button>
-          <button
-            type="button"
-            onClick={() => { setIsRegister(true); setErrorBanner(""); setSuccessBanner(""); }}
-            className={`auth-tab ${isRegister ? "active" : ""}`}
-          >
-            Daftar Baru
-          </button>
-        </div>
-
-        {errorMsg && (
-          <div className="auth-error-banner" role="alert">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span>{errorMsg}</span>
+      {/* Main Card */}
+      <div className="relative w-full max-w-md">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900">Portal Akademik</h1>
+            <p className="text-gray-600 text-sm mt-2">Ibra Global English Bobong</p>
           </div>
-        )}
 
-        {successMsg && (
-          <div className="auth-success-banner" role="status">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>{successMsg}</span>
+          {/* Tabs */}
+          <div className="flex gap-2 mb-6 bg-gray-100 rounded-lg p-1">
+            <button
+              type="button"
+              onClick={() => { setIsRegister(false); setErrorBanner(""); setSuccessBanner(""); }}
+              className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all text-sm ${
+                !isRegister 
+                  ? 'bg-white text-blue-600 shadow-md' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Masuk
+            </button>
+            <button
+              type="button"
+              onClick={() => { setIsRegister(true); setErrorBanner(""); setSuccessBanner(""); }}
+              className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all text-sm ${
+                isRegister 
+                  ? 'bg-white text-blue-600 shadow-md' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Daftar
+            </button>
           </div>
-        )}
 
-        <form onSubmit={isRegister ? handleRegister : handleLogin} className="space-y-4">
-          {isRegister && (
-            <div className="form-group">
-              <label htmlFor="name-input" className="form-label">Nama Lengkap</label>
-              <input
-                type="text"
-                id="name-input"
-                className="form-input"
-                placeholder="Masukkan Nama Lengkap Anda"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                disabled={loading}
-              />
+          {/* Messages */}
+          {errorMsg && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">
+              <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <span>{errorMsg}</span>
             </div>
           )}
 
-          <div className="form-group">
-            <label htmlFor="email-input" className="form-label">Alamat Email</label>
-            <input
-              type="email"
-              id="email-input"
-              className="form-input"
-              placeholder="nama@email.com"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+          {successMsg && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm flex items-start gap-2">
+              <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>{successMsg}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={isRegister ? handleRegister : handleLogin} className="space-y-4">
+            {isRegister && (
+              <div>
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-800 mb-2">
+                  Nama Lengkap
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  placeholder="Masukkan nama Anda"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-800 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                placeholder="anda@email.com"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-800 mb-2">
+                Kata Sandi
+              </label>
+              <input
+                type="password"
+                id="password"
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+
+            <button
+              type="submit"
               disabled={loading}
-            />
+              className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold py-2.5 rounded-lg transition-all mt-6 shadow-lg hover:shadow-xl"
+            >
+              {loading ? "Proses..." : isRegister ? "Buat Akun" : "Masuk Sekarang"}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="text-center mt-6 pt-6 border-t border-gray-200">
+            <a href="/" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Kembali ke Beranda
+            </a>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="password-input" className="form-label">Kata Sandi</label>
-            <input
-              type="password"
-              id="password-input"
-              className="form-input"
-              placeholder="••••••••"
-              required
-              autoComplete={isRegister ? "new-password" : "current-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
-          <button type="submit" className="form-btn" disabled={loading}>
-            <span>
-              {loading 
-                ? "Menghubungkan..." 
-                : isRegister 
-                  ? "Daftar Akun Baru" 
-                  : "Masuk ke Portal"
-              }
-            </span>
-          </button>
-        </form>
-
-        <div className="auth-back-link">
-          <a href="/">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="back-arrow-icon"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            Kembali ke Beranda Utama
-          </a>
         </div>
       </div>
     </div>
