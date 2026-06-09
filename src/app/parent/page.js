@@ -80,6 +80,7 @@ export default function ParentPortal() {
   const supabase = createClient();
 
   const [parentName, setParentName] = useState("Orang Tua");
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
   const [attendance, setAttendance] = useState([]);
@@ -457,6 +458,36 @@ export default function ParentPortal() {
 
   return (
     <div className="dashboard-container">
+      {/* Tombol Toggle Menu Mobile */}
+      <button
+        onClick={() => setMobileOpen(!mobileOpen)}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 100,
+          width: "50px",
+          height: "50px",
+          borderRadius: "50%",
+          backgroundColor: "var(--color-primary)",
+          color: "white",
+          border: "none",
+          boxShadow: "var(--shadow-lg)",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        className="mobile-toggle-btn"
+        aria-label="Toggle Sidebar"
+      >
+        {mobileOpen ? (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        )}
+      </button>
+
       {/* Toast Notification Alert */}
       {toast.show && (
         <div
@@ -487,7 +518,7 @@ export default function ParentPortal() {
       )}
 
       {/* Sidebar Navigation */}
-      <aside className="dashboard-sidebar">
+      <aside className={`dashboard-sidebar ${mobileOpen ? "open" : ""}`}>
         <div className="sidebar-brand">
           <img src="/assets/logo.png" alt="Ibra Logo" className="sidebar-brand-img" />
           <div className="sidebar-brand-text">
@@ -498,7 +529,7 @@ export default function ParentPortal() {
 
         <div className="sidebar-nav">
           <button
-            onClick={() => setActiveView("progress")}
+            onClick={() => { setActiveView("progress"); setMobileOpen(false); }}
             className={`sidebar-nav-link ${activeView === "progress" ? "active" : ""}`}
             style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center" }}
           >
@@ -507,7 +538,7 @@ export default function ParentPortal() {
           </button>
 
           <button
-            onClick={() => setActiveView("calendar")}
+            onClick={() => { setActiveView("calendar"); setMobileOpen(false); }}
             className={`sidebar-nav-link ${activeView === "calendar" ? "active" : ""}`}
             style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.5rem" }}
           >
@@ -516,7 +547,7 @@ export default function ParentPortal() {
           </button>
 
           <button
-            onClick={() => setActiveView("finance")}
+            onClick={() => { setActiveView("finance"); setMobileOpen(false); }}
             className={`sidebar-nav-link ${activeView === "finance" ? "active" : ""}`}
             style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.5rem" }}
           >

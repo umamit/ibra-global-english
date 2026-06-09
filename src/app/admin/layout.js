@@ -40,11 +40,10 @@ export default function AdminLayout({ children }) {
           boxShadow: "var(--shadow-lg)",
           cursor: "pointer",
           display: "flex",
-          alignMatch: "center",
           alignItems: "center",
           justifyContent: "center",
         }}
-        className="lg:hidden"
+        className="mobile-toggle-btn"
         aria-label="Toggle Sidebar"
       >
         {mobileOpen ? (
