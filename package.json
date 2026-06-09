@@ -12,6 +12,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/genai": "^2.8.0",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.107.0",
     "aos": "^2.3.4",
