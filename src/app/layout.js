@@ -2,6 +2,8 @@ import { Montserrat } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
+export const dynamic = 'force-dynamic';
+
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
