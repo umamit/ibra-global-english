@@ -167,7 +167,7 @@ export default function LandingPageCMS() {
     } catch (err) {
       console.error("Kesalahan unggah:", err);
       throw new Error(
-        "Gagal mengunggah berkas gambar. Pastikan bucket 'gallery-uploads' sudah terbuat di Supabase Storage Anda dan disetel ke Public."
+        `Detail: ${err.message || err}. Pastikan Anda login sebagai Admin, bucket 'gallery-uploads' sudah dibuat di Supabase, dan kebijakan RLS (Row Level Security) mengizinkan upload.`
       );
     }
   };
@@ -185,7 +185,7 @@ export default function LandingPageCMS() {
       setHeroImage(publicUrl);
       showToast("Foto hero utama berhasil diunggah ke storage!");
     } catch (err) {
-      showToast(err.message, "error");
+      showToast("Gagal mengunggah foto hero. " + err.message, "error");
     } finally {
       setUploadingHero(false);
     }
