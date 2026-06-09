@@ -19,12 +19,36 @@ export default function AdminFinance() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStudent, setSelectedStudent] = useState(null);
+  const [defaultSppAmount, setDefaultSppAmount] = useState(150000);
   const [modalAmount, setModalAmount] = useState(150000);
   const [modalStatus, setModalStatus] = useState("belum_bayar");
   const [modalMethod, setModalMethod] = useState("Transfer Bank");
   const [modalReceiptUrl, setModalReceiptUrl] = useState("");
   const [savingPayment, setSavingPayment] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Fetch configured default SPP fee amount on mount
+  useEffect(() => {
+    async function fetchDefaultSpp() {
+      try {
+        const { data, error } = await supabase
+          .from("landing_settings")
+          .select("*")
+          .eq("key", "payment_spp_amount")
+          .single();
+        if (data && data.value) {
+          const amt = parseInt(data.value);
+          if (!isNaN(amt)) {
+            setDefaultSppAmount(amt);
+            setModalAmount(amt);
+          }
+        }
+      } catch (err) {
+        console.error("Gagal memuat nominal SPP default:", err);
+      }
+    }
+    fetchDefaultSpp();
+  }, []);
 
   // Initialize selected month to current month (YYYY-MM)
   useEffect(() => {
@@ -88,7 +112,7 @@ export default function AdminFinance() {
     return payments.find(p => p.student_id === studentId) || {
       student_id: studentId,
       month: selectedMonth,
-      amount: 150000,
+      amount: defaultSppAmount,
       status: "belum_bayar",
       payment_method: "Transfer Bank",
       receipt_url: ""
@@ -142,7 +166,7 @@ export default function AdminFinance() {
   const handleOpenEditModal = (student) => {
     const pay = getStudentPayment(student.id);
     setSelectedStudent(student);
-    setModalAmount(pay.amount || 150000);
+    setModalAmount(pay.amount || defaultSppAmount);
     setModalStatus(pay.status || "belum_bayar");
     setModalMethod(pay.payment_method || "Transfer Bank");
     setModalReceiptUrl(pay.receipt_url || "");
@@ -188,7 +212,7 @@ export default function AdminFinance() {
       const payload = {
         student_id: studentId,
         month: selectedMonth,
-        amount: pay.amount || 150000,
+        amount: pay.amount || defaultSppAmount,
         status: "lunas",
         payment_method: pay.payment_method || "Transfer Bank",
         receipt_url: pay.receipt_url || null,
@@ -227,9 +251,9 @@ export default function AdminFinance() {
 
     students.forEach(student => {
       const pay = getStudentPayment(student.id);
-      expected += pay.amount || 150000;
+      expected += pay.amount || defaultSppAmount;
       if (pay.status === "lunas") {
-        collected += pay.amount || 150000;
+        collected += pay.amount || defaultSppAmount;
         paidCount++;
       } else if (pay.status === "menunggu_konfirmasi") {
         pendingCount++;

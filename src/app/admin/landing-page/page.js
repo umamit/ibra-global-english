@@ -22,6 +22,13 @@ export default function LandingPageCMS() {
   const [contactAddress, setContactAddress] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
+
+  // Payment configuration states
+  const [paymentBankName, setPaymentBankName] = useState("");
+  const [paymentAccountNumber, setPaymentAccountNumber] = useState("");
+  const [paymentAccountName, setPaymentAccountName] = useState("");
+  const [paymentAccountSub, setPaymentAccountSub] = useState("");
+  const [paymentSppAmount, setPaymentSppAmount] = useState("");
   const [uploadingHero, setUploadingHero] = useState(false);
   const heroFileRef = useRef(null);
 
@@ -80,6 +87,11 @@ export default function LandingPageCMS() {
         setContactAddress(settings.contact_address || "");
         setContactPhone(settings.contact_phone || "");
         setContactEmail(settings.contact_email || "");
+        setPaymentBankName(settings.payment_bank_name || "");
+        setPaymentAccountNumber(settings.payment_account_number || "");
+        setPaymentAccountName(settings.payment_account_name || "");
+        setPaymentAccountSub(settings.payment_account_sub || "");
+        setPaymentSppAmount(settings.payment_spp_amount || "");
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
@@ -203,6 +215,11 @@ export default function LandingPageCMS() {
       { key: "contact_address", value: contactAddress.trim() },
       { key: "contact_phone", value: contactPhone.trim() },
       { key: "contact_email", value: contactEmail.trim() },
+      { key: "payment_bank_name", value: paymentBankName.trim() },
+      { key: "payment_account_number", value: paymentAccountNumber.trim() },
+      { key: "payment_account_name", value: paymentAccountName.trim() },
+      { key: "payment_account_sub", value: paymentAccountSub.trim() },
+      { key: "payment_spp_amount", value: paymentSppAmount.trim() },
     ];
 
     try {
@@ -562,6 +579,81 @@ export default function LandingPageCMS() {
                     placeholder="Contoh: contact@ibraglobalenglish.uk"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <hr style={{ border: "none", borderTop: "1px solid var(--color-gray-200)", margin: "2rem 0 1rem" }} />
+
+              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1rem" }}>Konfigurasi Rekening & Nominal SPP</h3>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem" }}>
+                {/* Nama Bank */}
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nama Bank</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: Bank Mandiri"
+                    value={paymentBankName}
+                    onChange={(e) => setPaymentBankName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Nomor Rekening */}
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nomor Rekening</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: 137-00-1234567-8"
+                    value={paymentAccountNumber}
+                    onChange={(e) => setPaymentAccountNumber(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Atas Nama Rekening */}
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Atas Nama Rekening</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: Ibra Global English"
+                    value={paymentAccountName}
+                    onChange={(e) => setPaymentAccountName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Sub-text Rekening */}
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Sub-keterangan Atas Nama</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: Bobong Learning Centre"
+                    value={paymentAccountSub}
+                    onChange={(e) => setPaymentAccountSub(e.target.value)}
+                  />
+                </div>
+
+                {/* Nominal SPP */}
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Bulanan (Rupiah)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: 150000"
+                    value={paymentSppAmount}
+                    onChange={(e) => setPaymentSppAmount(e.target.value)}
                     required
                   />
                 </div>

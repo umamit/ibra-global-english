@@ -87,6 +87,15 @@ export default function ParentPortal() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Payment settings state loaded from database
+  const [paymentSettings, setPaymentSettings] = useState({
+    payment_bank_name: "Bank Mandiri",
+    payment_account_number: "137-00-1234567-8",
+    payment_account_name: "Ibra Global English",
+    payment_account_sub: "Bobong Learning Centre",
+    payment_spp_amount: "150000"
+  });
+
   // Next Level States
   const [activeView, setActiveView] = useState("progress"); // "progress", "finance", or "calendar"
   const [parentPayments, setParentPayments] = useState([]);
@@ -151,7 +160,7 @@ export default function ParentPortal() {
       const payload = {
         student_id: selectedChild.id,
         month,
-        amount: 150000,
+        amount: parseInt(paymentSettings.payment_spp_amount || 150000),
         status: "menunggu_konfirmasi",
         payment_method: "Transfer Bank",
         receipt_url: data.publicUrl,
@@ -248,6 +257,21 @@ export default function ParentPortal() {
 
         if (kids && kids.length > 0) {
           setSelectedChild(kids[0]);
+        }
+
+        // 3. Fetch payment settings from database
+        const { data: settingsData } = await supabase
+          .from("landing_settings")
+          .select("*");
+        if (settingsData) {
+          const settingsObj = {};
+          settingsData.forEach(item => {
+            settingsObj[item.key] = item.value;
+          });
+          setPaymentSettings(prev => ({
+            ...prev,
+            ...settingsObj
+          }));
         }
       } catch (err) {
         console.error("Gagal memuat portal orang tua:", err);
@@ -852,11 +876,11 @@ export default function ParentPortal() {
                     <div>
                       <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-gray-900)" }}>Panduan Transfer Pembayaran SPP</h3>
                       <p style={{ color: "var(--color-gray-600)", fontSize: "0.9rem", marginTop: "4px" }}>
-                        Pembayaran SPP sebesar <strong>Rp 150.000 / bulan</strong> paling lambat tanggal 10 setiap bulannya.
+                        Pembayaran SPP sebesar <strong>Rp {parseInt(paymentSettings.payment_spp_amount || 150000).toLocaleString("id-ID")} / bulan</strong> paling lambat tanggal 10 setiap bulannya.
                       </p>
                     </div>
                     <div style={{ padding: "0.5rem 1rem", backgroundColor: "var(--color-accent-light)", color: "var(--color-accent)", borderRadius: "6px", fontWeight: "700", fontSize: "0.9rem" }}>
-                      Nominal: Rp 150.000
+                      Nominal: Rp {parseInt(paymentSettings.payment_spp_amount || 150000).toLocaleString("id-ID")}
                     </div>
                   </div>
 
@@ -867,8 +891,8 @@ export default function ParentPortal() {
                       </div>
                       <div>
                         <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)" }}>Rekening Pembayaran</p>
-                        <p style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-gray-900)" }}>Bank Mandiri</p>
-                        <p style={{ fontSize: "0.95rem", fontWeight: "600", color: "var(--color-gray-700)" }}>137-00-1234567-8</p>
+                        <p style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{paymentSettings.payment_bank_name || "Bank Mandiri"}</p>
+                        <p style={{ fontSize: "0.95rem", fontWeight: "600", color: "var(--color-gray-700)" }}>{paymentSettings.payment_account_number || "137-00-1234567-8"}</p>
                       </div>
                     </div>
 
@@ -878,8 +902,8 @@ export default function ParentPortal() {
                       </div>
                       <div>
                         <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)" }}>Atas Nama Rekening</p>
-                        <p style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-gray-900)" }}>Ibra Global English</p>
-                        <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)" }}>Bobong Learning Centre</p>
+                        <p style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{paymentSettings.payment_account_name || "Ibra Global English"}</p>
+                        <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)" }}>{paymentSettings.payment_account_sub || "Bobong Learning Centre"}</p>
                       </div>
                     </div>
                   </div>
@@ -895,7 +919,7 @@ export default function ParentPortal() {
                     {getRecentMonths().map((month) => {
                       const pay = parentPayments.find(p => p.month === month) || {
                         month,
-                        amount: 150000,
+                        amount: parseInt(paymentSettings.payment_spp_amount || 150000),
                         status: "belum_bayar",
                         receipt_url: ""
                       };
@@ -907,7 +931,7 @@ export default function ParentPortal() {
                               {getMonthName(month)}
                             </p>
                             <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>
-                              Tagihan: Rp 150.000
+                              Tagihan: Rp {parseInt(pay.amount || paymentSettings.payment_spp_amount || 150000).toLocaleString("id-ID")}
                             </p>
                           </div>
 
