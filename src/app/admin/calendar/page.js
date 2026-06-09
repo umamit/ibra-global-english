@@ -93,7 +93,7 @@ export default function AdminCalendar() {
 
   // 3. Fill leading days from next month to make full weeks (42 grid cells usually)
   const remainingCells = 42 - calendarDays.length;
-  for (let n = 1; d => n <= remainingCells; n++) {
+  for (let n = 1; n <= remainingCells; n++) {
     const tempMonth = viewMonth === 11 ? 0 : viewMonth + 1;
     const tempYear = viewMonth === 11 ? viewYear + 1 : viewYear;
     calendarDays.push({
