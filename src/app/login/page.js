@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
@@ -17,6 +17,24 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorBanner] = useState("");
   const [successMsg, setSuccessBanner] = useState("");
+  const [theme, setTheme] = useState("light");
+
+  // Deteksi dan inisialisasi tema otomatis saat halaman dimuat
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+  }, []);
+
+  // Fungsi toggle tema mandiri
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    document.documentElement.setAttribute("data-theme", nextTheme);
+    localStorage.setItem("theme", nextTheme);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,7 +49,11 @@ export default function LoginPage() {
       });
 
       if (error) {
-        setErrorBanner(error.message);
+        if (error.message.includes("Invalid login credentials")) {
+          setErrorBanner("Email atau kata sandi yang Anda masukkan salah.");
+        } else {
+          setErrorBanner(error.message);
+        }
         setLoading(false);
         return;
       }
@@ -39,7 +61,7 @@ export default function LoginPage() {
       const user = data.user;
       const role = user?.user_metadata?.role || "parent";
 
-      setSuccessBanner("Login berhasil!");
+      setSuccessBanner("Masuk berhasil! Mengalihkan ke halaman dashboard...");
 
       setTimeout(() => {
         if (role === "admin") {
@@ -48,9 +70,9 @@ export default function LoginPage() {
           router.push("/parent");
         }
         router.refresh();
-      }, 800);
+      }, 1000);
     } catch (err) {
-      setErrorBanner("Terjadi kesalahan. Coba lagi.");
+      setErrorBanner("Terjadi kesalahan sistem. Silakan coba beberapa saat lagi.");
       setLoading(false);
     }
   };
@@ -62,7 +84,7 @@ export default function LoginPage() {
     setSuccessBanner("");
 
     if (!fullName.trim()) {
-      setErrorBanner("Nama harus diisi.");
+      setErrorBanner("Nama lengkap harus diisi.");
       setLoading(false);
       return;
     }
@@ -74,7 +96,7 @@ export default function LoginPage() {
         options: {
           data: {
             full_name: fullName.trim(),
-            role: "parent",
+            role: "parent", // Default role
           },
         },
       });
@@ -85,78 +107,80 @@ export default function LoginPage() {
         return;
       }
 
-      setSuccessBanner("Daftar berhasil! Silakan login.");
+      setSuccessBanner("Pendaftaran berhasil! Akun Anda telah aktif, silakan masuk.");
       setFullName("");
       
+      // Auto switch to login tab after success
       setTimeout(() => {
         setIsRegister(false);
         setSuccessBanner("");
-      }, 1500);
+      }, 2000);
     } catch (err) {
-      setErrorBanner("Gagal daftar: " + err.message);
+      setErrorBanner("Gagal mendaftar: " + err.message);
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Portal Akademik</h1>
-          <p className="text-slate-600 mt-1">Ibra Global English</p>
+    <div className="auth-wrapper">
+      {/* Floating Theme Toggle Button */}
+      <button onClick={toggleTheme} className="auth-theme-toggle" aria-label="Toggle theme">
+        {theme === "light" ? (
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="theme-toggle-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="theme-toggle-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        )}
+      </button>
+
+      <div className="auth-card">
+        <div className="auth-header">
+          <img src="/assets/logo.png" alt="Ibra Global English Logo" className="auth-logo-img" />
+          <h1 className="auth-title">Portal Akademik</h1>
+          <p className="auth-subtitle">Ibra Global English Bobong</p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-slate-200">
+        {/* Tab Switcher */}
+        <div className="auth-tabs">
           <button
             type="button"
             onClick={() => { setIsRegister(false); setErrorBanner(""); setSuccessBanner(""); }}
-            className={`pb-3 px-4 font-semibold transition-colors ${
-              !isRegister 
-                ? 'border-b-2 border-blue-600 text-blue-600' 
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
+            className={`auth-tab ${!isRegister ? "active" : ""}`}
           >
-            Masuk
+            Masuk Akun
           </button>
           <button
             type="button"
             onClick={() => { setIsRegister(true); setErrorBanner(""); setSuccessBanner(""); }}
-            className={`pb-3 px-4 font-semibold transition-colors ${
-              isRegister 
-                ? 'border-b-2 border-blue-600 text-blue-600' 
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
+            className={`auth-tab ${isRegister ? "active" : ""}`}
           >
-            Daftar
+            Daftar Baru
           </button>
         </div>
 
-        {/* Messages */}
         {errorMsg && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
-            {errorMsg}
+          <div className="auth-error-banner" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>{errorMsg}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-md text-sm">
-            {successMsg}
+          <div className="auth-success-banner" role="status">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>{successMsg}</span>
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={isRegister ? handleRegister : handleLogin} className="space-y-4">
           {isRegister && (
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
-                Nama Lengkap
-              </label>
+            <div className="form-group">
+              <label htmlFor="name-input" className="form-label">Nama Lengkap</label>
               <input
                 type="text"
-                id="name"
-                placeholder="Nama Anda"
-                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                id="name-input"
+                className="form-input"
+                placeholder="Masukkan Nama Lengkap Anda"
+                required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={loading}
@@ -164,53 +188,55 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
-              Email
-            </label>
+          <div className="form-group">
+            <label htmlFor="email-input" className="form-label">Alamat Email</label>
             <input
               type="email"
-              id="email"
-              placeholder="anda@email.com"
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              id="email-input"
+              className="form-input"
+              placeholder="nama@email.com"
+              required
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
-              Kata Sandi
-            </label>
+          <div className="form-group">
+            <label htmlFor="password-input" className="form-label">Kata Sandi</label>
             <input
               type="password"
-              id="password"
+              id="password-input"
+              className="form-input"
               placeholder="••••••••"
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              autoComplete={isRegister ? "new-password" : "current-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold py-2 rounded-md transition-colors mt-6"
-          >
-            {loading ? "Proses..." : isRegister ? "Daftar" : "Masuk"}
+          <button type="submit" className="form-btn" disabled={loading}>
+            <span>
+              {loading 
+                ? "Menghubungkan..." 
+                : isRegister 
+                  ? "Daftar Akun Baru" 
+                  : "Masuk ke Portal"
+              }
+            </span>
           </button>
         </form>
 
-        {/* Back link */}
-        <div className="text-center mt-6">
-          <a href="/" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-            ← Kembali ke Beranda
+        <div className="auth-back-link">
+          <a href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="back-arrow-icon"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Kembali ke Beranda Utama
           </a>
         </div>
       </div>
     </div>
   );
 }
-
