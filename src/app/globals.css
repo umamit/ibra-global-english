@@ -3061,6 +3061,13 @@ textarea:focus-visible {
 }
 
 
+/* Mobile Sidebar Toggle Button for Responsiveness */
+.mobile-toggle-btn {
+  display: flex !important;
+}
 
-
-
+@media (min-width: 1025px) {
+  .mobile-toggle-btn {
+    display: none !important;
+  }
+}
