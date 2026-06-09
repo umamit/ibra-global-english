@@ -72,12 +72,12 @@ DECLARE
   full_name_val TEXT;
 BEGIN
   -- Dapatkan peran default dari metadata pengguna jika dikirim saat registrasi
-  IF new.raw_user_meta_data ? 'role' THEN
+  IF new.raw_user_meta_data->>'role' IS NOT NULL THEN
     default_role := new.raw_user_meta_data->>'role';
   END IF;
 
   -- Cari nama lengkap dari metadata, atau gunakan bagian email jika kosong
-  IF new.raw_user_meta_data ? 'full_name' THEN
+  IF new.raw_user_meta_data->>'full_name' IS NOT NULL THEN
     full_name_val := new.raw_user_meta_data->>'full_name';
   ELSE
     full_name_val := COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1));
