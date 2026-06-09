@@ -13,15 +13,14 @@ const nextConfig = {
 
   outputFileTracingRoot: __dirname,
 
-  // Minimal webpack config - disable all optimization
-  webpack: (config, { isServer, dev }) => {
-    // Disable optimization during build
-    if (!dev) {
-      config.optimization = {
-        minimize: false,
-        splitChunks: false,
-        runtimeChunk: false,
-      };
+  // Optimize Webpack build
+  webpack: (config, { isServer }) => {
+    config.optimization.minimize = true;
+
+    // Reduce memory during build
+    if (!isServer) {
+      config.optimization.splitChunks.chunks = 'all';
+      config.optimization.runtimeChunk = 'single';
     }
 
     return config;
