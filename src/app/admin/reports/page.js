@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
 
 // SUB-COMPONENT: Custom visual pure-SVG Radar Chart for high-fidelity evaluation representation
-function RadarChart({ speaking, grammar, vocabulary, active }) {
+function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
   const cx = 120;
   const cy = 120;
   const r = 80;
@@ -40,10 +40,10 @@ function RadarChart({ speaking, grammar, vocabulary, active }) {
         <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke="#cbd5e1" strokeWidth="1.5" />
         <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke="#cbd5e1" strokeWidth="1.5" />
 
-        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">SPEAKING</text>
-        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">GRAMMAR</text>
-        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">VOCABULARY</text>
-        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">KEAKTIFAN</text>
+        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MEMBACA" : "SPEAKING"}</text>
+        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MENULIS" : "GRAMMAR"}</text>
+        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "BERHITUNG" : "VOCABULARY"}</text>
+        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "KEAKTIFAN" : "ACTIVE"}</text>
 
         <text x={cx + 5} y={cy - r + 10} fontSize="7" fontWeight="700" fill="#94a3b8">100</text>
         <text x={cx + 5} y={cy - r * 0.5 + 4} fontSize="7" fontWeight="700" fill="#94a3b8">50</text>
@@ -77,6 +77,7 @@ export default function ReportCardManagement() {
 
   // Form State
   const [studentId, setStudentId] = useState("");
+  const [selectedStudentProgram, setSelectedStudentProgram] = useState("");
   const [moduleName, setModuleName] = useState("");
   const [speakingScore, setSpeakingScore] = useState("");
   const [grammarScore, setGrammarScore] = useState("");
@@ -230,6 +231,7 @@ export default function ReportCardManagement() {
   };
 
   if (printReport) {
+    const isCalistung = printReport.students?.program === "Fun Calistung";
     return (
       <div style={{ padding: "1.5rem", backgroundColor: "white", minHeight: "100vh" }}>
         <div className="no-print" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -282,19 +284,27 @@ export default function ReportCardManagement() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Speaking</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Membaca" : "Speaking"}
+                </p>
               </div>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.grammar_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Grammar</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Menulis" : "Grammar"}
+                </p>
               </div>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.vocabulary_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Vocabulary</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Berhitung" : "Vocabulary"}
+                </p>
               </div>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.active_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Keaktifan</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Keaktifan" : "Active"}
+                </p>
               </div>
             </div>
 
@@ -305,6 +315,7 @@ export default function ReportCardManagement() {
                 grammar={printReport.grammar_score} 
                 vocabulary={printReport.vocabulary_score} 
                 active={printReport.active_score} 
+                isCalistung={isCalistung}
               />
             </div>
 
@@ -337,6 +348,8 @@ export default function ReportCardManagement() {
       </div>
     );
   }
+
+  const isFormCalistung = selectedStudentProgram === "Fun Calistung";
 
   return (
     <div>
@@ -371,7 +384,12 @@ export default function ReportCardManagement() {
               <select
                 className="form-input"
                 value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setStudentId(id);
+                  const student = students.find(s => s.id === id);
+                  setSelectedStudentProgram(student ? student.program : "");
+                }}
                 disabled={submitting}
                 required
               >
@@ -400,7 +418,7 @@ export default function ReportCardManagement() {
 
           <div className="form-grid" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
             <div className="form-group">
-              <label className="form-label">Speaking (0-100)</label>
+              <label className="form-label">{isFormCalistung ? "Membaca" : "Speaking"} (0-100)</label>
               <input
                 type="number"
                 min="0"
@@ -415,7 +433,7 @@ export default function ReportCardManagement() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Grammar (0-100)</label>
+              <label className="form-label">{isFormCalistung ? "Menulis" : "Grammar"} (0-100)</label>
               <input
                 type="number"
                 min="0"
@@ -430,7 +448,7 @@ export default function ReportCardManagement() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Vocabulary (0-100)</label>
+              <label className="form-label">{isFormCalistung ? "Berhitung" : "Vocabulary"} (0-100)</label>
               <input
                 type="number"
                 min="0"
@@ -497,9 +515,9 @@ export default function ReportCardManagement() {
                 <th>No</th>
                 <th>Siswa</th>
                 <th>Modul</th>
-                <th>Speaking</th>
-                <th>Grammar</th>
-                <th>Vocabulary</th>
+                <th>Speaking / Membaca</th>
+                <th>Grammar / Menulis</th>
+                <th>Vocabulary / Berhitung</th>
                 <th>Keaktifan</th>
                 <th>Tutor Review Notes</th>
                 <th style={{ textAlign: "right" }}>Aksi</th>
