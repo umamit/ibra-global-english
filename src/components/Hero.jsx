@@ -75,6 +75,23 @@ export default function Hero() {
             <a href="#contact" className="btn-primary">Daftar Gratis</a>
             <a href="#programs" className="btn-secondary">Lihat Program</a>
           </div>
+
+          <div className="hero-trilogy">
+            <div className="hero-trilogy-item">
+              <span className="hero-trilogy-icon">🎉</span>
+              <span className="hero-trilogy-label">Belajar Seru</span>
+            </div>
+            <span className="hero-trilogy-sep">•</span>
+            <div className="hero-trilogy-item">
+              <span className="hero-trilogy-icon">🗣️</span>
+              <span className="hero-trilogy-label">Berani Bicara</span>
+            </div>
+            <span className="hero-trilogy-sep">•</span>
+            <div className="hero-trilogy-item">
+              <span className="hero-trilogy-icon">🌍</span>
+              <span className="hero-trilogy-label">Siap Mendunia</span>
+            </div>
+          </div>
         </div>
         
         <div className="hero-image-container" data-aos="fade-left">
