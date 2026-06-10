@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
 // SUB-COMPONENT: Custom visual pure-SVG Radar Chart for high-fidelity evaluation representation
-function RadarChart({ speaking, grammar, vocabulary, active }) {
+// SUB-COMPONENT: Custom visual pure-SVG Radar Chart for high-fidelity evaluation representation
+function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
   // Center (120, 120), Radius 80
   const cx = 120;
   const cy = 120;
@@ -48,10 +49,10 @@ function RadarChart({ speaking, grammar, vocabulary, active }) {
         <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke="#cbd5e1" strokeWidth="1.5" />
 
         {/* Axis Labels */}
-        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">SPEAKING</text>
-        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">GRAMMAR</text>
-        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">VOCABULARY</text>
-        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">KEAKTIFAN</text>
+        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MEMBACA" : "SPEAKING"}</text>
+        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MENULIS" : "GRAMMAR"}</text>
+        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "BERHITUNG" : "VOCABULARY"}</text>
+        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "KEAKTIFAN" : "ACTIVE"}</text>
 
         {/* Score Values */}
         <text x={cx + 5} y={cy - r + 10} fontSize="7" fontWeight="700" fill="#94a3b8">100</text>
@@ -427,6 +428,7 @@ export default function ParentPortal() {
 
   // PRINT PREVIEW OVERLAY
   if (printReport) {
+    const isCalistung = selectedChild?.program === "Fun Calistung";
     return (
       <div style={{ padding: "1.5rem", backgroundColor: "white", minHeight: "100vh" }}>
         <div className="no-print" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -479,19 +481,27 @@ export default function ParentPortal() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Speaking</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Membaca" : "Speaking"}
+                </p>
               </div>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.grammar_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Grammar</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Menulis" : "Grammar"}
+                </p>
               </div>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.vocabulary_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Vocabulary</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Berhitung" : "Vocabulary"}
+                </p>
               </div>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.active_score}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Keaktifan</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {isCalistung ? "Keaktifan" : "Active"}
+                </p>
               </div>
             </div>
 
@@ -502,6 +512,7 @@ export default function ParentPortal() {
                 grammar={printReport.grammar_score} 
                 vocabulary={printReport.vocabulary_score} 
                 active={printReport.active_score} 
+                isCalistung={isCalistung}
               />
             </div>
 
@@ -781,70 +792,82 @@ export default function ParentPortal() {
                     </div>
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-                      {reports.map((report) => (
-                        <div key={report.id} className="portal-card" style={{ padding: "2rem" }}>
-                          
-                          {/* Card Header */}
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem", borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem" }}>
-                            <div>
-                              <h4 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{report.module_name}</h4>
-                              <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
-                                Diterbitkan pada {new Date(report.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
-                              </p>
-                            </div>
-                            <button className="btn-portal-outline" style={{ padding: "0.5rem 1.15rem", fontSize: "0.8rem", display: "flex", gap: "0.5rem", alignItems: "center" }} onClick={() => triggerPrint(report)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                              <span>Cetak Rapor PDF</span>
-                            </button>
-                          </div>
-
-                          {/* Grid with Scores Cards and visual SVG Radar Chart */}
-                          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
+                      {reports.map((report) => {
+                        const isCalistung = selectedChild?.program === "Fun Calistung";
+                        return (
+                          <div key={report.id} className="portal-card" style={{ padding: "2rem" }}>
                             
-                            {/* Score Metrics Grid */}
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                              <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.speaking_score}</p>
-                                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Speaking</p>
+                            {/* Card Header */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem", borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem" }}>
+                              <div>
+                                <h4 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{report.module_name}</h4>
+                                <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
+                                  Diterbitkan pada {new Date(report.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                                </p>
                               </div>
-                              <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.grammar_score}</p>
-                                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Grammar</p>
-                              </div>
-                              <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.vocabulary_score}</p>
-                                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Vocabulary</p>
-                              </div>
-                              <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.active_score}</p>
-                                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Keaktifan</p>
-                              </div>
+                              <button className="btn-portal-outline" style={{ padding: "0.5rem 1.15rem", fontSize: "0.8rem", display: "flex", gap: "0.5rem", alignItems: "center" }} onClick={() => triggerPrint(report)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                                <span>Cetak Rapor PDF</span>
+                              </button>
                             </div>
 
-                            {/* SVG Chart visualization */}
-                            <div>
-                              <RadarChart
-                                speaking={report.speaking_score}
-                                grammar={report.grammar_score}
-                                vocabulary={report.vocabulary_score}
-                                active={report.active_score}
-                              />
+                            {/* Grid with Scores Cards and visual SVG Radar Chart */}
+                            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
+                              
+                              {/* Score Metrics Grid */}
+                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                                <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
+                                  <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.speaking_score}</p>
+                                  <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                                    {isCalistung ? "Membaca" : "Speaking"}
+                                  </p>
+                                </div>
+                                <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
+                                  <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.grammar_score}</p>
+                                  <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                                    {isCalistung ? "Menulis" : "Grammar"}
+                                  </p>
+                                </div>
+                                <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
+                                  <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.vocabulary_score}</p>
+                                  <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                                    {isCalistung ? "Berhitung" : "Vocabulary"}
+                                  </p>
+                                </div>
+                                <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
+                                  <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.active_score}</p>
+                                  <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                                    {isCalistung ? "Keaktifan" : "Active"}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* SVG Chart visualization */}
+                              <div>
+                                <RadarChart
+                                  speaking={report.speaking_score}
+                                  grammar={report.grammar_score}
+                                  vocabulary={report.vocabulary_score}
+                                  active={report.active_score}
+                                  isCalistung={isCalistung}
+                                />
+                              </div>
+
                             </div>
+
+                            {/* Tutor Notes review block */}
+                            {report.tutor_notes && (
+                              <div style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", marginTop: "2rem", backgroundColor: "rgba(166, 136, 73, 0.03)", padding: "1rem 1.25rem", borderRadius: "0 8px 8px 0" }}>
+                                <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", textTransform: "uppercase", marginBottom: "4px" }}>Catatan Tutor Pendamping</p>
+                                <p style={{ fontSize: "0.9rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
+                                  "{report.tutor_notes}"
+                                </p>
+                              </div>
+                            )}
 
                           </div>
-
-                          {/* Tutor Notes review block */}
-                          {report.tutor_notes && (
-                            <div style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", marginTop: "2rem", backgroundColor: "rgba(166, 136, 73, 0.03)", padding: "1rem 1.25rem", borderRadius: "0 8px 8px 0" }}>
-                              <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", textTransform: "uppercase", marginBottom: "4px" }}>Catatan Tutor Pendamping</p>
-                              <p style={{ fontSize: "0.9rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
-                                "{report.tutor_notes}"
-                              </p>
-                            </div>
-                          )}
-
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
