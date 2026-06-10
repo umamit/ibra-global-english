@@ -10,6 +10,7 @@ export default function Hero() {
   const [heroSubtitle, setHeroSubtitle] = useState("Belajar Seru | Lancar Bicara");
   const [heroDesc, setHeroDesc] = useState("Kursus bahasa Inggris offline terbaik di Bobong, Pulau Taliabu. Dengan metode pembelajaran yang menyenangkan dan efektif untuk tingkatkan kemampuan speaking Anda bersama tutor berpengalaman!");
   const [heroImage, setHeroImage] = useState("https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop");
+  const [studentCount, setStudentCount] = useState(100);
 
   useEffect(() => {
     async function fetchHeroSettings() {
@@ -32,7 +33,23 @@ export default function Hero() {
         console.warn("Gagal memuat pengaturan hero dari database. Menggunakan data default (statis).", e);
       }
     }
+
+    async function fetchStudentCount() {
+      try {
+        const res = await fetch("/api/student-count");
+        if (res.ok) {
+          const data = await res.json();
+          if (typeof data.count === "number") {
+            setStudentCount(data.count);
+          }
+        }
+      } catch (e) {
+        console.warn("Gagal mengambil jumlah siswa dari API. Menggunakan data default.", e);
+      }
+    }
+
     fetchHeroSettings();
+    fetchStudentCount();
   }, []);
 
   const renderSubtitle = (text) => {
@@ -63,10 +80,10 @@ export default function Hero() {
         <div className="hero-image-container" data-aos="fade-left">
           <div className="hero-card">
             <img 
-              src={heroImage} 
-              alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" 
-              className="hero-img" 
-              fetchPriority="high" 
+               src={heroImage} 
+               alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" 
+               className="hero-img" 
+               fetchPriority="high" 
             />
           </div>
           <div className="hero-stats-badge">
@@ -81,7 +98,7 @@ export default function Hero() {
               </svg>
             </div>
             <div className="badge-text">
-              <p className="stat-num"><CountUp target={100} />+</p>
+              <p className="stat-num"><CountUp target={studentCount} />+</p>
               <p className="stat-desc">Jumlah Siswa</p>
             </div>
           </div>
