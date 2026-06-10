@@ -18,6 +18,7 @@ import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
 import LightboxModal from "@/components/LightboxModal";
 import AIChatWidget from "@/components/AIChatWidget";
+import MarqueeBanner from "@/components/MarqueeBanner";
 
 export default function Home() {
   // Theme state
@@ -135,7 +136,8 @@ export default function Home() {
 
   return (
     <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+      <MarqueeBanner />
+      <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       <main>
         <Hero />
         <Programs />

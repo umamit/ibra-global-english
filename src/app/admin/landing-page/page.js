@@ -32,6 +32,9 @@ export default function LandingPageCMS() {
   const [paymentSppKids, setPaymentSppKids] = useState("");
   const [paymentSppTeens, setPaymentSppTeens] = useState("");
   const [paymentSppCalistung, setPaymentSppCalistung] = useState("");
+  const [marqueeText1, setMarqueeText1] = useState("");
+  const [marqueeText2, setMarqueeText2] = useState("");
+  const [marqueeText3, setMarqueeText3] = useState("");
   const [uploadingHero, setUploadingHero] = useState(false);
   const heroFileRef = useRef(null);
 
@@ -99,6 +102,9 @@ export default function LandingPageCMS() {
         setPaymentSppKids(settings.payment_spp_kids || "300000");
         setPaymentSppTeens(settings.payment_spp_teens || "300000");
         setPaymentSppCalistung(settings.payment_spp_calistung || "350000");
+        setMarqueeText1(settings.marquee_text_1 || "Pendaftaran Siswa Baru Ibra Global English Bobong Telah Dibuka! Segera Daftarkan Putra-Putri Anda!");
+        setMarqueeText2(settings.marquee_text_2 || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
+        setMarqueeText3(settings.marquee_text_3 || "Ikuti Placement Test Online Secara Gratis di Website Kami dan Cari Tahu Tingkat Kemampuan Anda!");
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
@@ -230,6 +236,9 @@ export default function LandingPageCMS() {
       { key: "payment_spp_kids", value: paymentSppKids.trim() },
       { key: "payment_spp_teens", value: paymentSppTeens.trim() },
       { key: "payment_spp_calistung", value: paymentSppCalistung.trim() },
+      { key: "marquee_text_1", value: marqueeText1.trim() },
+      { key: "marquee_text_2", value: marqueeText2.trim() },
+      { key: "marquee_text_3", value: marqueeText3.trim() },
     ];
 
     try {
@@ -695,6 +704,53 @@ export default function LandingPageCMS() {
                 </div>
               </div>
 
+              <hr style={{ border: "none", borderTop: "1px solid var(--color-gray-200)", margin: "2rem 0 1rem" }} />
+
+              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1rem" }}>Konfigurasi Teks Pengumuman Berjalan (Marquee)</h3>
+              <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginBottom: "1.5rem" }}>
+                Atur 3 kalimat pengumuman yang akan ditampilkan berjalan di bagian atas halaman Landing Page.
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Teks Pengumuman Box 1</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Kalimat pengumuman pertama..."
+                    value={marqueeText1}
+                    onChange={(e) => setMarqueeText1(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Teks Pengumuman Box 2</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Kalimat pengumuman kedua..."
+                    value={marqueeText2}
+                    onChange={(e) => setMarqueeText2(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Teks Pengumuman Box 3</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Kalimat pengumuman ketiga..."
+                    value={marqueeText3}
+                    onChange={(e) => setMarqueeText3(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
             </div>
 
             <div style={{ marginTop: "1rem" }}>
