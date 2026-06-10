@@ -70,6 +70,7 @@ export default function ReportCardManagement() {
   const [students, setStudents] = useState([]);
   const [reports, setReports] = useState([]);
   const [printReport, setPrintReport] = useState(null);
+  const [contactAddress, setContactAddress] = useState("Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
@@ -117,6 +118,16 @@ export default function ReportCardManagement() {
 
       if (errR) throw errR;
       setReports(reportData || []);
+
+      // 3. Ambil alamat kontak dari landing_settings
+      const { data: settingsData } = await supabase
+        .from("landing_settings")
+        .select("value")
+        .eq("key", "contact_address")
+        .maybeSingle();
+      if (settingsData && settingsData.value) {
+        setContactAddress(settingsData.value);
+      }
     } catch (err) {
       console.error("Gagal mengambil data rapor:", err);
       setStatusMsg({ type: "error", text: "Gagal memuat data: " + err.message });
@@ -239,8 +250,8 @@ export default function ReportCardManagement() {
               <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "64px", height: "64px" }} />
               <div style={{ textAlign: "left" }}>
                 <h1 style={{ fontSize: "1.5rem", fontWeight: "900", margin: "0", color: "var(--color-gray-900)" }}>IBRA GLOBAL ENGLISH</h1>
-                <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", margin: "0" }}>LEARNING CENTRE BOBONG</p>
-                <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", margin: "2px 0 0" }}>Jl. Raya Bobong, Kabupaten Pulau Taliabu, Maluku Utara</p>
+                <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", margin: "0" }}>Belajar Seru, Lancar Bicara</p>
+                <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", margin: "2px 0 0" }}>{contactAddress}</p>
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
