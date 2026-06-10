@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Global English Bobong**, sebuah lembaga kursus bahasa Inggris terkemuka yang berlokasi di Bobong, Pulau Taliabu, Maluku Utara, Indonesia.
 
@@ -54,9 +53,9 @@ const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Glob
 
 export async function POST(request) {
   try {
-    if (!GEMINI_API_KEY) {
+    if (!GROQ_API_KEY) {
       return NextResponse.json(
-        { error: "API Key belum dikonfigurasi." },
+        { error: "API Key Groq belum dikonfigurasi." },
         { status: 500 }
       );
     }
@@ -70,30 +69,53 @@ export async function POST(request) {
       );
     }
 
-    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+    // Format messages for OpenAI / Groq compatibility
+    const formattedMessages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...messages.map((msg) => ({
+        role: msg.role === "assistant" ? "assistant" : "user",
+        content: msg.content,
+      }))
+    ];
 
-    const lastMessage = messages[messages.length - 1];
-    const history = messages.slice(0, -1).map((msg) => ({
-      role: msg.role === "assistant" ? "model" : "user",
-      parts: [{ text: msg.content }],
-    }));
-
-    const chat = ai.chats.create({
-      model: "gemini-2.0-flash",
-      config: {
-        systemInstruction: SYSTEM_PROMPT,
-        temperature: 0.8,
-        topP: 0.9,
-        maxOutputTokens: 1024,
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
       },
-      history,
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: formattedMessages,
+        temperature: 0.7,
+        max_tokens: 1024,
+      }),
     });
 
-    const response = await chat.sendMessage({
-      message: lastMessage.content,
-    });
+    const data = await response.json();
 
-    const aiText = response.text;
+    if (!response.ok) {
+      console.error("Groq API error response:", data);
+      const errMsg = data?.error?.message || "Gagal mendapat respons dari server Groq.";
+      if (response.status === 401 || response.status === 403) {
+        return NextResponse.json(
+          { error: "❌ API Key Groq tidak valid. Periksa konfigurasi API Anda." },
+          { status: 401 }
+        );
+      }
+      if (response.status === 429) {
+        return NextResponse.json(
+          { error: "⚠️ Batas penggunaan (kuota) API Groq telah habis. Silakan coba beberapa saat lagi." },
+          { status: 429 }
+        );
+      }
+      return NextResponse.json(
+        { error: `Kesalahan Groq: ${errMsg}` },
+        { status: response.status }
+      );
+    }
+
+    const aiText = data?.choices?.[0]?.message?.content;
 
     if (!aiText) {
       return NextResponse.json(
@@ -105,21 +127,8 @@ export async function POST(request) {
     return NextResponse.json({ reply: aiText });
   } catch (err) {
     console.error("AI Chat error:", err);
-    const errMsg = err?.message || "";
-    if (errMsg.includes("API_KEY_INVALID") || errMsg.includes("UNAUTHENTICATED") || errMsg.includes("401") || errMsg.includes("400")) {
-      return NextResponse.json(
-        { error: "❌ API Key tidak valid. Silakan hubungi admin untuk memperbarui konfigurasi AI." },
-        { status: 401 }
-      );
-    }
-    if (errMsg.includes("429") || errMsg.includes("Quota exceeded") || errMsg.includes("RESOURCE_EXHAUSTED") || err?.status === 429) {
-      return NextResponse.json(
-        { error: "⚠️ Batas penggunaan (kuota) API Gemini telah habis. Silakan periksa plan/billing di Google AI Studio." },
-        { status: 429 }
-      );
-    }
     return NextResponse.json(
-      { error: "Terjadi kesalahan pada server AI. Silakan coba lagi." },
+      { error: "Terjadi kesalahan pada server AI Groq. Silakan coba lagi." },
       { status: 500 }
     );
   }

@@ -229,7 +229,7 @@ export default function AIChatWidget() {
         </div>
 
         <div className="ai-chat-footer">
-          Didukung oleh <strong>Google Gemini AI</strong>
+          Didukung oleh <strong>Groq Llama AI</strong>
         </div>
       </div>
 
