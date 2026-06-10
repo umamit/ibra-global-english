@@ -72,6 +72,8 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  background-color: var(--color-white);
+  transition: background-color var(--transition-normal);
 }
 
 body {
@@ -1761,6 +1763,10 @@ footer {
   
   --color-header-bg: rgba(22, 42, 51, 0.85); /* Deep dark teal glassmorphism */
   --color-header-bg-scrolled: rgba(22, 42, 51, 0.95);
+}
+
+[data-theme="dark"] html {
+  background-color: var(--color-gray-50);
 }
 
 [data-theme="dark"] body {
