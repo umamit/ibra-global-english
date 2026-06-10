@@ -193,6 +193,29 @@ export default function MaintenancePage() {
           box-shadow: 0 10px 28px rgba(37,211,102,0.45);
         }
 
+        .maint-admin-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          margin-top: 1rem;
+          padding: 0.55rem 1.1rem;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.18);
+          background: rgba(255,255,255,0.07);
+          color: rgba(255,255,255,0.55);
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.78rem;
+          font-weight: 600;
+          text-decoration: none;
+          letter-spacing: 0.02em;
+          transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .maint-admin-link:hover {
+          background: rgba(255,255,255,0.14);
+          color: rgba(255,255,255,0.9);
+          border-color: rgba(255,255,255,0.3);
+        }
+
         .maint-footer {
           position: relative;
           z-index: 1;
@@ -260,6 +283,17 @@ export default function MaintenancePage() {
               </svg>
               Hubungi via WhatsApp
             </a>
+
+            {/* Admin login link */}
+            <div>
+              <a href="/login" className="maint-admin-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Login sebagai Admin
+              </a>
+            </div>
           </div>
         </div>
 
