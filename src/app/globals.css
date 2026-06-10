@@ -502,6 +502,61 @@ header.scrolled .logo-text p {
   gap: 1rem;
 }
 
+/* Hero Trilogy: Belajar Seru • Berani Bicara • Siap Mendunia */
+.hero-trilogy {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin-top: 1.75rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(33, 108, 126, 0.07);
+  border: 1px solid rgba(33, 108, 126, 0.18);
+  border-radius: 100px;
+  width: fit-content;
+  animation: fadeSlideUp 0.7s ease 0.4s both;
+}
+
+.hero-trilogy-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hero-trilogy-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.hero-trilogy-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.hero-trilogy-sep {
+  font-size: 1rem;
+  color: var(--color-accent);
+  font-weight: 900;
+  line-height: 1;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+[data-theme="dark"] .hero-trilogy {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .hero-trilogy-label {
+  color: #a7d8e0;
+}
+
 .btn-primary {
   background-color: var(--color-primary);
   color: var(--color-white);
