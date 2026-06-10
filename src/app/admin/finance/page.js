@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, useRef } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { createAdminClient as createClient } from "@/utils/supabase/client";
 
 export default function AdminFinance() {
   const supabase = createClient();
@@ -19,35 +19,41 @@ export default function AdminFinance() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStudent, setSelectedStudent] = useState(null);
-  const [defaultSppAmount, setDefaultSppAmount] = useState(150000);
-  const [modalAmount, setModalAmount] = useState(150000);
+  const [sppPrices, setSppPrices] = useState({
+    "Kids Program": 300000,
+    "Teens Program": 300000,
+    "Fun Calistung": 350000
+  });
+  const [modalAmount, setModalAmount] = useState(300000);
   const [modalStatus, setModalStatus] = useState("belum_bayar");
   const [modalMethod, setModalMethod] = useState("Transfer Bank");
   const [modalReceiptUrl, setModalReceiptUrl] = useState("");
   const [savingPayment, setSavingPayment] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Fetch configured default SPP fee amount on mount
+  // Fetch configured SPP fee amounts on mount
   useEffect(() => {
-    async function fetchDefaultSpp() {
+    async function fetchSppPrices() {
       try {
         const { data, error } = await supabase
           .from("landing_settings")
-          .select("*")
-          .eq("key", "payment_spp_amount")
-          .single();
-        if (data && data.value) {
-          const amt = parseInt(data.value);
-          if (!isNaN(amt)) {
-            setDefaultSppAmount(amt);
-            setModalAmount(amt);
-          }
+          .select("*");
+        if (data && data.length > 0) {
+          const settings = {};
+          data.forEach(item => {
+            settings[item.key] = item.value;
+          });
+          setSppPrices({
+            "Kids Program": parseInt(settings.payment_spp_kids || "300000"),
+            "Teens Program": parseInt(settings.payment_spp_teens || "300000"),
+            "Fun Calistung": parseInt(settings.payment_spp_calistung || "350000")
+          });
         }
       } catch (err) {
-        console.error("Gagal memuat nominal SPP default:", err);
+        console.error("Gagal memuat nominal SPP program:", err);
       }
     }
-    fetchDefaultSpp();
+    fetchSppPrices();
   }, []);
 
   // Initialize selected month to current month (YYYY-MM)
@@ -109,17 +115,21 @@ export default function AdminFinance() {
 
   // Map student with their payment record if it exists
   const getStudentPayment = (studentId) => {
+    const student = students.find(s => s.id === studentId);
+    const program = student?.program || "Kids Program";
+    const baseAmount = sppPrices[program] || 300000;
+
     const pay = payments.find(p => p.student_id === studentId);
     if (pay) {
       return {
         ...pay,
-        amount: pay.status === "belum_bayar" ? defaultSppAmount : pay.amount
+        amount: pay.status === "belum_bayar" ? baseAmount : pay.amount
       };
     }
     return {
       student_id: studentId,
       month: selectedMonth,
-      amount: defaultSppAmount,
+      amount: baseAmount,
       status: "belum_bayar",
       payment_method: "Transfer Bank",
       receipt_url: ""
@@ -172,8 +182,11 @@ export default function AdminFinance() {
 
   const handleOpenEditModal = (student) => {
     const pay = getStudentPayment(student.id);
+    const program = student?.program || "Kids Program";
+    const baseAmount = sppPrices[program] || 300000;
+
     setSelectedStudent(student);
-    setModalAmount(pay.amount || defaultSppAmount);
+    setModalAmount(pay.amount || baseAmount);
     setModalStatus(pay.status || "belum_bayar");
     setModalMethod(pay.payment_method || "Transfer Bank");
     setModalReceiptUrl(pay.receipt_url || "");
@@ -258,9 +271,10 @@ export default function AdminFinance() {
 
     students.forEach(student => {
       const pay = getStudentPayment(student.id);
-      expected += pay.amount || defaultSppAmount;
+      const baseAmount = sppPrices[student.program] || 300000;
+      expected += pay.amount || baseAmount;
       if (pay.status === "lunas") {
-        collected += pay.amount || defaultSppAmount;
+        collected += pay.amount || baseAmount;
         paidCount++;
       } else if (pay.status === "menunggu_konfirmasi") {
         pendingCount++;

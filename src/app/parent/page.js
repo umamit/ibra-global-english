@@ -93,8 +93,20 @@ export default function ParentPortal() {
     payment_account_number: "137-00-1234567-8",
     payment_account_name: "Ibra Global English",
     payment_account_sub: "Bobong Learning Centre",
-    payment_spp_amount: "150000"
+    payment_spp_kids: "300000",
+    payment_spp_teens: "300000",
+    payment_spp_calistung: "350000"
   });
+
+  const getChildProgramPrice = (programName) => {
+    if (programName === "Fun Calistung") {
+      return parseInt(paymentSettings.payment_spp_calistung || 350000);
+    }
+    if (programName === "Teens Program") {
+      return parseInt(paymentSettings.payment_spp_teens || 300000);
+    }
+    return parseInt(paymentSettings.payment_spp_kids || 300000);
+  };
 
   // Next Level States
   const [activeView, setActiveView] = useState("progress"); // "progress", "finance", or "calendar"
@@ -160,7 +172,7 @@ export default function ParentPortal() {
       const payload = {
         student_id: selectedChild.id,
         month,
-        amount: parseInt(paymentSettings.payment_spp_amount || 150000),
+        amount: getChildProgramPrice(selectedChild.program),
         status: "menunggu_konfirmasi",
         payment_method: "Transfer Bank",
         receipt_url: data.publicUrl,
@@ -876,11 +888,11 @@ export default function ParentPortal() {
                     <div>
                       <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-gray-900)" }}>Panduan Transfer Pembayaran SPP</h3>
                       <p style={{ color: "var(--color-gray-600)", fontSize: "0.9rem", marginTop: "4px" }}>
-                        Pembayaran SPP sebesar <strong>Rp {parseInt(paymentSettings.payment_spp_amount || 150000).toLocaleString("id-ID")} / bulan</strong> paling lambat tanggal 10 setiap bulannya.
+                        Pembayaran SPP sebesar <strong>Rp {getChildProgramPrice(selectedChild?.program).toLocaleString("id-ID")} / bulan</strong> paling lambat tanggal 10 setiap bulannya.
                       </p>
                     </div>
                     <div style={{ padding: "0.5rem 1rem", backgroundColor: "var(--color-accent-light)", color: "var(--color-accent)", borderRadius: "6px", fontWeight: "700", fontSize: "0.9rem" }}>
-                      Nominal: Rp {parseInt(paymentSettings.payment_spp_amount || 150000).toLocaleString("id-ID")}
+                      Nominal: Rp {getChildProgramPrice(selectedChild?.program).toLocaleString("id-ID")}
                     </div>
                   </div>
 
@@ -920,10 +932,10 @@ export default function ParentPortal() {
                       const dbPay = parentPayments.find(p => p.month === month);
                       const pay = dbPay ? {
                         ...dbPay,
-                        amount: dbPay.status === "belum_bayar" ? parseInt(paymentSettings.payment_spp_amount || 150000) : dbPay.amount
+                        amount: dbPay.status === "belum_bayar" ? getChildProgramPrice(selectedChild?.program) : dbPay.amount
                       } : {
                         month,
-                        amount: parseInt(paymentSettings.payment_spp_amount || 150000),
+                        amount: getChildProgramPrice(selectedChild?.program),
                         status: "belum_bayar",
                         receipt_url: ""
                       };

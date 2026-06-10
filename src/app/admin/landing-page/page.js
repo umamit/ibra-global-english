@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, useRef } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { createAdminClient as createClient } from "@/utils/supabase/client";
 
 export default function LandingPageCMS() {
   const supabase = createClient();
@@ -29,8 +29,12 @@ export default function LandingPageCMS() {
   const [paymentAccountName, setPaymentAccountName] = useState("");
   const [paymentAccountSub, setPaymentAccountSub] = useState("");
   const [paymentSppAmount, setPaymentSppAmount] = useState("");
+  const [paymentSppKids, setPaymentSppKids] = useState("");
+  const [paymentSppTeens, setPaymentSppTeens] = useState("");
+  const [paymentSppCalistung, setPaymentSppCalistung] = useState("");
   const [uploadingHero, setUploadingHero] = useState(false);
   const heroFileRef = useRef(null);
+
 
   // ----------------------------------------------------
   // LISTS & FORMS STATES: GALLERY
@@ -92,6 +96,9 @@ export default function LandingPageCMS() {
         setPaymentAccountName(settings.payment_account_name || "");
         setPaymentAccountSub(settings.payment_account_sub || "");
         setPaymentSppAmount(settings.payment_spp_amount || "");
+        setPaymentSppKids(settings.payment_spp_kids || "300000");
+        setPaymentSppTeens(settings.payment_spp_teens || "300000");
+        setPaymentSppCalistung(settings.payment_spp_calistung || "350000");
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
@@ -219,7 +226,10 @@ export default function LandingPageCMS() {
       { key: "payment_account_number", value: paymentAccountNumber.trim() },
       { key: "payment_account_name", value: paymentAccountName.trim() },
       { key: "payment_account_sub", value: paymentAccountSub.trim() },
-      { key: "payment_spp_amount", value: paymentSppAmount.trim() },
+      { key: "payment_spp_amount", value: paymentSppKids.trim() }, // fallback / backward-compatibility
+      { key: "payment_spp_kids", value: paymentSppKids.trim() },
+      { key: "payment_spp_teens", value: paymentSppTeens.trim() },
+      { key: "payment_spp_calistung", value: paymentSppCalistung.trim() },
     ];
 
     try {
@@ -644,16 +654,42 @@ export default function LandingPageCMS() {
                   />
                 </div>
 
-                {/* Nominal SPP */}
+                {/* Nominal SPP Per Program */}
                 <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Bulanan (Rupiah)</label>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Kids Program (Rupiah)</label>
                   <input
                     type="number"
                     className="form-input"
                     style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: 150000"
-                    value={paymentSppAmount}
-                    onChange={(e) => setPaymentSppAmount(e.target.value)}
+                    placeholder="Contoh: 300000"
+                    value={paymentSppKids}
+                    onChange={(e) => setPaymentSppKids(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Teens Program (Rupiah)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: 300000"
+                    value={paymentSppTeens}
+                    onChange={(e) => setPaymentSppTeens(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Fun Calistung (Rupiah)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: 350000"
+                    value={paymentSppCalistung}
+                    onChange={(e) => setPaymentSppCalistung(e.target.value)}
                     required
                   />
                 </div>
