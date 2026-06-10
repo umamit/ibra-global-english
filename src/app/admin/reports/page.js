@@ -5,11 +5,71 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
 
+// SUB-COMPONENT: Custom visual pure-SVG Radar Chart for high-fidelity evaluation representation
+function RadarChart({ speaking, grammar, vocabulary, active }) {
+  const cx = 120;
+  const cy = 120;
+  const r = 80;
+
+  const pSpeaking = { x: cx, y: cy - r * (speaking / 100) };
+  const pGrammar = { x: cx + r * (grammar / 100), y: cy };
+  const pVocabulary = { x: cx, y: cy + r * (vocabulary / 100) };
+  const pActive = { x: cx - r * (active / 100), y: cy };
+
+  const polygonPoints = `${pSpeaking.x},${pSpeaking.y} ${pGrammar.x},${pGrammar.y} ${pVocabulary.x},${pVocabulary.y} ${pActive.x},${pActive.y}`;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", backgroundColor: "white", borderRadius: "12px", border: "1px solid var(--color-gray-150)", boxShadow: "var(--shadow-sm)", maxWidth: "300px", margin: "0 auto" }}>
+      <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-primary-dark)", textTransform: "uppercase", marginBottom: "1rem" }}>Visualisasi Performa</p>
+      
+      <svg width="240" height="240" viewBox="0 0 240 240" style={{ overflow: "visible" }}>
+        {[25, 50, 75, 100].map((percent) => {
+          const gridR = r * (percent / 100);
+          return (
+            <polygon
+              key={percent}
+              points={`${cx},${cy - gridR} ${cx + gridR},${cy} ${cx},${cy + gridR} ${cx - gridR},${cy}`}
+              fill="none"
+              stroke="#e2e8f0"
+              strokeWidth="1"
+              strokeDasharray={percent < 100 ? "3,3" : "none"}
+            />
+          );
+        })}
+
+        <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke="#cbd5e1" strokeWidth="1.5" />
+        <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke="#cbd5e1" strokeWidth="1.5" />
+
+        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">SPEAKING</text>
+        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">GRAMMAR</text>
+        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">VOCABULARY</text>
+        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">KEAKTIFAN</text>
+
+        <text x={cx + 5} y={cy - r + 10} fontSize="7" fontWeight="700" fill="#94a3b8">100</text>
+        <text x={cx + 5} y={cy - r * 0.5 + 4} fontSize="7" fontWeight="700" fill="#94a3b8">50</text>
+
+        <polygon
+          points={polygonPoints}
+          fill="rgba(33, 108, 126, 0.25)"
+          stroke="#216c7e"
+          strokeWidth="2.5"
+        />
+
+        <circle cx={pSpeaking.x} cy={pSpeaking.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
+        <circle cx={pGrammar.x} cy={pGrammar.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
+        <circle cx={pVocabulary.x} cy={pVocabulary.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
+        <circle cx={pActive.x} cy={pActive.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
+      </svg>
+    </div>
+  );
+}
+
 export default function ReportCardManagement() {
   const supabase = createClient();
 
   const [students, setStudents] = useState([]);
   const [reports, setReports] = useState([]);
+  const [printReport, setPrintReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
@@ -49,7 +109,8 @@ export default function ReportCardManagement() {
           created_at,
           students (
             name,
-            program
+            program,
+            age
           )
         `)
         .order("created_at", { ascending: false });
@@ -67,6 +128,13 @@ export default function ReportCardManagement() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const triggerPrint = (report) => {
+    setPrintReport(report);
+    setTimeout(() => {
+      window.print();
+    }, 150);
+  };
 
   const handleCreateReport = async (e) => {
     e.preventDefault();
@@ -149,6 +217,115 @@ export default function ReportCardManagement() {
       }
     }
   };
+
+  if (printReport) {
+    return (
+      <div style={{ padding: "1.5rem", backgroundColor: "white", minHeight: "100vh" }}>
+        <div className="no-print" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)" }}>
+            * Anda sedang melihat pratinjau cetak. Tekan Ctrl+P atau Cmd+P jika dialog print tidak terbuka otomatis.
+          </p>
+          <button className="btn-portal-outline" onClick={() => setPrintReport(null)} style={{ cursor: "pointer" }}>
+            ← Kembali ke Portal
+          </button>
+        </div>
+
+        {/* PRINT-OPTIMIZED REPORT LAYOUT */}
+        <div className="printable-report" style={{ border: "2px solid #ddd", padding: "2.5rem", borderRadius: "12px", maxWidth: "800px", margin: "0 auto" }}>
+          
+          {/* Official Header Kop Surat */}
+          <div className="report-header-section" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "3px double var(--color-primary)", paddingBottom: "1rem", marginBottom: "2rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
+              <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "64px", height: "64px" }} />
+              <div style={{ textAlign: "left" }}>
+                <h1 style={{ fontSize: "1.5rem", fontWeight: "900", margin: "0", color: "var(--color-gray-900)" }}>IBRA GLOBAL ENGLISH</h1>
+                <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", margin: "0" }}>LEARNING CENTRE BOBONG</p>
+                <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", margin: "2px 0 0" }}>Jl. Raya Bobong, Kabupaten Pulau Taliabu, Maluku Utara</p>
+              </div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>E-RAPOR DIGITAL</h2>
+              <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", margin: "0" }}>REKAP HASIL EVALUASI MODUL</p>
+            </div>
+          </div>
+
+          <div className="student-info-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "2rem", backgroundColor: "var(--color-gray-50)", padding: "1.25rem", borderRadius: "8px" }}>
+            <div>
+              <p style={{ margin: "0 0 6px" }}><strong>Nama Siswa:</strong> {printReport.students?.name}</p>
+              <p style={{ margin: "0" }}><strong>Program Belajar:</strong> {printReport.students?.program} {printReport.students?.age ? `(Usia ${printReport.students?.age} tahun)` : ""}</p>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <p style={{ margin: "0 0 6px" }}><strong>ID Evaluasi:</strong> IBRA-REP-{printReport.id.slice(0, 8).toUpperCase()}</p>
+              <p style={{ margin: "0" }}><strong>Tanggal Terbit:</strong> {new Date(printReport.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</p>
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: "1.1rem", fontWeight: "800", borderBottom: "1.5px solid var(--color-gray-300)", paddingBottom: "0.5rem", marginBottom: "1.5rem", color: "var(--color-gray-800)" }}>
+            A. DETAIL EVALUASI KOMPETENSI MODUL: {printReport.module_name.toUpperCase()}
+          </h3>
+
+          {/* Grid Layout containing Score Cards on Left and visual SVG Radar Chart on Right */}
+          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center", marginBottom: "2.5rem" }}>
+            
+            {/* Scores List */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+                <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Speaking</p>
+              </div>
+              <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+                <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.grammar_score}</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Grammar</p>
+              </div>
+              <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+                <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.vocabulary_score}</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Vocabulary</p>
+              </div>
+              <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+                <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.active_score}</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>Keaktifan</p>
+              </div>
+            </div>
+
+            {/* Visual SVG Radar Chart */}
+            <div>
+              <RadarChart 
+                speaking={printReport.speaking_score} 
+                grammar={printReport.grammar_score} 
+                vocabulary={printReport.vocabulary_score} 
+                active={printReport.active_score} 
+              />
+            </div>
+
+          </div>
+
+          <h3 style={{ fontSize: "1.1rem", fontWeight: "800", borderBottom: "1.5px solid var(--color-gray-300)", paddingBottom: "0.5rem", marginBottom: "1rem", color: "var(--color-gray-800)" }}>
+            B. ULASAN & CATATAN MASUKAN TUTOR
+          </h3>
+
+          <div style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", margin: "1.5rem 0 3rem", backgroundColor: "var(--color-gray-50)", padding: "1.25rem", borderRadius: "0 8px 8px 0" }}>
+            <p style={{ fontSize: "0.95rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
+              "{printReport.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus latih kemampuan bercakapnya."}"
+            </p>
+          </div>
+
+          {/* Signature Block */}
+          <div className="signature-block" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", marginTop: "4rem" }}>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ margin: "0 0 4.5rem" }}>Mengetahui,<br /><strong>Orang Tua / Wali Siswa</strong></p>
+              <p style={{ margin: "0", fontWeight: "bold" }}>___________________________</p>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ margin: "0 0 4.5rem" }}>Bobong, Pulau Taliabu<br /><strong>Tutor Pendamping</strong></p>
+              <p style={{ margin: "0", fontWeight: "bold" }}>___________________________</p>
+              <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", margin: "4px 0 0" }}>Ibra Global English</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -341,12 +518,32 @@ export default function ReportCardManagement() {
                       {report.tutor_notes || "-"}
                     </td>
                     <td style={{ textAlign: "right" }}>
-                      <button
-                        className="btn-portal-danger"
-                        onClick={() => handleDeleteReport(report.id, report.module_name, report.students?.name)}
-                      >
-                        Hapus
-                      </button>
+                      <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+                        <button
+                          className="btn-portal-outline"
+                          style={{ 
+                            padding: "0.35rem 0.75rem", 
+                            fontSize: "0.8rem", 
+                            display: "inline-flex", 
+                            gap: "0.25rem", 
+                            alignItems: "center", 
+                            borderColor: "var(--color-primary)", 
+                            color: "var(--color-primary)",
+                            cursor: "pointer"
+                          }}
+                          onClick={() => triggerPrint(report)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                          Cetak
+                        </button>
+                        <button
+                          className="btn-portal-danger"
+                          style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", cursor: "pointer" }}
+                          onClick={() => handleDeleteReport(report.id, report.module_name, report.students?.name)}
+                        >
+                          Hapus
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
