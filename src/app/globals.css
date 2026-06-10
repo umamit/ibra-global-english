@@ -2725,6 +2725,53 @@ textarea:focus-visible {
   .sig-space {
     height: 70px;
   }
+
+  /* Force exactly 1 page printing by compacting page elements */
+  @page {
+    size: A4;
+    margin: 1.2cm 1.5cm !important;
+  }
+
+  .printable-report {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .printable-report .report-header-section {
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .printable-report .student-info-grid {
+    margin-bottom: 1rem !important;
+    padding: 0.75rem 1.25rem !important;
+  }
+
+  .printable-report h3 {
+    font-size: 1rem !important;
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+
+  .printable-report .report-scores-grid {
+    margin-bottom: 1rem !important;
+    gap: 1rem !important;
+  }
+
+  .printable-report .report-notes-container {
+    margin: 0.75rem 0 !important;
+    padding: 0.75rem 1.25rem !important;
+  }
+
+  .printable-report .signature-block {
+    margin-top: 1.5rem !important;
+    gap: 2rem !important;
+  }
+
+  .printable-report svg {
+    transform: scale(0.9) !important;
+    transform-origin: center !important;
+  }
 }
 
 /* ==========================================
