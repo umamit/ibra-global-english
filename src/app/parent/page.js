@@ -83,6 +83,45 @@ export default function ParentPortal() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      if (typeof window === "undefined") return;
+
+      const loginTimeStr = sessionStorage.getItem("login_time");
+      if (!loginTimeStr) {
+        // Tab baru dibuka, sessionStorage kosong! Log out otomatis.
+        await supabase.auth.signOut();
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        window.location.href = "/login";
+        return;
+      }
+
+      // Check max-age 1 jam (3600000 ms)
+      const loginTime = parseInt(loginTimeStr);
+      const oneHour = 3600 * 1000;
+      if (Date.now() - loginTime > oneHour) {
+        await supabase.auth.signOut();
+        sessionStorage.removeItem("login_time");
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        alert("Sesi login Anda telah berakhir (maksimal 1 jam). Silakan masuk kembali.");
+        window.location.href = "/login";
+      }
+    };
+
+    checkSession();
+    const interval = setInterval(checkSession, 15000); // Cek setiap 15 detik
+
+    // Cleanup: jika berpindah rute keluar dari rute /parent
+    return () => {
+      clearInterval(interval);
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/parent")) {
+        supabase.auth.signOut();
+        sessionStorage.clear();
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+    };
+  }, [supabase]);
   const [attendance, setAttendance] = useState([]);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -241,6 +280,10 @@ export default function ParentPortal() {
   const handleLogout = async () => {
     if (confirm("Apakah Anda yakin ingin keluar dari portal Orang Tua?")) {
       await supabase.auth.signOut();
+      if (typeof window !== "undefined") {
+        sessionStorage.clear();
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
       router.push("/login");
       router.refresh();
     }

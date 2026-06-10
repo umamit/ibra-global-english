@@ -28,6 +28,22 @@ export default function LoginPage() {
     document.documentElement.setAttribute("data-theme", initialTheme);
   }, []);
 
+  // Bersihkan sisa sesi saat masuk ke halaman login (untuk back browser logout)
+  useEffect(() => {
+    const clearAuth = async () => {
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.error("Kesalahan keluar sesi pada login page:", err);
+      }
+      if (typeof window !== "undefined") {
+        sessionStorage.clear();
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+    };
+    clearAuth();
+  }, []);
+
   // Fungsi toggle tema mandiri
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -60,6 +76,12 @@ export default function LoginPage() {
 
       const user = data.user;
       const role = user?.user_metadata?.role || "parent";
+
+      // Catat waktu login untuk durasi 1 jam dan tab close detection
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("login_time", Date.now().toString());
+        document.cookie = `login_time=active; path=/; max-age=3600; SameSite=Lax`;
+      }
 
       setSuccessBanner("Masuk berhasil! Mengalihkan ke halaman dashboard...");
 

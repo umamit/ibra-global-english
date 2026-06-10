@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
@@ -11,9 +11,52 @@ export default function AdminLayout({ children }) {
   const supabase = createClient();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  useEffect(() => {
+    const checkSession = async () => {
+      if (typeof window === "undefined") return;
+
+      const loginTimeStr = sessionStorage.getItem("login_time");
+      if (!loginTimeStr) {
+        // Tab baru dibuka, sessionStorage kosong! Log out otomatis.
+        await supabase.auth.signOut();
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        window.location.href = "/login";
+        return;
+      }
+
+      // Check max-age 1 jam (3600000 ms)
+      const loginTime = parseInt(loginTimeStr);
+      const oneHour = 3600 * 1000;
+      if (Date.now() - loginTime > oneHour) {
+        await supabase.auth.signOut();
+        sessionStorage.removeItem("login_time");
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        alert("Sesi login Admin Anda telah berakhir (maksimal 1 jam). Silakan masuk kembali.");
+        window.location.href = "/login";
+      }
+    };
+
+    checkSession();
+    const interval = setInterval(checkSession, 15000); // Cek setiap 15 detik
+
+    // Cleanup: jika pengguna berpindah rute keluar dari rute /admin (tombol back atau link)
+    return () => {
+      clearInterval(interval);
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/admin")) {
+        supabase.auth.signOut();
+        sessionStorage.clear();
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+    };
+  }, [supabase]);
+
   const handleLogout = async () => {
     if (confirm("Apakah Anda yakin ingin keluar dari portal Admin?")) {
       await supabase.auth.signOut();
+      if (typeof window !== "undefined") {
+        sessionStorage.clear();
+        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
       router.push("/login");
       router.refresh();
     }
