@@ -66,6 +66,18 @@ export default function StudentManagement() {
     fetchData();
   }, []);
 
+  // Lock body scroll when modal is open to prevent page scrolling behind it
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [modalOpen]);
+
   const handleOpenAddModal = () => {
     setEditingStudentId(null);
     setName("");

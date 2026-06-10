@@ -64,6 +64,18 @@ export default function AdminFinance() {
     setSelectedMonth(`${yyyy}-${mm}`);
   }, []);
 
+  // Lock body scroll when modal is open to prevent page scrolling behind it
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
+
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
     setTimeout(() => {
