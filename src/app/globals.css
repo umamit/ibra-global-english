@@ -2613,7 +2613,9 @@ textarea:focus-visible {
 
 /* Printing optimization for digital report cards */
 @media print {
-  .no-print {
+  .no-print,
+  .dashboard-sidebar,
+  .mobile-toggle-btn {
     display: none !important;
   }
   
@@ -2622,6 +2624,7 @@ textarea:focus-visible {
     padding: 0 !important;
     margin: 0 !important;
     min-height: auto !important;
+    display: block !important;
   }
   
   .printable-report {
