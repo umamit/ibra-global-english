@@ -125,6 +125,44 @@ export default function Home() {
     }
   }, []);
 
+  // Mencegah klik kanan, salin (copy), dan seret (drag) gambar di landing page
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      // Izinkan klik kanan pada elemen input/textarea agar form pendaftaran tetap berfungsi normal
+      const target = e.target;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+      }
+      e.preventDefault();
+    };
+
+    const handleCopy = (e) => {
+      // Izinkan copy teks pada elemen input/textarea
+      const target = e.target;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+      }
+      e.preventDefault();
+    };
+
+    const handleDragStart = (e) => {
+      const target = e.target;
+      if (target.tagName === 'IMG') {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("copy", handleCopy);
+    document.addEventListener("dragstart", handleDragStart);
+
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("copy", handleCopy);
+      document.removeEventListener("dragstart", handleDragStart);
+    };
+  }, []);
+
   const openLightbox = (src, caption) => {
     setLightbox({ isOpen: true, src, caption });
   };
@@ -134,7 +172,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div className="nocopy-container">
       <MarqueeBanner />
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       <main>
@@ -160,6 +198,6 @@ export default function Home() {
         caption={lightbox.caption} 
         onClose={closeLightbox} 
       />
-    </>
+    </div>
   );
 }

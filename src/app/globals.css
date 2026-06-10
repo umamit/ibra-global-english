@@ -3380,3 +3380,21 @@ textarea:focus-visible {
   transform: scale(1.02);
 }
 
+/* No Copy & No Selection Protection (Hanya untuk Landing Page) */
+.nocopy-container {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}
+
+.nocopy-container input,
+.nocopy-container textarea,
+.nocopy-container select,
+.nocopy-container [contenteditable="true"] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
