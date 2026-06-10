@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-export default function Header({ theme, toggleTheme }) {
+export default function Header({ theme, toggleTheme, hasMarquee }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -44,7 +44,7 @@ export default function Header({ theme, toggleTheme }) {
 
   return (
     <>
-      <header id="header" className={isScrolled ? "scrolled" : ""}>
+      <header id="header" className={`${isScrolled ? "scrolled" : ""} ${hasMarquee ? "has-marquee" : ""}`}>
         <div className="container nav-container">
           <a href="#home" className="logo-link" id="logo-nav">
             <img src="/assets/logo.png" alt="Ibra Global English Logo" className="logo-img" />

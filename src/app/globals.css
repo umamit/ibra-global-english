@@ -151,6 +151,14 @@ header {
   transition: var(--transition-normal);
 }
 
+header.has-marquee {
+  top: 40px;
+}
+
+header.has-marquee.scrolled {
+  top: 0;
+}
+
 header.scrolled {
   background-color: var(--color-header-bg-scrolled);
   box-shadow: var(--shadow-md);
@@ -3356,4 +3364,65 @@ textarea:focus-visible {
   }
   .ai-chat-fab { bottom: 20px; right: 16px; width: 54px; height: 54px; }
   .ai-chat-tooltip { display: none; }
+}
+
+/* Announcement Marquee Banner Styles */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  background: linear-gradient(90deg, #165b6a 0%, #216c7e 50%, #165b6a 100%);
+  color: #ffffff;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-primary-dark);
+  position: relative;
+  z-index: 90;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 45s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.marquee-content-block {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  padding-right: 4rem;
+}
+
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.marquee-divider {
+  color: #ffd700;
+  font-size: 1rem;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Dark Mode adjustment for Marquee Container */
+[data-theme="dark"] .marquee-container {
+  background: linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  border-bottom: 2px solid rgba(33,108,126,0.3);
 }
