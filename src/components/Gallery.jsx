@@ -63,6 +63,13 @@ const GALLERY_DATA = [
 export default function Gallery({ onOpenLightbox }) {
   const supabase = createClient();
   const [galleryItems, setGalleryItems] = useState(GALLERY_DATA);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Touch swiping states
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const minSwipeDistance = 50;
 
   useEffect(() => {
     async function fetchGallery() {
@@ -91,6 +98,61 @@ export default function Gallery({ onOpenLightbox }) {
     fetchGallery();
   }, []);
 
+  const handleNext = () => {
+    setGalleryItems((items) => {
+      if (items.length <= 1) return items;
+      setActiveIndex((prev) => (prev + 1) % items.length);
+      return items;
+    });
+  };
+
+  const handlePrev = () => {
+    setGalleryItems((items) => {
+      if (items.length <= 1) return items;
+      setActiveIndex((prev) => (prev - 1 + items.length) % items.length);
+      return items;
+    });
+  };
+
+  // Autoplay effect
+  useEffect(() => {
+    if (galleryItems.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % galleryItems.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [galleryItems.length]);
+
+  const handleCardClick = (idx) => {
+    if (idx === activeIndex) {
+      onOpenLightbox(galleryItems[idx].full, galleryItems[idx].caption);
+    } else {
+      setActiveIndex(idx);
+    }
+  };
+
+  // Touch gesture handlers
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      handleNext();
+    } else if (isRightSwipe) {
+      handlePrev();
+    }
+  };
+
   return (
     <section id="gallery" className="gallery-section">
       <div className="container">
@@ -98,23 +160,96 @@ export default function Gallery({ onOpenLightbox }) {
           <h2>Galeri Kegiatan Kami di Bobong</h2>
           <p>Melihat lebih dekat keseruan belajar bahasa Inggris di Ibra Global English Bobong</p>
         </div>
-        
-        <div className="gallery-grid">
-          {galleryItems.map((item, idx) => (
-            <div 
-              key={idx}
-              className="gallery-item" 
-              data-aos="fade-up"
-              data-aos-delay={item.delay}
-              onClick={() => onOpenLightbox(item.full, item.caption)}
-            >
-              <img src={item.thumb} alt={item.alt} loading="lazy" />
-              <div className="gallery-overlay">
-                <h4>{item.title}</h4>
-                <p>{item.desc}</p>
+
+        <div className="gallery-stack-wrapper" data-aos="fade-up">
+          <div 
+            className="gallery-stack-container"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {galleryItems.map((item, idx) => {
+              // Calculate relative offset in circular stack
+              let offset = idx - activeIndex;
+              if (offset < 0) offset += galleryItems.length;
+
+              let cardStyle = {};
+              if (offset === 0) {
+                // Top Card
+                cardStyle = {
+                  transform: "translate3d(0, 0, 0) scale(1)",
+                  zIndex: 10,
+                  opacity: 1,
+                  pointerEvents: "auto",
+                };
+              } else if (offset === 1) {
+                // Second Card
+                cardStyle = {
+                  transform: "translate3d(0, 15px, -15px) scale(0.95)",
+                  zIndex: 9,
+                  opacity: 0.85,
+                  pointerEvents: "auto",
+                };
+              } else if (offset === 2) {
+                // Third Card
+                cardStyle = {
+                  transform: "translate3d(0, 30px, -30px) scale(0.9)",
+                  zIndex: 8,
+                  opacity: 0.65,
+                  pointerEvents: "auto",
+                };
+              } else {
+                // Hidden Cards behind
+                cardStyle = {
+                  transform: "translate3d(0, 45px, -45px) scale(0.85)",
+                  zIndex: 1,
+                  opacity: 0,
+                  pointerEvents: "none",
+                };
+              }
+
+              return (
+                <div 
+                  key={idx}
+                  className="gallery-stack-card"
+                  style={cardStyle}
+                  onClick={() => handleCardClick(idx)}
+                >
+                  <div className="gallery-card-image-wrap">
+                    <img src={item.thumb} alt={item.alt} />
+                    <div className="gallery-card-overlay">
+                      <h4>{item.title}</h4>
+                      <p>{item.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {galleryItems.length > 1 && (
+            <div className="gallery-controls-row">
+              <button className="gallery-arrow-btn prev" onClick={handlePrev} aria-label="Foto Sebelumnya">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m15 18-6-6 6-6"/>
+                </svg>
+              </button>
+              <div className="gallery-dots">
+                {galleryItems.map((_, idx) => (
+                  <span 
+                    key={idx} 
+                    className={`gallery-dot ${idx === activeIndex ? "active" : ""}`}
+                    onClick={() => setActiveIndex(idx)}
+                  />
+                ))}
               </div>
+              <button className="gallery-arrow-btn next" onClick={handleNext} aria-label="Foto Selanjutnya">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </section>
