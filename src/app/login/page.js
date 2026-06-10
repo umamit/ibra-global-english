@@ -77,6 +77,27 @@ export default function LoginPage() {
       const user = data.user;
       const role = user?.user_metadata?.role || "parent";
 
+      // Jika bukan admin, cek mode maintenance sebelum melanjutkan
+      if (role !== "admin") {
+        try {
+          const { data: maintData } = await supabase
+            .from("landing_settings")
+            .select("value")
+            .eq("key", "maintenance_mode")
+            .single();
+
+          if (maintData?.value === "true") {
+            // Keluarkan sesi yang baru dibuat agar tidak tersimpan
+            await supabase.auth.signOut();
+            setErrorBanner("Website sedang dalam pemeliharaan. Portal orang tua sementara tidak dapat diakses. Silakan coba lagi nanti atau hubungi admin.");
+            setLoading(false);
+            return;
+          }
+        } catch (_) {
+          // Jika gagal query, lanjutkan login (fail open)
+        }
+      }
+
       // Catat waktu login untuk durasi 1 jam dan tab close detection
       if (typeof window !== "undefined") {
         sessionStorage.setItem("login_time", Date.now().toString());
