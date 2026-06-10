@@ -177,6 +177,22 @@ export default function LandingPageCMS() {
     fetchTestimonials();
   }, []);
 
+  const getCanvaEmbedUrl = (url) => {
+    if (!url) return null;
+    if (url.includes("<iframe")) {
+      const match = url.match(/src="([^"]+)"/);
+      if (match && match[1]) return match[1];
+    }
+    if (url.includes("canva.com/design/")) {
+      let cleanUrl = url.split("?")[0];
+      if (cleanUrl.endsWith("/view") || cleanUrl.endsWith("/watch")) {
+        return `${cleanUrl}?embed`;
+      }
+      return `${cleanUrl}/view?embed`;
+    }
+    return null;
+  };
+
   // ----------------------------------------------------
   // UPLOAD HELPER FUNCTION
   // ----------------------------------------------------
@@ -855,8 +871,16 @@ export default function LandingPageCMS() {
                   <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Brosur Promosi (Tampilan di Bawah CTA Banner)</label>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "center" }}>
                     {ctaBrochureImage && (
-                      <div style={{ width: "160px", height: "90px", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--color-gray-300)" }}>
-                        <img src={ctaBrochureImage} alt="Brochure Preview" style={{ width: "100%", height: "100%", objectFit: "contain", backgroundColor: "var(--color-gray-50)" }} />
+                      <div style={{ width: "160px", height: "90px", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--color-gray-300)", position: "relative" }}>
+                        {getCanvaEmbedUrl(ctaBrochureImage) ? (
+                          <iframe
+                            src={getCanvaEmbedUrl(ctaBrochureImage)}
+                            style={{ width: "100%", height: "100%", border: "none" }}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <img src={ctaBrochureImage} alt="Brochure Preview" style={{ width: "100%", height: "100%", objectFit: "contain", backgroundColor: "var(--color-gray-50)" }} />
+                        )}
                       </div>
                     )}
                     <div style={{ flex: 1, minWidth: "200px" }}>

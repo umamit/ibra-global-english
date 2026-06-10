@@ -34,6 +34,27 @@ export default function CTA() {
     fetchCTASettings();
   }, []);
 
+  const getCanvaEmbedUrl = (url) => {
+    if (!url) return null;
+    
+    // Jika berupa embed code/iframe penuh, ekstrak src-nya
+    if (url.includes("<iframe")) {
+      const match = url.match(/src="([^"]+)"/);
+      if (match && match[1]) return match[1];
+    }
+    
+    // Jika berupa link share biasa dari Canva
+    if (url.includes("canva.com/design/")) {
+      let cleanUrl = url.split("?")[0];
+      if (cleanUrl.endsWith("/view") || cleanUrl.endsWith("/watch")) {
+        return `${cleanUrl}?embed`;
+      }
+      return `${cleanUrl}/view?embed`;
+    }
+    
+    return null;
+  };
+
   const renderTitle = (text) => {
     if (text.includes('&')) {
       const [part1, part2] = text.split('&');
@@ -45,6 +66,8 @@ export default function CTA() {
     }
     return text;
   };
+
+  const canvaEmbedUrl = getCanvaEmbedUrl(ctaBrochureImage);
 
   return (
     <section className="cta-section" data-aos="fade-up">
@@ -83,14 +106,35 @@ export default function CTA() {
               boxShadow: "var(--shadow-xl)",
               border: "4px solid var(--color-white)",
               transition: "transform var(--transition-normal)",
+              aspectRatio: canvaEmbedUrl ? "16 / 9" : "auto",
+              position: "relative"
             }}
             data-aos="zoom-in"
           >
-            <img 
-              src={ctaBrochureImage} 
-              alt="Brosur Promosi Ibra Global English" 
-              style={{ width: "100%", height: "auto", display: "block" }} 
-            />
+            {canvaEmbedUrl ? (
+              <iframe 
+                src={canvaEmbedUrl} 
+                loading="lazy" 
+                style={{ 
+                  position: "absolute", 
+                  top: 0, 
+                  left: 0, 
+                  width: "100%", 
+                  height: "100%", 
+                  border: "none", 
+                  padding: 0, 
+                  margin: 0 
+                }} 
+                allowFullScreen 
+                allow="fullscreen"
+              />
+            ) : (
+              <img 
+                src={ctaBrochureImage} 
+                alt="Brosur Promosi Ibra Global English" 
+                style={{ width: "100%", height: "auto", display: "block" }} 
+              />
+            )}
           </div>
         )}
       </div>
