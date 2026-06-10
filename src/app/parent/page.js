@@ -917,7 +917,11 @@ export default function ParentPortal() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                     {getRecentMonths().map((month) => {
-                      const pay = parentPayments.find(p => p.month === month) || {
+                      const dbPay = parentPayments.find(p => p.month === month);
+                      const pay = dbPay ? {
+                        ...dbPay,
+                        amount: dbPay.status === "belum_bayar" ? parseInt(paymentSettings.payment_spp_amount || 150000) : dbPay.amount
+                      } : {
                         month,
                         amount: parseInt(paymentSettings.payment_spp_amount || 150000),
                         status: "belum_bayar",
@@ -931,7 +935,7 @@ export default function ParentPortal() {
                               {getMonthName(month)}
                             </p>
                             <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>
-                              Tagihan: Rp {parseInt(pay.amount || paymentSettings.payment_spp_amount || 150000).toLocaleString("id-ID")}
+                              Tagihan: Rp {parseInt(pay.amount).toLocaleString("id-ID")}
                             </p>
                           </div>
 

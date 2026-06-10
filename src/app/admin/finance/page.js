@@ -109,7 +109,14 @@ export default function AdminFinance() {
 
   // Map student with their payment record if it exists
   const getStudentPayment = (studentId) => {
-    return payments.find(p => p.student_id === studentId) || {
+    const pay = payments.find(p => p.student_id === studentId);
+    if (pay) {
+      return {
+        ...pay,
+        amount: pay.status === "belum_bayar" ? defaultSppAmount : pay.amount
+      };
+    }
+    return {
       student_id: studentId,
       month: selectedMonth,
       amount: defaultSppAmount,
@@ -208,11 +215,11 @@ export default function AdminFinance() {
 
   const handleQuickConfirmLunas = async (studentId) => {
     try {
-      const pay = payments.find(p => p.student_id === studentId) || {};
+      const pay = getStudentPayment(studentId);
       const payload = {
         student_id: studentId,
         month: selectedMonth,
-        amount: pay.amount || defaultSppAmount,
+        amount: pay.amount,
         status: "lunas",
         payment_method: pay.payment_method || "Transfer Bank",
         receipt_url: pay.receipt_url || null,
