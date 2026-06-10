@@ -3455,7 +3455,7 @@ textarea:focus-visible {
 .ai-chat-fab {
   position: fixed;
   bottom: 28px;
-  right: 28px;
+  left: 28px;
   z-index: 9998;
   width: 60px;
   height: 60px;
@@ -3505,7 +3505,7 @@ textarea:focus-visible {
 .ai-chat-tooltip {
   position: fixed;
   bottom: 39px;
-  right: 102px;
+  left: 102px;
   background: rgba(17,24,39,0.92);
   color: #fff;
   padding: 0.55rem 0.9rem;
@@ -3522,21 +3522,21 @@ textarea:focus-visible {
   content: "";
   position: absolute;
   top: 50%;
-  left: 100%;
+  right: 100%;
   transform: translateY(-50%);
   border: 6px solid transparent;
-  border-left-color: rgba(17,24,39,0.92);
-  border-right: 0;
+  border-right-color: rgba(17,24,39,0.92);
+  border-left: 0;
 }
 @keyframes tooltip-in {
-  from { opacity:0; transform: translateX(8px); }
+  from { opacity:0; transform: translateX(-8px); }
   to   { opacity:1; transform: translateX(0); }
 }
 
 .ai-chat-window {
   position: fixed;
   bottom: 100px;
-  right: 28px;
+  left: 28px;
   z-index: 9999;
   width: 380px;
   max-height: 580px;
@@ -3550,7 +3550,7 @@ textarea:focus-visible {
   flex-direction: column;
   overflow: hidden;
   transform: scale(0.8) translateY(20px);
-  transform-origin: bottom right;
+  transform-origin: bottom left;
   opacity: 0;
   pointer-events: none;
   transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
@@ -3868,21 +3868,21 @@ textarea:focus-visible {
   background: rgba(30,41,59,0.97);
 }
 [data-theme="dark"] .ai-chat-tooltip::after {
-  border-left-color: rgba(30,41,59,0.97);
+  border-right-color: rgba(30,41,59,0.97);
 }
 
 /* Mobile */
 @media (max-width: 480px) {
   .ai-chat-window {
     width: calc(100vw - 24px);
-    right: 12px;
+    left: 12px;
     bottom: 90px;
     max-height: calc(100vh - 120px);
     border-radius: 16px;
   }
   .ai-chat-fab {
     bottom: 20px;
-    right: 16px;
+    left: 16px;
     width: 54px;
     height: 54px;
   }
