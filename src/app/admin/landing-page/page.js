@@ -12,6 +12,10 @@ export default function LandingPageCMS() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
 
+  // Maintenance mode
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [savingMaintenance, setSavingMaintenance] = useState(false);
+
   // ----------------------------------------------------
   // FORM STATES: HERO & CONTACT PROFILE
   // ----------------------------------------------------
@@ -115,6 +119,7 @@ export default function LandingPageCMS() {
         setCtaTitle(settings.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
         setCtaDesc(settings.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
         setCtaBrochureImage(settings.cta_brochure_image || "/assets/brochure.png");
+        setMaintenanceMode(settings.maintenance_mode === "true");
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
@@ -491,6 +496,13 @@ export default function LandingPageCMS() {
           style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
         >
           Ulasan & Testimoni
+        </button>
+        <button
+          onClick={() => setActiveTab("maintenance")}
+          className={`btn-portal-outline ${activeTab === "maintenance" ? "active" : ""}`}
+          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap", borderColor: maintenanceMode ? "#ef4444" : undefined, color: maintenanceMode ? "#ef4444" : undefined }}
+        >
+          {maintenanceMode ? "🔴" : "🟢"} Mode Maintenance
         </button>
       </div>
 
@@ -1187,6 +1199,114 @@ export default function LandingPageCMS() {
                 </table>
               </div>
             )}
+          </div>
+
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB 4: MODE MAINTENANCE
+          ===================================================================== */}
+      {activeTab === "maintenance" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+
+          {/* Status card */}
+          <div className="portal-card" style={{
+            padding: "2rem",
+            borderLeft: `5px solid ${maintenanceMode ? "#ef4444" : "#22c55e"}`,
+            background: maintenanceMode
+              ? "linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(255,255,255,0) 100%)"
+              : "linear-gradient(135deg, rgba(34,197,94,0.06) 0%, rgba(255,255,255,0) 100%)"
+          }}>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
+                  <span style={{
+                    width: "12px", height: "12px", borderRadius: "50%",
+                    backgroundColor: maintenanceMode ? "#ef4444" : "#22c55e",
+                    display: "inline-block",
+                    boxShadow: `0 0 0 4px ${maintenanceMode ? "rgba(239,68,68,0.2)" : "rgba(34,197,94,0.2)"}`,
+                    animation: "pulse-dot 2s infinite"
+                  }} />
+                  <span style={{ fontWeight: "800", fontSize: "1.1rem", color: "var(--color-gray-900)" }}>
+                    Status Website: {maintenanceMode ? "🔴 Mode Maintenance AKTIF" : "🟢 Website Normal (Online)"}
+                  </span>
+                </div>
+                <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", maxWidth: "480px", lineHeight: "1.6" }}>
+                  {maintenanceMode
+                    ? "Website sedang dalam mode maintenance. Pengunjung umum & orang tua akan diarahkan ke halaman maintenance. Admin tetap bisa login dan mengakses dashboard."
+                    : "Website berjalan normal. Semua pengguna dapat mengakses landing page dan portal orang tua."}
+                </p>
+              </div>
+
+              {/* Toggle switch */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+                <button
+                  onClick={async () => {
+                    const newValue = !maintenanceMode;
+                    setSavingMaintenance(true);
+                    try {
+                      const { error } = await supabase.from("landing_settings").upsert([
+                        { key: "maintenance_mode", value: String(newValue) }
+                      ]);
+                      if (error) throw error;
+                      setMaintenanceMode(newValue);
+                      showToast(newValue ? "Mode Maintenance DIAKTIFKAN. Website tidak dapat diakses publik." : "Mode Maintenance DINONAKTIFKAN. Website kembali online!", newValue ? "error" : "success");
+                    } catch (err) {
+                      showToast("Gagal mengubah mode maintenance: " + err.message, "error");
+                    } finally {
+                      setSavingMaintenance(false);
+                    }
+                  }}
+                  disabled={savingMaintenance}
+                  style={{
+                    position: "relative",
+                    width: "72px", height: "38px",
+                    borderRadius: "100px",
+                    border: "none",
+                    cursor: savingMaintenance ? "not-allowed" : "pointer",
+                    backgroundColor: maintenanceMode ? "#ef4444" : "#22c55e",
+                    transition: "background-color 0.3s",
+                    padding: 0,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
+                  }}
+                >
+                  <span style={{
+                    position: "absolute",
+                    top: "4px",
+                    left: maintenanceMode ? "38px" : "4px",
+                    width: "30px", height: "30px",
+                    borderRadius: "50%",
+                    backgroundColor: "white",
+                    transition: "left 0.3s",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
+                  }} />
+                </button>
+                <span style={{ fontSize: "0.75rem", fontWeight: "700", color: maintenanceMode ? "#ef4444" : "#22c55e" }}>
+                  {savingMaintenance ? "Menyimpan..." : (maintenanceMode ? "MAINTENANCE" : "ONLINE")}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Info card */}
+          <div className="portal-card" style={{ padding: "1.5rem" }}>
+            <h3 style={{ fontWeight: "800", fontSize: "1rem", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
+              ℹ️ Cara Kerja Mode Maintenance
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {[
+                { icon: "🌐", text: "Landing page utama (/) akan menampilkan halaman maintenance yang elegan." },
+                { icon: "👨‍💼", text: "Admin tetap bisa login dan mengakses dashboard secara penuh." },
+                { icon: "👪", text: "Orang tua yang sudah login atau mencoba login akan diarahkan ke halaman maintenance." },
+                { icon: "📞", text: "Halaman maintenance menampilkan tombol WhatsApp agar orang tua tetap bisa menghubungi." },
+              ].map((item, i) => (
+                <div key={i} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
+                  <span style={{ fontSize: "1.1rem", flexShrink: 0 }}>{item.icon}</span>
+                  <p style={{ fontSize: "0.875rem", color: "var(--color-gray-600)", lineHeight: "1.6" }}>{item.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>

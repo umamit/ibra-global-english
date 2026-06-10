@@ -132,6 +132,59 @@ export async function proxy(request) {
     }
   }
 
+  // =====================================================================
+  // 4. CEK MODE MAINTENANCE
+  // =====================================================================
+  const isMaintenancePage = pathname === "/maintenance";
+  const isAdminPath = pathname.startsWith("/admin");
+  const isLoginPage = pathname === "/login";
+  const isApiPath = pathname.startsWith("/api");
+
+  // Hanya cek maintenance untuk halaman publik (bukan admin, bukan API, bukan halaman maintenance itu sendiri)
+  if (!isMaintenancePage && !isAdminPath && !isApiPath) {
+    try {
+      const { data: maintenanceData } = await supabase
+        .from("landing_settings")
+        .select("value")
+        .eq("key", "maintenance_mode")
+        .single();
+
+      const isMaintenance = maintenanceData?.value === "true";
+
+      if (isMaintenance) {
+        // Admin tetap bisa mengakses login page
+        if (isLoginPage && role === "admin") {
+          return response;
+        }
+        // Semua halaman non-admin saat maintenance → redirect ke /maintenance
+        // KECUALI: jika sudah di halaman login dan belum login (biarkan mereka mencoba login admin)
+        if (!isLoginPage || role === "parent") {
+          return NextResponse.redirect(new URL("/maintenance", request.url));
+        }
+      }
+    } catch (_) {
+      // Jika gagal query, biarkan halaman tetap berjalan normal (fail open)
+    }
+  }
+
+  // Jika maintenance page diakses tapi mode maintenance OFF → redirect ke beranda
+  if (isMaintenancePage) {
+    try {
+      const { data: maintenanceData } = await supabase
+        .from("landing_settings")
+        .select("value")
+        .eq("key", "maintenance_mode")
+        .single();
+
+      const isMaintenance = maintenanceData?.value === "true";
+      if (!isMaintenance) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    } catch (_) {
+      // Jika gagal query, tampilkan saja halaman maintenance
+    }
+  }
+
   // Selalu tambahkan header penemuan agen AI (Link header) pada halaman HTML beranda utama
   if (isHome) {
     response.headers.set(
