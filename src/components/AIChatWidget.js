@@ -25,6 +25,7 @@ export default function AIChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(1);
   const [hasOpened, setHasOpened] = useState(false);
+  const [activeSpeechId, setActiveSpeechId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -40,13 +41,71 @@ export default function AIChatWidget() {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   const handleOpen = () => {
     setIsOpen(true);
     setHasOpened(true);
     setUnreadCount(0);
   };
 
-  const handleClose = () => setIsOpen(false);
+  const handleClose = () => {
+    setIsOpen(false);
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setActiveSpeechId(null);
+  };
+
+  const handleToggleSpeech = (msgId, text) => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+
+    if (activeSpeechId === msgId) {
+      window.speechSynthesis.cancel();
+      setActiveSpeechId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const cleanText = text
+      .replace(/\*\*/g, "")
+      .replace(/\*/g, "")
+      .replace(/`/g, "")
+      .replace(/[👋🤖📚🗣️✅🎯⚠️💡]/g, "")
+      .replace(/\n/g, " ");
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+
+    // Detect language: simple heuristic
+    const englishWords = ["hello", "english", "program", "course", "teens", "kids", "speaking", "grammar", "vocabulary", "class", "introduce"];
+    const isEn = englishWords.some(word => cleanText.toLowerCase().includes(word));
+    utterance.lang = isEn ? "en-US" : "id-ID";
+
+    // Set voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const targetVoice = voices.find(v => v.lang.startsWith(utterance.lang));
+    if (targetVoice) {
+      utterance.voice = targetVoice;
+    }
+
+    utterance.onend = () => {
+      setActiveSpeechId(null);
+    };
+
+    utterance.onerror = () => {
+      setActiveSpeechId(null);
+    };
+
+    setActiveSpeechId(msgId);
+    window.speechSynthesis.speak(utterance);
+  };
 
   const handleSend = async () => {
     const text = input.trim();
@@ -173,7 +232,33 @@ export default function AIChatWidget() {
               )}
               <div className="ai-msg-bubble-wrap">
                 <div className="ai-msg-bubble" dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />
-                <div className="ai-msg-time">{formatTime(msg.timestamp)}</div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", marginTop: "4px" }}>
+                  <div className="ai-msg-time">{formatTime(msg.timestamp)}</div>
+                  {msg.role === "assistant" && (
+                    <button
+                      onClick={() => handleToggleSpeech(msg.id, msg.content)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: activeSpeechId === msg.id ? "var(--color-primary)" : "var(--color-gray-400)",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "2px",
+                        marginRight: msg.role === "assistant" ? "0" : "auto",
+                        transition: "color 0.2s",
+                      }}
+                      title={activeSpeechId === msg.id ? "Hentikan Suara" : "Dengarkan Suara"}
+                      aria-label={activeSpeechId === msg.id ? "Hentikan Suara" : "Dengarkan Suara"}
+                    >
+                      {activeSpeechId === msg.id ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
