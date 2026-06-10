@@ -1302,17 +1302,23 @@ footer {
 .gallery-stack-container {
   position: relative;
   width: 100%;
-  max-width: 600px;
-  aspect-ratio: 4 / 3;
-  margin: 2rem auto;
+  max-width: 850px;
+  aspect-ratio: 16 / 10;
+  margin: 2.5rem auto;
   perspective: 1200px;
   transform-style: preserve-3d;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 992px) {
   .gallery-stack-container {
     max-width: 90%;
-    aspect-ratio: 1.15;
+  }
+}
+
+@media (max-width: 576px) {
+  .gallery-stack-container {
+    max-width: 95%;
+    aspect-ratio: 1.25;
   }
 }
 
