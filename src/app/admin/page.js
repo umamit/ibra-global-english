@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
+import { createAdminClient as createClient } from "@/utils/supabase/client";
 
 export default function AdminDashboard() {
   const supabase = createClient();
