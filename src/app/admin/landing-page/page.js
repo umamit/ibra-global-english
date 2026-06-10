@@ -119,13 +119,23 @@ export default function LandingPageCMS() {
         setCtaTitle(settings.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
         setCtaDesc(settings.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
         setCtaBrochureImage(settings.cta_brochure_image || "/assets/brochure.png");
-        setMaintenanceMode(settings.maintenance_mode === "true");
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
       showToast("Gagal memuat beberapa pengaturan landing page dari database.", "error");
     } finally {
       setLoading(false);
+    }
+
+    // Fetch maintenance mode status dari API route (pakai service role, bypass RLS)
+    try {
+      const res = await fetch("/api/maintenance");
+      if (res.ok) {
+        const data = await res.json();
+        setMaintenanceMode(data.maintenance === true);
+      }
+    } catch (_) {
+      // Biarkan default false jika gagal
     }
   };
 
@@ -1246,10 +1256,13 @@ export default function LandingPageCMS() {
                     const newValue = !maintenanceMode;
                     setSavingMaintenance(true);
                     try {
-                      const { error } = await supabase.from("landing_settings").upsert([
-                        { key: "maintenance_mode", value: String(newValue) }
-                      ]);
-                      if (error) throw error;
+                      const res = await fetch("/api/maintenance", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ enabled: newValue }),
+                      });
+                      const result = await res.json();
+                      if (!res.ok) throw new Error(result.error || "Gagal mengubah mode maintenance");
                       setMaintenanceMode(newValue);
                       showToast(newValue ? "Mode Maintenance DIAKTIFKAN. Website tidak dapat diakses publik." : "Mode Maintenance DINONAKTIFKAN. Website kembali online!", newValue ? "error" : "success");
                     } catch (err) {
