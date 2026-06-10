@@ -179,6 +179,9 @@ export default function AdminCalendar() {
     setEndDate(getLocalDateString(endObj));
     setEndTime(endObj.toTimeString().slice(0, 5));
     setInstructor(sched.instructor || "");
+    setIsRecurring(false);
+    setRecurrenceType("weekly");
+    setRecurrenceCount(4);
     setModalOpen(true);
   };
 
@@ -211,7 +214,44 @@ export default function AdminCalendar() {
           .eq("id", selectedSchedule.id);
 
         if (error) throw error;
-        setStatusMsg({ type: "success", text: "Jadwal belajar berhasil diperbarui!" });
+
+        if (isRecurring) {
+          const payloads = [];
+          const baseStart = new Date(`${startDate}T${startTime}:00`);
+          const baseEnd = new Date(`${endDate}T${endTime}:00`);
+
+          for (let i = 1; i < recurrenceCount; i++) {
+            const currentStart = new Date(baseStart);
+            const currentEnd = new Date(baseEnd);
+
+            if (recurrenceType === "weekly") {
+              currentStart.setDate(baseStart.getDate() + (i * 7));
+              currentEnd.setDate(baseEnd.getDate() + (i * 7));
+            } else if (recurrenceType === "daily") {
+              currentStart.setDate(baseStart.getDate() + i);
+              currentEnd.setDate(baseEnd.getDate() + i);
+            }
+
+            payloads.push({
+              title: title.trim(),
+              description: description.trim() || null,
+              type,
+              program,
+              start_time: currentStart.toISOString(),
+              end_time: currentEnd.toISOString(),
+              instructor: instructor.trim() || null
+            });
+          }
+
+          const { error: recurrError } = await supabase
+            .from("academic_schedules")
+            .insert(payloads);
+
+          if (recurrError) throw recurrError;
+          setStatusMsg({ type: "success", text: `Jadwal diperbarui dan ${recurrenceCount - 1} perulangan baru dibuat!` });
+        } else {
+          setStatusMsg({ type: "success", text: "Jadwal belajar berhasil diperbarui!" });
+        }
       } else {
         // Insert Mode
         if (isRecurring) {
@@ -578,58 +618,56 @@ export default function AdminCalendar() {
                 />
               </div>
 
-              {/* Pilihan Ulangi Agenda (Hanya untuk tambah agenda baru) */}
-              {!selectedSchedule && (
-                <div style={{ 
-                  marginBottom: "2rem", 
-                  padding: "1rem", 
-                  backgroundColor: "var(--color-gray-50)", 
-                  borderRadius: "var(--radius-md)", 
-                  border: "1px solid var(--color-gray-200)" 
-                }}>
-                  <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: "700", fontSize: "0.9rem", color: "var(--color-gray-800)" }}>
-                    <input
-                      type="checkbox"
-                      checked={isRecurring}
-                      onChange={(e) => setIsRecurring(e.target.checked)}
-                      style={{ accentColor: "var(--color-primary)", width: "16px", height: "16px" }}
-                    />
-                    <span>Ulangi agenda ini (Recurrence)</span>
-                  </label>
+              {/* Pilihan Ulangi Agenda */}
+              <div style={{ 
+                marginBottom: "2rem", 
+                padding: "1rem", 
+                backgroundColor: "var(--color-gray-50)", 
+                borderRadius: "var(--radius-md)", 
+                border: "1px solid var(--color-gray-200)" 
+              }}>
+                <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: "700", fontSize: "0.9rem", color: "var(--color-gray-800)" }}>
+                  <input
+                    type="checkbox"
+                    checked={isRecurring}
+                    onChange={(e) => setIsRecurring(e.target.checked)}
+                    style={{ accentColor: "var(--color-primary)", width: "16px", height: "16px" }}
+                  />
+                  <span>Ulangi agenda ini (Recurrence)</span>
+                </label>
 
-                  {isRecurring && (
-                    <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
-                      <div className="form-group">
-                        <label className="form-label" style={{ fontSize: "0.8rem" }}>Frekuensi Ulang</label>
-                        <select
-                          className="form-input"
-                          style={{ padding: "0.5rem", fontSize: "0.85rem" }}
-                          value={recurrenceType}
-                          onChange={(e) => setRecurrenceType(e.target.value)}
-                        >
-                          <option value="weekly">📅 Setiap Minggu (Hari yang sama)</option>
-                          <option value="daily">📆 Setiap Hari</option>
-                        </select>
-                      </div>
-
-                      <div className="form-group">
-                        <label className="form-label" style={{ fontSize: "0.8rem" }}>Jumlah Perulangan</label>
-                        <input
-                          type="number"
-                          className="form-input"
-                          style={{ padding: "0.5rem", fontSize: "0.85rem" }}
-                          min="2"
-                          max="12"
-                          value={recurrenceCount}
-                          onChange={(e) => setRecurrenceCount(parseInt(e.target.value) || 2)}
-                          required={isRecurring}
-                        />
-                        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Maksimal 12 kali perulangan</span>
-                      </div>
+                {isRecurring && (
+                  <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+                    <div className="form-group">
+                      <label className="form-label" style={{ fontSize: "0.8rem" }}>Frekuensi Ulang</label>
+                      <select
+                        className="form-input"
+                        style={{ padding: "0.5rem", fontSize: "0.85rem" }}
+                        value={recurrenceType}
+                        onChange={(e) => setRecurrenceType(e.target.value)}
+                      >
+                        <option value="weekly">📅 Setiap Minggu (Hari yang sama)</option>
+                        <option value="daily">📆 Setiap Hari</option>
+                      </select>
                     </div>
-                  )}
-                </div>
-              )}
+
+                    <div className="form-group">
+                      <label className="form-label" style={{ fontSize: "0.8rem" }}>Jumlah Perulangan</label>
+                      <input
+                        type="number"
+                        className="form-input"
+                        style={{ padding: "0.5rem", fontSize: "0.85rem" }}
+                        min="2"
+                        max="12"
+                        value={recurrenceCount}
+                        onChange={(e) => setRecurrenceCount(parseInt(e.target.value) || 2)}
+                        required={isRecurring}
+                      />
+                      <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Maksimal 12 kali perulangan</span>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
                 <div>
