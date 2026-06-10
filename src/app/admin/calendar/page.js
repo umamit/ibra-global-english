@@ -5,6 +5,13 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
 
+function getLocalDateString(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const d = String(dateObj.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export default function AdminCalendar() {
   const supabase = createClient();
 
@@ -132,9 +139,10 @@ export default function AdminCalendar() {
     setDescription("");
     setType("class");
     setProgram("All");
-    setStartDate(dateStr || new Date().toISOString().split("T")[0]);
+    const defaultDate = dateStr || getLocalDateString(new Date());
+    setStartDate(defaultDate);
     setStartTime("09:00");
-    setEndDate(dateStr || new Date().toISOString().split("T")[0]);
+    setEndDate(defaultDate);
     setEndTime("10:30");
     setInstructor("");
     setIsRecurring(false);
@@ -154,9 +162,9 @@ export default function AdminCalendar() {
     const startObj = new Date(sched.start_time);
     const endObj = new Date(sched.end_time);
 
-    setStartDate(startObj.toISOString().split("T")[0]);
+    setStartDate(getLocalDateString(startObj));
     setStartTime(startObj.toTimeString().slice(0, 5));
-    setEndDate(endObj.toISOString().split("T")[0]);
+    setEndDate(getLocalDateString(endObj));
     setEndTime(endObj.toTimeString().slice(0, 5));
     setInstructor(sched.instructor || "");
     setModalOpen(true);
@@ -272,7 +280,7 @@ export default function AdminCalendar() {
   // Helper to filter events occurring on a specific date string (YYYY-MM-DD)
   const getSchedulesForDay = (dateStr) => {
     return schedules.filter((s) => {
-      const sDateStr = new Date(s.start_time).toISOString().split("T")[0];
+      const sDateStr = getLocalDateString(new Date(s.start_time));
       return sDateStr === dateStr;
     });
   };
@@ -340,7 +348,7 @@ export default function AdminCalendar() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px", backgroundColor: "var(--color-gray-100)", borderRadius: "0 0 12px 12px" }}>
               {calendarDays.map((cell, idx) => {
                 const daySchedules = getSchedulesForDay(cell.dateString);
-                const isToday = cell.dateString === new Date().toISOString().split("T")[0];
+                const isToday = cell.dateString === getLocalDateString(new Date());
 
                 return (
                   <div

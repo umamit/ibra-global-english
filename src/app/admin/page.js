@@ -38,7 +38,8 @@ export default function AdminDashboard() {
           .eq("role", "parent");
 
         // 4. Fetch absensi hadir hari ini
-        const todayStr = new Date().toISOString().split("T")[0];
+        const todayObj = new Date();
+        const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, "0")}-${String(todayObj.getDate()).padStart(2, "0")}`;
         const { count: attendanceCount, error: errA } = await supabase
           .from("attendance")
           .select("*", { count: "exact", head: true })
