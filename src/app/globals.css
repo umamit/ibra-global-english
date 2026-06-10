@@ -2427,11 +2427,12 @@ textarea:focus-visible {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
   z-index: 1000;
   animation: fadeIn 0.25s ease-out;
+  overflow-y: auto;
 }
 
 .portal-modal {

@@ -67,6 +67,18 @@ export default function AdminCalendar() {
     fetchData();
   }, []);
 
+  // Lock body scroll when modal is open to prevent page scrolling behind it
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [modalOpen]);
+
   // Calendar calculations (Sunday-first grid)
   const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
   const getFirstDayIndex = (y, m) => new Date(y, m, 1).getDay();
@@ -445,26 +457,10 @@ export default function AdminCalendar() {
 
       {/* MODAL FORM: ADD / EDIT SCHEDULE */}
       {modalOpen && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 1000,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "1rem"
-        }}>
-          <div className="portal-card" style={{
+        <div className="portal-modal-overlay">
+          <div className="portal-modal" style={{
             maxWidth: "600px",
-            width: "100%",
             padding: "2rem",
-            backgroundColor: "white",
-            borderRadius: "var(--radius-lg)",
-            boxShadow: "var(--shadow-xl)",
             animation: "slideIn 0.2s ease"
           }}>
             <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
