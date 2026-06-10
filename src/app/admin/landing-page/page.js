@@ -35,8 +35,14 @@ export default function LandingPageCMS() {
   const [marqueeText1, setMarqueeText1] = useState("");
   const [marqueeText2, setMarqueeText2] = useState("");
   const [marqueeText3, setMarqueeText3] = useState("");
+  const [ctaTag, setCtaTag] = useState("");
+  const [ctaTitle, setCtaTitle] = useState("");
+  const [ctaDesc, setCtaDesc] = useState("");
+  const [ctaBrochureImage, setCtaBrochureImage] = useState("");
   const [uploadingHero, setUploadingHero] = useState(false);
+  const [uploadingCtaBrochure, setUploadingCtaBrochure] = useState(false);
   const heroFileRef = useRef(null);
+  const ctaBrochureFileRef = useRef(null);
 
 
   // ----------------------------------------------------
@@ -105,6 +111,10 @@ export default function LandingPageCMS() {
         setMarqueeText1(settings.marquee_text_1 || "Pendaftaran Siswa Baru Ibra Global English Bobong Telah Dibuka! Segera Daftarkan Putra-Putri Anda!");
         setMarqueeText2(settings.marquee_text_2 || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
         setMarqueeText3(settings.marquee_text_3 || "Ikuti Placement Test Online Secara Gratis di Website Kami dan Cari Tahu Tingkat Kemampuan Anda!");
+        setCtaTag(settings.cta_tag || "Promo Terbatas!");
+        setCtaTitle(settings.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
+        setCtaDesc(settings.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
+        setCtaBrochureImage(settings.cta_brochure_image || "/assets/brochure.png");
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
@@ -216,6 +226,22 @@ export default function LandingPageCMS() {
     }
   };
 
+  const handleCtaBrochureImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingCtaBrochure(true);
+    try {
+      const publicUrl = await handleUploadToStorage(file);
+      setCtaBrochureImage(publicUrl);
+      showToast("Berkas brosur promosi berhasil diunggah ke storage!");
+    } catch (err) {
+      showToast("Gagal mengunggah brosur promosi. " + err.message, "error");
+    } finally {
+      setUploadingCtaBrochure(false);
+    }
+  };
+
   const handleSaveHeroSettings = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -239,6 +265,10 @@ export default function LandingPageCMS() {
       { key: "marquee_text_1", value: marqueeText1.trim() },
       { key: "marquee_text_2", value: marqueeText2.trim() },
       { key: "marquee_text_3", value: marqueeText3.trim() },
+      { key: "cta_tag", value: ctaTag.trim() },
+      { key: "cta_title", value: ctaTitle.trim() },
+      { key: "cta_desc", value: ctaDesc.trim() },
+      { key: "cta_brochure_image", value: ctaBrochureImage.trim() },
     ];
 
     try {
@@ -749,6 +779,91 @@ export default function LandingPageCMS() {
                     onChange={(e) => setMarqueeText3(e.target.value)}
                     required
                   />
+                </div>
+              </div>
+
+              <hr style={{ border: "none", borderTop: "1px solid var(--color-gray-200)", margin: "2rem 0 1rem" }} />
+
+              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1rem" }}>Konfigurasi Banner Promosi & Brosur (CTA)</h3>
+              <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginBottom: "1.5rem" }}>
+                Atur judul, deskripsi tag, dan unggah berkas brosur promosi untuk bagian Call to Action (CTA) di landing page.
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Tag Promosi CTA (Kecil di Atas)</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: Promo Terbatas!"
+                    value={ctaTag}
+                    onChange={(e) => setCtaTag(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Judul Banner CTA (Gunakan '&' untuk teks highlight kuning)</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                    placeholder="Contoh: Belajar Cepat & Jadi Percaya Diri!"
+                    value={ctaTitle}
+                    onChange={(e) => setCtaTitle(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Deskripsi Banner CTA</label>
+                  <textarea
+                    className="form-input"
+                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)", minHeight: "100px", resize: "vertical" }}
+                    placeholder="Masukkan teks deskripsi promosi..."
+                    value={ctaDesc}
+                    onChange={(e) => setCtaDesc(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Upload Gambar Brosur Promosi */}
+                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Brosur Promosi (Tampilan di Bawah CTA Banner)</label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "center" }}>
+                    {ctaBrochureImage && (
+                      <div style={{ width: "160px", height: "90px", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--color-gray-300)" }}>
+                        <img src={ctaBrochureImage} alt="Brochure Preview" style={{ width: "100%", height: "100%", objectFit: "contain", backgroundColor: "var(--color-gray-50)" }} />
+                      </div>
+                    )}
+                    <div style={{ flex: 1, minWidth: "200px" }}>
+                      <input
+                        type="file"
+                        ref={ctaBrochureFileRef}
+                        accept="image/*"
+                        onChange={handleCtaBrochureImageChange}
+                        style={{ display: "none" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => ctaBrochureFileRef.current?.click()}
+                        className="btn-portal-outline"
+                        style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", marginBottom: "0.5rem" }}
+                        disabled={uploadingCtaBrochure}
+                      >
+                        {uploadingCtaBrochure ? "Mengunggah..." : "Pilih Berkas Brosur Baru"}
+                      </button>
+                      <input
+                        type="text"
+                        className="form-input"
+                        style={{ width: "100%", padding: "0.5rem", fontSize: "0.85rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)", opacity: 0.8 }}
+                        placeholder="Atau masukkan tautan URL gambar eksternal di sini..."
+                        value={ctaBrochureImage}
+                        onChange={(e) => setCtaBrochureImage(e.target.value)}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

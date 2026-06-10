@@ -3426,3 +3426,9 @@ textarea:focus-visible {
   background: linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   border-bottom: 2px solid rgba(33,108,126,0.3);
 }
+
+/* CTA Brochure Hover Effect */
+.cta-brochure-card:hover {
+  transform: scale(1.02);
+}
+

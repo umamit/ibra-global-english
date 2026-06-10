@@ -1,14 +1,59 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createClient } from "../utils/supabase/client";
+
 export default function CTA() {
+  const supabase = createClient();
+  const [ctaTag, setCtaTag] = useState("Promo Terbatas!");
+  const [ctaTitle, setCtaTitle] = useState("Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
+  const [ctaDesc, setCtaDesc] = useState("Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
+  const [ctaBrochureImage, setCtaBrochureImage] = useState("/assets/brochure.png");
+
+  useEffect(() => {
+    async function fetchCTASettings() {
+      try {
+        const { data, error } = await supabase
+          .from("landing_settings")
+          .select("key, value");
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const settings = {};
+          data.forEach(item => {
+            settings[item.key] = item.value;
+          });
+          if (settings.cta_tag) setCtaTag(settings.cta_tag);
+          if (settings.cta_title) setCtaTitle(settings.cta_title);
+          if (settings.cta_desc) setCtaDesc(settings.cta_desc);
+          if (settings.cta_brochure_image) setCtaBrochureImage(settings.cta_brochure_image);
+        }
+      } catch (e) {
+        console.warn("Gagal memuat pengaturan CTA dari database. Menggunakan data default.", e);
+      }
+    }
+    fetchCTASettings();
+  }, []);
+
+  const renderTitle = (text) => {
+    if (text.includes('&')) {
+      const [part1, part2] = text.split('&');
+      return (
+        <>
+          {part1} & <span className="highlight-reveal">{part2}</span>
+        </>
+      );
+    }
+    return text;
+  };
+
   return (
     <section className="cta-section" data-aos="fade-up">
-      <div className="container">
-        <div className="cta-banner">
+      <div className="container" style={{ display: "flex", flexDirection: "column", gap: "2.5rem", alignItems: "center" }}>
+        <div className="cta-banner" style={{ width: "100%" }}>
           <div className="cta-content">
-            <span className="cta-tag">Promo Terbatas!</span>
-            <h2>Kuasai Bahasa Inggris Lebih Cepat di Bobong & <span className="highlight-reveal">Jadi Percaya Diri!</span></h2>
-            <p>Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!</p>
+            <span className="cta-tag">{ctaTag}</span>
+            <h2>{renderTitle(ctaTitle)}</h2>
+            <p>{ctaDesc}</p>
           </div>
           <div className="cta-actions">
             <a href="#contact" className="btn-cta-primary">Daftar Sekarang (Gratis)</a>
@@ -25,6 +70,29 @@ export default function CTA() {
             </a>
           </div>
         </div>
+
+        {/* Dynamic Brochure Display Card */}
+        {ctaBrochureImage && (
+          <div 
+            className="cta-brochure-card" 
+            style={{ 
+              width: "100%", 
+              maxWidth: "850px", 
+              borderRadius: "16px", 
+              overflow: "hidden", 
+              boxShadow: "var(--shadow-xl)",
+              border: "4px solid var(--color-white)",
+              transition: "transform var(--transition-normal)",
+            }}
+            data-aos="zoom-in"
+          >
+            <img 
+              src={ctaBrochureImage} 
+              alt="Brosur Promosi Ibra Global English" 
+              style={{ width: "100%", height: "auto", display: "block" }} 
+            />
+          </div>
+        )}
       </div>
     </section>
   );
