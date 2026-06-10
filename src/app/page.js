@@ -17,7 +17,6 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
 import LightboxModal from "@/components/LightboxModal";
-import AIChatWidget from "@/components/AIChatWidget";
 import MarqueeBanner from "@/components/MarqueeBanner";
 
 export default function Home() {
@@ -155,7 +154,6 @@ export default function Home() {
       </main>
       <Footer />
       <SocialFloat />
-      <AIChatWidget />
       <LightboxModal 
         isOpen={lightbox.isOpen} 
         src={lightbox.src} 
