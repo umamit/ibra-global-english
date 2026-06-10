@@ -112,6 +112,12 @@ export async function POST(request) {
         { status: 401 }
       );
     }
+    if (errMsg.includes("429") || errMsg.includes("Quota exceeded") || errMsg.includes("RESOURCE_EXHAUSTED") || err?.status === 429) {
+      return NextResponse.json(
+        { error: "⚠️ Batas penggunaan (kuota) API Gemini telah habis. Silakan periksa plan/billing di Google AI Studio." },
+        { status: 429 }
+      );
+    }
     return NextResponse.json(
       { error: "Terjadi kesalahan pada server AI. Silakan coba lagi." },
       { status: 500 }
