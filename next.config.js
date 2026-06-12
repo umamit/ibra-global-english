@@ -34,6 +34,14 @@ const nextConfig = {
         headers: [
 
           {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin'
+          },
+          {
             key: 'X-Frame-Options',
             value: 'DENY'
           },
