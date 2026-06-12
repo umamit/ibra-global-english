@@ -2,13 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 
-const WELCOME_MESSAGE = {
-  id: "welcome",
-  role: "assistant",
-  content: "Halo! 👋 Saya **Ibra AI Assistant**, siap membantu kamu!\n\nSaya bisa:\n• 📚 Jelaskan program kursus kami (Kids, Teens, Calistung)\n• 🗣️ Latih percakapan Bahasa Inggris\n• ✅ Koreksi grammar kamu\n• 🎯 Rekomendasikan program yang tepat\n\nMau mulai dari mana?",
-  timestamp: new Date(),
-};
-
 function parseMarkdown(text) {
   if (!text) return "";
   return text
@@ -20,7 +13,7 @@ function parseMarkdown(text) {
 
 export default function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([WELCOME_MESSAGE]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(1);
@@ -28,6 +21,17 @@ export default function AIChatWidget() {
   const [activeSpeechId, setActiveSpeechId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    setMessages([
+      {
+        id: "welcome",
+        role: "assistant",
+        content: "Halo! 👋 Saya **Ibra AI Assistant**, siap membantu kamu!\n\nSaya bisa:\n• 📚 Jelaskan program kursus kami (Kids, Teens, Calistung)\n• 🗣️ Latih percakapan Bahasa Inggris\n• ✅ Koreksi grammar kamu\n• 🎯 Rekomendasikan program yang tepat\n\nMau mulai dari mana?",
+        timestamp: new Date(),
+      }
+    ]);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -278,7 +282,7 @@ export default function AIChatWidget() {
         </div>
 
         {/* Quick Replies */}
-        {messages.length <= 1 && (
+        {messages.length === 1 && (
           <div className="ai-quick-replies">
             {quickReplies.map((qr, i) => (
               <button key={i} className="ai-quick-reply-btn" onClick={() => handleQuickReply(qr)}>
