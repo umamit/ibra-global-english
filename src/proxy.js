@@ -11,9 +11,9 @@ export async function proxy(request) {
     script-src 'nonce-${nonce}' 'strict-dynamic' 'self' 'unsafe-eval' https://www.googletagmanager.com https://static.cloudflareinsights.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
-    img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co;
+    img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com;
     connect-src 'self' https://uszukipvrvjrgrikxfwh.supabase.co wss://uszukipvrvjrgrikxfwh.supabase.co https://www.google-analytics.com;
-    frame-src 'self';
+    frame-src 'self' https://*.canva.com https://www.canva.com;
     object-src 'none';
     base-uri 'none';
     form-action 'self';
