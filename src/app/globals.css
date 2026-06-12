@@ -3898,4 +3898,117 @@ textarea:focus-visible {
   }
 }
 
+/* =====================================================================
+   INNOVASI VISUAL — SKELETON LOADER & GLOWING CARDS
+   ===================================================================== */
+
+.skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(229, 231, 235, 0.4) 25%,
+    rgba(209, 213, 219, 0.6) 50%,
+    rgba(229, 231, 235, 0.4) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+}
+
+[data-theme="dark"] .skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(31, 41, 55, 0.4) 25%,
+    rgba(55, 65, 81, 0.6) 50%,
+    rgba(31, 41, 55, 0.4) 75%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.skeleton-text {
+  height: 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.skeleton-title {
+  height: 20px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* --- Glowing Glassmorphic Cards --- */
+.glowing-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.glowing-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 1.5px; /* Border thickness */
+  background: linear-gradient(135deg, rgba(33, 108, 126, 0.2), rgba(166, 136, 73, 0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: background var(--transition-normal);
+}
+
+.glowing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(33, 108, 126, 0.15);
+}
+
+.glowing-card:hover::before {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+}
+
+/* --- Scroll-Driven Animations (Custom useScrollReveal) --- */
+.reveal-hidden {
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, opacity;
+}
+
+.reveal-fade-up {
+  transform: translateY(40px);
+}
+
+.reveal-fade-right {
+  transform: translateX(-40px);
+}
+
+.reveal-fade-left {
+  transform: translateX(40px);
+}
+
+.reveal-zoom-in {
+  transform: scale(0.92);
+}
+
+.reveal-active {
+  opacity: 1 !important;
+  transform: translate(0) scale(1) !important;
+}
+
+
 

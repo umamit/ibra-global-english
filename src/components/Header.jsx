@@ -71,8 +71,67 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
               onClick={toggleTheme} 
               aria-label={theme === "light" ? "Aktifkan Mode Gelap" : "Aktifkan Mode Terang"}
             >
-              <svg className="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg>
-              <svg className="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                style={{
+                  transform: theme === "dark" ? "rotate(40deg)" : "rotate(0deg)",
+                  transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                  overflow: "visible",
+                  width: "1.25rem",
+                  height: "1.25rem"
+                }}
+              >
+                <mask id="header-moon-mask">
+                  <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                  <circle 
+                    cx={theme === "dark" ? "12" : "30"} 
+                    cy={theme === "dark" ? "4" : "0"} 
+                    r="8" 
+                    fill="black" 
+                    style={{
+                      transition: "cx 0.5s cubic-bezier(0.4, 0, 0.2, 1), cy 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                    }}
+                  />
+                </mask>
+                
+                <circle 
+                  cx="12" 
+                  cy="12" 
+                  r={theme === "dark" ? "9" : "5"} 
+                  fill="currentColor"
+                  mask="url(#header-moon-mask)"
+                  style={{
+                    transition: "r 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                  }}
+                />
+                
+                <g 
+                  stroke="currentColor"
+                  style={{
+                    opacity: theme === "dark" ? 0 : 1,
+                    transform: theme === "dark" ? "scale(0.5)" : "scale(1)",
+                    transformOrigin: "center",
+                    transition: "opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                  }}
+                >
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </g>
+              </svg>
             </button>
             
             <a href="/login" className="nav-btn-outline nav-btn-desktop" style={{ marginRight: "0.75rem" }}>Portal Login</a>

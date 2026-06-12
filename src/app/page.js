@@ -19,11 +19,14 @@ import SocialFloat from "@/components/SocialFloat";
 import LightboxModal from "@/components/LightboxModal";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import AIChatWidget from "@/components/AIChatWidget";
-
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export default function Home() {
   // Theme state
   const [theme, setTheme] = useState("light");
+
+  // Call scroll reveal animation hook
+  useScrollReveal();
 
   // Lightbox state for Gallery
   const [lightbox, setLightbox] = useState({ isOpen: false, src: "", caption: "" });
@@ -49,18 +52,6 @@ export default function Home() {
     document.documentElement.setAttribute("data-theme", nextTheme);
     localStorage.setItem("theme", nextTheme);
   };
-
-  // Initialize AOS (Animate on Scroll) library dynamically
-  useEffect(() => {
-    import("aos").then((AOS) => {
-      AOS.init({
-        duration: 800,
-        easing: "ease-out-quad",
-        once: true,
-        offset: 50,
-      });
-    });
-  }, []);
 
   // Register WebMCP Agent Tools
   useEffect(() => {

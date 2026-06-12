@@ -427,3 +427,55 @@ USING (bucket_id = 'spp-receipts' AND public.is_admin());
 -- =====================================================================
 
 
+-- =====================================================================
+-- INOVASI FASE 22 - SCHEMA UPDATES (Tutor, Student, Rewards, Certificates)
+-- =====================================================================
+
+-- 1. Alter profiles role constraint
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('admin', 'parent', 'tutor', 'student'));
+
+-- 2. Create student_rewards table (Gamification)
+CREATE TABLE IF NOT EXISTS public.student_rewards (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
+  coins INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS for student_rewards
+ALTER TABLE public.student_rewards ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public select student_rewards" ON public.student_rewards;
+CREATE POLICY "Public select student_rewards" ON public.student_rewards
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admin/Tutor modify student_rewards" ON public.student_rewards;
+CREATE POLICY "Admin/Tutor modify student_rewards" ON public.student_rewards
+  FOR ALL USING (true) WITH CHECK (true);
+
+-- 3. Create certificates table
+CREATE TABLE IF NOT EXISTS public.certificates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
+  module_name TEXT NOT NULL,
+  grade TEXT NOT NULL,
+  issue_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  tutor_name TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS for certificates
+ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public select certificates" ON public.certificates;
+CREATE POLICY "Public select certificates" ON public.certificates
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admin modify certificates" ON public.certificates;
+CREATE POLICY "Admin modify certificates" ON public.certificates
+  FOR ALL USING (true) WITH CHECK (true);
+
+
+
