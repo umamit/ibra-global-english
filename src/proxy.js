@@ -90,6 +90,7 @@ export async function proxy(request) {
     },
   });
   response.headers.set("Content-Security-Policy", cspHeader);
+  response.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
 
   // Buat klien Supabase khusus proxy (middleware)
   const supabase = createServerClient(
@@ -108,6 +109,7 @@ export async function proxy(request) {
             },
           });
           response.headers.set("Content-Security-Policy", cspHeader);
+          response.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
