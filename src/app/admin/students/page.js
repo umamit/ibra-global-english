@@ -46,11 +46,10 @@ export default function StudentManagement() {
       if (errS) throw errS;
       setStudents(studentData || []);
 
-      // Fetch parents to populate the link dropdown and parent account list
+      // Fetch all user profiles for role management and parent linking
       const { data: parentData, error: errP } = await supabase
         .from("profiles")
-        .select("id, full_name, email, created_at")
-        .eq("role", "parent")
+        .select("id, full_name, email, role, created_at")
         .order("full_name", { ascending: true });
 
       if (errP) throw errP;
@@ -165,6 +164,24 @@ export default function StudentManagement() {
     }
   };
 
+  const handleUpdateRole = async (userId, newRole) => {
+    if (confirm(`Apakah Anda yakin ingin mengubah peran pengguna ini menjadi '${newRole}'?`)) {
+      try {
+        const { error } = await supabase
+          .from("profiles")
+          .update({ role: newRole })
+          .eq("id", userId);
+        
+        if (error) throw error;
+        alert("Peran berhasil diperbarui!");
+        fetchData();
+      } catch (err) {
+        console.error("Gagal mengubah peran:", err);
+        alert("Gagal mengubah peran: " + err.message);
+      }
+    }
+  };
+
   // Format date to localized Indonesian style
   const formatIndonesianDate = (dateStr) => {
     if (!dateStr) return "-";
@@ -258,7 +275,7 @@ export default function StudentManagement() {
             transition: "all 0.2s ease"
           }}
         >
-          <span>Daftar Orang Tua (Pendaftar Baru)</span>
+          <span>Kelola Peran & Pengguna</span>
           <span style={{ 
             fontSize: "0.75rem", 
             backgroundColor: activeTab === "parents" ? "var(--color-primary-light)" : "var(--color-gray-100)",
@@ -357,28 +374,38 @@ export default function StudentManagement() {
                 <th>No</th>
                 <th>Nama Lengkap</th>
                 <th>Alamat Email</th>
-                <th>Tanggal Terdaftar</th>
-                <th>Siswa / Anak Terhubung</th>
-                <th style={{ textAlign: "center" }}>Status</th>
+                <th>Peran Aktif</th>
+                <th>Siswa Terhubung</th>
+                <th>Ubah Peran (Aksi)</th>
               </tr>
             </thead>
             <tbody>
               {parents.length === 0 ? (
                 <tr>
                   <td colSpan="6" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
-                    Belum ada akun orang tua yang terdaftar di portal.
+                    Belum ada akun pengguna terdaftar.
                   </td>
                 </tr>
               ) : (
                 parents.map((parent, idx) => {
-                  // Find children connected to this parent
                   const connectedChildren = students.filter(s => s.parent_id === parent.id);
                   return (
                     <tr key={parent.id}>
                       <td style={{ fontWeight: "700" }}>{idx + 1}</td>
                       <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{parent.full_name}</td>
                       <td>{parent.email || <span style={{ color: "var(--color-gray-400)", fontStyle: "italic" }}>Tidak tersedia</span>}</td>
-                      <td>{formatIndonesianDate(parent.created_at)}</td>
+                      <td>
+                        <span className="user-badge" style={{
+                          backgroundColor: parent.role === "admin" ? "rgba(239, 68, 68, 0.1)" : parent.role === "tutor" ? "rgba(166, 136, 73, 0.1)" : parent.role === "student" ? "var(--color-primary-light)" : "var(--color-green-light)",
+                          color: parent.role === "admin" ? "var(--color-red)" : parent.role === "tutor" ? "var(--color-accent)" : parent.role === "student" ? "var(--color-primary-dark)" : "var(--color-green)",
+                          padding: "0.25rem 0.65rem",
+                          fontWeight: "700",
+                          textTransform: "uppercase",
+                          fontSize: "0.75rem"
+                        }}>
+                          {parent.role || "parent"}
+                        </span>
+                      </td>
                       <td>
                         {connectedChildren.length > 0 ? (
                           <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
@@ -389,20 +416,32 @@ export default function StudentManagement() {
                             ))}
                           </div>
                         ) : (
-                          <span style={{ color: "var(--color-red)", fontStyle: "italic", fontSize: "0.85rem", fontWeight: "600" }}>
-                            Belum terhubung ke siswa mana pun
+                          <span style={{ color: "var(--color-gray-400)", fontStyle: "italic", fontSize: "0.85rem" }}>
+                            -
                           </span>
                         )}
                       </td>
-                      <td style={{ textAlign: "center" }}>
-                        <span className="user-badge" style={{ 
-                          backgroundColor: connectedChildren.length > 0 ? "var(--color-green-light)" : "rgba(239, 68, 68, 0.1)", 
-                          color: connectedChildren.length > 0 ? "var(--color-green)" : "var(--color-red)",
-                          padding: "0.25rem 0.65rem",
-                          fontWeight: "700"
-                        }}>
-                          {connectedChildren.length > 0 ? "Aktif" : "Menunggu Hubung"}
-                        </span>
+                      <td>
+                        <select
+                          value={parent.role || "parent"}
+                          onChange={(e) => handleUpdateRole(parent.id, e.target.value)}
+                          className="form-input"
+                          style={{
+                            padding: "0.35rem 0.75rem",
+                            fontSize: "0.85rem",
+                            width: "auto",
+                            borderRadius: "6px",
+                            border: "1px solid var(--color-gray-200)",
+                            cursor: "pointer",
+                            backgroundColor: "white",
+                            fontWeight: "600"
+                          }}
+                        >
+                          <option value="parent">Orang Tua (Parent)</option>
+                          <option value="tutor">Pengajar (Tutor)</option>
+                          <option value="student">Siswa (Student)</option>
+                          <option value="admin">Administrator</option>
+                        </select>
                       </td>
                     </tr>
                   );
@@ -482,7 +521,7 @@ export default function StudentManagement() {
                   disabled={submitting}
                 >
                   <option value="">-- Hubungkan di sini jika akun orang tua sudah terdaftar --</option>
-                  {parents.map((parent) => (
+                  {parents.filter(p => p.role === "parent").map((parent) => (
                     <option key={parent.id} value={parent.id}>
                       {parent.full_name}
                     </option>
