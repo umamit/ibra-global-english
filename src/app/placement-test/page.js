@@ -170,6 +170,46 @@ const QUESTIONS = [
       { text: "The team succeeded through determination and cooperation.", score: 1 },
       { text: "Mount Taliabu is easy to climb.", score: 0 }
     ]
+  },
+  {
+    id: 16,
+    category: "Listening Comprehension",
+    question: "Klik tombol putar untuk mendengarkan audio, kemudian pilih jawaban yang tepat untuk pertanyaan: What time does the speaker wake up?",
+    isAudio: true,
+    audioText: "Every morning, I wake up at half past six, drink a glass of warm water, and do some light stretching before starting my day.",
+    options: [
+      { text: "6:00 AM", score: 0 },
+      { text: "6:30 AM", score: 1 },
+      { text: "7:00 AM", score: 0 },
+      { text: "7:30 AM", score: 0 }
+    ]
+  },
+  {
+    id: 17,
+    category: "Listening Comprehension",
+    question: "Klik tombol putar untuk mendengarkan audio, kemudian pilih jawaban yang tepat untuk pertanyaan: Where is the speaker planning to go next week?",
+    isAudio: true,
+    audioText: "I am really looking forward to my trip to Bobong next week. I want to visit the beautiful beaches and practice my English.",
+    options: [
+      { text: "Jakarta", score: 0 },
+      { text: "Taliabu Island (Bobong)", score: 1 },
+      { text: "Bali", score: 0 },
+      { text: "Makassar", score: 0 }
+    ]
+  },
+  {
+    id: 18,
+    category: "Speaking Test (Oral)",
+    question: "Silakan tekan tombol mikrofon dan bacalah kalimat berikut dengan keras dan jelas:",
+    isSpeaking: true,
+    targetSentence: "I am ready to improve my speaking skills at Ibra Global English."
+  },
+  {
+    id: 19,
+    category: "Speaking Test (Oral)",
+    question: "Silakan tekan tombol mikrofon dan bacalah kalimat berikut dengan keras dan jelas:",
+    isSpeaking: true,
+    targetSentence: "Learning a new language opens up many opportunities for my future career."
   }
 ];
 
@@ -183,6 +223,84 @@ export default function PlacementTestPage() {
   const [answers, setAnswers] = useState({}); // { questionId: chosenIndex }
   const [submitting, setSubmitting] = useState(false);
   const [finalResult, setFinalResult] = useState(null);
+
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcribedText, setTranscribedText] = useState("");
+  const [speakingScore, setSpeakingScore] = useState(null);
+  const [recognitionError, setRecognitionError] = useState("");
+
+  const playListeningAudio = (text) => {
+    if (typeof window === "undefined" || !window.speechSynthesis) {
+      alert("Browser Anda tidak mendukung sintesis suara (TTS).");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.85;
+    utterance.onstart = () => setIsAudioPlaying(true);
+    utterance.onend = () => setIsAudioPlaying(false);
+    utterance.onerror = () => setIsAudioPlaying(false);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const startSpeechRecognition = () => {
+    if (typeof window === "undefined") return;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Browser Anda tidak mendukung Web Speech API (Perekam Suara). Silakan gunakan Google Chrome.");
+      return;
+    }
+    setTranscribedText("");
+    setSpeakingScore(null);
+    setRecognitionError("");
+    setIsRecording(true);
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event) => {
+      const resultText = event.results[0][0].transcript;
+      setTranscribedText(resultText);
+      const target = QUESTIONS[currentQuestionIndex].targetSentence;
+      const score = calculateSpeechAccuracy(resultText, target);
+      setSpeakingScore(score);
+      const point = score >= 70 ? 1 : 0;
+      setAnswers((prev) => ({
+        ...prev,
+        [QUESTIONS[currentQuestionIndex].id]: point
+      }));
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error", event.error);
+      setRecognitionError(event.error === "not-allowed" ? "Izin mikrofon ditolak." : "Gagal merekam suara.");
+      setIsRecording(false);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.start();
+  };
+
+  const calculateSpeechAccuracy = (transcribed, target) => {
+    const clean = (str) => str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim().split(/\s+/);
+    const wordsTranscribed = clean(transcribed);
+    const wordsTarget = clean(target);
+    if (wordsTarget.length === 0) return 0;
+    let matchCount = 0;
+    wordsTarget.forEach((w) => {
+      if (wordsTranscribed.includes(w)) {
+        matchCount++;
+      }
+    });
+    return Math.round((matchCount / wordsTarget.length) * 100);
+  };
 
   // Initialize theme
   useEffect(() => {
@@ -225,10 +343,26 @@ export default function PlacementTestPage() {
   };
 
   const handleNextQuestion = () => {
-    if (answers[QUESTIONS[currentQuestionIndex].id] === undefined) {
-      alert("Pilih salah satu jawaban terlebih dahulu.");
-      return;
+    const currentQuestion = QUESTIONS[currentQuestionIndex];
+    if (currentQuestion.isSpeaking) {
+      if (answers[currentQuestion.id] === undefined) {
+        const confirmSkip = confirm("Anda belum menyelesaikan rekaman suara dengan sukses. Yakin ingin melanjutkan?");
+        if (!confirmSkip) return;
+        setAnswers((prev) => ({
+          ...prev,
+          [currentQuestion.id]: 0
+        }));
+      }
+    } else {
+      if (answers[currentQuestion.id] === undefined) {
+        alert("Pilih salah satu jawaban terlebih dahulu.");
+        return;
+      }
     }
+
+    setTranscribedText("");
+    setSpeakingScore(null);
+    setRecognitionError("");
 
     if (currentQuestionIndex < QUESTIONS.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -238,6 +372,10 @@ export default function PlacementTestPage() {
   };
 
   const handlePrevQuestion = () => {
+    setTranscribedText("");
+    setSpeakingScore(null);
+    setRecognitionError("");
+    
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
     }
@@ -249,20 +387,25 @@ export default function PlacementTestPage() {
 
     // Calculate score
     QUESTIONS.forEach((q) => {
-      const selectedOptIdx = answers[q.id];
-      if (selectedOptIdx !== undefined) {
-        totalScore += q.options[selectedOptIdx].score;
+      if (q.isSpeaking) {
+        const speakingVal = answers[q.id] || 0;
+        totalScore += speakingVal;
+      } else {
+        const selectedOptIdx = answers[q.id];
+        if (selectedOptIdx !== undefined) {
+          totalScore += q.options[selectedOptIdx].score;
+        }
       }
     });
 
-    // Determine level
+    // Determine level (Max 19)
     let determinedLevel = "Beginner";
     let levelDescription = "Dapat memahami kosakata dasar dan frasa sehari-hari secara sederhana. Direkomendasikan untuk Kids Program atau Basic Teens.";
     
-    if (totalScore >= 12) {
+    if (totalScore >= 15) {
       determinedLevel = "Advanced";
       levelDescription = "Mampu berkomunikasi secara lancar, memahami materi membaca tingkat tinggi, dan menguasai struktur gramatikal yang kompleks. Direkomendasikan untuk Teens Program (Advanced Kelas).";
-    } else if (totalScore >= 6) {
+    } else if (totalScore >= 8) {
       determinedLevel = "Intermediate";
       levelDescription = "Mampu bercakap-cakap secara fungsional, memahami gagasan utama dalam paragraf umum, dan menyusun kalimat dengan tenses bervariasi. Direkomendasikan untuk Teens Program (Intermediate Kelas).";
     }
@@ -285,6 +428,23 @@ export default function PlacementTestPage() {
         .single();
 
       if (error) throw error;
+
+      // Send simulated WhatsApp notification
+      try {
+        await fetch("/api/whatsapp-simulator", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            phone: userData.whatsapp.trim(),
+            message: `Halo *${userData.fullName}*! Hasil Tes Penempatan Bahasa Inggris Anda di Ibra Global English Bobong telah terbit. *Skor Anda:* ${totalScore} / ${QUESTIONS.length}. *Rekomendasi Level:* ${determinedLevel}. Terima kasih telah mengikuti tes penempatan!`,
+            type: "Hasil Placement Test"
+          })
+        });
+      } catch (waErr) {
+        console.error("Gagal mengirim notifikasi WhatsApp simulasi:", waErr);
+      }
 
       setFinalResult({
         score: totalScore,
@@ -449,50 +609,160 @@ export default function PlacementTestPage() {
                   {QUESTIONS[currentQuestionIndex].question}
                 </h3>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                  {QUESTIONS[currentQuestionIndex].options.map((opt, optIdx) => {
-                    const isSelected = answers[QUESTIONS[currentQuestionIndex].id] === optIdx;
-                    return (
-                      <button
-                        key={optIdx}
-                        onClick={() => handleOptionSelect(optIdx)}
-                        style={{
-                          textAlign: "left",
-                          padding: "1.15rem 1.5rem",
-                          border: isSelected ? "2px solid var(--color-primary)" : "1px solid var(--color-gray-200)",
-                          backgroundColor: isSelected ? "var(--color-primary-light)" : "white",
-                          color: isSelected ? "var(--color-primary-dark)" : "var(--color-gray-800)",
-                          borderRadius: "12px",
-                          fontWeight: "600",
-                          cursor: "pointer",
-                          transition: "all 0.15s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "1rem"
-                        }}
-                        className="option-button"
-                      >
-                        <span style={{
-                          width: "24px",
-                          height: "24px",
-                          borderRadius: "50%",
-                          border: "2px solid",
-                          borderColor: isSelected ? "var(--color-primary)" : "var(--color-gray-400)",
-                          backgroundColor: isSelected ? "var(--color-primary)" : "transparent",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "white",
-                          fontSize: "0.75rem",
-                          fontWeight: "700"
-                        }}>
-                          {String.fromCharCode(65 + optIdx)}
-                        </span>
-                        <span>{opt.text}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                {QUESTIONS[currentQuestionIndex].isAudio && (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", padding: "1.5rem", backgroundColor: "var(--color-primary-light)", borderRadius: "12px", marginBottom: "2rem" }}>
+                    <button
+                      type="button"
+                      onClick={() => playListeningAudio(QUESTIONS[currentQuestionIndex].audioText)}
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        borderRadius: "50%",
+                        backgroundColor: "var(--color-primary)",
+                        color: "white",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 4px 14px rgba(33, 108, 126, 0.4)",
+                        transition: "all 0.2s ease"
+                      }}
+                      className={isAudioPlaying ? "skeleton-pulse" : ""}
+                    >
+                      {isAudioPlaying ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                      )}
+                    </button>
+                    <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-primary-dark)" }}>
+                      {isAudioPlaying ? "Memutar Audio Comprehension..." : "Klik untuk Mendengar Soal Percakapan"}
+                    </span>
+                  </div>
+                )}
+
+                {QUESTIONS[currentQuestionIndex].isSpeaking ? (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
+                    <div style={{
+                      fontSize: "1.35rem",
+                      fontWeight: "800",
+                      color: "var(--color-primary-dark)",
+                      padding: "2rem 1.5rem",
+                      border: "2px dashed var(--color-accent)",
+                      borderRadius: "12px",
+                      textAlign: "center",
+                      backgroundColor: "rgba(166, 136, 73, 0.05)",
+                      width: "100%",
+                      fontFamily: "Georgia, serif"
+                    }}>
+                      "{QUESTIONS[currentQuestionIndex].targetSentence}"
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={startSpeechRecognition}
+                      disabled={isRecording}
+                      style={{
+                        padding: "1rem 2rem",
+                        borderRadius: "50px",
+                        backgroundColor: isRecording ? "var(--color-red)" : "var(--color-primary)",
+                        color: "white",
+                        border: "none",
+                        cursor: "pointer",
+                        fontWeight: "800",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        boxShadow: isRecording ? "0 0 15px rgba(239, 68, 68, 0.5)" : "0 4px 14px rgba(33, 108, 126, 0.3)",
+                        transition: "all 0.2s ease"
+                      }}
+                      className={isRecording ? "skeleton-pulse" : ""}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                      <span>{isRecording ? "Mendengarkan... Silakan Bicara" : "Mulai Rekam Suara"}</span>
+                    </button>
+
+                    {recognitionError && (
+                      <p style={{ color: "var(--color-red)", fontWeight: "700", fontSize: "0.9rem" }}>
+                        ⚠️ {recognitionError}
+                      </p>
+                    )}
+
+                    {transcribedText && (
+                      <div style={{ width: "100%", padding: "1.25rem", border: "1px solid var(--color-gray-200)", borderRadius: "8px", backgroundColor: "var(--color-gray-50)" }}>
+                        <p style={{ fontSize: "0.8rem", fontWeight: "700", color: "var(--color-gray-400)", textTransform: "uppercase", marginBottom: "4px" }}>Hasil Transkripsi Anda:</p>
+                        <p style={{ fontWeight: "600", color: "var(--color-gray-800)" }}>"{transcribedText}"</p>
+                      </div>
+                    )}
+
+                    {speakingScore !== null && (
+                      <div style={{
+                        padding: "1rem 2rem",
+                        borderRadius: "8px",
+                        backgroundColor: speakingScore >= 70 ? "rgba(16, 185, 129, 0.1)" : "rgba(239, 68, 68, 0.1)",
+                        color: speakingScore >= 70 ? "var(--color-green)" : "var(--color-red)",
+                        border: "1px solid",
+                        borderColor: speakingScore >= 70 ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.3)",
+                        textAlign: "center",
+                        width: "100%"
+                      }}>
+                        <h4 style={{ fontWeight: "800", fontSize: "1.1rem" }}>Akurasi Pengucapan: {speakingScore}%</h4>
+                        <p style={{ fontSize: "0.85rem", marginTop: "4px" }}>
+                          {speakingScore >= 70 
+                            ? "✓ Pelafalan Anda sangat baik! (+1 poin)" 
+                            : "✗ Pelafalan kurang presisi. Klik tombol di atas untuk mengulangi."
+                          }
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    {QUESTIONS[currentQuestionIndex].options.map((opt, optIdx) => {
+                      const isSelected = answers[QUESTIONS[currentQuestionIndex].id] === optIdx;
+                      return (
+                        <button
+                          key={optIdx}
+                          onClick={() => handleOptionSelect(optIdx)}
+                          style={{
+                            textAlign: "left",
+                            padding: "1.15rem 1.5rem",
+                            border: isSelected ? "2px solid var(--color-primary)" : "1px solid var(--color-gray-200)",
+                            backgroundColor: isSelected ? "var(--color-primary-light)" : "white",
+                            color: isSelected ? "var(--color-primary-dark)" : "var(--color-gray-800)",
+                            borderRadius: "12px",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                            transition: "all 0.15s ease",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1rem"
+                          }}
+                          className="option-button"
+                        >
+                          <span style={{
+                            width: "24px",
+                            height: "24px",
+                            borderRadius: "50%",
+                            border: "2px solid",
+                            borderColor: isSelected ? "var(--color-primary)" : "var(--color-gray-400)",
+                            backgroundColor: isSelected ? "var(--color-primary)" : "transparent",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "white",
+                            fontSize: "0.75rem",
+                            fontWeight: "700"
+                          }}>
+                            {String.fromCharCode(65 + optIdx)}
+                          </span>
+                          <span>{opt.text}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Navigasi kuis */}

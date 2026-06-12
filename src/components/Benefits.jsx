@@ -85,7 +85,7 @@ export default function Benefits() {
         
         <div className="benefits-grid">
           {BENEFITS_DATA.map((b, idx) => (
-            <div key={idx} className="benefit-card" data-aos="fade-up" data-aos-delay={b.delay}>
+            <div key={idx} className="benefit-card glowing-card" data-aos="fade-up" data-aos-delay={b.delay}>
               <div className="benefit-icon-box">
                 {b.icon}
               </div>

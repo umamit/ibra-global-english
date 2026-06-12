@@ -69,6 +69,7 @@ export default function ReportCardManagement() {
 
   const [students, setStudents] = useState([]);
   const [reports, setReports] = useState([]);
+  const [certificates, setCertificates] = useState([]);
   const [printReport, setPrintReport] = useState(null);
   const [contactAddress, setContactAddress] = useState("Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
   const [loading, setLoading] = useState(true);
@@ -102,6 +103,7 @@ export default function ReportCardManagement() {
         .from("reports")
         .select(`
           id,
+          student_id,
           module_name,
           speaking_score,
           grammar_score,
@@ -110,6 +112,7 @@ export default function ReportCardManagement() {
           tutor_notes,
           created_at,
           students (
+            id,
             name,
             program,
             age
@@ -129,6 +132,14 @@ export default function ReportCardManagement() {
       if (settingsData && settingsData.value) {
         setContactAddress(settingsData.value);
       }
+
+      // 4. Ambil semua sertifikat
+      const { data: certData, error: errC } = await supabase
+        .from("certificates")
+        .select("*");
+      if (!errC) {
+        setCertificates(certData || []);
+      }
     } catch (err) {
       console.error("Gagal mengambil data rapor:", err);
       setStatusMsg({ type: "error", text: "Gagal memuat data: " + err.message });
@@ -140,6 +151,68 @@ export default function ReportCardManagement() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleCreateCertificate = async (report) => {
+    const defaultTutor = "Academic Board";
+    const tutorNameInput = prompt("Masukkan nama tutor pendamping untuk tanda tangan sertifikat:", defaultTutor);
+    if (tutorNameInput === null) return; // Cancelled
+
+    const tutorSignature = tutorNameInput.trim() || defaultTutor;
+
+    try {
+      const avg = Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);
+      const grade = avg >= 85 ? "Excellent (A)" : avg >= 75 ? "Good (B)" : "Satisfactory (C)";
+
+      const payload = {
+        student_id: report.student_id,
+        module_name: report.module_name,
+        grade,
+        tutor_name: tutorSignature,
+        issue_date: new Date().toISOString().split("T")[0]
+      };
+
+      const { data, error } = await supabase
+        .from("certificates")
+        .insert(payload)
+        .select("id")
+        .single();
+
+      if (error) throw error;
+
+      // Send simulated WhatsApp notification
+      try {
+        await fetch("/api/whatsapp-simulator", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            phone: "6281357001357",
+            message: `Yth. Orang Tua dari *${report.students?.name || "Siswa"}*, sertifikat resmi kelulusan untuk *${report.module_name}* dengan Predikat *${grade}* telah berhasil diterbitkan. Silakan verifikasi keaslian dokumen secara online di: ${window.location.origin}/verify/${data.id}`,
+            type: "Sertifikat Kelulusan"
+          })
+        });
+      } catch (waErr) {
+        console.error("Gagal mengirim notifikasi WhatsApp simulasi:", waErr);
+      }
+
+      alert("Sertifikat berhasil diterbitkan!");
+      
+      // Reload certificates
+      const { data: certData } = await supabase
+        .from("certificates")
+        .select("*");
+      setCertificates(certData || []);
+      
+      // Open verification page in a new tab
+      if (data && data.id) {
+        window.open(`/verify/${data.id}`, "_blank");
+      }
+    } catch (err) {
+      console.error("Gagal menerbitkan sertifikat:", err);
+      alert("Gagal menerbitkan sertifikat: " + err.message);
+    }
+  };
 
   const triggerPrint = (report) => {
     setPrintReport(report);

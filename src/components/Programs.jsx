@@ -55,7 +55,7 @@ export default function Programs() {
         
         <div className="programs-grid">
           {PROGRAMS_DATA.map((prog, idx) => (
-            <div key={idx} className="program-card" data-aos="fade-up" data-aos-delay={prog.delay}>
+            <div key={idx} className="program-card glowing-card" data-aos="fade-up" data-aos-delay={prog.delay}>
               <div className="program-icon-box">
                 {prog.icon}
               </div>

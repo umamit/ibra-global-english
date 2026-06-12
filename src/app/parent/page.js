@@ -5,12 +5,13 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
 // SUB-COMPONENT: Custom visual pure-SVG Radar Chart for high-fidelity evaluation representation
-// SUB-COMPONENT: Custom visual pure-SVG Radar Chart for high-fidelity evaluation representation
 function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
   // Center (120, 120), Radius 80
   const cx = 120;
   const cy = 120;
   const r = 80;
+
+  const [tooltip, setTooltip] = useState({ show: false, x: 0, y: 0, label: "", score: 0 });
 
   // Coordinate calculations:
   // 1. Speaking: Up (0, -1) -> (cx, cy - r * score/100)
@@ -24,8 +25,16 @@ function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
 
   const polygonPoints = `${pSpeaking.x},${pSpeaking.y} ${pGrammar.x},${pGrammar.y} ${pVocabulary.x},${pVocabulary.y} ${pActive.x},${pActive.y}`;
 
+  const handleMouseEnter = (x, y, label, score) => {
+    setTooltip({ show: true, x, y: y - 12, label, score });
+  };
+
+  const hideTooltip = () => {
+    setTooltip({ show: false, x: 0, y: 0, label: "", score: 0 });
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", backgroundColor: "white", borderRadius: "12px", border: "1px solid var(--color-gray-150)", boxShadow: "var(--shadow-sm)", maxWidth: "300px", margin: "0 auto" }}>
+    <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", backgroundColor: "white", borderRadius: "12px", border: "1px solid var(--color-gray-150)", boxShadow: "var(--shadow-sm)", maxWidth: "300px", margin: "0 auto" }}>
       <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-primary-dark)", textTransform: "uppercase", marginBottom: "1rem" }}>Visualisasi Performa</p>
       
       <svg width="240" height="240" viewBox="0 0 240 240" style={{ overflow: "visible" }}>
@@ -67,11 +76,79 @@ function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
         />
 
         {/* Data points markers */}
-        <circle cx={pSpeaking.x} cy={pSpeaking.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
-        <circle cx={pGrammar.x} cy={pGrammar.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
-        <circle cx={pVocabulary.x} cy={pVocabulary.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
-        <circle cx={pActive.x} cy={pActive.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
+        <circle 
+          cx={pSpeaking.x} 
+          cy={pSpeaking.y} 
+          r="5.5" 
+          fill="#216c7e" 
+          stroke="white" 
+          strokeWidth="1.5" 
+          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
+          onMouseEnter={() => handleMouseEnter(pSpeaking.x, pSpeaking.y, isCalistung ? "Membaca" : "Speaking", speaking)}
+          onMouseLeave={hideTooltip}
+        />
+        <circle 
+          cx={pGrammar.x} 
+          cy={pGrammar.y} 
+          r="5.5" 
+          fill="#216c7e" 
+          stroke="white" 
+          strokeWidth="1.5" 
+          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
+          onMouseEnter={() => handleMouseEnter(pGrammar.x, pGrammar.y, isCalistung ? "Menulis" : "Grammar", grammar)}
+          onMouseLeave={hideTooltip}
+        />
+        <circle 
+          cx={pVocabulary.x} 
+          cy={pVocabulary.y} 
+          r="5.5" 
+          fill="#216c7e" 
+          stroke="white" 
+          strokeWidth="1.5" 
+          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
+          onMouseEnter={() => handleMouseEnter(pVocabulary.x, pVocabulary.y, isCalistung ? "Berhitung" : "Vocabulary", vocabulary)}
+          onMouseLeave={hideTooltip}
+        />
+        <circle 
+          cx={pActive.x} 
+          cy={pActive.y} 
+          r="5.5" 
+          fill="#216c7e" 
+          stroke="white" 
+          strokeWidth="1.5" 
+          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
+          onMouseEnter={() => handleMouseEnter(pActive.x, pActive.y, isCalistung ? "Keaktifan" : "Active", active)}
+          onMouseLeave={hideTooltip}
+        />
       </svg>
+
+      {/* Floating Tooltip */}
+      {tooltip.show && (
+        <div style={{
+          position: "absolute",
+          left: `${tooltip.x}px`,
+          top: `${tooltip.y + 40}px`,
+          transform: "translate(-50%, -100%)",
+          backgroundColor: "rgba(17, 24, 39, 0.95)",
+          color: "white",
+          padding: "6px 10px",
+          borderRadius: "6px",
+          fontSize: "0.75rem",
+          fontWeight: "bold",
+          pointerEvents: "none",
+          zIndex: 10,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          whiteSpace: "nowrap",
+          border: "1px solid rgba(255,255,255,0.15)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "2px"
+        }}>
+          <span>{tooltip.label}</span>
+          <span style={{ color: "var(--color-yellow)", fontSize: "0.85rem", fontWeight: "900" }}>{tooltip.score} / 100</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -126,6 +203,7 @@ export default function ParentPortal() {
   const [attendance, setAttendance] = useState([]);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [detailsLoading, setDetailsLoading] = useState(false);
 
   // Payment settings state loaded from database
   const [paymentSettings, setPaymentSettings] = useState({
@@ -344,6 +422,7 @@ export default function ParentPortal() {
     if (!selectedChild) return;
 
     async function loadChildDetails() {
+      setDetailsLoading(true);
       try {
         // Fetch Attendance
         const { data: attList, error: errA } = await supabase
@@ -398,6 +477,10 @@ export default function ParentPortal() {
 
       } catch (err) {
         console.error("Gagal memuat detail siswa:", err);
+      } finally {
+        setTimeout(() => {
+          setDetailsLoading(false);
+        }, 600);
       }
     }
 
@@ -709,9 +792,7 @@ export default function ParentPortal() {
               <div className="user-badge" style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
                 Siswa Aktif
               </div>
-            </div>
-
-            {/* TAB VIEW 1: PROGRESS (Kemajuan Belajar) */}
+            </div>            {/* TAB VIEW 1: PROGRESS (Kemajuan Belajar) */}
             {activeView === "progress" && (
               <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
                 
@@ -721,63 +802,105 @@ export default function ParentPortal() {
                     Riwayat Kehadiran Siswa
                   </h3>
                   
-                  {/* Attendance Stats Cards */}
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
-                    <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                      <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-green)" }}>{attendanceStats.hadir}</p>
-                      <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Hadir</p>
-                    </div>
-                    <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                      <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-yellow)" }}>{attendanceStats.sakit}</p>
-                      <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Sakit</p>
-                    </div>
-                    <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                      <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary)" }}>{attendanceStats.izin}</p>
-                      <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Izin</p>
-                    </div>
-                    <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                      <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "#ef4444" }}>{attendanceStats.alfa}</p>
-                      <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Alfa</p>
-                    </div>
-                  </div>
-
-                  {/* Attendance log table */}
-                  <div className="table-wrapper" style={{ maxHeight: "350px", overflowY: "auto" }}>
-                    <table className="portal-table">
-                      <thead>
-                        <tr>
-                          <th>No</th>
-                          <th>Hari</th>
-                          <th>Tanggal</th>
-                          <th>Status Kehadiran</th>
-                          <th>Keterangan / Catatan</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {attendance.length === 0 ? (
-                          <tr>
-                            <td colSpan="5" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
-                              Belum ada riwayat absensi untuk siswa ini.
-                            </td>
-                          </tr>
-                        ) : (
-                          attendance.map((log, idx) => (
-                            <tr key={log.id}>
-                              <td style={{ fontWeight: "700" }}>{idx + 1}</td>
-                              <td style={{ fontWeight: "600", color: "var(--color-primary-dark)" }}>{getIndonesianDay(log.date)}</td>
-                              <td>{getIndonesianDate(log.date)}</td>
-                              <td>
-                                <span className={`badge-${log.status}`}>{log.status}</span>
-                              </td>
-                              <td style={{ fontSize: "0.85rem", fontStyle: log.notes ? "normal" : "italic", color: log.notes ? "var(--color-gray-800)" : "var(--color-gray-400)" }}>
-                                {log.notes || "-"}
-                              </td>
+                  {detailsLoading ? (
+                    <>
+                      {/* Attendance Stats Cards Skeleton */}
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
+                        {Array.from({ length: 4 }).map((_, i) => (
+                          <div key={i} style={{ textAlign: "center", padding: "1.25rem 1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                            <div className="skeleton-pulse skeleton-title" style={{ width: "30px", marginBottom: "0.5rem", display: "block", marginInline: "auto" }} />
+                            <div className="skeleton-pulse skeleton-text" style={{ width: "50px", display: "block", marginInline: "auto" }} />
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Attendance Table Skeleton */}
+                      <div className="table-wrapper">
+                        <table className="portal-table">
+                          <thead>
+                            <tr>
+                              <th>No</th>
+                              <th>Hari</th>
+                              <th>Tanggal</th>
+                              <th>Status Kehadiran</th>
+                              <th>Keterangan / Catatan</th>
                             </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                          </thead>
+                          <tbody>
+                            {Array.from({ length: 4 }).map((_, i) => (
+                              <tr key={i}>
+                                <td><div className="skeleton-pulse skeleton-text" style={{ width: "20px" }} /></td>
+                                <td><div className="skeleton-pulse skeleton-text" style={{ width: "60px" }} /></td>
+                                <td><div className="skeleton-pulse skeleton-text" style={{ width: "100px" }} /></td>
+                                <td><div className="skeleton-pulse skeleton-text" style={{ width: "80px" }} /></td>
+                                <td><div className="skeleton-pulse skeleton-text" style={{ width: "150px" }} /></td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Attendance Stats Cards */}
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
+                        <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                          <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-green)" }}>{attendanceStats.hadir}</p>
+                          <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Hadir</p>
+                        </div>
+                        <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                          <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-yellow)" }}>{attendanceStats.sakit}</p>
+                          <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Sakit</p>
+                        </div>
+                        <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                          <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary)" }}>{attendanceStats.izin}</p>
+                          <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Izin</p>
+                        </div>
+                        <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                          <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "#ef4444" }}>{attendanceStats.alfa}</p>
+                          <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Alfa</p>
+                        </div>
+                      </div>
+
+                      {/* Attendance log table */}
+                      <div className="table-wrapper" style={{ maxHeight: "350px", overflowY: "auto" }}>
+                        <table className="portal-table">
+                          <thead>
+                            <tr>
+                              <th>No</th>
+                              <th>Hari</th>
+                              <th>Tanggal</th>
+                              <th>Status Kehadiran</th>
+                              <th>Keterangan / Catatan</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {attendance.length === 0 ? (
+                              <tr>
+                                <td colSpan="5" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+                                  Belum ada riwayat absensi untuk siswa ini.
+                                </td>
+                              </tr>
+                            ) : (
+                              attendance.map((log, idx) => (
+                                <tr key={log.id}>
+                                  <td style={{ fontWeight: "700" }}>{idx + 1}</td>
+                                  <td style={{ fontWeight: "600", color: "var(--color-primary-dark)" }}>{getIndonesianDay(log.date)}</td>
+                                  <td>{getIndonesianDate(log.date)}</td>
+                                  <td>
+                                    <span className={`badge-${log.status}`}>{log.status}</span>
+                                  </td>
+                                  <td style={{ fontSize: "0.85rem", fontStyle: log.notes ? "normal" : "italic", color: log.notes ? "var(--color-gray-800)" : "var(--color-gray-400)" }}>
+                                    {log.notes || "-"}
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Rapor Belajar Digital (Report Cards list) */}
@@ -786,7 +909,31 @@ export default function ParentPortal() {
                     Rapor Belajar Digital & Grafik Pencapaian
                   </h3>
                   
-                  {reports.length === 0 ? (
+                  {detailsLoading ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                      {Array.from({ length: 2 }).map((_, i) => (
+                        <div key={i} className="portal-card" style={{ padding: "2rem" }}>
+                          <div style={{ borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
+                            <div className="skeleton-pulse skeleton-title" style={{ width: "200px", marginBottom: "0.5rem" }} />
+                            <div className="skeleton-pulse skeleton-text" style={{ width: "150px" }} />
+                          </div>
+                          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                              {Array.from({ length: 4 }).map((_, j) => (
+                                <div key={j} style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
+                                  <div className="skeleton-pulse skeleton-title" style={{ width: "45px", margin: "0 auto 0.5rem" }} />
+                                  <div className="skeleton-pulse skeleton-text" style={{ width: "65px", margin: "0 auto" }} />
+                                </div>
+                              ))}
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "center" }}>
+                              <div className="skeleton-pulse skeleton-circle" style={{ width: "180px", height: "180px" }} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : reports.length === 0 ? (
                     <div className="portal-card" style={{ padding: "3rem", textAlign: "center" }}>
                       <p style={{ color: "var(--color-gray-500)" }}>Belum ada rapor digital yang diterbitkan untuk saat ini.</p>
                     </div>
@@ -885,7 +1032,26 @@ export default function ParentPortal() {
                   Berikut adalah agenda belajar, kelas rutin, kegiatan bimbingan belajar, serta hari libur sekolah yang dikhususkan untuk program pendaftaran anak Anda (**{selectedChild?.program}**).
                 </p>
 
-                {parentSchedules.length === 0 ? (
+                {detailsLoading ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="portal-card" style={{ borderLeft: "5px solid var(--color-gray-200)", padding: "1.5rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
+                        <div style={{ flex: "1 1 300px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <div className="skeleton-pulse skeleton-text" style={{ width: "60px" }} />
+                            <div className="skeleton-pulse skeleton-text" style={{ width: "100px" }} />
+                          </div>
+                          <div className="skeleton-pulse skeleton-title" style={{ width: "220px", marginBottom: "0.5rem" }} />
+                          <div className="skeleton-pulse skeleton-text" style={{ width: "320px" }} />
+                        </div>
+                        <div style={{ textAlign: "right", minWidth: "200px" }}>
+                          <div className="skeleton-pulse skeleton-text" style={{ width: "140px", marginBottom: "0.5rem" }} />
+                          <div className="skeleton-pulse skeleton-text" style={{ width: "100px" }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : parentSchedules.length === 0 ? (
                   <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--color-gray-400)" }}>
                     <p style={{ fontWeight: "600" }}>Belum ada agenda kelas aktif yang dijadwalkan.</p>
                   </div>
@@ -993,79 +1159,96 @@ export default function ParentPortal() {
                     Pelacakan & Administrasi SPP Bulanan
                   </h3>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                    {getRecentMonths().map((month) => {
-                      const dbPay = parentPayments.find(p => p.month === month);
-                      const pay = dbPay ? {
-                        ...dbPay,
-                        amount: dbPay.status === "belum_bayar" ? getChildProgramPrice(selectedChild?.program) : dbPay.amount
-                      } : {
-                        month,
-                        amount: getChildProgramPrice(selectedChild?.program),
-                        status: "belum_bayar",
-                        receipt_url: ""
-                      };
-
-                      return (
-                        <div key={month} style={{ border: "1px solid var(--color-gray-100)", borderRadius: "8px", padding: "1.25rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem" }} className="table-row-hover">
+                  {detailsLoading ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} style={{ border: "1px solid var(--color-gray-100)", borderRadius: "8px", padding: "1.25rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
                           <div>
-                            <p style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
-                              {getMonthName(month)}
-                            </p>
-                            <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>
-                              Tagihan: Rp {parseInt(pay.amount).toLocaleString("id-ID")}
-                            </p>
+                            <div className="skeleton-pulse skeleton-title" style={{ width: "120px", marginBottom: "0.5rem" }} />
+                            <div className="skeleton-pulse skeleton-text" style={{ width: "150px" }} />
                           </div>
-
                           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1.5rem" }}>
-                            {/* Status badge */}
-                            <div>
-                              {pay.status === "lunas" ? (
-                                <span className="badge-status-present" style={{ display: "inline-block", width: "120px", textAlign: "center" }}>LUNAS</span>
-                              ) : pay.status === "menunggu_konfirmasi" ? (
-                                <span className="badge-status-sick" style={{ display: "inline-block", width: "120px", textAlign: "center", color: "#b45309", borderColor: "#fef3c7", background: "#fef3c7" }}>KONFIRMASI</span>
-                              ) : (
-                                <span className="badge-status-absent" style={{ display: "inline-block", width: "120px", textAlign: "center" }}>BELUM BAYAR</span>
-                              )}
-                            </div>
-
-                            {/* Uploader / Receipt button */}
-                            <div>
-                              {pay.status === "belum_bayar" ? (
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                  <label className="btn-portal-primary" style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "700", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                    <span>{uploadingReceipt ? "Mengunggah..." : "Unggah Bukti"}</span>
-                                    <input
-                                      type="file"
-                                      accept="image/*"
-                                      style={{ display: "none" }}
-                                      onChange={(e) => handleUploadReceipt(e, month)}
-                                      disabled={uploadingReceipt}
-                                    />
-                                  </label>
-                                </div>
-                              ) : (
-                                <div style={{ display: "flex", gap: "0.5rem" }}>
-                                  {pay.receipt_url && (
-                                    <a
-                                      href={pay.receipt_url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="btn-portal-outline"
-                                      style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "600" }}
-                                    >
-                                      Lihat Bukti ↗
-                                    </a>
-                                  )}
-                                </div>
-                              )}
-                            </div>
+                            <div className="skeleton-pulse skeleton-text" style={{ width: "100px" }} />
+                            <div className="skeleton-pulse skeleton-text" style={{ width: "80px" }} />
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                      {getRecentMonths().map((month) => {
+                        const dbPay = parentPayments.find(p => p.month === month);
+                        const pay = dbPay ? {
+                          ...dbPay,
+                          amount: dbPay.status === "belum_bayar" ? getChildProgramPrice(selectedChild?.program) : dbPay.amount
+                        } : {
+                          month,
+                          amount: getChildProgramPrice(selectedChild?.program),
+                          status: "belum_bayar",
+                          receipt_url: ""
+                        };
+
+                        return (
+                          <div key={month} style={{ border: "1px solid var(--color-gray-100)", borderRadius: "8px", padding: "1.25rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem" }} className="table-row-hover">
+                            <div>
+                              <p style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
+                                {getMonthName(month)}
+                              </p>
+                              <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>
+                                Tagihan: Rp {parseInt(pay.amount).toLocaleString("id-ID")}
+                              </p>
+                            </div>
+
+                            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1.5rem" }}>
+                              {/* Status badge */}
+                              <div>
+                                {pay.status === "lunas" ? (
+                                  <span className="badge-status-present" style={{ display: "inline-block", width: "120px", textAlign: "center" }}>LUNAS</span>
+                                ) : pay.status === "menunggu_konfirmasi" ? (
+                                  <span className="badge-status-sick" style={{ display: "inline-block", width: "120px", textAlign: "center", color: "#b45309", borderColor: "#fef3c7", background: "#fef3c7" }}>KONFIRMASI</span>
+                                ) : (
+                                  <span className="badge-status-absent" style={{ display: "inline-block", width: "120px", textAlign: "center" }}>BELUM BAYAR</span>
+                                )}
+                              </div>
+
+                              {/* Uploader / Receipt button */}
+                              <div>
+                                {pay.status === "belum_bayar" ? (
+                                  <div style={{ display: "flex", alignItems: "center" }}>
+                                    <label className="btn-portal-primary" style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "700", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                      <span>{uploadingReceipt ? "Mengunggah..." : "Unggah Bukti"}</span>
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => handleUploadReceipt(e, month)}
+                                        disabled={uploadingReceipt}
+                                      />
+                                    </label>
+                                  </div>
+                                ) : (
+                                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                                    {pay.receipt_url && (
+                                      <a
+                                        href={pay.receipt_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-portal-outline"
+                                        style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "600" }}
+                                      >
+                                        Lihat Bukti ↗
+                                      </a>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
