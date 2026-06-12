@@ -2,6 +2,29 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 export async function proxy(request) {
+  // Generate a random base64 nonce using standard Web Crypto API
+  const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+  
+  // Define strict Content Security Policy
+  const cspHeader = `
+    default-src 'self';
+    script-src 'nonce-${nonce}' 'strict-dynamic' 'self' 'unsafe-eval' https://www.googletagmanager.com https://static.cloudflareinsights.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co;
+    connect-src 'self' https://uszukipvrvjrgrikxfwh.supabase.co wss://uszukipvrvjrgrikxfwh.supabase.co https://www.google-analytics.com;
+    frame-src 'self';
+    object-src 'none';
+    base-uri 'none';
+    form-action 'self';
+    media-src 'self' blob: data:;
+  `.replace(/\s{2,}/g, ' ').trim();
+
+  // Create mutable headers copy with nonce and CSP
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', cspHeader);
+
   const { pathname } = request.nextUrl;
   const acceptHeader = request.headers.get("accept") || "";
 
@@ -63,9 +86,10 @@ export async function proxy(request) {
 
   let response = NextResponse.next({
     request: {
-      headers: request.headers,
+      headers: requestHeaders,
     },
   });
+  response.headers.set("Content-Security-Policy", cspHeader);
 
   // Buat klien Supabase khusus proxy (middleware)
   const supabase = createServerClient(
@@ -80,9 +104,10 @@ export async function proxy(request) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           response = NextResponse.next({
             request: {
-              headers: request.headers,
+              headers: requestHeaders,
             },
           });
+          response.headers.set("Content-Security-Policy", cspHeader);
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );

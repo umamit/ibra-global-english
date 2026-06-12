@@ -1,4 +1,5 @@
 import { Montserrat } from "next/font/google";
+import { headers } from "next/headers";
 import Script from "next/script";
 import "./globals.css";
 
@@ -122,7 +123,10 @@ const faqSchema = {
   ]
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const headersList = await headers();
+  const nonce = headersList.get("x-nonce") || "";
+
   return (
     <html lang="id" className={montserrat.variable}>
       <head>
@@ -130,8 +134,9 @@ export default function RootLayout({ children }) {
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-989GJL5VCF"
           strategy="afterInteractive"
+          nonce={nonce}
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="afterInteractive" nonce={nonce}>
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -145,16 +150,19 @@ export default function RootLayout({ children }) {
           src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "30b277bf69f4494d94550e9771fe8aa0"}'
           strategy="afterInteractive"
+          nonce={nonce}
         />
 
         {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(educationalOrgSchema) }}
+          nonce={nonce}
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          nonce={nonce}
         />
       </head>
       <body>
