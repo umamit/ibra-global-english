@@ -75,6 +75,15 @@ export async function proxy(request) {
   }
 
   // =====================================================================
+  // 2b. TIMPA CONTENT-TYPE UNTUK AUTH.MD
+  // =====================================================================
+  if (pathname === "/auth.md") {
+    const response = NextResponse.next();
+    response.headers.set("Content-Type", "text/markdown; charset=utf-8");
+    return response;
+  }
+
+  // =====================================================================
   // 3. AUTENTIKASI SUPABASE & PROTEKSI RUTE BERBASIS PERAN (ROLE-BASED RBAC)
   // =====================================================================
   
