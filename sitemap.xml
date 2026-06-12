@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://www.ibraglobalenglish.uk/</loc>
-    <lastmod>2026-06-08</lastmod>
+    <lastmod>2026-06-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     
@@ -33,6 +33,13 @@
       <image:loc>https://www.ibraglobalenglish.uk/assets/interactive_study_group.jpg</image:loc>
       <image:title>Interactive Study Group Bobong</image:title>
       <image:caption>Belajar berkelompok secara aktif dan interaktif bersama tutor berpengalaman di Pulau Taliabu.</image:caption>
+    </image:image>
+
+    <!-- Brochure Image -->
+    <image:image>
+      <image:loc>https://www.ibraglobalenglish.uk/assets/brochure.png</image:loc>
+      <image:title>Brosur Program Ibra Global English Bobong</image:title>
+      <image:caption>Brosur rincian program belajar dan biaya pendaftaran di Ibra Global English Bobong.</image:caption>
     </image:image>
   </url>
   <url>
