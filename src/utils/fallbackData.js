@@ -128,3 +128,20 @@ export const DEFAULT_TAX_RECORDS = [
   }
 ];
 
+export const DEFAULT_TAX_ASSETS = [
+  {
+    id: "a1",
+    name: "Laptop Asus Zenbook (Admin & Tutor)",
+    group: "Kelompok 1", // 4 tahun (25% per tahun)
+    purchase_date: "2024-01-15",
+    purchase_price: 12000000
+  },
+  {
+    id: "a2",
+    name: "Air Conditioner (AC) Daikin 1 PK",
+    group: "Kelompok 2", // 8 tahun (12.5% per tahun)
+    purchase_date: "2025-07-20",
+    purchase_price: 6000000
+  }
+];
+
