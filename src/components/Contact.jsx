@@ -8,7 +8,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot }) {
   const [address, setAddress] = useState("Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
   const [phone, setPhone] = useState("+62 813-5700-1357");
   const [rawPhone, setRawPhone] = useState("6281357001357");
-  const [email, setEmail] = useState("contact@ibraglobalenglish.uk");
+  const [email, setEmail] = useState("admin@ibraglobalenglish.uk");
 
   useEffect(() => {
     async function fetchContactSettings() {

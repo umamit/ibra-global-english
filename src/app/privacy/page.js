@@ -105,7 +105,7 @@ export default function PrivacyPage() {
                 Jika Anda memiliki pertanyaan mengenai Kebijakan Privasi ini, silakan hubungi kami melalui:
               </p>
               <p style={{ marginTop: "0.5rem" }}>
-                📧 Email: <strong>ibraglobalenglish@gmail.com</strong><br />
+                📧 Email: <strong>admin@ibraglobalenglish.uk</strong><br />
                 📍 Alamat: <strong>Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Kab. Pulau Taliabu, Maluku Utara</strong>
               </p>
             </section>
