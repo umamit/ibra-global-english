@@ -175,9 +175,10 @@ export default function StudentManagement() {
         
         if (error) throw error;
 
-        // 2. Update auth.users metadata so that next-auth session and proxy middleware stays synced
+        // 2. Update auth.users metadata and auto-confirm email since admin has verified this role change
         const { error: authError } = await supabase.auth.admin.updateUserById(userId, {
-          user_metadata: { role: newRole }
+          user_metadata: { role: newRole },
+          email_confirm: true
         });
 
         if (authError) {
