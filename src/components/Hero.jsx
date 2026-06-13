@@ -66,6 +66,11 @@ export default function Hero() {
 
   return (
     <section id="home" className="hero">
+      {/* Decorative Parallax Background Elements */}
+      <div className="hero-parallax-bg hero-decor-1"></div>
+      <div className="hero-parallax-bg hero-decor-2"></div>
+      <div className="hero-parallax-bg hero-decor-3"></div>
+
       <div className="container hero-grid">
         <div className="hero-content" data-aos="fade-right">
           <h2>{heroTitle}</h2>
