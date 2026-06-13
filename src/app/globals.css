@@ -4099,5 +4099,26 @@ textarea:focus-visible {
   transform: translate(0) scale(1) !important;
 }
 
+/* Infinite Rotation for Globe Logos */
+@keyframes spin-globe {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
+.logo-img,
+.sidebar-brand-img,
+.footer-logo img {
+  animation: spin-globe 12s linear infinite;
+}
 
+@media (prefers-reduced-motion: reduce) {
+  .logo-img,
+  .sidebar-brand-img,
+  .footer-logo img {
+    animation: none !important;
+  }
+}
