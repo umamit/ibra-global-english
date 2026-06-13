@@ -35,7 +35,7 @@ export default function Footer() {
     <footer>
       <div className="container footer-content">
         <div className="footer-logo">
-          <img src="/assets/logo.png" alt="Ibra Global English Logo" loading="lazy" />
+          <img src="/assets/apple-touch-icon.png" alt="Ibra Global English Logo" loading="lazy" />
           <div className="footer-logo-text">
             <h3>Ibra Global English</h3>
             <p>{footerSubtitle}</p>
