@@ -307,16 +307,16 @@ header.scrolled .logo-text p {
 .nav-btn {
   background-color: var(--color-primary);
   color: var(--color-white);
-  padding: 0.5rem 1.25rem;
+  padding: 0.4rem 1.0rem;
   border-radius: var(--radius-lg);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.775rem;
   transition: var(--transition-fast);
   box-shadow: var(--shadow-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.4rem;
+  height: 2.15rem;
   box-sizing: border-box;
 }
 
@@ -329,16 +329,16 @@ header.scrolled .logo-text p {
   background-color: transparent;
   color: var(--color-primary-dark);
   border: 1.5px solid var(--color-primary);
-  padding: 0.5rem 1.25rem;
+  padding: 0.4rem 1.0rem;
   border-radius: var(--radius-lg);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.775rem;
   transition: var(--transition-fast);
   box-shadow: var(--shadow-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.4rem;
+  height: 2.15rem;
   box-sizing: border-box;
   text-decoration: none;
 }
