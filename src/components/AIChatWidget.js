@@ -111,8 +111,7 @@ export default function AIChatWidget() {
     window.speechSynthesis.speak(utterance);
   };
 
-  const handleSend = async () => {
-    const text = input.trim();
+  const sendMessage = async (text) => {
     if (!text || isLoading) return;
 
     const userMessage = {
@@ -167,6 +166,11 @@ export default function AIChatWidget() {
     }
   };
 
+  const handleSend = () => {
+    const text = input.trim();
+    sendMessage(text);
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -182,8 +186,7 @@ export default function AIChatWidget() {
   ];
 
   const handleQuickReply = (text) => {
-    setInput(text);
-    setTimeout(() => inputRef.current?.focus(), 50);
+    sendMessage(text);
   };
 
   const formatTime = (date) =>
