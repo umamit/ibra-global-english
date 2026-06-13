@@ -185,19 +185,19 @@ header.scrolled .nav-container {
 }
 
 .logo-img {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3.35rem;
+  height: 3.35rem;
   object-fit: contain;
   transition: width var(--transition-normal), height var(--transition-normal);
 }
 
 header.scrolled .logo-img {
-  width: 2.15rem;
-  height: 2.15rem;
+  width: 2.65rem;
+  height: 2.65rem;
 }
 
 .logo-text h1 {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-primary);
   line-height: 1.15;
@@ -206,11 +206,11 @@ header.scrolled .logo-img {
 }
 
 header.scrolled .logo-text h1 {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 .logo-text p {
-  font-size: 0.7rem;
+  font-size: 0.725rem;
   color: var(--color-accent);
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -218,26 +218,26 @@ header.scrolled .logo-text h1 {
 }
 
 header.scrolled .logo-text p {
-  font-size: 0.625rem;
+  font-size: 0.65rem;
 }
 
 @media (max-width: 480px) {
   .logo-img {
+    width: 2.85rem;
+    height: 2.85rem;
+  }
+  
+  header.scrolled .logo-img {
     width: 2.35rem;
     height: 2.35rem;
   }
   
-  header.scrolled .logo-img {
-    width: 1.95rem;
-    height: 1.95rem;
-  }
-  
   .logo-text h1 {
-    font-size: 1.05rem;
+    font-size: 1.15rem;
   }
   
   header.scrolled .logo-text h1 {
-    font-size: 0.95rem;
+    font-size: 1.0rem;
   }
   
   .logo-text p {
