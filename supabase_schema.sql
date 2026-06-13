@@ -83,6 +83,7 @@ BEGIN
     full_name_val := COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1));
   END IF;
 
+  -- 1. Sisipkan profil ke tabel public.profiles
   INSERT INTO public.profiles (id, full_name, role, email)
   VALUES (
     new.id,
@@ -90,6 +91,12 @@ BEGIN
     default_role,
     new.email
   );
+
+  -- 2. Konfirmasi email secara otomatis di auth.users agar tidak memicu error "Email not confirmed"
+  UPDATE auth.users 
+  SET email_confirmed_at = COALESCE(email_confirmed_at, now()) 
+  WHERE id = new.id;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
