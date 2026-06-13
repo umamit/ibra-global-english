@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, useRef } from "react";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { DEFAULT_PROGRAMS, DEFAULT_BENEFITS, DEFAULT_FAQS } from "@/utils/fallbackData";
 
 export default function LandingPageCMS() {
   const supabase = createClient();
@@ -74,6 +75,11 @@ export default function LandingPageCMS() {
   const [testimonialText, setTestimonialText] = useState("");
   const [savingTestimonial, setSavingTestimonial] = useState(false);
 
+  // Programs, Benefits, FAQ list states
+  const [programsList, setProgramsList] = useState([]);
+  const [benefitsList, setBenefitsList] = useState([]);
+  const [faqsList, setFaqsList] = useState([]);
+
   // ----------------------------------------------------
   // UTILITIES & NOTIFICATIONS
   // ----------------------------------------------------
@@ -119,6 +125,40 @@ export default function LandingPageCMS() {
         setCtaTitle(settings.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
         setCtaDesc(settings.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
         setCtaBrochureImage(settings.cta_brochure_image || "/assets/brochure.png");
+
+        const programsRaw = settings.landing_programs;
+        const benefitsRaw = settings.landing_benefits;
+        const faqRaw = settings.landing_faq;
+        
+        if (programsRaw) {
+          try {
+            setProgramsList(JSON.parse(programsRaw));
+          } catch (e) {
+            setProgramsList(DEFAULT_PROGRAMS);
+          }
+        } else {
+          setProgramsList(DEFAULT_PROGRAMS);
+        }
+        
+        if (benefitsRaw) {
+          try {
+            setBenefitsList(JSON.parse(benefitsRaw));
+          } catch (e) {
+            setBenefitsList(DEFAULT_BENEFITS);
+          }
+        } else {
+          setBenefitsList(DEFAULT_BENEFITS);
+        }
+        
+        if (faqRaw) {
+          try {
+            setFaqsList(JSON.parse(faqRaw));
+          } catch (e) {
+            setFaqsList(DEFAULT_FAQS);
+          }
+        } else {
+          setFaqsList(DEFAULT_FAQS);
+        }
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
@@ -176,6 +216,57 @@ export default function LandingPageCMS() {
     fetchGallery();
     fetchTestimonials();
   }, []);
+
+  const handleSavePrograms = async (newPrograms) => {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert({ key: "landing_programs", value: JSON.stringify(newPrograms) });
+      if (error) throw error;
+      setProgramsList(newPrograms);
+      showToast("Daftar Program Kursus berhasil disimpan!", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Gagal menyimpan program kursus.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveBenefits = async (newBenefits) => {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert({ key: "landing_benefits", value: JSON.stringify(newBenefits) });
+      if (error) throw error;
+      setBenefitsList(newBenefits);
+      showToast("Daftar Keunggulan berhasil disimpan!", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Gagal menyimpan keunggulan.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveFaqs = async (newFaqs) => {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert({ key: "landing_faq", value: JSON.stringify(newFaqs) });
+      if (error) throw error;
+      setFaqsList(newFaqs);
+      showToast("Daftar FAQ berhasil disimpan!", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Gagal menyimpan FAQ.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getCanvaEmbedUrl = (url) => {
     if (!url) return null;
@@ -522,6 +613,27 @@ export default function LandingPageCMS() {
           style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
         >
           Ulasan & Testimoni
+        </button>
+        <button
+          onClick={() => setActiveTab("programs")}
+          className={`btn-portal-outline ${activeTab === "programs" ? "active" : ""}`}
+          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
+        >
+          Program Kursus
+        </button>
+        <button
+          onClick={() => setActiveTab("benefits")}
+          className={`btn-portal-outline ${activeTab === "benefits" ? "active" : ""}`}
+          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
+        >
+          Keunggulan
+        </button>
+        <button
+          onClick={() => setActiveTab("faq")}
+          className={`btn-portal-outline ${activeTab === "faq" ? "active" : ""}`}
+          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
+        >
+          Tanya Jawab (FAQ)
         </button>
         <button
           onClick={() => setActiveTab("maintenance")}
@@ -1235,6 +1347,293 @@ export default function LandingPageCMS() {
             )}
           </div>
 
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB: PROGRAMS
+          ===================================================================== */}
+      {activeTab === "programs" && (
+        <div className="portal-card" style={{ padding: "2rem" }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Kelola Program Kursus</h2>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {programsList.map((prog, idx) => (
+              <div key={idx} style={{ padding: "1.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-lg)", position: "relative" }}>
+                <button 
+                  onClick={() => {
+                    const next = [...programsList];
+                    next.splice(idx, 1);
+                    handleSavePrograms(next);
+                  }}
+                  className="btn-portal-danger" 
+                  style={{ position: "absolute", top: "1rem", right: "1rem", padding: "0.4rem 0.8rem", fontSize: "0.8rem" }}
+                >
+                  Hapus
+                </button>
+                
+                <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                  <div className="form-group">
+                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Nama Program</label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      value={prog.title} 
+                      onChange={(e) => {
+                        const next = [...programsList];
+                        next[idx] = { ...next[idx], title: e.target.value };
+                        setProgramsList(next);
+                      }} 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Kategori Umur / Keterangan</label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      value={prog.age} 
+                      onChange={(e) => {
+                        const next = [...programsList];
+                        next[idx] = { ...next[idx], age: e.target.value };
+                        setProgramsList(next);
+                      }} 
+                    />
+                  </div>
+                </div>
+
+                <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                  <div className="form-group">
+                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Deskripsi Singkat</label>
+                    <textarea 
+                      className="form-input" 
+                      value={prog.desc} 
+                      style={{ height: "80px", resize: "none" }}
+                      onChange={(e) => {
+                        const next = [...programsList];
+                        next[idx] = { ...next[idx], desc: e.target.value };
+                        setProgramsList(next);
+                      }} 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Pilihan Ikon</label>
+                    <select
+                      className="form-input"
+                      value={prog.iconKey || "book"}
+                      onChange={(e) => {
+                        const next = [...programsList];
+                        next[idx] = { ...next[idx], iconKey: e.target.value };
+                        setProgramsList(next);
+                      }}
+                    >
+                      <option value="book">Book (Buku)</option>
+                      <option value="graduation">Graduation (Topi Toga)</option>
+                      <option value="users">Users (Kelompok/Orang)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Fitur / Materi Unggulan (Pisahkan dengan koma)</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={(prog.features || []).join(", ")} 
+                    onChange={(e) => {
+                      const next = [...programsList];
+                      next[idx] = { ...next[idx], features: e.target.value.split(",").map(f => f.trim()) };
+                      setProgramsList(next);
+                    }} 
+                  />
+                </div>
+              </div>
+            ))}
+            
+            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+              <button 
+                onClick={() => {
+                  const next = [...programsList, { title: "Program Baru", age: "5-10 tahun", desc: "Deskripsi program baru", iconKey: "book", features: ["Fitur 1"] }];
+                  setProgramsList(next);
+                }} 
+                className="btn-portal-outline"
+              >
+                + Tambah Program Baru
+              </button>
+              <button 
+                onClick={() => handleSavePrograms(programsList)}
+                className="btn-portal-primary"
+              >
+                Simpan Semua Program
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB: BENEFITS
+          ===================================================================== */}
+      {activeTab === "benefits" && (
+        <div className="portal-card" style={{ padding: "2rem" }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Kelola Keunggulan</h2>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {benefitsList.map((b, idx) => (
+              <div key={idx} style={{ padding: "1.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-lg)", position: "relative" }}>
+                <button 
+                  onClick={() => {
+                    const next = [...benefitsList];
+                    next.splice(idx, 1);
+                    handleSaveBenefits(next);
+                  }}
+                  className="btn-portal-danger" 
+                  style={{ position: "absolute", top: "1rem", right: "1rem", padding: "0.4rem 0.8rem", fontSize: "0.8rem" }}
+                >
+                  Hapus
+                </button>
+                
+                <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  <div className="form-group">
+                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Judul Keunggulan</label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      value={b.title} 
+                      onChange={(e) => {
+                        const next = [...benefitsList];
+                        next[idx] = { ...next[idx], title: e.target.value };
+                        setBenefitsList(next);
+                      }} 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Pilihan Ikon</label>
+                    <select
+                      className="form-input"
+                      value={b.iconKey || "check"}
+                      onChange={(e) => {
+                        const next = [...benefitsList];
+                        next[idx] = { ...next[idx], iconKey: e.target.value };
+                        setBenefitsList(next);
+                      }}
+                    >
+                      <option value="users">Users (Kelompok)</option>
+                      <option value="award">Award (Penghargaan)</option>
+                      <option value="clock">Clock (Jam/Waktu)</option>
+                      <option value="trophy">Trophy (Piala)</option>
+                      <option value="message">Message (Pesan)</option>
+                      <option value="check">Checkmark (Centang)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group" style={{ marginTop: "1rem" }}>
+                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Deskripsi Keunggulan</label>
+                  <textarea 
+                    className="form-input" 
+                    value={b.desc} 
+                    style={{ height: "60px", resize: "none" }}
+                    onChange={(e) => {
+                      const next = [...benefitsList];
+                      next[idx] = { ...next[idx], desc: e.target.value };
+                      setBenefitsList(next);
+                    }} 
+                  />
+                </div>
+              </div>
+            ))}
+            
+            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+              <button 
+                onClick={() => {
+                  const next = [...benefitsList, { title: "Keunggulan Baru", desc: "Deskripsi keunggulan baru", iconKey: "check" }];
+                  setBenefitsList(next);
+                }} 
+                className="btn-portal-outline"
+              >
+                + Tambah Keunggulan Baru
+              </button>
+              <button 
+                onClick={() => handleSaveBenefits(benefitsList)}
+                className="btn-portal-primary"
+              >
+                Simpan Semua Keunggulan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB: FAQ
+          ===================================================================== */}
+      {activeTab === "faq" && (
+        <div className="portal-card" style={{ padding: "2rem" }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Kelola Tanya Jawab (FAQ)</h2>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {faqsList.map((faq, idx) => (
+              <div key={idx} style={{ padding: "1.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-lg)", position: "relative" }}>
+                <button 
+                  onClick={() => {
+                    const next = [...faqsList];
+                    next.splice(idx, 1);
+                    handleSaveFaqs(next);
+                  }}
+                  className="btn-portal-danger" 
+                  style={{ position: "absolute", top: "1rem", right: "1rem", padding: "0.4rem 0.8rem", fontSize: "0.8rem" }}
+                >
+                  Hapus
+                </button>
+                
+                <div className="form-group">
+                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Pertanyaan</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={faq.question} 
+                    onChange={(e) => {
+                      const next = [...faqsList];
+                      next[idx] = { ...next[idx], question: e.target.value };
+                      setFaqsList(next);
+                    }} 
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginTop: "1rem" }}>
+                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Jawaban</label>
+                  <textarea 
+                    className="form-input" 
+                    value={faq.answer} 
+                    style={{ height: "100px", resize: "none" }}
+                    onChange={(e) => {
+                      const next = [...faqsList];
+                      next[idx] = { ...next[idx], answer: e.target.value };
+                      setFaqsList(next);
+                    }} 
+                  />
+                </div>
+              </div>
+            ))}
+            
+            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+              <button 
+                onClick={() => {
+                  const next = [...faqsList, { question: "Pertanyaan Baru?", answer: "Jawaban baru." }];
+                  setFaqsList(next);
+                }} 
+                className="btn-portal-outline"
+              >
+                + Tambah FAQ Baru
+              </button>
+              <button 
+                onClick={() => handleSaveFaqs(faqsList)}
+                className="btn-portal-primary"
+              >
+                Simpan Semua FAQ
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
