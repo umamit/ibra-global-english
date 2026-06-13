@@ -100,7 +100,10 @@ export default function Hero() {
                src={heroImage} 
                alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" 
                className="hero-img" 
+               width={600}
+               height={400}
                fetchPriority="high" 
+               loading="eager"
             />
           </div>
           <div className="hero-stats-badge">
