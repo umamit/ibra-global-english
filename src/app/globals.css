@@ -185,19 +185,19 @@ header.scrolled .nav-container {
 }
 
 .logo-img {
-  width: 3.8rem;
-  height: 3.8rem;
+  width: 4.8rem;
+  height: 4.8rem;
   object-fit: contain;
   transition: width var(--transition-normal), height var(--transition-normal);
 }
 
 header.scrolled .logo-img {
-  width: 3.0rem;
-  height: 3.0rem;
+  width: 3.6rem;
+  height: 3.6rem;
 }
 
 .logo-text h1 {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--color-primary);
   line-height: 1.15;
@@ -206,11 +206,11 @@ header.scrolled .logo-img {
 }
 
 header.scrolled .logo-text h1 {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .logo-text p {
-  font-size: 0.725rem;
+  font-size: 0.775rem;
   color: var(--color-accent);
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -218,18 +218,18 @@ header.scrolled .logo-text h1 {
 }
 
 header.scrolled .logo-text p {
-  font-size: 0.65rem;
+  font-size: 0.675rem;
 }
 
 @media (max-width: 480px) {
   .logo-img {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.8rem;
+    height: 3.8rem;
   }
   
   header.scrolled .logo-img {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3.0rem;
+    height: 3.0rem;
   }
   
   .logo-text h1 {
