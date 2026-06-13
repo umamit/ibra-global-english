@@ -57,8 +57,8 @@
   --radius-full: 9999px;
   
   /* Header Backgrounds - Premium Soft Teal Glassmorphism */
-  --color-header-bg: rgba(240, 247, 248, 0.85);
-  --color-header-bg-scrolled: rgba(240, 247, 248, 0.95);
+  --color-header-bg: rgba(240, 247, 248, 0.45);
+  --color-header-bg-scrolled: rgba(240, 247, 248, 0.65);
 }
 
 /* Reset & Base Styles */
@@ -1772,8 +1772,8 @@ footer {
   --color-primary-light: #162a33;
   --color-accent-light: #25231c;
   
-  --color-header-bg: rgba(22, 42, 51, 0.85); /* Deep dark teal glassmorphism */
-  --color-header-bg-scrolled: rgba(22, 42, 51, 0.95);
+  --color-header-bg: rgba(22, 42, 51, 0.45); /* Deep dark teal glassmorphism */
+  --color-header-bg-scrolled: rgba(22, 42, 51, 0.65);
 }
 
 [data-theme="dark"] html {
@@ -2513,7 +2513,7 @@ textarea:focus-visible {
 }
 
 .portal-modal {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: var(--radius-2xl);
@@ -2572,7 +2572,7 @@ textarea:focus-visible {
 
 /* Dukungan Dark Mode untuk Modal Melayang Premium */
 [data-theme="dark"] .portal-modal {
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(15, 23, 42, 0.75);
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 
     0 30px 60px -15px rgba(0, 0, 0, 0.6), 
