@@ -247,14 +247,14 @@ export default function LoginPage() {
             onClick={() => { setIsRegister(false); setErrorBanner(""); setSuccessBanner(""); }}
             className={`auth-tab ${!isRegister ? "active" : ""}`}
           >
-            Masuk Akun
+            Portal Login
           </button>
           <button
             type="button"
             onClick={() => { setIsRegister(true); setErrorBanner(""); setSuccessBanner(""); }}
             className={`auth-tab ${isRegister ? "active" : ""}`}
           >
-            Daftar Baru
+            Daftar Sekarang
           </button>
         </div>
 
@@ -324,8 +324,8 @@ export default function LoginPage() {
               {loading 
                 ? "Menghubungkan..." 
                 : isRegister 
-                  ? "Daftar Akun Baru" 
-                  : "Masuk ke Portal"
+                  ? "Daftar Sekarang" 
+                  : "Portal Login"
               }
             </span>
           </button>
