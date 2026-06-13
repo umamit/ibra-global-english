@@ -101,3 +101,30 @@ export const DEFAULT_VIDEOS = [
   }
 ];
 
+export const DEFAULT_TAX_RECORDS = [
+  {
+    id: "1",
+    tax_year: 2025,
+    tax_period: "Tahunan",
+    tax_type: "PPh Badan Pasal 31E (Fasilitas)",
+    gross_revenue: 150000000,
+    tax_due: 8250000,
+    status: "Sudah Dilaporkan",
+    payment_date: "2026-04-15",
+    ntpn_code: "1234567890ABCDEF",
+    bpe_code: "BPE-2025-1771-001"
+  },
+  {
+    id: "2",
+    tax_year: 2026,
+    tax_period: "Mei",
+    tax_type: "PPh Final 0.5% (PP 55/2022)",
+    gross_revenue: 18000000,
+    tax_due: 90000,
+    status: "Sudah Bayar",
+    payment_date: "2026-06-10",
+    ntpn_code: "9876543210FEDCBA",
+    bpe_code: "BPE-2026-05-002"
+  }
+];
+
