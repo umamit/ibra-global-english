@@ -46,7 +46,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
     <>
       <header id="header" className={`${isScrolled ? "scrolled" : ""} ${hasMarquee ? "has-marquee" : ""}`}>
         <div className="container nav-container">
-          <a href="#home" className="logo-link" id="logo-nav">
+          <a href="/#home" className="logo-link" id="logo-nav">
             <img src="/assets/logo.png" alt="Ibra Global English Logo" className="logo-img" />
             <div className="logo-text">
               <h1>Ibra Global English</h1>
@@ -55,13 +55,13 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
           </a>
           
           <nav className="nav-links" aria-label="Navigasi Utama">
-            <a href="#home" className="nav-link">Home</a>
-            <a href="#programs" className="nav-link">Program</a>
-            <a href="#benefits" className="nav-link">Keunggulan</a>
-            <a href="#gallery" className="nav-link">Galeri</a>
-            <a href="#testimonials" className="nav-link">Testimoni</a>
-            <a href="#faq" className="nav-link">FAQ</a>
-            <a href="#contact" className="nav-link">Kontak</a>
+            <a href="/#home" className="nav-link">Home</a>
+            <a href="/#programs" className="nav-link">Program</a>
+            <a href="/#benefits" className="nav-link">Keunggulan</a>
+            <a href="/gallery" className="nav-link">Galeri</a>
+            <a href="/#testimonials" className="nav-link">Testimoni</a>
+            <a href="/#faq" className="nav-link">FAQ</a>
+            <a href="/#contact" className="nav-link">Kontak</a>
           </nav>
           
           <div className="nav-right-group">
@@ -135,7 +135,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
             </button>
             
             <a href="/login" className="nav-btn-outline nav-btn-desktop" style={{ marginRight: "0.75rem" }}>Portal Login</a>
-            <a href="#contact" className="nav-btn nav-btn-desktop">Daftar Sekarang</a>
+            <a href="/#contact" className="nav-btn nav-btn-desktop">Daftar Sekarang</a>
             
             <button 
               className="menu-toggle" 
@@ -166,16 +166,16 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
       >
         <div className="mobile-nav-content">
           <nav className="mobile-nav-links" aria-label="Navigasi Seluler">
-            <a href="#home" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Home</a>
-            <a href="#programs" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Program</a>
-            <a href="#benefits" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Keunggulan</a>
-            <a href="#gallery" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Galeri</a>
-            <a href="#testimonials" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Testimoni</a>
-            <a href="#faq" className="mobile-link" onClick={() => setIsMenuOpen(false)}>FAQ</a>
-            <a href="#contact" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Kontak</a>
+            <a href="/#home" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Home</a>
+            <a href="/#programs" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Program</a>
+            <a href="/#benefits" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Keunggulan</a>
+            <a href="/gallery" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Galeri</a>
+            <a href="/#testimonials" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Testimoni</a>
+            <a href="/#faq" className="mobile-link" onClick={() => setIsMenuOpen(false)}>FAQ</a>
+            <a href="/#contact" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Kontak</a>
             <a href="/login" className="mobile-link" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary-dark)", fontWeight: "700" }}>Login Portal</a>
           </nav>
-          <a href="#contact" className="mobile-nav-btn mobile-link" onClick={() => setIsMenuOpen(false)}>Daftar Sekarang</a>
+          <a href="/#contact" className="mobile-nav-btn mobile-link" onClick={() => setIsMenuOpen(false)}>Daftar Sekarang</a>
         </div>
       </div>
     </>
