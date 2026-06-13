@@ -114,14 +114,7 @@ export default function Gallery({ onOpenLightbox }) {
     });
   };
 
-  // Autoplay effect
-  useEffect(() => {
-    if (galleryItems.length <= 1) return;
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % galleryItems.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [galleryItems.length]);
+
 
   const handleCardClick = (idx) => {
     if (idx === activeIndex) {
