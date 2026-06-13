@@ -1122,11 +1122,11 @@ footer {
 }
 
 .footer-logo img {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 3.8rem;
+  height: 3.8rem;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.92);
-  padding: 0;
+  padding: 0.15rem;
   box-shadow: 0 0 0 2px rgba(255,255,255,0.25), 0 4px 16px rgba(0,0,0,0.18);
   object-fit: contain;
 }
