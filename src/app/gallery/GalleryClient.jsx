@@ -10,6 +10,7 @@ import MarqueeBanner from "@/components/MarqueeBanner";
 import { createClient } from "@/utils/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { STATIC_GALLERY } from "./galleryData";
+import { DEFAULT_VIDEOS } from "@/utils/fallbackData";
 
 export default function GalleryClient() {
   const supabase = createClient();
@@ -19,6 +20,65 @@ export default function GalleryClient() {
   const [lightbox, setLightbox] = useState({ isOpen: false, src: "", caption: "", index: 0 });
 
   useScrollReveal();
+
+  const [videos, setVideos] = useState([]);
+
+  // Auto-convert standard YouTube links to embed format
+  const getEmbedUrl = (url) => {
+    if (!url) return "";
+    
+    // 1. YouTube watch link: https://www.youtube.com/watch?v=XXXX
+    if (url.includes("youtube.com/watch")) {
+      try {
+        const urlObj = new URL(url);
+        const v = urlObj.searchParams.get("v");
+        if (v) return `https://www.youtube.com/embed/${v}`;
+      } catch (e) {}
+    }
+    
+    // 2. YouTube short link: https://youtu.be/XXXX
+    if (url.includes("youtu.be/")) {
+      const parts = url.split("/");
+      const id = parts[parts.length - 1]?.split("?")[0];
+      if (id) return `https://www.youtube.com/embed/${id}`;
+    }
+    
+    // 3. YouTube shorts link: https://www.youtube.com/shorts/XXXX
+    if (url.includes("youtube.com/shorts/")) {
+      const parts = url.split("/shorts/");
+      const id = parts[1]?.split("?")[0];
+      if (id) return `https://www.youtube.com/embed/${id}`;
+    }
+    
+    return url;
+  };
+
+  // Fetch dynamic videos from database
+  useEffect(() => {
+    async function fetchVideos() {
+      try {
+        const { data, error } = await supabase
+          .from('landing_settings')
+          .select('value')
+          .eq('key', 'landing_videos')
+          .single();
+        
+        if (error) throw error;
+        if (data && data.value) {
+          const parsed = JSON.parse(data.value);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setVideos(parsed);
+            return;
+          }
+        }
+        setVideos(DEFAULT_VIDEOS);
+      } catch (e) {
+        console.warn("Gagal memuat galeri video dari database, menggunakan data statis.", e);
+        setVideos(DEFAULT_VIDEOS);
+      }
+    }
+    fetchVideos();
+  }, []);
 
   // Handle theme initialization
   useEffect(() => {
@@ -195,6 +255,93 @@ export default function GalleryClient() {
               ))}
             </div>
           )}
+
+          {/* Dedicated Video Gallery Section */}
+          {videos && videos.length > 0 && (
+            <div style={{ marginTop: "6rem", paddingTop: "5rem", borderTop: "2px dashed var(--color-gray-200)" }}>
+              {/* Section Header */}
+              <div className="section-header" style={{ textAlign: "center", marginBottom: "4rem" }} data-aos="fade-up">
+                <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "2px", display: "inline-block", marginBottom: "0.5rem" }}>
+                  Dokumentasi Video
+                </span>
+                <h2 style={{ fontSize: "2.2rem", fontWeight: "900", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
+                  Video Kegiatan Siswa
+                </h2>
+                <p style={{ color: "var(--color-gray-600)", maxWidth: "600px", margin: "0 auto", fontSize: "1.05rem" }}>
+                  Tonton keseruan proses belajar-mengajar, aktivitas ice breaking, dan latihan berbicara bahasa Inggris langsung dari ruang kelas kami.
+                </p>
+              </div>
+
+              {/* Video Grid */}
+              <div style={{ 
+                display: "grid", 
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 450px), 1fr))", 
+                gap: "3rem",
+                justifyContent: "center"
+              }}>
+                {videos.map((vid, idx) => (
+                  <div 
+                    key={idx} 
+                    className="video-card-item"
+                    data-aos="fade-up" 
+                    data-aos-delay={idx * 100}
+                    style={{
+                      backgroundColor: "var(--color-white)",
+                      borderRadius: "var(--radius-2xl)",
+                      overflow: "hidden",
+                      boxShadow: "var(--shadow-lg)",
+                      border: "1px solid var(--color-gray-150)",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                    }}
+                  >
+                    {/* Video Player Wrapper (16:9 Aspect Ratio) */}
+                    <div style={{ 
+                      position: "relative", 
+                      paddingBottom: "56.25%", /* 16:9 */
+                      height: 0, 
+                      overflow: "hidden", 
+                      backgroundColor: "#000" 
+                    }}>
+                      <iframe
+                        src={getEmbedUrl(vid.url)}
+                        title={vid.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        loading="lazy"
+                        style={{ 
+                          position: "absolute", 
+                          top: 0, 
+                          left: 0, 
+                          width: "100%", 
+                          height: "100%",
+                          border: "none"
+                        }}
+                      />
+                    </div>
+                    {/* Video Metadata */}
+                    <div style={{ padding: "1.75rem" }}>
+                      <h3 style={{ 
+                        fontSize: "1.25rem", 
+                        fontWeight: "800", 
+                        color: "var(--color-gray-900)", 
+                        marginBottom: "0.5rem" 
+                      }}>
+                        {vid.title}
+                      </h3>
+                      <p style={{ 
+                        fontSize: "0.9rem", 
+                        color: "var(--color-gray-500)", 
+                        lineHeight: "1.5" 
+                      }}>
+                        {vid.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
@@ -256,6 +403,13 @@ export default function GalleryClient() {
         }
         .gallery-masonry-item:hover .gallery-item-overlay {
           opacity: 1;
+        }
+        .video-card-item {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .video-card-item:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(33, 108, 126, 0.15) !important;
         }
       `}</style>
     </div>
