@@ -7,18 +7,12 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     
+    
     <!-- Website Main Logo -->
     <image:image>
       <image:loc>https://www.ibraglobalenglish.uk/assets/logo.png</image:loc>
       <image:title>Logo Ibra Global English Bobong</image:title>
       <image:caption>Logo resmi Ibra Global English Bobong, kursus bahasa Inggris terbaik di Pulau Taliabu.</image:caption>
-    </image:image>
-    
-    <!-- Hero Banner Image -->
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&amp;auto=format&amp;fit=crop</image:loc>
-      <image:title>Belajar Bahasa Inggris di Bobong</image:title>
-      <image:caption>Siswa sedang belajar Bahasa Inggris dengan ceria di Ibra Global English Bobong.</image:caption>
     </image:image>
     
     <!-- Classroom Games Image -->
@@ -59,27 +53,6 @@
     <lastmod>2026-06-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    
-    <!-- Kids Interactive Study -->
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1000&amp;auto=format&amp;fit=crop</image:loc>
-      <image:title>Kids Interactive Study - Ibra Global English Bobong</image:title>
-      <image:caption>Kegiatan belajar kelompok interaktif anak-anak di kelas bahasa Inggris Bobong.</image:caption>
-    </image:image>
-    
-    <!-- Speaking Practice Session -->
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1000&amp;auto=format&amp;fit=crop</image:loc>
-      <image:title>Speaking Practice Session - Ibra Global English Bobong</image:title>
-      <image:caption>Latihan berbicara bahasa Inggris secara aktif dan percaya diri untuk kelas Teens/Dewasa di Bobong.</image:caption>
-    </image:image>
-
-    <!-- Experienced Teaching -->
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1000&amp;auto=format&amp;fit=crop</image:loc>
-      <image:title>Experienced Teaching - Ibra Global English Bobong</image:title>
-      <image:caption>Penyampaian materi oleh tutor berpengalaman dengan metode yang mudah dipahami.</image:caption>
-    </image:image>
   </url>
 </urlset>
 
