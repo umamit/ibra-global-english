@@ -145,29 +145,21 @@ export default function GalleryPage() {
               Tidak ada foto di kategori ini.
             </div>
           ) : (
-            <div className="gallery-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.5rem" }}>
+            <div className="gallery-masonry">
               {filteredItems.map((item, idx) => (
                 <div
                   key={idx}
                   onClick={() => openLightbox(item.full, item.caption, idx)}
-                  style={{
-                    backgroundColor: "white",
-                    borderRadius: "var(--radius-lg)",
-                    overflow: "hidden",
-                    border: "1px solid var(--color-gray-150)",
-                    cursor: "pointer",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                  }}
-                  className="gallery-grid-item"
+                  className="gallery-masonry-item"
                 >
-                  <div style={{ position: "relative", width: "100%", height: "220px", overflow: "hidden" }}>
+                  <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
                     <img
                       src={item.thumb}
                       alt={item.caption}
                       style={{
                         width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
+                        height: "auto",
+                        display: "block",
                         transition: "transform 0.5s ease"
                       }}
                       className="gallery-item-image"
@@ -223,16 +215,49 @@ export default function GalleryPage() {
         hasNavigation={filteredItems.length > 1}
       />
 
-      {/* CSS Styles injection for Gallery Grid Items */}
+      {/* CSS Styles injection for Gallery Masonry & Visual Scrapbook Effects */}
       <style jsx global>{`
-        .gallery-grid-item:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 12px 30px rgba(33, 108, 126, 0.12);
+        .gallery-masonry {
+          column-count: 1;
+          column-gap: 1.5rem;
         }
-        .gallery-grid-item:hover .gallery-item-image {
-          transform: scale(1.08);
+        @media (min-width: 640px) {
+          .gallery-masonry {
+            column-count: 2;
+          }
         }
-        .gallery-grid-item:hover .gallery-item-overlay {
+        @media (min-width: 1024px) {
+          .gallery-masonry {
+            column-count: 3;
+          }
+        }
+        .gallery-masonry-item {
+          display: inline-block;
+          width: 100%;
+          margin-bottom: 1.5rem;
+          break-inside: avoid;
+          background-color: white;
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+          border: 1px solid var(--color-gray-150);
+          cursor: pointer;
+          transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        }
+        .gallery-masonry-item:nth-child(odd) {
+          transform: rotate(-0.75deg);
+        }
+        .gallery-masonry-item:nth-child(even) {
+          transform: rotate(0.75deg);
+        }
+        .gallery-masonry-item:hover {
+          transform: translateY(-8px) scale(1.025) rotate(0deg) !important;
+          box-shadow: 0 20px 40px rgba(33, 108, 126, 0.16);
+          z-index: 10;
+        }
+        .gallery-masonry-item:hover .gallery-item-image {
+          transform: scale(1.06);
+        }
+        .gallery-masonry-item:hover .gallery-item-overlay {
           opacity: 1;
         }
       `}</style>
