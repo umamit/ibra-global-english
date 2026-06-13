@@ -1196,19 +1196,19 @@ footer {
 }
 
 .footer-yellow-ribbon {
-  background-color: var(--color-yellow);
+  background-color: var(--color-accent);
   padding-block: 1.5rem;
   margin-bottom: 2.5rem;
   width: 100%;
 }
 
 .footer-yellow-ribbon .footer-logo-text h3 {
-  color: var(--color-primary-dark);
+  color: #0c2327;
   font-weight: 800;
 }
 
 .footer-yellow-ribbon .footer-logo-text p {
-  color: rgba(22, 77, 87, 0.85);
+  color: rgba(12, 35, 39, 0.85);
   font-weight: 700;
 }
 
