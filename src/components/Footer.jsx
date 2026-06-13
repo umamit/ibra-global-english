@@ -33,14 +33,18 @@ export default function Footer() {
 
   return (
     <footer>
-      <div className="container footer-content">
-        <div className="footer-logo">
-          <img src="/assets/apple-touch-icon.png" alt="Ibra Global English Logo" loading="lazy" />
-          <div className="footer-logo-text">
-            <h3>Ibra Global English</h3>
-            <p>{footerSubtitle}</p>
+      <div className="footer-yellow-ribbon">
+        <div className="container">
+          <div className="footer-logo">
+            <img src="/assets/apple-touch-icon.png" alt="Ibra Global English Logo" loading="lazy" />
+            <div className="footer-logo-text">
+              <h3>Ibra Global English</h3>
+              <p>{footerSubtitle}</p>
+            </div>
           </div>
         </div>
+      </div>
+      <div className="container footer-content">
         <p className="footer-copyright" style={{ display: "flex", flexDirection: "column", gap: "0.5rem", alignItems: "center" }}>
           <span>
             &copy; 2026 Ibra Global English. Di bawah naungan PT Ibra Global English. All rights reserved. 

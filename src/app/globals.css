@@ -1192,7 +1192,24 @@ section {
 footer {
   background-color: var(--color-primary-dark);
   color: var(--color-white);
-  padding-block: 4rem 3rem;
+  padding-block: 0 3rem;
+}
+
+.footer-yellow-ribbon {
+  background-color: var(--color-yellow);
+  padding-block: 1.5rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.footer-yellow-ribbon .footer-logo-text h3 {
+  color: var(--color-primary-dark);
+  font-weight: 800;
+}
+
+.footer-yellow-ribbon .footer-logo-text p {
+  color: rgba(22, 77, 87, 0.85);
+  font-weight: 700;
 }
 
 .footer-content {
@@ -4099,26 +4116,4 @@ textarea:focus-visible {
   transform: translate(0) scale(1) !important;
 }
 
-/* Infinite Rotation for Globe Logos */
-@keyframes spin-globe {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
-.logo-img,
-.sidebar-brand-img,
-.footer-logo img {
-  animation: spin-globe 12s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo-img,
-  .sidebar-brand-img,
-  .footer-logo img {
-    animation: none !important;
-  }
-}
