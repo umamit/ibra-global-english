@@ -75,7 +75,23 @@ export default function LoginPage() {
       }
 
       const user = data.user;
-      const role = user?.user_metadata?.role || "parent";
+      
+      // Ambil role riil dari public.profiles karena user_metadata bisa out-of-sync
+      let role = "parent";
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        if (profile?.role) {
+          role = profile.role;
+        } else {
+          role = user?.user_metadata?.role || "parent";
+        }
+      } catch (_) {
+        role = user?.user_metadata?.role || "parent";
+      }
 
       // Jika bukan admin, cek mode maintenance sebelum melanjutkan
       if (role !== "admin") {

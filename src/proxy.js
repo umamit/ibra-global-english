@@ -162,6 +162,10 @@ export async function proxy(request) {
     if (user) {
       if (role === "admin") {
         return NextResponse.redirect(new URL("/admin", request.url));
+      } else if (role === "tutor") {
+        return NextResponse.redirect(new URL("/tutor", request.url));
+      } else if (role === "student") {
+        return NextResponse.redirect(new URL("/student", request.url));
       } else {
         return NextResponse.redirect(new URL("/parent", request.url));
       }
