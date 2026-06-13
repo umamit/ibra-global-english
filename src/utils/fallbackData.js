@@ -87,3 +87,17 @@ export const DEFAULT_FAQS = [
     answer: "Ya, tentu saja. Kami melayani seluruh calon peserta kursus bahasa Inggris dan bimbingan belajar dari berbagai wilayah di Kabupaten Pulau Taliabu. Jadwal dan program belajar kami dirancang fleksibel sehingga dapat diikuti oleh siswa yang berdomisili baik di dalam maupun di luar kota Bobong."
   }
 ];
+
+export const DEFAULT_VIDEOS = [
+  {
+    title: "Keseruan Belajar Bahasa Inggris Kids Program",
+    desc: "Dokumentasi kelas interaktif yang menyenangkan dan penuh warna di Bobong, Pulau Taliabu.",
+    url: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+  },
+  {
+    title: "Latihan Percakapan (Speaking Practice) Kelas Teens",
+    desc: "Siswa remaja aktif berdiskusi kelompok untuk melatih keberanian berbicara bahasa Inggris.",
+    url: "https://www.youtube.com/embed/tgbNymZ7vqY"
+  }
+];
+

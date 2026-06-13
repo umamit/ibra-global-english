@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, useRef } from "react";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
-import { DEFAULT_PROGRAMS, DEFAULT_BENEFITS, DEFAULT_FAQS } from "@/utils/fallbackData";
+import { DEFAULT_PROGRAMS, DEFAULT_BENEFITS, DEFAULT_FAQS, DEFAULT_VIDEOS } from "@/utils/fallbackData";
 
 export default function LandingPageCMS() {
   const supabase = createClient();
@@ -75,10 +75,12 @@ export default function LandingPageCMS() {
   const [testimonialText, setTestimonialText] = useState("");
   const [savingTestimonial, setSavingTestimonial] = useState(false);
 
-  // Programs, Benefits, FAQ list states
+  // Programs, Benefits, FAQ, Videos list states
   const [programsList, setProgramsList] = useState([]);
   const [benefitsList, setBenefitsList] = useState([]);
   const [faqsList, setFaqsList] = useState([]);
+  const [videosList, setVideosList] = useState([]);
+  const [savingVideos, setSavingVideos] = useState(false);
 
   // ----------------------------------------------------
   // UTILITIES & NOTIFICATIONS
@@ -159,6 +161,17 @@ export default function LandingPageCMS() {
         } else {
           setFaqsList(DEFAULT_FAQS);
         }
+
+        const videosRaw = settings.landing_videos;
+        if (videosRaw) {
+          try {
+            setVideosList(JSON.parse(videosRaw));
+          } catch (e) {
+            setVideosList(DEFAULT_VIDEOS);
+          }
+        } else {
+          setVideosList(DEFAULT_VIDEOS);
+        }
       }
     } catch (err) {
       console.error("Gagal mengambil konfigurasi hero:", err);
@@ -176,6 +189,24 @@ export default function LandingPageCMS() {
       }
     } catch (_) {
       // Biarkan default false jika gagal
+    }
+  };
+
+  const handleSaveVideos = async (updatedList) => {
+    setSavingVideos(true);
+    try {
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert({ key: "landing_videos", value: JSON.stringify(updatedList) });
+      
+      if (error) throw error;
+      setVideosList(updatedList);
+      showToast("Galeri video berhasil disimpan!");
+    } catch (err) {
+      console.error("Gagal menyimpan galeri video:", err);
+      showToast("Gagal menyimpan galeri video ke database.", "error");
+    } finally {
+      setSavingVideos(false);
     }
   };
 
@@ -606,6 +637,13 @@ export default function LandingPageCMS() {
           style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
         >
           Galeri Kegiatan
+        </button>
+        <button
+          onClick={() => setActiveTab("videos")}
+          className={`btn-portal-outline ${activeTab === "videos" ? "active" : ""}`}
+          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
+        >
+          Galeri Video
         </button>
         <button
           onClick={() => setActiveTab("testimonials")}
@@ -1189,6 +1227,116 @@ export default function LandingPageCMS() {
             )}
           </div>
 
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB EXTRA: KELOLA GALERI VIDEO
+          ===================================================================== */}
+      {activeTab === "videos" && (
+        <div className="portal-card" style={{ padding: "2rem" }}>
+          <div style={{ borderBottom: "1px solid var(--color-gray-250)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-primary-dark)" }}>Kelola Galeri Video Kegiatan</h2>
+            <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>
+              Tambahkan tautan video dokumentasi kegiatan Ibra Global English. Tautan YouTube biasa atau YouTube Shorts otomatis dikonversi ke format embed yang bisa diputar di web.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {videosList.map((vid, idx) => (
+              <div 
+                key={idx} 
+                style={{ 
+                  padding: "1.5rem", 
+                  backgroundColor: "var(--color-gray-50)", 
+                  borderRadius: "var(--radius-xl)", 
+                  border: "1px solid var(--color-gray-200)",
+                  position: "relative"
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updated = videosList.filter((_, i) => i !== idx);
+                    setVideosList(updated);
+                  }}
+                  className="btn-portal-danger"
+                  style={{ position: "absolute", top: "1.5rem", right: "1.5rem", padding: "0.3rem 0.8rem", fontSize: "0.8rem" }}
+                >
+                  Hapus Video
+                </button>
+
+                <h4 style={{ fontWeight: "700", color: "var(--color-gray-700)", marginBottom: "1rem" }}>Video #{idx + 1}</h4>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.25rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>Judul Video</label>
+                    <input
+                      type="text"
+                      value={vid.title}
+                      onChange={(e) => {
+                        const updated = [...videosList];
+                        updated[idx].title = e.target.value;
+                        setVideosList(updated);
+                      }}
+                      className="portal-input"
+                      placeholder="Contoh: Belajar Ceria Bersama Siswa Kids Program"
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>Deskripsi Singkat</label>
+                    <textarea
+                      value={vid.desc}
+                      onChange={(e) => {
+                        const updated = [...videosList];
+                        updated[idx].desc = e.target.value;
+                        setVideosList(updated);
+                      }}
+                      className="portal-input"
+                      rows="2"
+                      placeholder="Keterangan singkat tentang apa yang dilakukan siswa di video ini"
+                      style={{ resize: "vertical" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>URL Tautan Video (YouTube/CapCut)</label>
+                    <input
+                      type="text"
+                      value={vid.url}
+                      onChange={(e) => {
+                        const updated = [...videosList];
+                        updated[idx].url = e.target.value;
+                        setVideosList(updated);
+                      }}
+                      className="portal-input"
+                      placeholder="Contoh: https://www.youtube.com/watch?v=XXXX atau https://youtu.be/XXXX"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+              <button
+                type="button"
+                onClick={() => setVideosList([...videosList, { title: "", desc: "", url: "" }])}
+                className="btn-portal-outline"
+                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+              >
+                + Tambah Video Baru
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSaveVideos(videosList)}
+                disabled={savingVideos}
+                className="btn-portal-primary"
+              >
+                {savingVideos ? "Menyimpan..." : "Simpan Semua Video"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
