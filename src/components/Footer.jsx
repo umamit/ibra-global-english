@@ -42,7 +42,7 @@ export default function Footer() {
           </div>
         </div>
         <p className="footer-copyright">
-          &copy; 2026 Ibra Global English. All rights reserved. 
+          &copy; 2026 Ibra Global English. Di bawah naungan PT Ibra Global English. All rights reserved. 
           <span className="footer-version" style={{ opacity: 0.6, fontSize: "0.85em", marginLeft: "8px" }}>
             v{packageInfo.version}
           </span>
