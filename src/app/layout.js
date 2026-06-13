@@ -53,7 +53,7 @@ const educationalOrgSchema = {
   "image": "https://www.ibraglobalenglish.uk/assets/logo.png",
   "url": "https://www.ibraglobalenglish.uk/",
   "telephone": "+6281357001357",
-  "email": "contact@ibraglobalenglish.uk",
+  "email": "admin@ibraglobalenglish.uk",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah",

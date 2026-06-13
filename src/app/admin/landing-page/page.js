@@ -813,7 +813,7 @@ export default function LandingPageCMS() {
                     type="email"
                     className="form-input"
                     style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: contact@ibraglobalenglish.uk"
+                    placeholder="Contoh: admin@ibraglobalenglish.uk"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     required
