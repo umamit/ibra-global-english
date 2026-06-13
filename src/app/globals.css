@@ -878,6 +878,17 @@ section {
   gap: 2rem;
 }
 
+.testimonials-grid.justify-center-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.testimonials-grid.justify-center-flex .testimonial-card {
+  flex: 1 1 350px;
+  max-width: 450px;
+}
+
 @media (max-width: 992px) {
   .testimonials-grid {
     grid-template-columns: repeat(2, 1fr);
