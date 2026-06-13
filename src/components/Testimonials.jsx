@@ -64,7 +64,7 @@ export default function Testimonials() {
           <p>Apa kata mereka tentang kami</p>
         </div>
         
-        <div className="testimonials-grid">
+        <div className={`testimonials-grid ${testimonials.length < 3 ? 'justify-center-flex' : ''}`}>
           {testimonials.map((t, idx) => (
             <div key={idx} className="testimonial-card" data-aos="fade-up" data-aos-delay={t.delay}>
               <div className="testimonial-rating">
