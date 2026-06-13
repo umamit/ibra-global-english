@@ -445,6 +445,7 @@ header.scrolled .logo-text p {
 
 /* Hero Section */
 .hero {
+  position: relative;
   padding-top: 8rem; /* Restored to 8rem to perfectly pad behind the fixed header */
   padding-bottom: 5rem;
   background: linear-gradient(135deg, var(--color-bg-teal-50) 0%, var(--color-white) 50%, var(--color-bg-teal-50) 100%);
@@ -456,6 +457,81 @@ header.scrolled .logo-text p {
   grid-template-columns: 1.1fr 0.9fr;
   gap: 4rem;
   align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Decorative Parallax Background Elements */
+.hero-parallax-bg {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: var(--radius-full);
+  filter: blur(40px); /* Soft glow blur */
+  opacity: 0.7;
+  transition: opacity var(--transition-normal);
+}
+
+.hero-decor-1 {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(33, 108, 126, 0.15) 0%, rgba(33, 108, 126, 0) 70%);
+  top: 10%;
+  left: 2%;
+}
+
+.hero-decor-2 {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(166, 136, 73, 0.12) 0%, rgba(166, 136, 73, 0) 70%);
+  bottom: 8%;
+  right: 5%;
+}
+
+.hero-decor-3 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(33, 108, 126, 0.1) 0%, rgba(33, 108, 126, 0) 70%);
+  top: 35%;
+  left: 45%;
+}
+
+/* Scroll-Driven Parallax Animations using native scroll() */
+@supports (animation-timeline: scroll()) {
+  @keyframes parallax-up-fast {
+    from { transform: translateY(0); }
+    to { transform: translateY(-120px); }
+  }
+  @keyframes parallax-down-slow {
+    from { transform: translateY(0); }
+    to { transform: translateY(80px); }
+  }
+  @keyframes parallax-up-slow {
+    from { transform: translateY(0); }
+    to { transform: translateY(-50px); }
+  }
+
+  .hero-decor-1 {
+    animation: parallax-up-fast linear both;
+    animation-timeline: scroll(root);
+  }
+
+  .hero-decor-2 {
+    animation: parallax-down-slow linear both;
+    animation-timeline: scroll(root);
+  }
+
+  .hero-decor-3 {
+    animation: parallax-up-slow linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+/* Reduced Motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .hero-parallax-bg {
+    animation: none !important;
+  }
 }
 
 @media (max-width: 768px) {
