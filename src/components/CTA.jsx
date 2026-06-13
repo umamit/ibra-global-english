@@ -110,6 +110,9 @@ export default function CTA() {
               <img 
                 src={ctaBrochureImage} 
                 alt="Brosur Promosi Ibra Global English" 
+                width={800}
+                height={1130}
+                loading="lazy"
                 style={{ width: "100%", height: "auto", display: "block" }} 
               />
             )}
