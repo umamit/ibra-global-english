@@ -1,0 +1,241 @@
+"use client";
+
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import SocialFloat from "@/components/SocialFloat";
+import AIChatWidget from "@/components/AIChatWidget";
+import LightboxModal from "@/components/LightboxModal";
+import MarqueeBanner from "@/components/MarqueeBanner";
+import { createClient } from "@/utils/supabase/client";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { STATIC_GALLERY } from "./galleryData";
+
+
+export default function GalleryPage() {
+  const supabase = createClient();
+  const [theme, setTheme] = useState("light");
+  const [galleryItems, setGalleryItems] = useState(STATIC_GALLERY);
+  const [activeCategory, setActiveCategory] = useState("Semua");
+  const [lightbox, setLightbox] = useState({ isOpen: false, src: "", caption: "", index: 0 });
+
+  useScrollReveal();
+
+  // Handle theme initialization
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
+    
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+  }, []);
+
+  // Handle theme toggle
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    document.documentElement.setAttribute("data-theme", nextTheme);
+    localStorage.setItem("theme", nextTheme);
+  };
+
+  // Fetch dynamic gallery from database
+  useEffect(() => {
+    async function fetchGallery() {
+      try {
+        const { data, error } = await supabase
+          .from('gallery')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const mappedData = data.map((item) => ({
+            title: item.title,
+            desc: item.description || "",
+            thumb: item.image_url,
+            full: item.image_url,
+            caption: item.caption || item.title,
+            category: item.category || "Aktivitas"
+          }));
+          // Merge static items with fetched database items
+          setGalleryItems([...mappedData, ...STATIC_GALLERY]);
+        }
+      } catch (e) {
+        console.warn("Gagal memuat galeri dari database, menggunakan data statis.", e);
+      }
+    }
+    fetchGallery();
+  }, []);
+
+  // Filter items based on active category
+  const filteredItems = activeCategory === "Semua" 
+    ? galleryItems 
+    : galleryItems.filter(item => item.category === activeCategory);
+
+  const categories = ["Semua", "Kids Program", "Teens Program", "Aktivitas"];
+
+  const openLightbox = (src, caption, index) => {
+    setLightbox({ isOpen: true, src, caption, index });
+  };
+
+  const closeLightbox = () => {
+    setLightbox({ isOpen: false, src: "", caption: "", index: 0 });
+  };
+
+  const navigateLightbox = (direction) => {
+    if (filteredItems.length <= 1) return;
+    let nextIndex = lightbox.index + direction;
+    if (nextIndex < 0) nextIndex = filteredItems.length - 1;
+    if (nextIndex >= filteredItems.length) nextIndex = 0;
+    
+    setLightbox({
+      isOpen: true,
+      src: filteredItems[nextIndex].full,
+      caption: filteredItems[nextIndex].caption,
+      index: nextIndex
+    });
+  };
+
+  return (
+    <div className="nocopy-container">
+      <MarqueeBanner />
+      <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
+      
+      <main style={{ minHeight: "100vh", backgroundColor: "var(--color-gray-50)", padding: "7rem 1rem 8rem" }} className="gallery-page">
+        <div className="container">
+          
+          {/* Header Section */}
+          <div className="section-header" style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "2px", display: "inline-block", marginBottom: "0.5rem" }}>
+              Dokumentasi Belajar
+            </span>
+            <h1 style={{ fontSize: "2.5rem", fontWeight: "900", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
+              Galeri Kegiatan Siswa
+            </h1>
+            <p style={{ color: "var(--color-gray-600)", maxWidth: "600px", margin: "0 auto", fontSize: "1.05rem" }}>
+              Keseruan proses belajar-mengajar aktif, latihan percakapan, games kelompok, dan keceriaan siswa Ibra Global English Bobong.
+            </p>
+          </div>
+
+          {/* Category Tabs */}
+          <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "0.75rem", marginBottom: "3rem" }}>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={activeCategory === cat ? "btn-portal-primary" : "btn-portal-outline"}
+                style={{
+                  padding: "0.6rem 1.5rem",
+                  borderRadius: "50px",
+                  fontWeight: "700",
+                  fontSize: "0.9rem",
+                  boxShadow: activeCategory === cat ? "0 4px 12px rgba(33, 108, 126, 0.2)" : "none"
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Gallery Grid */}
+          {filteredItems.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "4rem 1rem", color: "var(--color-gray-500)" }}>
+              Tidak ada foto di kategori ini.
+            </div>
+          ) : (
+            <div className="gallery-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.5rem" }}>
+              {filteredItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => openLightbox(item.full, item.caption, idx)}
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: "var(--radius-lg)",
+                    overflow: "hidden",
+                    border: "1px solid var(--color-gray-150)",
+                    cursor: "pointer",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  }}
+                  className="gallery-grid-item"
+                >
+                  <div style={{ position: "relative", width: "100%", height: "220px", overflow: "hidden" }}>
+                    <img
+                      src={item.thumb}
+                      alt={item.caption}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        transition: "transform 0.5s ease"
+                      }}
+                      className="gallery-item-image"
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        backgroundColor: "rgba(33, 108, 126, 0.4)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        opacity: 0,
+                        transition: "opacity 0.3s ease"
+                      }}
+                      className="gallery-item-overlay"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div style={{ padding: "1.25rem" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", display: "inline-block", marginBottom: "0.25rem" }}>
+                      {item.category}
+                    </span>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.35rem" }}>
+                      {item.title}
+                    </h3>
+                    <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", lineHeight: "1.4" }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Footer />
+      <SocialFloat />
+      <AIChatWidget />
+      
+      <LightboxModal
+        isOpen={lightbox.isOpen}
+        src={lightbox.src}
+        caption={lightbox.caption}
+        onClose={closeLightbox}
+        onPrev={() => navigateLightbox(-1)}
+        onNext={() => navigateLightbox(1)}
+        hasNavigation={filteredItems.length > 1}
+      />
+
+      {/* CSS Styles injection for Gallery Grid Items */}
+      <style jsx global>{`
+        .gallery-grid-item:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 12px 30px rgba(33, 108, 126, 0.12);
+        }
+        .gallery-grid-item:hover .gallery-item-image {
+          transform: scale(1.08);
+        }
+        .gallery-grid-item:hover .gallery-item-overlay {
+          opacity: 1;
+        }
+      `}</style>
+    </div>
+  );
+}

@@ -9,14 +9,12 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Programs from "@/components/Programs";
 import Benefits from "@/components/Benefits";
-import Gallery from "@/components/Gallery";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
-import LightboxModal from "@/components/LightboxModal";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import AIChatWidget from "@/components/AIChatWidget";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -28,8 +26,7 @@ export default function Home() {
   // Call scroll reveal animation hook
   useScrollReveal();
 
-  // Lightbox state for Gallery
-  const [lightbox, setLightbox] = useState({ isOpen: false, src: "", caption: "" });
+
 
   // Controlled Registration Form state (synchronized with WebMCP Agent Tools)
   const [form, setForm] = useState({ name: "", whatsapp: "", program: "Kids Program (5-12 tahun)" });
@@ -156,13 +153,7 @@ export default function Home() {
     };
   }, []);
 
-  const openLightbox = (src, caption) => {
-    setLightbox({ isOpen: true, src, caption });
-  };
 
-  const closeLightbox = () => {
-    setLightbox({ isOpen: false, src: "", caption: "" });
-  };
 
   return (
     <div className="nocopy-container">
@@ -172,7 +163,6 @@ export default function Home() {
         <Hero />
         <Programs />
         <Benefits />
-        <Gallery onOpenLightbox={openLightbox} />
         <Testimonials />
         <FAQ />
         <CTA />
@@ -186,13 +176,6 @@ export default function Home() {
       <Footer />
       <SocialFloat />
       <AIChatWidget />
-      <LightboxModal 
-
-        isOpen={lightbox.isOpen} 
-        src={lightbox.src} 
-        caption={lightbox.caption} 
-        onClose={closeLightbox} 
-      />
     </div>
   );
 }
