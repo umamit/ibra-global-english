@@ -167,12 +167,23 @@ export default function StudentManagement() {
   const handleUpdateRole = async (userId, newRole) => {
     if (confirm(`Apakah Anda yakin ingin mengubah peran pengguna ini menjadi '${newRole}'?`)) {
       try {
+        // 1. Update profiles table
         const { error } = await supabase
           .from("profiles")
           .update({ role: newRole })
           .eq("id", userId);
         
         if (error) throw error;
+
+        // 2. Update auth.users metadata so that next-auth session and proxy middleware stays synced
+        const { error: authError } = await supabase.auth.admin.updateUserById(userId, {
+          user_metadata: { role: newRole }
+        });
+
+        if (authError) {
+          console.warn("Gagal memperbarui metadata auth.users, namun profil berhasil diperbarui:", authError);
+        }
+        
         alert("Peran berhasil diperbarui!");
         fetchData();
       } catch (err) {
