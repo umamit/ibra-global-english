@@ -130,6 +130,8 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="id" className={montserrat.variable}>
       <head>
+        {/* Flaticon UIcons */}
+        <link href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css" rel="stylesheet" />
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-989GJL5VCF"

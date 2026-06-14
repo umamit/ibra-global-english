@@ -829,6 +829,13 @@ section {
   height: 2rem;
 }
 
+.program-icon-box i {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .program-card h3 {
   font-size: 1.5rem;
   font-weight: 700;
@@ -869,6 +876,15 @@ section {
   height: 1.25rem;
   color: var(--color-green);
   flex-shrink: 0;
+}
+
+.program-features li i {
+  font-size: 1.25rem;
+  color: var(--color-green);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Benefits Section */
@@ -933,6 +949,14 @@ section {
   width: 1.5rem;
   height: 1.5rem;
   color: var(--color-white);
+}
+
+.benefit-icon-box i {
+  font-size: 1.5rem;
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .benefit-card h3 {
