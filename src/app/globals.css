@@ -4201,4 +4201,39 @@ textarea:focus-visible {
   margin: 1cm;
 }
 
+/* --- RESPONSIVE HEADER LAYOUT OPTIMIZATION --- */
+@media (min-width: 769px) and (max-width: 1180px) {
+  .nav-links {
+    gap: 1.0rem !important;
+  }
+  
+  .nav-link {
+    font-size: 0.85rem !important;
+  }
+  
+  .logo-text p {
+    display: none !important; /* Hide tagline on smaller laptops to make space */
+  }
+  
+  .logo-text h1 {
+    font-size: 1.15rem !important;
+  }
+  
+  .logo-img {
+    width: 3.6rem !important;
+    height: 3.6rem !important;
+  }
+  
+  .nav-btn,
+  .nav-btn-outline {
+    padding: 0.35rem 0.8rem !important;
+    font-size: 0.725rem !important;
+    height: 1.95rem !important;
+  }
+  
+  .nav-right-group {
+    gap: 0.5rem !important;
+  }
+}
+
 
