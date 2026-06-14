@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient, createAdminClient } from "@/utils/supabase/client";
+import { createClient, createServiceRoleClient } from "@/utils/supabase/client";
 
 export default function TutorPortal() {
   const router = useRouter();
   const supabase = createClient();
-  const adminSupabase = createAdminClient();
+  const adminSupabase = createServiceRoleClient();
 
   const [loading, setLoading] = useState(true);
   const [tutorName, setTutorName] = useState("Tutor Pendamping");
