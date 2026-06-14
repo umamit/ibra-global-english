@@ -78,7 +78,7 @@ export default function Hero() {
           <p className="hero-desc">{heroDesc}</p>
           <div className="hero-actions">
             <a href="#contact" className="btn-primary">Daftar Gratis</a>
-            <a href="#programs" className="btn-secondary">Lihat Program</a>
+            <a href="/placement-test" className="btn-secondary">Ikuti Tes Penempatan</a>
           </div>
 
           <div className="hero-trilogy">
