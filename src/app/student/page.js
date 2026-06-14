@@ -60,8 +60,10 @@ export default function StudentPortal() {
   const [activeTab, setActiveTab] = useState("dashboard"); // "dashboard", "modules", "achievements"
 
   const [reports, setReports] = useState([]);
+  const [certificates, setCertificates] = useState([]);
   const [rewards, setRewards] = useState([]);
   const [totalCoins, setTotalCoins] = useState(0);
+
 
   // Static files to download based on program
   const getModulesList = (program) => {
@@ -136,6 +138,14 @@ export default function StudentPortal() {
           .eq("student_id", activeStudent.id)
           .order("created_at", { ascending: false });
         setReports(repList || []);
+
+        // Fetch certificates
+        const { data: certList } = await supabase
+          .from("certificates")
+          .select("*")
+          .eq("student_id", activeStudent.id);
+        setCertificates(certList || []);
+
 
         // Fetch rewards
         const { data: rewList } = await supabase
@@ -338,12 +348,45 @@ export default function StudentPortal() {
                     const isCalistung = student?.program?.toLowerCase()?.includes("calistung");
                     return (
                       <div key={report.id} className="portal-card" style={{ padding: "2rem" }}>
-                        <div style={{ borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
-                          <h4 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{report.module_name}</h4>
-                          <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
-                            Diterbitkan pada {new Date(report.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
-                          </p>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
+                          <div>
+                            <h4 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{report.module_name}</h4>
+                            <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
+                              Diterbitkan pada {new Date(report.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                            </p>
+                          </div>
+                          {(() => {
+                            const existingCert = certificates.find(
+                              (c) => c.report_id === report.id || (c.student_id === student.id && c.module_name?.toLowerCase() === report.module_name?.toLowerCase())
+                            );
+                            if (existingCert) {
+                              return (
+                                <a
+                                  href={`/verify/${existingCert.id}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="btn-portal-outline"
+                                  style={{ 
+                                    padding: "0.4rem 1rem", 
+                                    fontSize: "0.8rem", 
+                                    display: "flex", 
+                                    gap: "0.5rem", 
+                                    alignItems: "center", 
+                                    borderColor: "var(--color-accent)", 
+                                    color: "var(--color-accent)",
+                                    fontWeight: "bold",
+                                    textDecoration: "none",
+                                    borderRadius: "var(--radius-md)"
+                                  }}
+                                >
+                                  <span>Lihat Sertifikat</span>
+                                </a>
+                              );
+                            }
+                            return null;
+                          })()}
                         </div>
+
 
                         <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
                           

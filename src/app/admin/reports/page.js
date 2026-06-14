@@ -153,11 +153,26 @@ export default function ReportCardManagement() {
   }, []);
 
   const handleCreateCertificate = async (report) => {
-    const defaultTutor = "Academic Board";
+    const certNumInput = prompt("Masukkan Nomor Sertifikat Resmi LKP Dinas Pendidikan:\n(Contoh: 001/IGE/VI/2026)");
+    if (certNumInput === null) return; // Cancelled
+    const certNumber = certNumInput.trim();
+    if (!certNumber) {
+      alert("Nomor sertifikat wajib diisi!");
+      return;
+    }
+
+    const defaultTutor = "Husnita Usman, M.Pd";
     const tutorNameInput = prompt("Masukkan nama tutor pendamping untuk tanda tangan sertifikat:", defaultTutor);
     if (tutorNameInput === null) return; // Cancelled
-
     const tutorSignature = tutorNameInput.trim() || defaultTutor;
+
+    const canvaUrlInput = prompt("Masukkan URL Gambar Sertifikat hasil ekspor Canva:\n(Contoh: https://example.com/sertifikat-canva.png)");
+    if (canvaUrlInput === null) return; // Cancelled
+    const customImageUrl = canvaUrlInput.trim();
+    if (!customImageUrl) {
+      alert("URL Gambar sertifikat wajib diisi!");
+      return;
+    }
 
     try {
       const avg = Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);
@@ -168,6 +183,9 @@ export default function ReportCardManagement() {
         module_name: report.module_name,
         grade,
         tutor_name: tutorSignature,
+        cert_number: certNumber,
+        custom_image_url: customImageUrl,
+        report_id: report.id,
         issue_date: new Date().toISOString().split("T")[0]
       };
 
@@ -213,6 +231,28 @@ export default function ReportCardManagement() {
       alert("Gagal menerbitkan sertifikat: " + err.message);
     }
   };
+
+  const handleDeleteCertificate = async (id) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus sertifikat ini?")) return;
+    try {
+      const { error } = await supabase
+        .from("certificates")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      alert("Sertifikat berhasil dihapus!");
+      
+      // Reload certificates
+      const { data: certData } = await supabase
+        .from("certificates")
+        .select("*");
+      setCertificates(certData || []);
+    } catch (err) {
+      console.error("Gagal menghapus sertifikat:", err);
+      alert("Gagal menghapus sertifikat: " + err.message);
+    }
+  };
+
 
   const triggerPrint = (report) => {
     setPrintReport(report);
@@ -641,7 +681,7 @@ export default function ReportCardManagement() {
                       {report.tutor_notes || "-"}
                     </td>
                     <td style={{ textAlign: "right" }}>
-                      <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+                      <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", alignItems: "center" }}>
                         <button
                           className="btn-portal-outline"
                           style={{ 
@@ -659,6 +699,73 @@ export default function ReportCardManagement() {
                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                           Cetak
                         </button>
+                        
+                        {/* Certificate Button */}
+                        {(() => {
+                          const existingCert = certificates.find(
+                            (c) => c.report_id === report.id || (c.student_id === report.student_id && c.module_name?.toLowerCase() === report.module_name?.toLowerCase())
+                          );
+                          if (existingCert) {
+                            return (
+                              <div style={{ display: "inline-flex", gap: "2px", alignItems: "center" }}>
+                                <a
+                                  href={`/verify/${existingCert.id}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="btn-portal-outline"
+                                  style={{ 
+                                    padding: "0.35rem 0.65rem", 
+                                    fontSize: "0.8rem", 
+                                    display: "inline-flex", 
+                                    gap: "0.25rem", 
+                                    alignItems: "center", 
+                                    borderColor: "var(--color-accent)", 
+                                    color: "var(--color-accent)",
+                                    fontWeight: "bold",
+                                    textDecoration: "none",
+                                    borderRadius: "var(--radius-sm)"
+                                  }}
+                                >
+                                  Sertifikat
+                                </a>
+                                <button
+                                  className="btn-portal-danger"
+                                  style={{ 
+                                    padding: "0.35rem 0.5rem", 
+                                    fontSize: "0.8rem", 
+                                    cursor: "pointer",
+                                    borderRadius: "var(--radius-sm)"
+                                  }}
+                                  onClick={() => handleDeleteCertificate(existingCert.id)}
+                                  title="Hapus Sertifikat"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <button
+                                className="btn-portal-outline"
+                                style={{ 
+                                  padding: "0.35rem 0.75rem", 
+                                  fontSize: "0.8rem", 
+                                  display: "inline-flex", 
+                                  gap: "0.25rem", 
+                                  alignItems: "center", 
+                                  borderColor: "var(--color-gray-400)", 
+                                  color: "var(--color-gray-600)",
+                                  cursor: "pointer",
+                                  borderRadius: "var(--radius-sm)"
+                                }}
+                                onClick={() => handleCreateCertificate(report)}
+                              >
+                                + Sertifikat
+                              </button>
+                            );
+                          }
+                        })()}
+
                         <button
                           className="btn-portal-danger"
                           style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", cursor: "pointer" }}
@@ -668,6 +775,7 @@ export default function ReportCardManagement() {
                         </button>
                       </div>
                     </td>
+
                   </tr>
                 ))
               )}

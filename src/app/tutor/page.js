@@ -33,6 +33,8 @@ export default function TutorPortal() {
   const [tutorNotes, setTutorNotes] = useState("");
   const [reportLoading, setReportLoading] = useState(false);
   const [reportsList, setReportsList] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+
 
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
@@ -89,6 +91,13 @@ export default function TutorPortal() {
           .order("created_at", { ascending: false })
           .limit(10);
         setReportsList(repList || []);
+
+        // Load certificates
+        const { data: certList } = await adminSupabase
+          .from("certificates")
+          .select("*");
+        setCertificates(certList || []);
+
 
       } catch (err) {
         console.error("Error loading tutor portal:", err);
@@ -230,13 +239,19 @@ export default function TutorPortal() {
       setModuleName("");
       setTutorNotes("");
 
-      // Reload reports
+      // Reload reports & certificates
       const { data: repList } = await adminSupabase
         .from("reports")
         .select("*, students(name)")
         .order("created_at", { ascending: false })
         .limit(10);
       setReportsList(repList || []);
+
+      const { data: certList } = await adminSupabase
+        .from("certificates")
+        .select("*");
+      setCertificates(certList || []);
+
     } catch (err) {
       console.error("Gagal menerbitkan rapor:", err);
       showToast("Gagal menerbitkan rapor: " + err.message, "error");
@@ -627,7 +642,40 @@ export default function TutorPortal() {
                       <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "2px" }}>
                         Rata-rata: <strong>{Math.round((rep.speaking_score + rep.grammar_score + rep.vocabulary_score + rep.active_score) / 4)} / 100</strong>
                       </p>
+                      {(() => {
+                        const existingCert = certificates.find(
+                          (c) => c.report_id === rep.id || (c.student_id === rep.student_id && c.module_name?.toLowerCase() === rep.module_name?.toLowerCase())
+                        );
+                        if (existingCert) {
+                          return (
+                            <div style={{ marginTop: "6px" }}>
+                              <a
+                                href={`/verify/${existingCert.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "0.25rem",
+                                  fontSize: "0.72rem",
+                                  fontWeight: "800",
+                                  color: "var(--color-accent)",
+                                  textDecoration: "none",
+                                  backgroundColor: "rgba(166, 136, 73, 0.08)",
+                                  padding: "2px 8px",
+                                  borderRadius: "4px",
+                                  border: "1px solid rgba(166, 136, 73, 0.2)"
+                                }}
+                              >
+                                <span>★ Sertifikat Terbit</span>
+                              </a>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
                     </div>
+
                   ))
                 )}
               </div>
