@@ -65,7 +65,7 @@ export default function StudentPortal() {
 
   // Static files to download based on program
   const getModulesList = (program) => {
-    if (program === "Fun Calistung") {
+    if (program?.toLowerCase()?.includes("calistung")) {
       return [
         { name: "Modul 1: Lancar Membaca Suku Kata Basika", size: "2.4 MB", url: "#" },
         { name: "Lembar Kerja Menulis Huruf Hijaiyah & Angka", size: "1.8 MB", url: "#" },
@@ -335,7 +335,7 @@ export default function StudentPortal() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                   {reports.slice(0, 3).map((report) => {
-                    const isCalistung = student?.program === "Fun Calistung";
+                    const isCalistung = student?.program?.toLowerCase()?.includes("calistung");
                     return (
                       <div key={report.id} className="portal-card" style={{ padding: "2rem" }}>
                         <div style={{ borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
