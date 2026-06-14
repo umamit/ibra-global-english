@@ -207,8 +207,10 @@ export default function ParentPortal() {
   }, [supabase]);
   const [attendance, setAttendance] = useState([]);
   const [reports, setReports] = useState([]);
+  const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [detailsLoading, setDetailsLoading] = useState(false);
+
 
   // Payment settings state loaded from database
   const [paymentSettings, setPaymentSettings] = useState({
@@ -480,6 +482,17 @@ export default function ParentPortal() {
 
         if (errR) throw errR;
         setReports(repList || []);
+
+        // Fetch Certificates
+        const { data: certList, error: errC } = await supabase
+          .from("certificates")
+          .select("*")
+          .eq("student_id", selectedChild.id);
+        
+        if (!errC) {
+          setCertificates(certList || []);
+        }
+
 
         // Fetch Tuition Payments
         const { data: payList, error: errP } = await supabase
@@ -1098,10 +1111,43 @@ export default function ParentPortal() {
                                   Diterbitkan pada {new Date(report.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                                 </p>
                               </div>
-                              <button className="btn-portal-outline" style={{ padding: "0.5rem 1.15rem", fontSize: "0.8rem", display: "flex", gap: "0.5rem", alignItems: "center" }} onClick={() => triggerPrint(report)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                                <span>Cetak Rapor PDF</span>
-                              </button>
+                              <div style={{ display: "flex", gap: "0.5rem" }}>
+                                <button className="btn-portal-outline" style={{ padding: "0.5rem 1.15rem", fontSize: "0.8rem", display: "flex", gap: "0.5rem", alignItems: "center" }} onClick={() => triggerPrint(report)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                                  <span>Cetak Rapor PDF</span>
+                                </button>
+                                {(() => {
+                                  const existingCert = certificates.find(
+                                    (c) => c.report_id === report.id || (c.student_id === selectedChild.id && c.module_name?.toLowerCase() === report.module_name?.toLowerCase())
+                                  );
+                                  if (existingCert) {
+                                    return (
+                                      <a
+                                        href={`/verify/${existingCert.id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-portal-outline"
+                                        style={{ 
+                                          padding: "0.5rem 1.15rem", 
+                                          fontSize: "0.8rem", 
+                                          display: "inline-flex", 
+                                          gap: "0.5rem", 
+                                          alignItems: "center", 
+                                          borderColor: "var(--color-accent)", 
+                                          color: "var(--color-accent)",
+                                          fontWeight: "bold",
+                                          textDecoration: "none",
+                                          borderRadius: "var(--radius-md)"
+                                        }}
+                                      >
+                                        <span>Lihat Sertifikat</span>
+                                      </a>
+                                    );
+                                  }
+                                  return null;
+                                })()}
+                              </div>
+
                             </div>
 
                             {/* Grid with Scores Cards and visual SVG Radar Chart */}
