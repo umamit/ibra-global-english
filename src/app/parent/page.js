@@ -217,7 +217,7 @@ export default function ParentPortal() {
   });
 
   const getChildProgramPrice = (programName) => {
-    if (programName === "Fun Calistung") {
+    if (programName?.toLowerCase()?.includes("calistung")) {
       return parseInt(paymentSettings.payment_spp_calistung || 350000);
     }
     if (programName === "Teens Program") {
@@ -630,7 +630,7 @@ export default function ParentPortal() {
 
   // PRINT PREVIEW OVERLAY
   if (printReport) {
-    const isCalistung = selectedChild?.program === "Fun Calistung";
+    const isCalistung = selectedChild?.program?.toLowerCase()?.includes("calistung");
     return (
       <div style={{ padding: "1.5rem", backgroundColor: "white", minHeight: "100vh" }}>
         <div className="no-print" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -1059,7 +1059,7 @@ export default function ParentPortal() {
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                       {reports.map((report) => {
-                        const isCalistung = selectedChild?.program === "Fun Calistung";
+                        const isCalistung = selectedChild?.program?.toLowerCase()?.includes("calistung");
                         return (
                           <div key={report.id} className="portal-card" style={{ padding: "2rem" }}>
                             

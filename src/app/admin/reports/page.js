@@ -422,7 +422,7 @@ export default function ReportCardManagement() {
     );
   }
 
-  const isFormCalistung = selectedStudentProgram === "Fun Calistung";
+  const isFormCalistung = selectedStudentProgram?.toLowerCase()?.includes("calistung");
 
   return (
     <div>
@@ -491,7 +491,14 @@ export default function ReportCardManagement() {
 
           <div className="form-grid" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
             <div className="form-group">
-              <label className="form-label">{isFormCalistung ? "Membaca" : "Speaking"} (0-100)</label>
+              <label className="form-label">
+                {!selectedStudentProgram 
+                  ? "Speaking / Membaca" 
+                  : isFormCalistung 
+                    ? "Membaca" 
+                    : "Speaking"
+                } (0-100)
+              </label>
               <input
                 type="number"
                 min="0"
@@ -506,7 +513,14 @@ export default function ReportCardManagement() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">{isFormCalistung ? "Menulis" : "Grammar"} (0-100)</label>
+              <label className="form-label">
+                {!selectedStudentProgram 
+                  ? "Grammar / Menulis" 
+                  : isFormCalistung 
+                    ? "Menulis" 
+                    : "Grammar"
+                } (0-100)
+              </label>
               <input
                 type="number"
                 min="0"
@@ -521,7 +535,14 @@ export default function ReportCardManagement() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">{isFormCalistung ? "Berhitung" : "Vocabulary"} (0-100)</label>
+              <label className="form-label">
+                {!selectedStudentProgram 
+                  ? "Vocabulary / Berhitung" 
+                  : isFormCalistung 
+                    ? "Berhitung" 
+                    : "Vocabulary"
+                } (0-100)
+              </label>
               <input
                 type="number"
                 min="0"

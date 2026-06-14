@@ -80,9 +80,7 @@ export default function TutorPortal() {
         if (errS) throw errS;
         setStudents(stdList || []);
 
-        if (stdList && stdList.length > 0) {
-          setSelectedStudent(stdList[0]);
-        }
+        setSelectedStudent(null);
 
         // Load recent reports list
         const { data: repList } = await adminSupabase
@@ -486,10 +484,11 @@ export default function TutorPortal() {
                     value={selectedStudent?.id || ""}
                     onChange={(e) => {
                       const match = students.find(s => s.id === e.target.value);
-                      if (match) setSelectedStudent(match);
+                      setSelectedStudent(match || null);
                     }}
                     required
                   >
+                    <option value="">-- Pilih Siswa --</option>
                     {students.map((s) => (
                       <option key={s.id} value={s.id}>{s.name} ({s.program})</option>
                     ))}
@@ -512,7 +511,12 @@ export default function TutorPortal() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.25rem" }}>
                   <div className="form-group">
                     <label className="form-label">
-                      {selectedStudent?.program === "Fun Calistung" ? "Skor Membaca" : "Skor Speaking"}
+                      {!selectedStudent 
+                        ? "Skor Speaking / Membaca" 
+                        : selectedStudent.program?.toLowerCase()?.includes("calistung") 
+                          ? "Skor Membaca" 
+                          : "Skor Speaking"
+                      }
                     </label>
                     <input
                       type="number"
@@ -527,7 +531,12 @@ export default function TutorPortal() {
 
                   <div className="form-group">
                     <label className="form-label">
-                      {selectedStudent?.program === "Fun Calistung" ? "Skor Menulis" : "Skor Grammar"}
+                      {!selectedStudent 
+                        ? "Skor Grammar / Menulis" 
+                        : selectedStudent.program?.toLowerCase()?.includes("calistung") 
+                          ? "Skor Menulis" 
+                          : "Skor Grammar"
+                      }
                     </label>
                     <input
                       type="number"
@@ -542,7 +551,12 @@ export default function TutorPortal() {
 
                   <div className="form-group">
                     <label className="form-label">
-                      {selectedStudent?.program === "Fun Calistung" ? "Skor Berhitung" : "Skor Vocabulary"}
+                      {!selectedStudent 
+                        ? "Skor Vocabulary / Berhitung" 
+                        : selectedStudent.program?.toLowerCase()?.includes("calistung") 
+                          ? "Skor Berhitung" 
+                          : "Skor Vocabulary"
+                      }
                     </label>
                     <input
                       type="number"
