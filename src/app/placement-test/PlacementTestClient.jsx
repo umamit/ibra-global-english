@@ -815,7 +815,7 @@ export default function PlacementTestClient() {
                   <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "60px", height: "64px" }} />
                   <div style={{ textAlign: "left" }}>
                     <h2 style={{ fontSize: "1.6rem", fontWeight: "900", margin: "0", letterSpacing: "1px", color: "var(--color-gray-950)" }}>IBRA GLOBAL ENGLISH</h2>
-                    <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", margin: "0", letterSpacing: "2px" }}>LEARNING CENTRE BOBONG</p>
+                    <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", margin: "0", letterSpacing: "2px" }}>BELAJAR SERU, LANCAR BICARA</p>
                   </div>
                 </div>
 
@@ -921,7 +921,7 @@ export default function PlacementTestClient() {
               <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "60px", height: "64px" }} />
               <div style={{ textAlign: "left" }}>
                 <h2 style={{ fontSize: "1.6rem", fontWeight: "900", margin: "0", letterSpacing: "1px", color: "black" }}>IBRA GLOBAL ENGLISH</h2>
-                <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "#A68849", margin: "0", letterSpacing: "2px" }}>LEARNING CENTRE BOBONG</p>
+                <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "#A68849", margin: "0", letterSpacing: "2px" }}>BELAJAR SERU, LANCAR BICARA</p>
               </div>
             </div>
 
