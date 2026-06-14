@@ -4,10 +4,11 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { createClient, createAdminClient } from "@/utils/supabase/client";
 
 export default function AdminDashboard() {
   const supabase = createClient();
+  const dbSupabase = createAdminClient();
   const [adminName, setAdminName] = useState("Admin");
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -27,12 +28,12 @@ export default function AdminDashboard() {
         }
 
         // 2. Fetch total siswa
-        const { count: studentCount, error: errS } = await supabase
+        const { count: studentCount, error: errS } = await dbSupabase
           .from("students")
           .select("*", { count: "exact", head: true });
 
         // 3. Fetch total akun orang tua
-        const { count: parentCount, error: errP } = await supabase
+        const { count: parentCount, error: errP } = await dbSupabase
           .from("profiles")
           .select("*", { count: "exact", head: true })
           .eq("role", "parent");
@@ -40,14 +41,14 @@ export default function AdminDashboard() {
         // 4. Fetch absensi hadir hari ini
         const todayObj = new Date();
         const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, "0")}-${String(todayObj.getDate()).padStart(2, "0")}`;
-        const { count: attendanceCount, error: errA } = await supabase
+        const { count: attendanceCount, error: errA } = await dbSupabase
           .from("attendance")
           .select("*", { count: "exact", head: true })
           .eq("date", todayStr)
           .eq("status", "hadir");
 
         // 5. Fetch total rapor modul
-        const { count: reportCount, error: errR } = await supabase
+        const { count: reportCount, error: errR } = await dbSupabase
           .from("reports")
           .select("*", { count: "exact", head: true });
 
