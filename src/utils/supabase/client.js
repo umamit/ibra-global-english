@@ -1,4 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr";
+import { createClient as createCoreClient } from "@supabase/supabase-js";
 
 const browserStorage = typeof window !== "undefined" ? window.sessionStorage : undefined;
 
@@ -40,7 +41,7 @@ export function createAdminClient() {
 export function createServiceRoleClient() {
   const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
   if (serviceRoleKey) {
-    return createBrowserClient(
+    return createCoreClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
       serviceRoleKey,
       {
