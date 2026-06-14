@@ -2735,6 +2735,12 @@ textarea:focus-visible {
     display: block !important;
   }
   
+  .printable-report,
+  .printable-receipt {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
   .printable-report {
     width: 100% !important;
     max-width: 100% !important;

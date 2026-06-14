@@ -600,7 +600,7 @@ export default function ParentPortal() {
         </div>
 
         {/* PRINT-OPTIMIZED RECEIPT LAYOUT */}
-        <div style={{ border: "2px solid #333", padding: "2.5rem", borderRadius: "8px", maxWidth: "700px", margin: "0 auto", position: "relative" }}>
+        <div className="printable-receipt" style={{ border: "2px solid #333", padding: "2.5rem", borderRadius: "8px", maxWidth: "700px", margin: "0 auto", position: "relative" }}>
           
           {/* Header Kop Surat */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "3px double #333", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
