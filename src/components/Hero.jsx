@@ -1,39 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "../utils/supabase/client";
 import CountUp from "./CountUp";
 
-export default function Hero() {
-  const supabase = createClient();
-  const [heroTitle, setHeroTitle] = useState("Ibra Global English Bobong");
-  const [heroSubtitle, setHeroSubtitle] = useState("Belajar Seru | Lancar Bicara");
-  const [heroDesc, setHeroDesc] = useState("Kursus bahasa Inggris offline terbaik di Bobong, Pulau Taliabu. Dengan metode pembelajaran yang menyenangkan dan efektif untuk tingkatkan kemampuan speaking Anda bersama tutor berpengalaman!");
-  const [heroImage, setHeroImage] = useState("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='100%' height='100%' fill='%23f3f4f6'/><g transform='translate(400, 300)'><rect x='-60' y='-80' width='120' height='90' rx='10' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='0' cy='-35' r='20' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='40' cy='-65' r='6' fill='%239ca3af'/><text x='0' y='70' font-family='system-ui, sans-serif' font-size='28' font-weight='800' fill='%236b7280' text-anchor='middle'>Belum Ada Foto</text><text x='0' y='110' font-family='system-ui, sans-serif' font-size='18' fill='%239ca3af' text-anchor='middle'>Foto utama akan diperbarui oleh Admin</text></g></svg>");
+export default function Hero({ initialSettings }) {
+  const [heroTitle, setHeroTitle] = useState(initialSettings?.hero_title || "Ibra Global English Bobong");
+  const [heroSubtitle, setHeroSubtitle] = useState(initialSettings?.hero_subtitle || "Belajar Seru | Lancar Bicara");
+  const [heroDesc, setHeroDesc] = useState(initialSettings?.hero_desc || "Kursus bahasa Inggris offline terbaik di Bobong, Pulau Taliabu. Dengan metode pembelajaran yang menyenangkan dan efektif untuk tingkatkan kemampuan speaking Anda bersama tutor berpengalaman!");
+  const [heroImage, setHeroImage] = useState(initialSettings?.hero_image || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='100%' height='100%' fill='%23f3f4f6'/><g transform='translate(400, 300)'><rect x='-60' y='-80' width='120' height='90' rx='10' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='0' cy='-35' r='20' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='40' cy='-65' r='6' fill='%239ca3af'/><text x='0' y='70' font-family='system-ui, sans-serif' font-size='28' font-weight='800' fill='%236b7280' text-anchor='middle'>Belum Ada Foto</text><text x='0' y='110' font-family='system-ui, sans-serif' font-size='18' fill='%239ca3af' text-anchor='middle'>Foto utama akan diperbarui oleh Admin</text></g></svg>");
   const [studentCount, setStudentCount] = useState(100);
 
   useEffect(() => {
-    async function fetchHeroSettings() {
-      try {
-        const { data, error } = await supabase
-          .from('landing_settings')
-          .select('key, value');
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const settings = {};
-          data.forEach(item => {
-            settings[item.key] = item.value;
-          });
-          if (settings.hero_title) setHeroTitle(settings.hero_title);
-          if (settings.hero_subtitle) setHeroSubtitle(settings.hero_subtitle);
-          if (settings.hero_desc) setHeroDesc(settings.hero_desc);
-          if (settings.hero_image) setHeroImage(settings.hero_image);
-        }
-      } catch (e) {
-        console.warn("Gagal memuat pengaturan hero dari database. Menggunakan data default (statis).", e);
-      }
-    }
-
     async function fetchStudentCount() {
       try {
         const res = await fetch("/api/student-count");
@@ -48,7 +25,6 @@ export default function Hero() {
       }
     }
 
-    fetchHeroSettings();
     fetchStudentCount();
   }, []);
 

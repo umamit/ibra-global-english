@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "../utils/supabase/client";
+import { useState } from "react";
 import { DEFAULT_PROGRAMS } from "../utils/fallbackData";
 
 const ICON_MAP = {
@@ -27,31 +26,22 @@ const ICON_MAP = {
   )
 };
 
-export default function Programs() {
-  const supabase = createClient();
-  const [programs, setPrograms] = useState(DEFAULT_PROGRAMS);
-
-  useEffect(() => {
-    async function fetchPrograms() {
+export default function Programs({ initialSettings }) {
+  const [programs] = useState(() => {
+    if (initialSettings && initialSettings.landing_programs) {
       try {
-        const { data, error } = await supabase
-          .from("landing_settings")
-          .select("value")
-          .eq("key", "landing_programs")
-          .single();
-        if (error) throw error;
-        if (data && data.value) {
-          const parsed = JSON.parse(data.value);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setPrograms(parsed);
-          }
+        const parsed = typeof initialSettings.landing_programs === "string"
+          ? JSON.parse(initialSettings.landing_programs)
+          : initialSettings.landing_programs;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
         }
       } catch (e) {
         // Fallback to default programs
       }
     }
-    fetchPrograms();
-  }, []);
+    return DEFAULT_PROGRAMS;
+  });
 
   return (
     <section id="programs" className="programs-section">

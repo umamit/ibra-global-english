@@ -1,41 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "../utils/supabase/client";
+import { useState } from "react";
 
-export default function Contact({ form, setForm, honeypot, setHoneypot }) {
-  const supabase = createClient();
-  const [address, setAddress] = useState("Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
-  const [phone, setPhone] = useState("+62 813-5700-1357");
-  const [rawPhone, setRawPhone] = useState("6281357001357");
-  const [email, setEmail] = useState("admin@ibraglobalenglish.uk");
-
-  useEffect(() => {
-    async function fetchContactSettings() {
-      try {
-        const { data, error } = await supabase
-          .from('landing_settings')
-          .select('key, value');
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const settings = {};
-          data.forEach(item => {
-            settings[item.key] = item.value;
-          });
-          if (settings.contact_address) setAddress(settings.contact_address);
-          if (settings.contact_phone) {
-            setPhone(settings.contact_phone);
-            const cleaned = settings.contact_phone.replace(/[^0-9]/g, "");
-            setRawPhone(cleaned);
-          }
-          if (settings.contact_email) setEmail(settings.contact_email);
-        }
-      } catch (e) {
-        console.warn("Gagal memuat pengaturan kontak dari database. Menggunakan data default (statis).", e);
-      }
-    }
-    fetchContactSettings();
-  }, []);
+export default function Contact({ form, setForm, honeypot, setHoneypot, initialSettings }) {
+  const [address] = useState(initialSettings?.contact_address || "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
+  const [phone] = useState(initialSettings?.contact_phone || "+62 813-5700-1357");
+  const [rawPhone] = useState(() => {
+    const p = initialSettings?.contact_phone || "6281357001357";
+    return p.replace(/[^0-9]/g, "");
+  });
+  const [email] = useState(initialSettings?.contact_email || "admin@ibraglobalenglish.uk");
 
   const handleFormSubmit = (e) => {
     e.preventDefault();

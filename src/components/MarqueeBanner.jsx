@@ -1,36 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "../utils/supabase/client";
+import { useState } from "react";
 
-export default function MarqueeBanner() {
-  const supabase = createClient();
-  const [text1, setText1] = useState("Pendaftaran Siswa Baru Ibra Global English Bobong Telah Dibuka! Segera Daftarkan Putra-Putri Anda!");
-  const [text2, setText2] = useState("Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
-  const [text3, setText3] = useState("Ikuti Placement Test Online Secara Gratis di Website Kami dan Cari Tahu Tingkat Kemampuan Anda!");
-
-  useEffect(() => {
-    async function fetchMarqueeSettings() {
-      try {
-        const { data, error } = await supabase
-          .from("landing_settings")
-          .select("key, value");
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const settings = {};
-          data.forEach(item => {
-            settings[item.key] = item.value;
-          });
-          if (settings.marquee_text_1) setText1(settings.marquee_text_1);
-          if (settings.marquee_text_2) setText2(settings.marquee_text_2);
-          if (settings.marquee_text_3) setText3(settings.marquee_text_3);
-        }
-      } catch (e) {
-        console.warn("Gagal memuat teks marquee dari database. Menggunakan data default.", e);
-      }
-    }
-    fetchMarqueeSettings();
-  }, []);
+export default function MarqueeBanner({ initialSettings }) {
+  const [text1, setText1] = useState(initialSettings?.marquee_text_1 || "Pendaftaran Siswa Baru Ibra Global English Bobong Telah Dibuka! Segera Daftarkan Putra-Putri Anda!");
+  const [text2, setText2] = useState(initialSettings?.marquee_text_2 || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
+  const [text3, setText3] = useState(initialSettings?.marquee_text_3 || "Ikuti Placement Test Online Secara Gratis di Website Kami dan Cari Tahu Tingkat Kemampuan Anda!");
 
   const marqueeItems = [text1, text2, text3];
 
