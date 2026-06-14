@@ -106,12 +106,17 @@ export default function VerifyCertificate() {
             margin: 0 !important;
             padding: 0 !important;
             box-shadow: none !important;
-            border: none !important;
             page-break-inside: avoid !important;
             page-break-after: always !important;
             box-sizing: border-box !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .certificate-page-1 {
+            border: none !important;
           }
           .certificate-page-2 {
+            border: 10px double #a68849 !important;
             page-break-before: always !important;
           }
         }
