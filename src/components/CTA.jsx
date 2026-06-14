@@ -1,38 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "../utils/supabase/client";
+import { useState } from "react";
 
-export default function CTA() {
-  const supabase = createClient();
-  const [ctaTag, setCtaTag] = useState("Promo Terbatas!");
-  const [ctaTitle, setCtaTitle] = useState("Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
-  const [ctaDesc, setCtaDesc] = useState("Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
-  const [ctaBrochureImage, setCtaBrochureImage] = useState("/assets/brochure.png");
-
-  useEffect(() => {
-    async function fetchCTASettings() {
-      try {
-        const { data, error } = await supabase
-          .from("landing_settings")
-          .select("key, value");
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const settings = {};
-          data.forEach(item => {
-            settings[item.key] = item.value;
-          });
-          if (settings.cta_tag) setCtaTag(settings.cta_tag);
-          if (settings.cta_title) setCtaTitle(settings.cta_title);
-          if (settings.cta_desc) setCtaDesc(settings.cta_desc);
-          if (settings.cta_brochure_image) setCtaBrochureImage(settings.cta_brochure_image);
-        }
-      } catch (e) {
-        console.warn("Gagal memuat pengaturan CTA dari database. Menggunakan data default.", e);
-      }
-    }
-    fetchCTASettings();
-  }, []);
+export default function CTA({ initialSettings }) {
+  const [ctaTag] = useState(initialSettings?.cta_tag || "Promo Terbatas!");
+  const [ctaTitle] = useState(initialSettings?.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
+  const [ctaDesc] = useState(initialSettings?.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
+  const [ctaBrochureImage] = useState(initialSettings?.cta_brochure_image || "/assets/brochure.png");
 
   const getCanvaEmbedUrl = (url) => {
     if (!url) return null;

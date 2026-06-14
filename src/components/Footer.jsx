@@ -1,35 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "../utils/supabase/client";
+import { useState } from "react";
 import packageInfo from "../../package.json";
 
-export default function Footer() {
-  const supabase = createClient();
-  const [footerSubtitle, setFooterSubtitle] = useState("Belajar Seru Lancar Bicara");
-
-  useEffect(() => {
-    async function fetchFooterSettings() {
-      try {
-        const { data, error } = await supabase
-          .from('landing_settings')
-          .select('key, value');
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const settings = {};
-          data.forEach(item => {
-            settings[item.key] = item.value;
-          });
-          if (settings.hero_subtitle) {
-            setFooterSubtitle(settings.hero_subtitle.replace(/\s*\|\s*/g, " "));
-          }
-        }
-      } catch (e) {
-        // Terjadi galat, biarkan nilai fallback yang bekerja
-      }
+export default function Footer({ initialSettings }) {
+  const [footerSubtitle] = useState(() => {
+    if (initialSettings?.hero_subtitle) {
+      return initialSettings.hero_subtitle.replace(/\s*\|\s*/g, " ");
     }
-    fetchFooterSettings();
-  }, []);
+    return "Belajar Seru Lancar Bicara";
+  });
 
   return (
     <footer>

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import HomeClient from "./HomeClient";
+import { createClient } from "@/utils/supabase/server";
 
 export const metadata = {
   title: "Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik",
@@ -24,6 +25,18 @@ export const metadata = {
   },
 };
 
-export default function HomePage() {
-  return <HomeClient />;
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: settingsData } = await supabase
+    .from("landing_settings")
+    .select("key, value");
+
+  const initialSettings = {};
+  if (settingsData) {
+    settingsData.forEach((item) => {
+      initialSettings[item.key] = item.value;
+    });
+  }
+
+  return <HomeClient initialSettings={initialSettings} />;
 }

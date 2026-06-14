@@ -1,35 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "../utils/supabase/client";
+import { useState } from "react";
 import { DEFAULT_FAQS } from "../utils/fallbackData";
 
-export default function FAQ() {
-  const supabase = createClient();
-  const [faqs, setFaqs] = useState(DEFAULT_FAQS);
-  const [activeFaq, setActiveFaq] = useState(null);
-
-  useEffect(() => {
-    async function fetchFaqs() {
+export default function FAQ({ initialSettings }) {
+  const [faqs] = useState(() => {
+    if (initialSettings && initialSettings.landing_faq) {
       try {
-        const { data, error } = await supabase
-          .from("landing_settings")
-          .select("value")
-          .eq("key", "landing_faq")
-          .single();
-        if (error) throw error;
-        if (data && data.value) {
-          const parsed = JSON.parse(data.value);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setFaqs(parsed);
-          }
+        const parsed = typeof initialSettings.landing_faq === "string"
+          ? JSON.parse(initialSettings.landing_faq)
+          : initialSettings.landing_faq;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
         }
       } catch (e) {
         // Fallback to default FAQs
       }
     }
-    fetchFaqs();
-  }, []);
+    return DEFAULT_FAQS;
+  });
+  const [activeFaq, setActiveFaq] = useState(null);
 
   const toggleFaq = (id) => {
     setActiveFaq(activeFaq === id ? null : id);

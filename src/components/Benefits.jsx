@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "../utils/supabase/client";
+import { useState } from "react";
 import { DEFAULT_BENEFITS } from "../utils/fallbackData";
 
 const ICON_MAP = {
@@ -48,31 +47,22 @@ const ICON_MAP = {
   )
 };
 
-export default function Benefits() {
-  const supabase = createClient();
-  const [benefits, setBenefits] = useState(DEFAULT_BENEFITS);
-
-  useEffect(() => {
-    async function fetchBenefits() {
+export default function Benefits({ initialSettings }) {
+  const [benefits] = useState(() => {
+    if (initialSettings && initialSettings.landing_benefits) {
       try {
-        const { data, error } = await supabase
-          .from("landing_settings")
-          .select("value")
-          .eq("key", "landing_benefits")
-          .single();
-        if (error) throw error;
-        if (data && data.value) {
-          const parsed = JSON.parse(data.value);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setBenefits(parsed);
-          }
+        const parsed = typeof initialSettings.landing_benefits === "string"
+          ? JSON.parse(initialSettings.landing_benefits)
+          : initialSettings.landing_benefits;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
         }
       } catch (e) {
         // Fallback to default benefits
       }
     }
-    fetchBenefits();
-  }, []);
+    return DEFAULT_BENEFITS;
+  });
 
   return (
     <section id="benefits" className="benefits-section">

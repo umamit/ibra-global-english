@@ -17,7 +17,7 @@ import MarqueeBanner from "@/components/MarqueeBanner";
 import AIChatWidget from "@/components/AIChatWidget";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-export default function HomeClient() {
+export default function HomeClient({ initialSettings }) {
   // Theme state
   const [theme, setTheme] = useState("light");
 
@@ -151,23 +151,24 @@ export default function HomeClient() {
 
   return (
     <div className="nocopy-container">
-      <MarqueeBanner />
+      <MarqueeBanner initialSettings={initialSettings} />
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       <main>
-        <Hero />
-        <Programs />
-        <Benefits />
+        <Hero initialSettings={initialSettings} />
+        <Programs initialSettings={initialSettings} />
+        <Benefits initialSettings={initialSettings} />
         <Testimonials />
-        <FAQ />
-        <CTA />
+        <FAQ initialSettings={initialSettings} />
+        <CTA initialSettings={initialSettings} />
         <Contact 
           form={form} 
           setForm={setForm} 
           honeypot={honeypot} 
           setHoneypot={setHoneypot} 
+          initialSettings={initialSettings}
         />
       </main>
-      <Footer />
+      <Footer initialSettings={initialSettings} />
       <SocialFloat />
       <AIChatWidget />
     </div>
