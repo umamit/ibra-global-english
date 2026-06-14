@@ -384,7 +384,29 @@ export default function ParentPortal() {
           return;
         }
 
-        setParentName(user.user_metadata?.full_name || "Orang Tua Siswa");
+        // Cek tipe peran akun di tabel profiles
+        const { data: profile, error: errP } = await supabase
+          .from("profiles")
+          .select("role, full_name")
+          .eq("id", user.id)
+          .single();
+
+        if (errP || (profile?.role !== "parent" && profile?.role !== "admin")) {
+          if (profile?.role === "student") {
+            router.push("/student");
+            return;
+          }
+          if (profile?.role === "tutor") {
+            router.push("/tutor");
+            return;
+          }
+          alert("Akses ditolak: Akun Anda bukan bertipe peran Orang Tua.");
+          await supabase.auth.signOut();
+          router.push("/login");
+          return;
+        }
+
+        setParentName(profile?.full_name || user.user_metadata?.full_name || "Orang Tua Siswa");
 
         // 2. Fetch linked children (students)
         const { data: kids, error: errK } = await supabase

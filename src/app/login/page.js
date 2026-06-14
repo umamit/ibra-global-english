@@ -18,6 +18,7 @@ export default function LoginPage() {
   const [errorMsg, setErrorBanner] = useState("");
   const [successMsg, setSuccessBanner] = useState("");
   const [theme, setTheme] = useState("light");
+  const [role, setRole] = useState("parent");
 
   // Deteksi dan inisialisasi tema otomatis saat halaman dimuat
   useEffect(() => {
@@ -159,7 +160,7 @@ export default function LoginPage() {
         options: {
           data: {
             full_name: fullName.trim(),
-            role: "parent", // Default role
+            role: role, // Role dari pilihan dropdown pendaftaran
           },
         },
       });
@@ -290,19 +291,37 @@ export default function LoginPage() {
 
         <form onSubmit={isRegister ? handleRegister : handleLogin} className="space-y-4">
           {isRegister && (
-            <div className="form-group">
-              <label htmlFor="name-input" className="form-label">Nama Lengkap</label>
-              <input
-                type="text"
-                id="name-input"
-                className="form-input"
-                placeholder="Masukkan Nama Lengkap Anda"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                disabled={loading}
-              />
-            </div>
+            <>
+              <div className="form-group">
+                <label htmlFor="name-input" className="form-label">Nama Lengkap</label>
+                <input
+                  type="text"
+                  id="name-input"
+                  className="form-input"
+                  placeholder="Masukkan Nama Lengkap Anda"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: "1rem" }}>
+                <label htmlFor="role-input" className="form-label">Daftar Sebagai (Peran)</label>
+                <select
+                  id="role-input"
+                  className="form-input"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  disabled={loading}
+                  style={{ cursor: "pointer" }}
+                >
+                  <option value="parent">Wali Murid / Orang Tua</option>
+                  <option value="student">Siswa / Pelajar</option>
+                  <option value="tutor">Pengajar / Tutor</option>
+                </select>
+              </div>
+            </>
           )}
 
           <div className="form-group">
