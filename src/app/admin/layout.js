@@ -15,7 +15,12 @@ export default function AdminLayout({ children }) {
     const checkSession = async () => {
       if (typeof window === "undefined") return;
 
-      const loginTimeStr = sessionStorage.getItem("login_time");
+      let loginTimeStr = sessionStorage.getItem("login_time");
+      if (!loginTimeStr && document.cookie.includes("login_time=active")) {
+        loginTimeStr = Date.now().toString();
+        sessionStorage.setItem("login_time", loginTimeStr);
+      }
+
       if (!loginTimeStr) {
         // Tab baru dibuka, sessionStorage kosong! Log out otomatis.
         await supabase.auth.signOut();
