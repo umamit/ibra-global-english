@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();

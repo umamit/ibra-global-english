@@ -21,21 +21,7 @@ export function createClient() {
 }
 
 export function createAdminClient() {
-  const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
-  if (serviceRoleKey) {
-    return createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
-      serviceRoleKey,
-      {
-        auth: {
-          storage: browserStorage,
-          persistSession: true,
-          detectSessionInUrl: true
-        }
-      }
-    );
-  }
-  return createClient();
+  return createServiceRoleClient();
 }
 
 export function createServiceRoleClient() {
