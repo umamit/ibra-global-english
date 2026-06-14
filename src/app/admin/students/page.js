@@ -525,17 +525,17 @@ export default function StudentManagement() {
               </div>
 
               <div className="form-group" style={{ marginBottom: "2rem" }}>
-                <label className="form-label">Hubungkan dengan Orang Tua (Opsional)</label>
+                <label className="form-label">Hubungkan dengan Akun Orang Tua / Akun Siswa (Opsional)</label>
                 <select
                   className="form-input"
                   value={parentId}
                   onChange={(e) => setParentId(e.target.value)}
                   disabled={submitting}
                 >
-                  <option value="">-- Hubungkan di sini jika akun orang tua sudah terdaftar --</option>
-                  {parents.filter(p => p.role === "parent").map((parent) => (
+                  <option value="">-- Hubungkan di sini jika akun orang tua / siswa sudah terdaftar --</option>
+                  {parents.filter(p => p.role === "parent" || p.role === "student").map((parent) => (
                     <option key={parent.id} value={parent.id}>
-                      {parent.full_name}
+                      {parent.full_name} ({parent.role === "student" ? "Siswa" : "Orang Tua"}) - {parent.email}
                     </option>
                   ))}
                 </select>
