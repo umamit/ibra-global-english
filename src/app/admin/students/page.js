@@ -149,14 +149,46 @@ export default function StudentManagement() {
   };
 
   const handleDeleteStudent = async (id, sName) => {
-    if (confirm(`Apakah Anda yakin ingin menghapus data siswa "${sName}"? Semua data absensi dan rapor yang terhubung juga akan dihapus permanen.`)) {
+    if (confirm(`Apakah Anda yakin ingin menghapus data siswa "${sName}"? Semua data absensi dan rapor yang terhubung juga akan dihapus secara permanen.`)) {
       try {
-        const { error } = await supabase
+        // 1. Dapatkan parent_id (ID profil yang terhubung) sebelum data siswa dihapus
+        const { data: student, error: errGet } = await supabase
+          .from("students")
+          .select("parent_id")
+          .eq("id", id)
+          .single();
+
+        if (errGet && errGet.code !== "PGRST116") {
+          throw errGet;
+        }
+
+        const linkedUserId = student?.parent_id;
+
+        // 2. Hapus data siswa dari database (absen & rapor terhapus otomatis karena CASCADE)
+        const { error: errDel } = await supabase
           .from("students")
           .delete()
           .eq("id", id);
 
-        if (error) throw error;
+        if (errDel) throw errDel;
+
+        // 3. Jika ada akun terhubung dan tipe perannya adalah 'student' (Siswa), hapus akun login-nya dari sistem
+        if (linkedUserId) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", linkedUserId)
+            .single();
+
+          if (profile?.role === "student") {
+            // Hapus akun dari auth.users Supabase (otomatis menghapus tabel profiles karena CASCADE)
+            const { error: errAuth } = await supabase.auth.admin.deleteUser(linkedUserId);
+            if (errAuth) {
+              console.warn("Gagal menghapus akun login siswa dari sistem auth:", errAuth.message);
+            }
+          }
+        }
+
         fetchData();
       } catch (err) {
         alert("Gagal menghapus siswa: " + err.message);
