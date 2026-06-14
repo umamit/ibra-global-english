@@ -4112,4 +4112,87 @@ textarea:focus-visible {
   transform: translate(0) scale(1) !important;
 }
 
+/* --- PRINTING SYSTEM FOR PLACEMENT TEST STATEMENT OF RESULT --- */
+.print-only {
+  display: none !important;
+}
+
+@media print {
+  /* Hide all screen-only wrappers when printing */
+  #header,
+  header,
+  footer,
+  .placement-test-page,
+  .social-float-group,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Display and format the print-only certificate */
+  .print-only {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #ffffff !important;
+    position: relative !important;
+  }
+
+  /* Preserve colors and backgrounds inside print-only view */
+  .print-only,
+  .print-only * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Ensure double golden border prints correctly */
+  .print-only > div {
+    border: 10px double #A68849 !important;
+    background-color: #ffffff !important;
+    padding: 2cm !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    min-height: 270mm !important;
+  }
+
+  /* Set target print color override */
+  .print-only h1 {
+    color: #216c7e !important;
+  }
+  
+  .print-only h2 {
+    color: #000000 !important;
+  }
+
+  .print-only h3 {
+    color: #A68849 !important;
+  }
+
+  .print-only p {
+    color: #111111 !important;
+  }
+
+  .print-only hr {
+    border-color: #A68849 !important;
+    background-color: #A68849 !important;
+    border-style: solid !important;
+    opacity: 1 !important;
+  }
+
+  body, html {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 1cm;
+}
+
 

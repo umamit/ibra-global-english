@@ -909,7 +909,7 @@ export default function PlacementTestClient() {
 
       {/* PRINT-ONLY VIEW FOR THE STATEMENT OF RESULT */}
       {step === 3 && finalResult && (
-        <div className="print-only" style={{ display: "none" }}>
+        <div className="print-only">
           <div style={{
             backgroundColor: "white",
             padding: "2.5cm",
