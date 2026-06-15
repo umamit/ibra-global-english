@@ -134,6 +134,29 @@ export default function AdminFinance() {
 
   useEffect(() => {
     fetchData();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel("realtime-finance")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "tuition_payments" },
+        () => {
+          fetchData();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "students" },
+        () => {
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [selectedMonth]);
 
   // Map student with their payment record if it exists

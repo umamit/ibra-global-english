@@ -56,6 +56,22 @@ export default function AdminPlacementTest() {
 
   useEffect(() => {
     fetchData();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel("realtime-submissions")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "placement_test_submissions" },
+        () => {
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleUpdateStatus = async (id, newStatus) => {
