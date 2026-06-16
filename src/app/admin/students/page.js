@@ -219,6 +219,25 @@ export default function StudentManagement() {
     }
   };
 
+  const handleDeleteParent = async (userId, userName) => {
+    const connectedCount = students.filter(s => s.parent_id === userId).length;
+    const extraWarning = connectedCount > 0
+      ? `\n\nPeringatan: Akun ini terhubung ke ${connectedCount} siswa. Koneksi tersebut akan diputus, tetapi data siswa tidak akan dihapus.`
+      : "";
+
+    if (confirm(`Apakah Anda yakin ingin menghapus akun pengguna "${userName}" secara permanen? Tindakan ini tidak dapat dibatalkan.${extraWarning}`)) {
+      try {
+        // Hapus akun dari auth.users Supabase (otomatis menghapus tabel profiles karena CASCADE)
+        const { error } = await supabase.auth.admin.deleteUser(userId);
+        if (error) throw error;
+
+        fetchData();
+      } catch (err) {
+        alert("Gagal menghapus akun pengguna: " + err.message);
+      }
+    }
+  };
+
   const handleUpdateRole = async (userId, newRole) => {
     if (confirm(`Apakah Anda yakin ingin mengubah peran pengguna ini menjadi '${newRole}'?`)) {
       try {
@@ -443,13 +462,14 @@ export default function StudentManagement() {
                 <th>Alamat Email</th>
                 <th>Peran Aktif</th>
                 <th>Siswa Terhubung</th>
-                <th>Ubah Peran (Aksi)</th>
+                <th>Ubah Peran</th>
+                <th style={{ textAlign: "right" }}>Aksi</th>
               </tr>
             </thead>
             <tbody>
               {parents.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+                  <td colSpan="7" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
                     Belum ada akun pengguna terdaftar.
                   </td>
                 </tr>
@@ -509,6 +529,16 @@ export default function StudentManagement() {
                           <option value="student">Siswa (Student)</option>
                           <option value="admin">Administrator</option>
                         </select>
+                      </td>
+                      <td style={{ textAlign: "right" }}>
+                        <button
+                          className="btn-portal-danger"
+                          style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
+                          onClick={() => handleDeleteParent(parent.id, parent.full_name)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                          <span>Hapus</span>
+                        </button>
                       </td>
                     </tr>
                   );
