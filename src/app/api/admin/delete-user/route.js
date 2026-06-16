@@ -49,6 +49,18 @@ export async function DELETE(request) {
       auth: { persistSession: false, autoRefreshToken: false },
     });
 
+    // Putus koneksi semua siswa yang terhubung ke akun ini (set parent_id = NULL)
+    // agar data siswa tidak ikut terhapus karena foreign key constraint
+    const { error: unlinkError } = await adminClient
+      .from("students")
+      .update({ parent_id: null })
+      .eq("parent_id", userId);
+
+    if (unlinkError) {
+      return NextResponse.json({ error: "Gagal memutus koneksi siswa: " + unlinkError.message }, { status: 500 });
+    }
+
+    // Hapus akun dari auth.users (otomatis hapus profiles karena CASCADE)
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId);
 
     if (deleteError) {
