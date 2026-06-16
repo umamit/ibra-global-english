@@ -227,9 +227,15 @@ export default function StudentManagement() {
 
     if (confirm(`Apakah Anda yakin ingin menghapus akun pengguna "${userName}" secara permanen? Tindakan ini tidak dapat dibatalkan.${extraWarning}`)) {
       try {
-        // Hapus akun dari auth.users Supabase (otomatis menghapus tabel profiles karena CASCADE)
-        const { error } = await supabase.auth.admin.deleteUser(userId);
-        if (error) throw error;
+        // Panggil API route server-side untuk hapus akun (auth.admin hanya bisa di server)
+        const res = await fetch("/api/admin/delete-user", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId }),
+        });
+
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || "Gagal menghapus akun.");
 
         fetchData();
       } catch (err) {
