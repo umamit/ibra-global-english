@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
+import { createServiceRoleClient } from "@/utils/supabase/client";
 import { createClient as createServerClient } from "@/utils/supabase/server";
 
 export async function DELETE(request) {
@@ -34,12 +34,8 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Tidak dapat menghapus akun sendiri." }, { status: 400 });
     }
 
-    // Gunakan service role key untuk hapus pengguna dari auth.users
-    const adminClient = createSupabaseAdmin(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY,
-      { auth: { persistSession: false, autoRefreshToken: false } }
-    );
+    // Gunakan service role client yang sudah terkonfigurasi di utils
+    const adminClient = createServiceRoleClient();
 
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId);
 
