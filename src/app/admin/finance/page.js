@@ -212,6 +212,11 @@ export default function AdminFinance() {
     URL.revokeObjectURL(url);
   };
 
+  // A1: Cetak laporan keuangan ke PDF
+  const printFinanceReport = () => {
+    window.print();
+  };
+
   // Upload receipt helper
   const handleUploadReceipt = async (e) => {
     const file = e.target.files?.[0];
@@ -404,6 +409,13 @@ export default function AdminFinance() {
         </div>
       )}
 
+      {/* A1: Print Header — hanya tampil saat @media print */}
+      <div className="finance-print-header">
+        <h2>Ibra Global English — Laporan SPP Bulanan</h2>
+        <p>Bulan Tagihan: <strong>{selectedMonth || "-"}</strong> &nbsp;|&nbsp; Dicetak: {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</p>
+        <p style={{ marginTop: "4px" }}>Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Pulau Taliabu</p>
+      </div>
+
       {/* Top Header Section */}
       <div className="dashboard-topbar" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
         <div>
@@ -422,14 +434,24 @@ export default function AdminFinance() {
             onChange={(e) => setSelectedMonth(e.target.value)}
           />
           {activeTab === "list" && students.length > 0 && (
-            <button
-              className="btn-portal-outline"
-              onClick={exportPaymentsCSV}
-              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>Export CSV</span>
-            </button>
+            <>
+              <button
+                className="btn-portal-outline"
+                onClick={exportPaymentsCSV}
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Export CSV</span>
+              </button>
+              <button
+                className="btn-portal-primary"
+                onClick={printFinanceReport}
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span>Cetak PDF</span>
+              </button>
+            </>
           )}
         </div>
       </div>
