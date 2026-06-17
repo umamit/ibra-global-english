@@ -152,6 +152,41 @@ export default function ReportCardManagement() {
     fetchData();
   }, []);
 
+  // Export semua rapor ke CSV
+  const exportReportsCSV = () => {
+    const isCalistung = (program) => program?.toLowerCase().includes("calistung");
+    const headers = ["No", "Nama Siswa", "Program", "Modul", "Skor 1", "Skor 2", "Skor 3", "Skor 4", "Rata-rata", "Catatan Tutor", "Tanggal Terbit"];
+    const rows = reports.map((r, idx) => {
+      const avg = Math.round((r.speaking_score + r.grammar_score + r.vocabulary_score + r.active_score) / 4);
+      const prog = r.students?.program || "";
+      const label = isCalistung(prog)
+        ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
+        : ["Speaking", "Grammar", "Vocabulary", "Active"];
+      return [
+        idx + 1,
+        r.students?.name || "-",
+        prog || "-",
+        r.module_name || "-",
+        `${label[0]}: ${r.speaking_score}`,
+        `${label[1]}: ${r.grammar_score}`,
+        `${label[2]}: ${r.vocabulary_score}`,
+        `${label[3]}: ${r.active_score}`,
+        avg,
+        r.tutor_notes || "-",
+        new Date(r.created_at).toLocaleDateString("id-ID")
+      ];
+    });
+
+    const csvContent = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `rekap_rapor_siswa_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleCreateCertificate = async (report) => {
     const certNumInput = prompt("Masukkan Nomor Sertifikat Resmi LKP Dinas Pendidikan:\n(Contoh: 001/IGE/VI/2026)");
     if (certNumInput === null) return; // Cancelled
@@ -473,6 +508,18 @@ export default function ReportCardManagement() {
             E-Rapor Digital: Evaluasi pencapaian modul belajar siswa
           </p>
         </div>
+        {reports.length > 0 && (
+          <div className="topbar-user">
+            <button
+              className="btn-portal-outline"
+              onClick={exportReportsCSV}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem" }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export CSV Rapor</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {statusMsg.text && (

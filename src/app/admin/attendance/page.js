@@ -82,6 +82,33 @@ export default function DailyAttendance() {
     return matchName && matchProgram;
   });
 
+  // Export rekapitulasi absensi ke CSV
+  const exportRecapCSV = () => {
+    const headers = ["No", "Nama Siswa", "Program", "Hadir", "Sakit", "Izin", "Alfa", "Total", "Kehadiran (%)"];
+    const rows = filteredRecap.map((row, idx) => {
+      const pct = row.total > 0 ? Math.round((row.hadir / row.total) * 100) : 0;
+      return [
+        idx + 1,
+        row.name,
+        row.program,
+        row.hadir,
+        row.sakit,
+        row.izin,
+        row.alfa,
+        row.total,
+        `${pct}%`
+      ];
+    });
+    const csvContent = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `rekapitulasi_absensi_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const getIndonesianDay = (dateStr) => {
     if (!dateStr) return "-";
     const [year, month, day] = dateStr.split("-").map(Number);
@@ -278,6 +305,18 @@ export default function DailyAttendance() {
               onChange={(e) => setSelectedDate(e.target.value)}
               disabled={submitting}
             />
+          </div>
+        )}
+        {activeTab === "rekap" && filteredRecap.length > 0 && (
+          <div className="topbar-user">
+            <button
+              className="btn-portal-outline"
+              onClick={exportRecapCSV}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem" }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export CSV</span>
+            </button>
           </div>
         )}
       </div>

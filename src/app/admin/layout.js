@@ -10,6 +10,23 @@ export default function AdminLayout({ children }) {
   const router = useRouter();
   const supabase = createClient();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  // Fetch jumlah pendaftaran pending untuk badge notifikasi
+  useEffect(() => {
+    const fetchPendingCount = async () => {
+      try {
+        const res = await fetch("/api/register");
+        const result = await res.json();
+        if (result.data) {
+          setPendingCount(result.data.filter(r => r.status === "pending").length);
+        }
+      } catch {}
+    };
+    fetchPendingCount();
+    const interval = setInterval(fetchPendingCount, 60000); // refresh tiap 1 menit
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -125,9 +142,29 @@ export default function AdminLayout({ children }) {
             href="/admin/students"
             className={`sidebar-nav-link ${isActive("/admin/students") ? "active" : ""}`}
             onClick={() => setMobileOpen(false)}
+            style={{ position: "relative" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span>Kelola Siswa</span>
+            {pendingCount > 0 && (
+              <span style={{
+                position: "absolute",
+                top: "50%",
+                right: "0.75rem",
+                transform: "translateY(-50%)",
+                backgroundColor: "var(--color-red)",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "0.65rem",
+                fontWeight: "800",
+                padding: "0.1rem 0.4rem",
+                minWidth: "18px",
+                textAlign: "center",
+                animation: "pulse 2s infinite"
+              }}>
+                {pendingCount}
+              </span>
+            )}
           </Link>
 
           <Link

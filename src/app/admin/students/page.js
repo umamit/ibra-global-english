@@ -10,9 +10,15 @@ export default function StudentManagement() {
 
   const [students, setStudents] = useState([]);
   const [parents, setParents] = useState([]);
+  const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [regLoading, setRegLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("students"); // 'students' or 'parents'
+  const [activeTab, setActiveTab] = useState("students"); // 'students' | 'parents' | 'registrations'
+
+  // Reject modal state
+  const [rejectModalId, setRejectModalId] = useState(null);
+  const [rejectNotes, setRejectNotes] = useState("");
 
   // Form State
   const [editingStudentId, setEditingStudentId] = useState(null);
@@ -61,8 +67,58 @@ export default function StudentManagement() {
     }
   };
 
+  // Fetch pendaftaran masuk
+  const fetchRegistrations = async () => {
+    setRegLoading(true);
+    try {
+      const res = await fetch("/api/register");
+      const result = await res.json();
+      if (result.data) setRegistrations(result.data);
+    } catch (err) {
+      console.error("Gagal memuat data pendaftaran:", err);
+    } finally {
+      setRegLoading(false);
+    }
+  };
+
+  // Approve: update status + auto-insert ke students via API
+  const handleApprove = async (reg) => {
+    if (!confirm(`Setujui pendaftaran "${reg.student_name}"? Data siswa akan otomatis ditambahkan ke daftar siswa.`)) return;
+    try {
+      const res = await fetch("/api/register", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: reg.id, status: "approved" }),
+      });
+      if (!res.ok) throw new Error("Gagal menyetujui pendaftaran.");
+      fetchRegistrations();
+      fetchData(); // Refresh daftar siswa juga
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  // Reject: tampilkan modal input alasan
+  const handleReject = async () => {
+    if (!rejectModalId) return;
+    try {
+      const res = await fetch("/api/register", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: rejectModalId, status: "rejected", notes: rejectNotes }),
+      });
+      if (!res.ok) throw new Error("Gagal menolak pendaftaran.");
+      setRejectModalId(null);
+      setRejectNotes("");
+      fetchRegistrations();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchRegistrations();
 
     // Subscribe to real-time changes
     const channel = supabase
@@ -379,6 +435,52 @@ export default function StudentManagement() {
             {parents.length}
           </span>
         </button>
+        <button
+          onClick={() => { setActiveTab("registrations"); fetchRegistrations(); }}
+          style={{
+            background: "none",
+            border: "none",
+            padding: "0.75rem 1.25rem",
+            fontWeight: activeTab === "registrations" ? "800" : "500",
+            color: activeTab === "registrations" ? "var(--color-primary-dark)" : "var(--color-gray-500)",
+            borderBottom: activeTab === "registrations" ? "3px solid var(--color-primary)" : "3px solid transparent",
+            marginBottom: "-2px",
+            cursor: "pointer",
+            fontSize: "1rem",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            transition: "all 0.2s ease",
+            position: "relative"
+          }}
+        >
+          <span>Pendaftaran Masuk</span>
+          {registrations.filter(r => r.status === "pending").length > 0 && (
+            <span style={{ 
+              fontSize: "0.75rem", 
+              backgroundColor: "var(--color-red)",
+              color: "white",
+              padding: "0.15rem 0.5rem",
+              borderRadius: "10px",
+              fontWeight: "700",
+              animation: "pulse 2s infinite"
+            }}>
+              {registrations.filter(r => r.status === "pending").length} baru
+            </span>
+          )}
+          {registrations.filter(r => r.status === "pending").length === 0 && (
+            <span style={{ 
+              fontSize: "0.75rem", 
+              backgroundColor: activeTab === "registrations" ? "var(--color-primary-light)" : "var(--color-gray-100)",
+              color: activeTab === "registrations" ? "var(--color-primary-dark)" : "var(--color-gray-600)",
+              padding: "0.15rem 0.5rem",
+              borderRadius: "10px",
+              fontWeight: "700"
+            }}>
+              {registrations.length}
+            </span>
+          )}
+        </button>
       </div>
 
       {loading ? (
@@ -555,7 +657,132 @@ export default function StudentManagement() {
         </div>
       )}
 
-      {/* Modal Form Tambah/Edit Siswa */}
+      {/* Tab: Pendaftaran Masuk */}
+      {activeTab === "registrations" && (
+        <div>
+          {regLoading ? (
+            <div style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+              <svg style={{ animation: "spin 1s linear infinite", width: "28px", height: "28px" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+            </div>
+          ) : (
+            <div className="table-wrapper">
+              <table className="portal-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Usia</th>
+                    <th>Program</th>
+                    <th>Orang Tua</th>
+                    <th>WhatsApp</th>
+                    <th>Waktu Daftar</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: "right" }}>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {registrations.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+                        Belum ada pendaftaran masuk dari landing page.
+                      </td>
+                    </tr>
+                  ) : (
+                    registrations.map((reg, idx) => {
+                      const statusColor = reg.status === "approved"
+                        ? { bg: "var(--color-green-light)", text: "var(--color-green)", label: "✓ Disetujui" }
+                        : reg.status === "rejected"
+                        ? { bg: "rgba(239,68,68,0.1)", text: "var(--color-red)", label: "✗ Ditolak" }
+                        : { bg: "rgba(234,179,8,0.1)", text: "#b45309", label: "⏳ Menunggu" };
+
+                      return (
+                        <tr key={reg.id}>
+                          <td style={{ fontWeight: "700" }}>{idx + 1}</td>
+                          <td style={{ fontWeight: "600" }}>{reg.student_name}</td>
+                          <td>{reg.student_age ? `${reg.student_age} thn` : "-"}</td>
+                          <td>
+                            <span className="user-badge" style={{ backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", padding: "0.2rem 0.55rem", fontWeight: "700", fontSize: "0.78rem" }}>
+                              {reg.program?.split(" ")[0]}
+                            </span>
+                          </td>
+                          <td>{reg.parent_name || <span style={{ color: "var(--color-gray-400)", fontStyle: "italic" }}>-</span>}</td>
+                          <td>
+                            <a href={`https://wa.me/${reg.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)", fontWeight: "600", textDecoration: "none" }}>
+                              {reg.whatsapp}
+                            </a>
+                          </td>
+                          <td style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
+                            {new Date(reg.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                          </td>
+                          <td>
+                            <span style={{ backgroundColor: statusColor.bg, color: statusColor.text, padding: "0.2rem 0.6rem", borderRadius: "8px", fontWeight: "700", fontSize: "0.78rem" }}>
+                              {statusColor.label}
+                            </span>
+                            {reg.status === "rejected" && reg.notes && (
+                              <p style={{ fontSize: "0.72rem", color: "var(--color-gray-400)", marginTop: "0.2rem", fontStyle: "italic" }}>{reg.notes}</p>
+                            )}
+                          </td>
+                          <td style={{ textAlign: "right" }}>
+                            {reg.status === "pending" && (
+                              <div style={{ display: "inline-flex", gap: "0.4rem" }}>
+                                <button
+                                  className="btn-portal-primary"
+                                  style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                                  onClick={() => handleApprove(reg)}
+                                >
+                                  Setujui
+                                </button>
+                                <button
+                                  className="btn-portal-danger"
+                                  style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                                  onClick={() => { setRejectModalId(reg.id); setRejectNotes(""); }}
+                                >
+                                  Tolak
+                                </button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Modal Tolak Pendaftaran */}
+      {rejectModalId && (
+        <div className="portal-modal-overlay">
+          <div className="portal-modal" style={{ maxWidth: "440px" }}>
+            <div className="portal-modal-header">
+              <h2 className="portal-modal-title">Tolak Pendaftaran</h2>
+              <button className="btn-close-modal" onClick={() => setRejectModalId(null)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <p style={{ color: "var(--color-gray-500)", marginBottom: "1rem", fontSize: "0.9rem" }}>Tuliskan alasan penolakan (opsional). Informasi ini hanya untuk catatan internal admin.</p>
+            <textarea
+              className="form-input"
+              rows={3}
+              placeholder="Contoh: Slot penuh, usia tidak sesuai, dll."
+              value={rejectNotes}
+              onChange={(e) => setRejectNotes(e.target.value)}
+              style={{ resize: "vertical", marginBottom: "1.5rem" }}
+            />
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+              <button className="btn-portal-outline" onClick={() => setRejectModalId(null)}>Batal</button>
+              <button className="btn-portal-danger" onClick={handleReject}>Konfirmasi Penolakan</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {modalOpen && (
         <div className="portal-modal-overlay">
           <div className="portal-modal">

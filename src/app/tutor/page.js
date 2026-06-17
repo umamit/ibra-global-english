@@ -960,9 +960,34 @@ export default function TutorPortal() {
               
               {/* List of LMS Materials */}
               <div className="portal-card" style={{ padding: "2rem" }}>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
+                <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
                   Daftar Konten LMS Aktif
                 </h3>
+
+                {/* Ringkasan Progress Kelas */}
+                {(() => {
+                  const tasks = lmsMaterials.filter(m => m.type === "tugas");
+                  if (tasks.length === 0) return null;
+                  const totalSubmissions = lmsSubmissions.length;
+                  const totalExpected = tasks.length * Math.max(students.length, 1);
+                  const pct = totalExpected > 0 ? Math.round((totalSubmissions / totalExpected) * 100) : 0;
+                  const barColor = pct >= 75 ? "var(--color-green)" : pct >= 50 ? "#f59e0b" : "var(--color-red)";
+                  return (
+                    <div style={{ marginBottom: "1.5rem", padding: "0.9rem 1.1rem", background: "var(--color-gray-50)", borderRadius: "10px", border: "1px solid var(--color-gray-150)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                        <span style={{ fontWeight: "700", fontSize: "0.825rem", color: "var(--color-gray-700)" }}>📊 Progress Kelas Keseluruhan</span>
+                        <span style={{ fontWeight: "800", fontSize: "0.875rem", color: barColor }}>{pct}%</span>
+                      </div>
+                      <div style={{ background: "var(--color-gray-200)", borderRadius: "99px", height: "8px", overflow: "hidden", marginBottom: "0.5rem" }}>
+                        <div style={{ width: `${pct}%`, height: "100%", background: barColor, borderRadius: "99px", transition: "width 0.8s ease" }} />
+                      </div>
+                      <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)" }}>
+                        Total pengumpulan: <strong>{totalSubmissions}</strong> dari <strong>{totalExpected}</strong> yang diharapkan ({tasks.length} tugas × {students.length} siswa)
+                      </p>
+                    </div>
+                  );
+                })()}
+
                 <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "400px", overflowY: "auto" }}>
                   {lmsMaterials.length === 0 ? (
                     <p style={{ color: "var(--color-gray-400)", textAlign: "center", padding: "2rem 0" }}>Belum ada materi atau tugas yang diunggah.</p>
