@@ -1486,9 +1486,40 @@ export default function ParentPortal() {
                 <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
                   LMS & Tugas Rumah Anak
                 </h3>
-                <p style={{ color: "var(--color-gray-500)", fontSize: "0.9rem", marginBottom: "2rem" }}>
-                  Pantau daftar materi belajar dan status penyelesaian tugas rumah yang diberikan oleh Tutor untuk **{selectedChild?.name}**.
+                <p style={{ color: "var(--color-gray-500)", fontSize: "0.9rem", marginBottom: "1.25rem" }}>
+                  Pantau daftar materi belajar dan status penyelesaian tugas rumah yang diberikan oleh Tutor untuk <strong>{selectedChild?.name}</strong>.
                 </p>
+
+                {/* Progress Summary Card */}
+                {(() => {
+                  const tasks = lmsMaterials.filter(m => m.type === "tugas");
+                  const done = tasks.filter(t => lmsSubmissions.some(s => s.material_id === t.id)).length;
+                  const total = tasks.length;
+                  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+                  const barColor = pct >= 75 ? "var(--color-green)" : pct >= 50 ? "#f59e0b" : pct > 0 ? "var(--color-red)" : "var(--color-gray-300)";
+                  return total > 0 ? (
+                    <div style={{ marginBottom: "1.75rem", padding: "1.25rem 1.5rem", background: "linear-gradient(135deg, var(--color-primary-light) 0%, rgba(255,255,255,0.8) 100%)", borderRadius: "14px", border: "1px solid var(--color-primary-light)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                        <div>
+                          <p style={{ fontWeight: "800", fontSize: "0.95rem", color: "var(--color-primary-dark)", marginBottom: "2px" }}>📊 Ringkasan Progress Tugas</p>
+                          <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>Data real-time dari LMS Ibra Global English</p>
+                        </div>
+                        <div style={{ textAlign: "center", background: "white", borderRadius: "12px", padding: "0.5rem 1rem", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+                          <p style={{ fontSize: "1.5rem", fontWeight: "900", color: barColor, lineHeight: 1 }}>{pct}%</p>
+                          <p style={{ fontSize: "0.7rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Selesai</p>
+                        </div>
+                      </div>
+                      <div style={{ background: "rgba(255,255,255,0.6)", borderRadius: "99px", height: "12px", overflow: "hidden", marginBottom: "0.75rem" }}>
+                        <div style={{ width: `${pct}%`, height: "100%", background: barColor, borderRadius: "99px", transition: "width 1s ease", boxShadow: `0 0 8px ${barColor}55` }} />
+                      </div>
+                      <div style={{ display: "flex", gap: "2rem", fontSize: "0.82rem" }}>
+                        <span style={{ color: "var(--color-green)", fontWeight: "700" }}>✅ {done} Selesai</span>
+                        <span style={{ color: "var(--color-gray-500)", fontWeight: "600" }}>⏳ {total - done} Belum</span>
+                        <span style={{ color: "var(--color-primary-dark)", fontWeight: "600" }}>📚 {total} Total Tugas</span>
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
 
                 {detailsLoading ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>

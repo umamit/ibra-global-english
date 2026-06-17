@@ -627,6 +627,31 @@ export default function StudentPortal() {
         {/* TAB 4: LMS PEMBELAJARAN */}
         {activeTab === "lms" && (
           <div className="portal-card" style={{ padding: "2rem" }}>
+            {/* Progress Summary Bar */}
+            {(() => {
+              const tasks = lmsMaterials.filter(m => m.type === "tugas");
+              const done = tasks.filter(t => mySubmissions.some(s => s.material_id === t.id)).length;
+              const total = tasks.length;
+              const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+              const barColor = pct >= 75 ? "var(--color-green)" : pct >= 50 ? "#f59e0b" : pct > 0 ? "var(--color-red)" : "var(--color-gray-300)";
+              return total > 0 ? (
+                <div className="lms-progress-summary" style={{ marginBottom: "1.5rem", padding: "1rem 1.25rem", background: "var(--color-gray-50)", borderRadius: "12px", border: "1px solid var(--color-gray-150)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                    <span style={{ fontWeight: "700", fontSize: "0.875rem", color: "var(--color-gray-700)" }}>📋 Progress Tugas LMS</span>
+                    <span style={{ fontWeight: "800", fontSize: "0.95rem", color: barColor }}>{pct}%</span>
+                  </div>
+                  <div style={{ background: "var(--color-gray-200)", borderRadius: "99px", height: "10px", overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: barColor, borderRadius: "99px", transition: "width 0.8s ease" }} />
+                  </div>
+                  <div style={{ display: "flex", gap: "1.5rem", marginTop: "0.6rem", fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
+                    <span>✅ Selesai: <strong style={{ color: "var(--color-green)" }}>{done}</strong></span>
+                    <span>⏳ Belum: <strong style={{ color: "var(--color-gray-600)" }}>{total - done}</strong></span>
+                    <span>📚 Total: <strong>{total}</strong></span>
+                  </div>
+                </div>
+              ) : null;
+            })()}
+
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", borderBottom: "1px solid var(--color-gray-150)", paddingBottom: "1rem", flexWrap: "wrap", gap: "1rem" }}>
               <div>
                 <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>

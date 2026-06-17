@@ -1155,10 +1155,106 @@ section {
 }
 
 .form-panel h3 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--color-primary);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ──── Contact Tab Switcher ──── */
+.contact-tab-switcher {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.contact-tab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  background: transparent;
+  color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
+.contact-tab-btn.active {
+  background: white;
+  color: var(--color-primary-dark);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.contact-tab-btn:hover:not(.active) {
+  color: var(--color-primary);
+  background: rgba(255,255,255,0.5);
+}
+
+/* ──── Registration Success Card ──── */
+.reg-success-card {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: linear-gradient(135deg, rgba(52,199,89,0.08) 0%, rgba(255,255,255,0.6) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(52,199,89,0.2);
+}
+
+.reg-success-icon {
+  width: 72px;
+  height: 72px;
+  background: rgba(52,199,89,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: var(--color-green, #22c55e);
+}
+
+.reg-success-card h4 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  margin-bottom: 0.75rem;
+}
+
+.reg-success-card p {
+  color: var(--color-gray-600);
+  font-size: 0.925rem;
+  line-height: 1.6;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+/* ──── Btn Portal Danger ──── */
+.btn-portal-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1.5px solid var(--color-red, #ef4444);
+  background: rgba(239,68,68,0.07);
+  color: var(--color-red, #ef4444);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-portal-danger:hover {
+  background: var(--color-red, #ef4444);
+  color: white;
 }
 
 .form-group {

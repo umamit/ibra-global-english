@@ -182,6 +182,36 @@ export default function AdminFinance() {
     };
   };
 
+  // Export daftar pembayaran ke CSV
+  const exportPaymentsCSV = () => {
+    const formatRupiah = (n) => `Rp ${Number(n || 0).toLocaleString("id-ID")}`;
+    const statusLabel = (s) => s === "lunas" ? "Lunas" : s === "menunggu_konfirmasi" ? "Menunggu Konfirmasi" : "Belum Bayar";
+
+    const headers = ["No", "Nama Siswa", "Program", "Bulan", "Nominal SPP", "Status", "Metode Bayar", "Tanggal Bayar"];
+    const rows = students.map((student, idx) => {
+      const pay = getStudentPayment(student.id);
+      return [
+        idx + 1,
+        student.name,
+        student.program,
+        selectedMonth || "-",
+        formatRupiah(pay.amount),
+        statusLabel(pay.status),
+        pay.payment_method || "-",
+        pay.paid_at ? new Date(pay.paid_at).toLocaleDateString("id-ID") : "-"
+      ];
+    });
+
+    const csvContent = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `laporan_spp_${selectedMonth || "semua"}_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   // Upload receipt helper
   const handleUploadReceipt = async (e) => {
     const file = e.target.files?.[0];
@@ -382,7 +412,7 @@ export default function AdminFinance() {
             Atur biaya bimbingan belajar, konfirmasi bukti transfer wali murid, dan pantau tagihan SPP bulanan siswa.
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
           <label style={{ fontWeight: "700", color: "var(--color-gray-700)" }}>Bulan Tagihan:</label>
           <input
             type="month"
@@ -391,6 +421,16 @@ export default function AdminFinance() {
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
           />
+          {activeTab === "list" && students.length > 0 && (
+            <button
+              className="btn-portal-outline"
+              onClick={exportPaymentsCSV}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export CSV</span>
+            </button>
+          )}
         </div>
       </div>
 
