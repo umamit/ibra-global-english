@@ -4321,7 +4321,127 @@ textarea:focus-visible {
   margin: 1cm;
 }
 
-/* --- RESPONSIVE HEADER LAYOUT OPTIMIZATION --- */
+
+/* ──── A1: Print Finance Report ──── */
+@media print {
+  /* Sembunyikan semua elemen non-laporan */
+  .dashboard-sidebar,
+  .mobile-nav-toggle,
+  .topbar-user,
+  .btn-portal-primary,
+  .btn-portal-outline,
+  .btn-portal-danger,
+  .btn-logout,
+  .portal-modal-overlay,
+  [class*="tab-btn"],
+  .dashboard-topbar .topbar-user {
+    display: none !important;
+  }
+
+  /* Tampilkan header cetak */
+  .finance-print-header {
+    display: block !important;
+    text-align: center;
+    padding: 1rem 0 1.5rem;
+    border-bottom: 2px solid #216c7e;
+    margin-bottom: 1.5rem;
+  }
+
+  .finance-print-header h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #216c7e !important;
+  }
+
+  .finance-print-header p {
+    font-size: 0.875rem;
+    color: #555 !important;
+  }
+
+  /* Layout satu kolom full width */
+  .dashboard-layout {
+    display: block !important;
+  }
+
+  .dashboard-main {
+    margin: 0 !important;
+    padding: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Tabel laporan */
+  .portal-table {
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    border-collapse: collapse !important;
+  }
+
+  .portal-table th,
+  .portal-table td {
+    padding: 0.4rem 0.6rem !important;
+    border: 1px solid #ccc !important;
+    color: #111 !important;
+  }
+
+  .portal-table th {
+    background: #e8f4f7 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .table-wrapper {
+    overflow: visible !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 1.5cm;
+  }
+}
+
+/* Sembunyikan print header di layar */
+.finance-print-header {
+  display: none;
+}
+
+/* ──── A2: LMS Progress Ring SVG ──── */
+.lms-progress-ring-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lms-progress-ring circle.track {
+  fill: none;
+  stroke: var(--color-gray-200);
+}
+
+.lms-progress-ring circle.fill {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.lms-progress-ring-text {
+  position: absolute;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1;
+}
+
+.lms-progress-ring-text span {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  margin-top: 2px;
+}
+
+/* ──── Responsive nav optimize ──── */
 @media (min-width: 769px) and (max-width: 1180px) {
   .nav-links {
     gap: 1.0rem !important;
@@ -4332,7 +4452,7 @@ textarea:focus-visible {
   }
   
   .logo-text p {
-    display: none !important; /* Hide tagline on smaller laptops to make space */
+    display: none !important;
   }
   
   .logo-text h1 {

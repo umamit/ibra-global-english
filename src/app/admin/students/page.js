@@ -93,6 +93,11 @@ export default function StudentManagement() {
       if (!res.ok) throw new Error("Gagal menyetujui pendaftaran.");
       fetchRegistrations();
       fetchData(); // Refresh daftar siswa juga
+
+      // A3: Buka WA otomatis dengan pesan selamat datang
+      const waNumber = reg.whatsapp.replace(/[^0-9]/g, "");
+      const msg = `Assalamu'alaikum, Bapak/Ibu ${reg.parent_name || "Wali"}! 🎉\n\nPendaftaran *${reg.student_name}* ke program *${reg.program}* di *Ibra Global English Bobong* telah kami *SETUJUI* ✅.\n\nKami akan segera menghubungi Anda untuk informasi jadwal belajar perdana. Terima kasih telah mempercayakan pendidikan anak kepada kami! 🌟\n\n_Tim Ibra Global English_`;
+      window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, "_blank");
     } catch (err) {
       alert(err.message);
     }

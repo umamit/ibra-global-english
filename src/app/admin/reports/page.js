@@ -78,6 +78,8 @@ export default function ReportCardManagement() {
 
   // Form State
   const [studentId, setStudentId] = useState("");
+  const [exportFilterId, setExportFilterId] = useState(""); // A4: filter export per-siswa
+
   const [selectedStudentProgram, setSelectedStudentProgram] = useState("");
   const [moduleName, setModuleName] = useState("");
   const [speakingScore, setSpeakingScore] = useState("");
@@ -152,11 +154,24 @@ export default function ReportCardManagement() {
     fetchData();
   }, []);
 
-  // Export semua rapor ke CSV
-  const exportReportsCSV = () => {
+  // A4: Export rapor ke CSV — bisa filter per-siswa
+  const exportReportsCSV = (filterStudentId = "") => {
     const isCalistung = (program) => program?.toLowerCase().includes("calistung");
+    const filtered = filterStudentId
+      ? reports.filter(r => r.student_id === filterStudentId)
+      : reports;
+
+    if (filtered.length === 0) {
+      alert("Tidak ada data rapor untuk siswa yang dipilih.");
+      return;
+    }
+
+    const studentName = filterStudentId
+      ? (filtered[0]?.students?.name || "siswa").replace(/\s+/g, "_")
+      : "semua_siswa";
+
     const headers = ["No", "Nama Siswa", "Program", "Modul", "Skor 1", "Skor 2", "Skor 3", "Skor 4", "Rata-rata", "Catatan Tutor", "Tanggal Terbit"];
-    const rows = reports.map((r, idx) => {
+    const rows = filtered.map((r, idx) => {
       const avg = Math.round((r.speaking_score + r.grammar_score + r.vocabulary_score + r.active_score) / 4);
       const prog = r.students?.program || "";
       const label = isCalistung(prog)
@@ -182,7 +197,7 @@ export default function ReportCardManagement() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `rekap_rapor_siswa_${new Date().toISOString().split("T")[0]}.csv`;
+    link.download = `rapor_${studentName}_${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -509,14 +524,25 @@ export default function ReportCardManagement() {
           </p>
         </div>
         {reports.length > 0 && (
-          <div className="topbar-user">
+          <div className="topbar-user" style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+            <select
+              className="form-input"
+              style={{ padding: "0.45rem 0.75rem", fontSize: "0.825rem", width: "auto", minWidth: "160px" }}
+              value={exportFilterId}
+              onChange={(e) => setExportFilterId(e.target.value)}
+            >
+              <option value="">Semua Siswa</option>
+              {students.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
             <button
               className="btn-portal-outline"
-              onClick={exportReportsCSV}
-              style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem" }}
+              onClick={() => exportReportsCSV(exportFilterId)}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.825rem" }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>Export CSV Rapor</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export CSV</span>
             </button>
           </div>
         )}

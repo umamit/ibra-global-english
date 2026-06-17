@@ -627,26 +627,58 @@ export default function StudentPortal() {
         {/* TAB 4: LMS PEMBELAJARAN */}
         {activeTab === "lms" && (
           <div className="portal-card" style={{ padding: "2rem" }}>
-            {/* Progress Summary Bar */}
+            {/* A2: SVG Circular Progress Ring */}
             {(() => {
               const tasks = lmsMaterials.filter(m => m.type === "tugas");
               const done = tasks.filter(t => mySubmissions.some(s => s.material_id === t.id)).length;
               const total = tasks.length;
               const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-              const barColor = pct >= 75 ? "var(--color-green)" : pct >= 50 ? "#f59e0b" : pct > 0 ? "var(--color-red)" : "var(--color-gray-300)";
+              const ringColor = pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : pct > 0 ? "#ef4444" : "#e5e7eb";
+              const r = 40;
+              const circ = 2 * Math.PI * r;
+              const offset = circ - (pct / 100) * circ;
               return total > 0 ? (
-                <div className="lms-progress-summary" style={{ marginBottom: "1.5rem", padding: "1rem 1.25rem", background: "var(--color-gray-50)", borderRadius: "12px", border: "1px solid var(--color-gray-150)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
-                    <span style={{ fontWeight: "700", fontSize: "0.875rem", color: "var(--color-gray-700)" }}>📋 Progress Tugas LMS</span>
-                    <span style={{ fontWeight: "800", fontSize: "0.95rem", color: barColor }}>{pct}%</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1.5rem", padding: "1rem 1.25rem", background: "var(--color-gray-50)", borderRadius: "14px", border: "1px solid var(--color-gray-150)" }}>
+                  {/* Ring SVG */}
+                  <div className="lms-progress-ring-wrap">
+                    <svg className="lms-progress-ring" width="100" height="100" viewBox="0 0 100 100">
+                      <circle className="track" cx="50" cy="50" r={r} strokeWidth="10" />
+                      <circle
+                        className="fill"
+                        cx="50" cy="50" r={r}
+                        strokeWidth="10"
+                        stroke={ringColor}
+                        strokeDasharray={circ}
+                        strokeDashoffset={offset}
+                      />
+                    </svg>
+                    <div className="lms-progress-ring-text" style={{ color: ringColor, fontSize: "1.25rem" }}>
+                      {pct}%
+                      <span>selesai</span>
+                    </div>
                   </div>
-                  <div style={{ background: "var(--color-gray-200)", borderRadius: "99px", height: "10px", overflow: "hidden" }}>
-                    <div style={{ width: `${pct}%`, height: "100%", background: barColor, borderRadius: "99px", transition: "width 0.8s ease" }} />
-                  </div>
-                  <div style={{ display: "flex", gap: "1.5rem", marginTop: "0.6rem", fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
-                    <span>✅ Selesai: <strong style={{ color: "var(--color-green)" }}>{done}</strong></span>
-                    <span>⏳ Belum: <strong style={{ color: "var(--color-gray-600)" }}>{total - done}</strong></span>
-                    <span>📚 Total: <strong>{total}</strong></span>
+                  {/* Stats */}
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: "800", fontSize: "0.95rem", color: "var(--color-gray-800)", marginBottom: "0.5rem" }}>
+                      📋 Progress Tugas LMS
+                    </p>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem" }}>
+                        <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#22c55e", display: "inline-block", flexShrink: 0 }} />
+                        <span style={{ color: "var(--color-gray-600)" }}>Selesai:</span>
+                        <strong style={{ color: "#22c55e" }}>{done} tugas</strong>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem" }}>
+                        <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--color-gray-300)", display: "inline-block", flexShrink: 0 }} />
+                        <span style={{ color: "var(--color-gray-600)" }}>Belum dikumpul:</span>
+                        <strong style={{ color: "var(--color-gray-700)" }}>{total - done} tugas</strong>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem" }}>
+                        <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--color-primary)", display: "inline-block", flexShrink: 0 }} />
+                        <span style={{ color: "var(--color-gray-600)" }}>Total tugas:</span>
+                        <strong style={{ color: "var(--color-primary-dark)" }}>{total} tugas</strong>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : null;
