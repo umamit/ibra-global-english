@@ -72,6 +72,10 @@ export default function StudentPortal() {
   const [submissionUploading, setSubmissionUploading] = useState(false);
   const [lmsSubTab, setLmsSubTab] = useState("materi"); // 'materi' or 'tugas'
 
+  // B1 & B2: Pengumuman & Jadwal Online
+  const [announcements, setAnnouncements] = useState([]);
+  const [onlineSchedules, setOnlineSchedules] = useState([]);
+
   // Static files to download based on program
   const getModulesList = (program) => {
     if (program?.toLowerCase()?.includes("calistung")) {
@@ -178,6 +182,20 @@ export default function StudentPortal() {
 
         const sumCoins = (rewList || []).reduce((sum, r) => sum + r.coins, 0);
         setTotalCoins(sumCoins);
+
+        // B1: Fetch pengumuman aktif untuk program siswa
+        try {
+          const annRes = await fetch(`/api/announcements?program=${encodeURIComponent(activeStudent.program)}`);
+          const { data: annData } = await annRes.json();
+          setAnnouncements(annData || []);
+        } catch (_) {}
+
+        // B2: Fetch jadwal kelas online untuk program siswa
+        try {
+          const schRes = await fetch(`/api/online-schedule?program=${encodeURIComponent(activeStudent.program)}&upcoming=true`);
+          const { data: schData } = await schRes.json();
+          setOnlineSchedules(schData || []);
+        } catch (_) {}
 
       } catch (err) {
         console.error("Error loading student portal:", err);
@@ -393,7 +411,62 @@ export default function StudentPortal() {
         {/* TAB 1: DASHBOARD RINGKASAN */}
         {activeTab === "dashboard" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
-            
+
+            {/* B1: Pengumuman Aktif */}
+            {announcements.length > 0 && (
+              <div>
+                <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+                  📢 Pengumuman
+                </h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                  {announcements.slice(0, 3).map(ann => {
+                    const priColor = ann.priority === "urgent" ? "#ef4444" : ann.priority === "penting" ? "#f59e0b" : "var(--color-primary)";
+                    return (
+                      <div key={ann.id} style={{ borderRadius: "12px", border: `1.5px solid ${priColor}22`, background: `${priColor}08`, padding: "0.9rem 1.1rem", borderLeft: `4px solid ${priColor}` }}>
+                        <p style={{ fontWeight: "800", fontSize: "0.9rem", color: "var(--color-gray-900)", marginBottom: "0.25rem" }}>{ann.title}</p>
+                        <p style={{ fontSize: "0.82rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}>{ann.content}</p>
+                        <p style={{ fontSize: "0.72rem", color: "var(--color-gray-400)", marginTop: "0.4rem" }}>
+                          {new Date(ann.published_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })} · {ann.program}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* B2: Jadwal Kelas Online Berikutnya */}
+            {onlineSchedules.length > 0 && (
+              <div>
+                <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+                  🎥 Jadwal Kelas Online Berikutnya
+                </h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                  {onlineSchedules.slice(0, 2).map(s => {
+                    const dt = new Date(s.scheduled_at);
+                    return (
+                      <div key={s.id} style={{ borderRadius: "12px", border: "1.5px solid var(--color-primary-light)", background: "linear-gradient(135deg, var(--color-primary-light) 0%, white 100%)", padding: "1rem 1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+                        <div>
+                          <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.3rem" }}>
+                            <span style={{ fontSize: "0.7rem", fontWeight: "700", padding: "2px 8px", borderRadius: "20px", background: "var(--color-primary)", color: "white" }}>{s.meeting_platform}</span>
+                            <span style={{ fontSize: "0.7rem", fontWeight: "600", padding: "2px 8px", borderRadius: "20px", background: "var(--color-gray-100)", color: "var(--color-gray-600)" }}>{s.duration_minutes} menit</span>
+                          </div>
+                          <p style={{ fontWeight: "800", fontSize: "0.9rem", color: "var(--color-gray-900)" }}>{s.title}</p>
+                          <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)" }}>
+                            📅 {dt.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })} · ⏰ {dt.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                          </p>
+                          {s.tutor_name && <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)" }}>👤 {s.tutor_name}</p>}
+                        </div>
+                        <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="btn-portal-primary" style={{ textDecoration: "none", padding: "0.6rem 1.25rem", fontSize: "0.875rem", whiteSpace: "nowrap" }}>
+                          🚀 Masuk Kelas
+                        </a>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Gamification Welcome Block */}
             <div className="portal-card glowing-card" style={{
               padding: "2rem 2.5rem",
