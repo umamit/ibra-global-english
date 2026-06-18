@@ -212,7 +212,8 @@ export default function ParentPortal() {
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [lmsMaterials, setLmsMaterials] = useState([]);
   const [lmsSubmissions, setLmsSubmissions] = useState([]);
-
+  const [announcements, setAnnouncements] = useState([]);
+  const [onlineSchedules, setOnlineSchedules] = useState([]);
 
   // Payment settings state loaded from database
   const [paymentSettings, setPaymentSettings] = useState({
@@ -532,6 +533,19 @@ export default function ParentPortal() {
           .select("*")
           .eq("student_id", selectedChild.id);
         setLmsSubmissions(subList || []);
+
+        // B1 & B2: Fetch pengumuman & jadwal kelas online
+        try {
+          const annRes = await fetch(`/api/announcements?program=${encodeURIComponent(selectedChild.program)}`);
+          const { data: annData } = await annRes.json();
+          setAnnouncements(annData || []);
+        } catch (_) {}
+
+        try {
+          const schRes = await fetch(`/api/online-schedule?program=${encodeURIComponent(selectedChild.program)}&upcoming=true`);
+          const { data: schData } = await schRes.json();
+          setOnlineSchedules(schData || []);
+        } catch (_) {}
 
       } catch (err) {
         console.error("Gagal memuat detail siswa:", err);
@@ -980,7 +994,61 @@ export default function ParentPortal() {
             </div>            {/* TAB VIEW 1: PROGRESS (Kemajuan Belajar) */}
             {activeView === "progress" && (
               <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
-                
+
+                {/* B1: Pengumuman Aktif */}
+                {announcements.length > 0 && (
+                  <div>
+                    <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+                      📢 Pengumuman untuk {selectedChild?.name || "Anak Anda"}
+                    </h4>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+                      {announcements.slice(0, 3).map(ann => {
+                        const priColor = ann.priority === "urgent" ? "#ef4444" : ann.priority === "penting" ? "#f59e0b" : "var(--color-primary)";
+                        return (
+                          <div key={ann.id} style={{ borderRadius: "12px", border: `1.5px solid ${priColor}22`, background: `${priColor}07`, padding: "0.9rem 1.1rem", borderLeft: `4px solid ${priColor}` }}>
+                            <p style={{ fontWeight: "800", fontSize: "0.9rem", color: "var(--color-gray-900)", marginBottom: "0.2rem" }}>{ann.title}</p>
+                            <p style={{ fontSize: "0.82rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}>{ann.content}</p>
+                            <p style={{ fontSize: "0.72rem", color: "var(--color-gray-400)", marginTop: "0.35rem" }}>
+                              {new Date(ann.published_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })} · {ann.program}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* B2: Jadwal Kelas Online */}
+                {onlineSchedules.length > 0 && (
+                  <div>
+                    <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+                      🎥 Jadwal Kelas Online Mendatang
+                    </h4>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+                      {onlineSchedules.slice(0, 2).map(s => {
+                        const dt = new Date(s.scheduled_at);
+                        return (
+                          <div key={s.id} style={{ borderRadius: "12px", border: "1.5px solid var(--color-primary-light)", background: "linear-gradient(135deg, var(--color-primary-light) 0%, white 100%)", padding: "1rem 1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+                            <div>
+                              <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.3rem" }}>
+                                <span style={{ fontSize: "0.7rem", fontWeight: "700", padding: "2px 8px", borderRadius: "20px", background: "var(--color-primary)", color: "white" }}>{s.meeting_platform}</span>
+                                <span style={{ fontSize: "0.7rem", fontWeight: "600", padding: "2px 8px", borderRadius: "20px", background: "var(--color-gray-100)", color: "var(--color-gray-600)" }}>{s.duration_minutes} menit</span>
+                              </div>
+                              <p style={{ fontWeight: "800", fontSize: "0.875rem", color: "var(--color-gray-900)" }}>{s.title}</p>
+                              <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)" }}>
+                                📅 {dt.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })} · ⏰ {dt.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                              </p>
+                            </div>
+                            <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="btn-portal-primary" style={{ textDecoration: "none", padding: "0.5rem 1rem", fontSize: "0.825rem", whiteSpace: "nowrap" }}>
+                              🚀 Masuk Kelas
+                            </a>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Riwayat Kehadiran */}
                 <div className="portal-card" style={{ padding: "2rem" }}>
                   <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>

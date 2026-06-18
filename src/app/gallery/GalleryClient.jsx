@@ -98,25 +98,41 @@ export default function GalleryClient() {
     localStorage.setItem("theme", nextTheme);
   };
 
-  // Fetch dynamic gallery from database
+  // Fetch dynamic gallery from gallery_items (B3: admin-managed)
   useEffect(() => {
     async function fetchGallery() {
       try {
-        const { data, error } = await supabase
+        // Coba ambil dari gallery_items (tabel baru yang dikelola admin)
+        const res = await fetch("/api/gallery");
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data && data.length > 0) {
+            const mappedData = data.map((item) => ({
+              title: item.title,
+              desc: item.description || "",
+              thumb: item.image_url,
+              full: item.image_url,
+              caption: item.title,
+              category: item.category || "Kegiatan"
+            }));
+            setGalleryItems([...mappedData, ...STATIC_GALLERY]);
+            return;
+          }
+        }
+        // Fallback ke tabel gallery lama
+        const { data: oldData } = await supabase
           .from('gallery')
           .select('*')
           .order('created_at', { ascending: false });
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const mappedData = data.map((item) => ({
+        if (oldData && oldData.length > 0) {
+          const mappedData = oldData.map((item) => ({
             title: item.title,
             desc: item.description || "",
             thumb: item.image_url,
             full: item.image_url,
             caption: item.caption || item.title,
-            category: item.category || "Aktivitas"
+            category: item.category || "Kegiatan"
           }));
-          // Merge static items with fetched database items
           setGalleryItems([...mappedData, ...STATIC_GALLERY]);
         }
       } catch (e) {
@@ -131,7 +147,7 @@ export default function GalleryClient() {
     ? galleryItems 
     : galleryItems.filter(item => item.category === activeCategory);
 
-  const categories = ["Semua", "Kids Program", "Teens Program", "Aktivitas"];
+  const categories = ["Semua", "Kegiatan", "Prestasi", "Fasilitas", "Kelas Online", "Kids Program", "Teens Program"];
 
   const openLightbox = (src, caption, index) => {
     setLightbox({ isOpen: true, src, caption, index });

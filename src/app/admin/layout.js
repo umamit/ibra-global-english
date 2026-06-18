@@ -222,6 +222,33 @@ export default function AdminLayout({ children }) {
           </Link>
 
           <Link
+            href="/admin/announcements"
+            className={`sidebar-nav-link ${isActive("/admin/announcements") ? "active" : ""}`}
+            onClick={() => setMobileOpen(false)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>
+            <span>Pengumuman</span>
+          </Link>
+
+          <Link
+            href="/admin/online-schedule"
+            className={`sidebar-nav-link ${isActive("/admin/online-schedule") ? "active" : ""}`}
+            onClick={() => setMobileOpen(false)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 10l4.553-2.277A1 1 0 0 1 21 8.623v6.754a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+            <span>Jadwal Kelas Online</span>
+          </Link>
+
+          <Link
+            href="/admin/gallery"
+            className={`sidebar-nav-link ${isActive("/admin/gallery") ? "active" : ""}`}
+            onClick={() => setMobileOpen(false)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Kelola Galeri</span>
+          </Link>
+
+          <Link
             href="/admin/landing-page"
             className={`sidebar-nav-link ${isActive("/admin/landing-page") ? "active" : ""}`}
             onClick={() => setMobileOpen(false)}
