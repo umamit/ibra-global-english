@@ -778,7 +778,7 @@ export default function LandingPageCMS() {
 
               <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)" }}>Kontak & Lokasi Hubungi Kami</h3>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr md:1fr 1fr", gap: "1rem" }}>
+              <div className="three-column-grid" style={{ gap: "1rem" }}>
                 {/* Alamat Google Map */}
                 <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Alamat Lengkap Lembaga</label>
@@ -1089,7 +1089,7 @@ export default function LandingPageCMS() {
             <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Unggah Foto Kegiatan Baru</h2>
             
             <form onSubmit={handleAddGalleryItem} style={{ display: "flex", flexFlow: "column", gap: "1.25rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr md:1fr", gap: "1rem" }}>
+              <div className="form-grid" style={{ gap: "1rem" }}>
                 
                 {/* Judul Kegiatan */}
                 <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -1119,7 +1119,7 @@ export default function LandingPageCMS() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr md:1fr", gap: "1rem" }}>
+              <div className="form-grid" style={{ gap: "1rem" }}>
                 {/* Caption / Keterangan Lightbox */}
                 <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Keterangan Lengkap (Caption Foto)</label>
@@ -1354,7 +1354,7 @@ export default function LandingPageCMS() {
             </h2>
             
             <form onSubmit={handleSaveTestimonial} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr md:1fr 1fr", gap: "1rem" }}>
+              <div className="three-column-grid" style={{ gap: "1rem" }}>
                 
                 {/* Nama Penulis */}
                 <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -1521,7 +1521,7 @@ export default function LandingPageCMS() {
                   Hapus
                 </button>
                 
-                <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
                   <div className="form-group">
                     <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Nama Program</label>
                     <input 
@@ -1550,7 +1550,7 @@ export default function LandingPageCMS() {
                   </div>
                 </div>
 
-                <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
                   <div className="form-group">
                     <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Deskripsi Singkat</label>
                     <textarea 
@@ -1641,7 +1641,7 @@ export default function LandingPageCMS() {
                   Hapus
                 </button>
                 
-                <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="form-grid" style={{ gap: "1rem" }}>
                   <div className="form-group">
                     <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Judul Keunggulan</label>
                     <input 

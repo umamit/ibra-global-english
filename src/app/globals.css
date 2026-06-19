@@ -4517,4 +4517,72 @@ textarea:focus-visible {
   }
 }
 
+/* ──── Dashboard report-detail-layout responsive stacking ──── */
+@media (max-width: 1024px) {
+  .report-detail-layout {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
+/* ──── Responsive Custom Grids (3-column, 4-column, receipt, signature blocks, etc.) ──── */
+.three-column-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.four-column-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.receipt-row {
+  display: grid;
+  grid-template-columns: 180px 10px 1fr;
+  border-bottom: 1px dashed var(--color-gray-250);
+  padding-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .three-column-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .four-column-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .report-scores-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .student-info-grid {
+    grid-template-columns: 1fr !important;
+    text-align: left !important;
+    gap: 1rem !important;
+  }
+  .student-info-grid > div {
+    text-align: left !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .four-column-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .signature-block {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+  }
+  .receipt-row {
+    grid-template-columns: 1fr !important;
+    gap: 0.25rem !important;
+  }
+  .receipt-row span:nth-child(2) {
+    display: none !important;
+  }
+}
 

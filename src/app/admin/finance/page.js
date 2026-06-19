@@ -722,7 +722,7 @@ export default function AdminFinance() {
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 
                 {/* Periode Tagihan */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
                   <div>
                     <label style={{ fontWeight: "600", fontSize: "0.85rem", color: "var(--color-gray-700)" }}>Bulan Tagihan</label>
                     <input
@@ -747,7 +747,7 @@ export default function AdminFinance() {
                 </div>
 
                 {/* Metode Pembayaran & Status */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
                   <div>
                     <label style={{ fontWeight: "600", fontSize: "0.85rem", color: "var(--color-gray-700)" }}>Metode Pembayaran</label>
                     <select

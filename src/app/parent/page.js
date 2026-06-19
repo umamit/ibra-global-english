@@ -490,31 +490,31 @@ export default function ParentPortal() {
           {/* Receipt Body */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem", fontSize: "0.9rem", lineHeight: "1.6" }}>
             
-            <div style={{ display: "grid", gridTemplateColumns: "180px 10px 1fr", borderBottom: "1px dashed #ddd", paddingBottom: "0.5rem" }}>
+            <div className="receipt-row">
               <span style={{ fontWeight: "700", color: "#555" }}>Telah Terima Dari <span style={{ float: "right" }}>(Received From)</span></span>
               <span>:</span>
               <span style={{ fontWeight: "700" }}>{parentName}</span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "180px 10px 1fr", borderBottom: "1px dashed #ddd", paddingBottom: "0.5rem" }}>
+            <div className="receipt-row">
               <span style={{ fontWeight: "700", color: "#555" }}>Nama Siswa <span style={{ float: "right" }}>(Student Name)</span></span>
               <span>:</span>
               <span style={{ fontWeight: "700", color: "var(--color-primary-dark)" }}>{selectedChild?.name}</span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "180px 10px 1fr", borderBottom: "1px dashed #ddd", paddingBottom: "0.5rem" }}>
+            <div className="receipt-row">
               <span style={{ fontWeight: "700", color: "#555" }}>Program / Level <span style={{ float: "right" }}>(Program / Level)</span></span>
               <span>:</span>
               <span>{selectedChild?.program}</span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "180px 10px 1fr", borderBottom: "1px dashed #ddd", paddingBottom: "0.5rem" }}>
+            <div className="receipt-row">
               <span style={{ fontWeight: "700", color: "#555" }}>Untuk Pembayaran <span style={{ float: "right" }}>(For Payment of)</span></span>
               <span>:</span>
               <span>Pembayaran SPP Kursus Masa {getMonthName(printReceipt.month)}</span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "180px 10px 1fr", borderBottom: "1px dashed #ddd", paddingBottom: "0.5rem" }}>
+            <div className="receipt-row">
               <span style={{ fontWeight: "700", color: "#555" }}>Sejumlah Uang <span style={{ float: "right" }}>(Amount in Words)</span></span>
               <span>:</span>
               <span style={{ fontStyle: "italic", fontWeight: "700", color: "#444" }}>## {terbilangStr} ##</span>
@@ -605,7 +605,7 @@ export default function ParentPortal() {
           <div className="report-scores-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center", marginBottom: "2.5rem" }}>
             
             {/* Scores List */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
                 <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
@@ -912,7 +912,7 @@ export default function ParentPortal() {
                   {detailsLoading ? (
                     <>
                       {/* Attendance Stats Cards Skeleton */}
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
+                      <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "2rem" }}>
                         {Array.from({ length: 4 }).map((_, i) => (
                           <div key={i} style={{ textAlign: "center", padding: "1.25rem 1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
                             <div className="skeleton-pulse skeleton-title" style={{ width: "30px", marginBottom: "0.5rem", display: "block", marginInline: "auto" }} />
@@ -950,7 +950,7 @@ export default function ParentPortal() {
                   ) : (
                     <>
                       {/* Attendance Stats Cards */}
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
+                      <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "2rem" }}>
                         <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
                           <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-green)" }}>{attendanceStats.hadir}</p>
                           <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Hadir</p>
@@ -1025,7 +1025,7 @@ export default function ParentPortal() {
                             <div className="skeleton-pulse skeleton-text" style={{ width: "150px" }} />
                           </div>
                           <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                            <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
                               {Array.from({ length: 4 }).map((_, j) => (
                                 <div key={j} style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
                                   <div className="skeleton-pulse skeleton-title" style={{ width: "45px", margin: "0 auto 0.5rem" }} />
@@ -1102,7 +1102,7 @@ export default function ParentPortal() {
                             <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
                               
                               {/* Score Metrics Grid */}
-                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                              <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
                                 <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
                                   <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.speaking_score}</p>
                                   <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>

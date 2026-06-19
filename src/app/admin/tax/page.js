@@ -624,7 +624,7 @@ export default function AdminTaxPage() {
                   
                   {resultBadan ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", borderBottom: "1px dashed var(--color-gray-250)", paddingBottom: "1rem" }}>
+                      <div className="form-grid" style={{ gap: "1rem", borderBottom: "1px dashed var(--color-gray-250)", paddingBottom: "1rem", marginBottom: 0 }}>
                         <div>
                           <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginBottom: "0.25rem" }}>Total Omzet</p>
                           <p style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)" }}>{formatRupiah(resultBadan.revenue)}</p>
@@ -997,7 +997,7 @@ export default function AdminTaxPage() {
                   />
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>
                       Kelompok Pajak

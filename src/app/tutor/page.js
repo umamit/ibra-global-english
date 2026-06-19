@@ -738,7 +738,7 @@ export default function TutorPortal() {
                 </div>
 
                 {/* Score inputs */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.25rem" }}>
+                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1.25rem" }}>
                   <div className="form-group">
                     <label className="form-label">
                       {!selectedStudent 
@@ -942,7 +942,7 @@ export default function TutorPortal() {
                   />
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.25rem" }}>
+                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1.25rem" }}>
                   <div className="form-group">
                     <label className="form-label">Program Belajar</label>
                     <select

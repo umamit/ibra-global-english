@@ -166,7 +166,7 @@ export default function AdminAnnouncementsPage() {
               />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+            <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
               <div className="form-group">
                 <label className="form-label">Target Program</label>
                 <select className="form-input" value={program} onChange={e => setProgram(e.target.value)}>
