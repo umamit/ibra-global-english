@@ -4556,6 +4556,103 @@ textarea:focus-visible {
     grid-template-columns: 1fr !important;
     gap: 1.5rem !important;
   }
+
+  /* ──── Header Mobile Scaling ──── */
+  header {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .nav-container {
+    padding-inline: 1rem !important;
+    gap: 0.5rem !important;
+  }
+  .logo-link {
+    gap: 0.45rem !important;
+    max-width: 70% !important;
+  }
+  .logo-img {
+    width: 3.2rem !important;
+    height: 3.2rem !important;
+    flex-shrink: 0 !important;
+  }
+  header.scrolled .logo-img {
+    width: 2.6rem !important;
+    height: 2.6rem !important;
+  }
+  .logo-text {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    flex-shrink: 1 !important;
+  }
+  .logo-text h1 {
+    font-size: 1.1rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  header.scrolled .logo-text h1 {
+    font-size: 0.95rem !important;
+  }
+  .logo-text p,
+  header.scrolled .logo-text p {
+    display: none !important;
+  }
+  .nav-right-group {
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+  .theme-toggle {
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+  }
+  .menu-toggle {
+    width: 1.35rem !important;
+    height: 0.9rem !important;
+  }
+
+  /* ──── Footer Mobile Scaling ──── */
+  footer {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .footer-yellow-ribbon {
+    padding-inline: 1rem !important;
+  }
+  .footer-logo {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 0.5rem !important;
+  }
+  .footer-logo-text {
+    text-align: center !important;
+  }
+  .footer-logo-text h3 {
+    font-size: 1.15rem !important;
+  }
+  .footer-logo-text p {
+    font-size: 0.7rem !important;
+  }
+  .footer-copyright {
+    padding-inline: 1rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* ──── Floating Social Scaling ──── */
+  .social-float-group {
+    right: 1.25rem !important;
+    bottom: 1.5rem !important;
+    gap: 0.75rem !important;
+    max-width: 60px !important;
+  }
+  .social-float {
+    width: 3.25rem !important;
+    height: 3.25rem !important;
+  }
+  .social-float svg {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+  }
 }
 
 @media (max-width: 640px) {
@@ -4584,5 +4681,22 @@ textarea:focus-visible {
   .receipt-row span:nth-child(2) {
     display: none !important;
   }
+
+  /* ──── Extra Small Screen Scaling for Floating Elements ──── */
+  .social-float-group {
+    right: 1.0rem !important;
+    bottom: 1.25rem !important;
+    gap: 0.5rem !important;
+    max-width: 50px !important;
+  }
+  .social-float {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+  }
+  .social-float svg {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
 }
+
 
