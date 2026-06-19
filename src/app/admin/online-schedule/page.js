@@ -1,4 +1,7 @@
 "use client";
+
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 
 const PROGRAMS = ["Kids Program", "Teens Program", "Fun Calistung"];

@@ -22,4 +22,13 @@ Setiap perubahan, penulisan kode baru, atau optimasi di dalam dasbor admin wajib
 3. **Kontras Warna**: Teks sekunder (seperti abu-abu) wajib menggunakan warna dengan rasio kontras minimal 4.5:1 terhadap latar belakang (contoh: `#59616e` di mode terang dan `#8c95a0` di mode gelap).
 4. **Font Lokal (Self-Hosted)**: Seluruh font wajib di-self-host menggunakan `next/font/google` secara lokal untuk menghindari pemuatan CDN eksternal yang memblokir render, menghilangkan pergeseran tata letak (CLS), dan memungkinkan penutupan domain eksternal Google Fonts (`fonts.googleapis.com` & `fonts.gstatic.com`) dari aturan Content Security Policy (CSP).
 
+## Aturan Khusus Rate Limiting & Proteksi DDoS
 
+1. **Larangan Penggunaan Memori Lokal**: Jika membuat sistem Rate Limiting atau proteksi DDoS, dilarang keras menggunakan memori lokal (in-memory caching/variables) di lingkungan serverless.
+2. **Integrasi Eksternal (Tanpa Vercel KV)**: Gunakan fitur keamanan bawaan Vercel Web Application Firewall (WAF) atau Cloudflare untuk memproses pembatasan request agar tidak membebani fungsi serverless. Jangan menggunakan Vercel KV untuk menghemat kuota gratis.
+
+## Aturan Batasan Vercel Hobby & Supabase Free Tier
+
+1. **Hindari Bloatware**: Dilarang menginstal library/pustaka pihak ketiga baru yang tidak krusial yang dapat memperbesar ukuran bundel kompilasi (build size).
+2. **Efisiensi Bandwidth Supabase**: Hindari query database yang boros bandwidth (seperti mengambil kolom besar yang tidak diperlukan, atau memanggil query secara berulang tanpa pembatasan `.limit()` atau tanpa pagination).
+3. **Pembatasan Optimasi Gambar**: Gunakan komponen `next/image` hanya untuk gambar LCP utama dengan properti `priority`. Semua gambar kecil dan di bawah lipatan layar harus menggunakan tag `<img>` HTML biasa dengan `loading="lazy"` agar hemat kuota optimasi gambar Vercel (maksimal 1.000 gambar per bulan).

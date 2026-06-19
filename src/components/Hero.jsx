@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import CountUp from "./CountUp";
 
 export default function Hero({ initialSettings }) {
@@ -77,14 +78,13 @@ export default function Hero({ initialSettings }) {
         
         <div className="hero-image-container" data-aos="fade-left">
           <div className="hero-card">
-            <img 
+            <Image 
                src={heroImage} 
                alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" 
                className="hero-img" 
                width={600}
                height={400}
-               fetchPriority="high" 
-               loading="eager"
+               priority
             />
           </div>
           <div className="hero-stats-badge">
