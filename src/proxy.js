@@ -100,8 +100,22 @@ export async function proxy(request) {
       headers: requestHeaders,
     },
   });
-  response.headers.set("Content-Security-Policy", cspHeader);
-  response.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
+
+  const addSecurityHeaders = (res) => {
+    res.headers.set("Content-Security-Policy", cspHeader);
+    res.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
+    if (
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/parent") ||
+      pathname.startsWith("/tutor") ||
+      pathname.startsWith("/student") ||
+      pathname.startsWith("/api")
+    ) {
+      res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    }
+  };
+
+  addSecurityHeaders(response);
 
   // Buat klien Supabase khusus proxy (middleware)
   const supabase = createServerClient(
@@ -119,8 +133,7 @@ export async function proxy(request) {
               headers: requestHeaders,
             },
           });
-          response.headers.set("Content-Security-Policy", cspHeader);
-          response.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
+          addSecurityHeaders(response);
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
