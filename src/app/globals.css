@@ -87,6 +87,12 @@ body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
+main {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 /* Custom Scrollbar Styles for Modern Browsers */
 html {
   scrollbar-width: thin;
@@ -3682,6 +3688,9 @@ textarea:focus-visible {
   -webkit-user-select: none !important;
   -moz-user-select: none !important;
   -ms-user-select: none !important;
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 
 .nocopy-container input,

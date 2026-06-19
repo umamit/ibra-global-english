@@ -299,7 +299,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                     />
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  <div className="form-grid" style={{ marginBottom: "1rem" }}>
                     <div className="form-group">
                       <label htmlFor="reg-student-age" className="form-label">Usia Siswa</label>
                       <input
