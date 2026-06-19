@@ -30,6 +30,47 @@ export default function ReportCardManagement() {
   const [activeScore, setActiveScore] = useState("");
   const [tutorNotes, setTutorNotes] = useState("");
 
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleGenerateAiNotes = async () => {
+    if (!studentId) {
+      alert("Harap pilih siswa terlebih dahulu!");
+      return;
+    }
+    const studentObj = students.find(s => s.id === studentId);
+    const studentName = studentObj ? studentObj.name : "Siswa";
+    const studentProgram = studentObj ? studentObj.program : "General English";
+
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "auto-draft",
+          payload: {
+            name: studentName,
+            program: studentProgram,
+            speaking: speakingScore || 80,
+            grammar: grammarScore || 80,
+            vocabulary: vocabularyScore || 80,
+            active: activeScore || 80
+          }
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.reply) {
+        setTutorNotes(data.reply);
+      } else {
+        alert(`Gagal menulis catatan: ${data.error || "Error tidak diketahui"}`);
+      }
+    } catch {
+      alert("Gagal menghubungi server AI.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -628,7 +669,17 @@ export default function ReportCardManagement() {
           </div>
 
           <div className="form-group" style={{ marginBottom: "1.75rem" }}>
-            <label className="form-label">Catatan & Ulasan Tutor (Tutor Review Notes)</label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+              <label className="form-label" style={{ marginBottom: 0 }}>Catatan & Ulasan Tutor (Tutor Review Notes)</label>
+              <button 
+                type="button" 
+                onClick={handleGenerateAiNotes}
+                style={{ fontSize: "0.75rem", padding: "2px 8px", borderRadius: "4px", backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", border: "1px solid var(--color-primary-light)", cursor: "pointer", fontWeight: "bold" }}
+                disabled={aiLoading}
+              >
+                {aiLoading ? "⚡ Menulis..." : "💡 Tulis otomatis dengan AI Groq"}
+              </button>
+            </div>
             <textarea
               className="form-input"
               style={{ minHeight: "100px", fontFamily: "inherit" }}

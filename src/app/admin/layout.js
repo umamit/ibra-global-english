@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import AICopilotWidget from "@/components/AICopilotWidget";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
@@ -260,6 +261,7 @@ export default function AdminLayout({ children }) {
       <main className="dashboard-main">
         {children}
       </main>
+      <AICopilotWidget />
     </div>
   );
 }

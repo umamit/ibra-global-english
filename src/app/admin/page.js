@@ -18,6 +18,42 @@ export default function AdminDashboard() {
     totalReports: 0,
   });
 
+  // AI Insights States
+  const [aiInsights, setAiInsights] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  const fetchAiInsights = async () => {
+    setAiLoading(true);
+    setAiError("");
+    try {
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "insights" })
+      });
+      const data = await res.json();
+      if (res.ok && data.reply) {
+        setAiInsights(data.reply);
+      } else {
+        setAiError(data.error || "Gagal mengambil ulasan AI.");
+      }
+    } catch (err) {
+      setAiError("Gagal terhubung dengan server AI.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const formatMarkdown = (text) => {
+    if (!text) return "";
+    return text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/^- (.*)$/gm, "• $1<br/>")
+      .replace(/\n/g, "<br/>");
+  };
+
   useEffect(() => {
     async function fetchDashboardData() {
       try {
@@ -67,6 +103,12 @@ export default function AdminDashboard() {
 
     fetchDashboardData();
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      fetchAiInsights();
+    }
+  }, [loading]);
 
   return (
     <div>
@@ -133,6 +175,33 @@ export default function AdminDashboard() {
               </div>
               <p className="stat-card-value">{stats.totalReports}</p>
             </div>
+          </div>
+
+          {/* AI Insights Section */}
+          <div className="portal-card" style={{ padding: "2rem", marginBottom: "1.5rem", borderLeft: "5px solid var(--color-accent)", background: "linear-gradient(135deg, rgba(166, 136, 73, 0.05) 0%, rgba(255,255,255,0) 100%)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span style={{ fontSize: "1.25rem" }}>🧠</span>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", margin: 0 }}>Analisis AI Insights & Rekomendasi</h3>
+              </div>
+              <button 
+                onClick={fetchAiInsights} 
+                style={{ fontSize: "0.75rem", padding: "4px 10px", borderRadius: "4px", backgroundColor: "rgba(166, 136, 73, 0.1)", color: "var(--color-accent)", border: "1px solid rgba(166, 136, 73, 0.2)", cursor: "pointer", fontWeight: "bold" }}
+                disabled={aiLoading}
+              >
+                {aiLoading ? "⏳ Memproses..." : "🔄 Refresh Analisis"}
+              </button>
+            </div>
+            {aiLoading ? (
+              <div className="skeleton-pulse" style={{ height: "90px", borderRadius: "8px" }} />
+            ) : aiError ? (
+              <p style={{ color: "var(--color-red)", fontSize: "0.85rem", margin: 0 }}>⚠️ Gagal memuat analisis: {aiError}</p>
+            ) : (
+              <div 
+                style={{ fontSize: "0.875rem", color: "var(--color-gray-700)", lineHeight: 1.6 }}
+                dangerouslySetInnerHTML={{ __html: formatMarkdown(aiInsights) }}
+              />
+            )}
           </div>
 
           {/* Banner Menu Pintasan */}
