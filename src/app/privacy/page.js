@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div style={{ backgroundColor: "var(--color-gray-50)", minHeight: "100vh", padding: "3rem 1.5rem", color: "var(--color-gray-800)", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ backgroundColor: "var(--color-gray-50)", minHeight: "100vh", padding: "3rem 1.5rem", color: "var(--color-gray-800)", fontFamily: "var(--font-sans), sans-serif" }}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         
         {/* Navigation Back */}
