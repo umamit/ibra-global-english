@@ -5,6 +5,13 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState, useRef } from "react";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
 
+const getMonthName = (ym) => {
+  if (!ym) return "";
+  const [y, m] = ym.split("-");
+  const date = new Date(parseInt(y), parseInt(m) - 1, 1);
+  return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
+};
+
 export default function AdminFinance() {
   const supabase = createClient();
 
@@ -369,13 +376,6 @@ export default function AdminFinance() {
 
   const formatRupiah = (num) => {
     return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(num);
-  };
-
-  const getMonthName = (ym) => {
-    if (!ym) return "";
-    const [y, m] = ym.split("-");
-    const date = new Date(parseInt(y), parseInt(m) - 1, 1);
-    return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
   };
 
   return (
@@ -877,13 +877,6 @@ function FinanceAnalytics({ students, allPayments, sppPrices, formatRupiah, sele
       </div>
     );
   }
-
-  const getMonthName = (ym) => {
-    if (!ym) return "";
-    const [y, m] = ym.split("-");
-    const date = new Date(parseInt(y), parseInt(m) - 1, 1);
-    return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
-  };
 
   const getMonthShortName = (ym) => {
     if (!ym) return "";
