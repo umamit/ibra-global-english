@@ -4,65 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
 import { createAdminClient as createClient } from "@/utils/supabase/client";
-
-// SUB-COMPONENT: Custom visual pure-SVG Radar Chart for high-fidelity evaluation representation
-function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
-  const cx = 120;
-  const cy = 120;
-  const r = 80;
-
-  const pSpeaking = { x: cx, y: cy - r * (speaking / 100) };
-  const pGrammar = { x: cx + r * (grammar / 100), y: cy };
-  const pVocabulary = { x: cx, y: cy + r * (vocabulary / 100) };
-  const pActive = { x: cx - r * (active / 100), y: cy };
-
-  const polygonPoints = `${pSpeaking.x},${pSpeaking.y} ${pGrammar.x},${pGrammar.y} ${pVocabulary.x},${pVocabulary.y} ${pActive.x},${pActive.y}`;
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", backgroundColor: "white", borderRadius: "12px", border: "1px solid var(--color-gray-150)", boxShadow: "var(--shadow-sm)", maxWidth: "300px", margin: "0 auto" }}>
-      <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-primary-dark)", textTransform: "uppercase", marginBottom: "1rem" }}>Visualisasi Performa</p>
-      
-      <svg width="240" height="240" viewBox="0 0 240 240" style={{ overflow: "visible" }}>
-        {[25, 50, 75, 100].map((percent) => {
-          const gridR = r * (percent / 100);
-          return (
-            <polygon
-              key={percent}
-              points={`${cx},${cy - gridR} ${cx + gridR},${cy} ${cx},${cy + gridR} ${cx - gridR},${cy}`}
-              fill="none"
-              stroke="#e2e8f0"
-              strokeWidth="1"
-              strokeDasharray={percent < 100 ? "3,3" : "none"}
-            />
-          );
-        })}
-
-        <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke="#cbd5e1" strokeWidth="1.5" />
-        <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke="#cbd5e1" strokeWidth="1.5" />
-
-        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MEMBACA" : "SPEAKING"}</text>
-        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MENULIS" : "GRAMMAR"}</text>
-        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "BERHITUNG" : "VOCABULARY"}</text>
-        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "KEAKTIFAN" : "ACTIVE"}</text>
-
-        <text x={cx + 5} y={cy - r + 10} fontSize="7" fontWeight="700" fill="#94a3b8">100</text>
-        <text x={cx + 5} y={cy - r * 0.5 + 4} fontSize="7" fontWeight="700" fill="#94a3b8">50</text>
-
-        <polygon
-          points={polygonPoints}
-          fill="rgba(33, 108, 126, 0.25)"
-          stroke="#216c7e"
-          strokeWidth="2.5"
-        />
-
-        <circle cx={pSpeaking.x} cy={pSpeaking.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
-        <circle cx={pGrammar.x} cy={pGrammar.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
-        <circle cx={pVocabulary.x} cy={pVocabulary.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
-        <circle cx={pActive.x} cy={pActive.y} r="3.5" fill="#216c7e" stroke="white" strokeWidth="1" />
-      </svg>
-    </div>
-  );
-}
+import RadarChart from "@/components/RadarChart";
 
 export default function ReportCardManagement() {
   const supabase = createClient();

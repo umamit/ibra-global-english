@@ -1,7 +1,7 @@
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import Script from "next/script";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const dynamic = 'force-dynamic';
