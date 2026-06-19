@@ -1,10 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /parent/
-Disallow: /tutor/
-Disallow: /student/
-Disallow: /api/
 Content-Signal: ai-train=no, search=yes, ai-input=no
 
 Sitemap: https://www.ibraglobalenglish.uk/sitemap.xml
+
