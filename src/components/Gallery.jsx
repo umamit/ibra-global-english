@@ -229,10 +229,12 @@ export default function Gallery({ onOpenLightbox }) {
               </button>
               <div className="gallery-dots">
                 {galleryItems.map((_, idx) => (
-                  <span 
+                  <button 
                     key={idx} 
+                    type="button"
                     className={`gallery-dot ${idx === activeIndex ? "active" : ""}`}
                     onClick={() => setActiveIndex(idx)}
+                    aria-label={`Buka foto ke-${idx + 1}`}
                   />
                 ))}
               </div>

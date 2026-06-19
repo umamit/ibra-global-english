@@ -228,7 +228,7 @@ export default function GalleryClient() {
                   <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
                     <img
                       src={item.thumb}
-                      alt={item.caption}
+                      alt={item.caption || "Foto kegiatan belajar mengajar aktif di Ibra Global English Bobong"}
                       style={{
                         width: "100%",
                         height: "auto",

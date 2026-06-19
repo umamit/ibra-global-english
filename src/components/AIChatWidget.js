@@ -306,6 +306,7 @@ export default function AIChatWidget() {
             onKeyDown={handleKeyDown}
             rows={1}
             disabled={isLoading}
+            aria-label="Ketik pesan ke AI Assistant"
           />
           <button
             className="ai-chat-send-btn"
@@ -329,7 +330,7 @@ export default function AIChatWidget() {
       <button
         className={`ai-chat-fab ${isOpen ? "active" : ""}`}
         onClick={isOpen ? handleClose : handleOpen}
-        aria-label="Buka Ibra AI Assistant"
+        aria-label={isOpen ? "Tutup Ibra AI Assistant" : "Buka Ibra AI Assistant"}
         id="ai-chat-fab-btn"
       >
         {!isOpen && unreadCount > 0 && !hasOpened && (
