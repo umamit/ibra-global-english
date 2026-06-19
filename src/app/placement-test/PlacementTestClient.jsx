@@ -614,6 +614,7 @@ export default function PlacementTestClient() {
                     <button
                       type="button"
                       onClick={() => playListeningAudio(QUESTIONS[currentQuestionIndex].audioText)}
+                      aria-label={isAudioPlaying ? "Hentikan Suara Soal" : "Putar Suara Soal"}
                       style={{
                         width: "60px",
                         height: "60px",

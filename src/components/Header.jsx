@@ -138,7 +138,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
             <button 
               className="menu-toggle" 
               id="menu-toggle" 
-              aria-label="Buka Menu" 
+              aria-label={isMenuOpen ? "Tutup Menu Navigasi" : "Buka Menu Navigasi"} 
               aria-expanded={isMenuOpen} 
               aria-controls="mobile-nav"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
