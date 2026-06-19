@@ -90,7 +90,7 @@ export async function proxy(request) {
   // =====================================================================
   
   // Lewati pemeriksaan sesi cookie Supabase untuk aset-aset statis biasa
-  const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico)$/);
+  const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt)$/);
   if (isStaticAsset) {
     return NextResponse.next();
   }
