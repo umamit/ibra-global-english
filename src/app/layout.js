@@ -2,7 +2,9 @@ import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
+import { WebVitals } from "@/components/WebVitals";
 import "./globals.css";
+
 
 export const dynamic = 'force-dynamic';
 
@@ -169,6 +171,7 @@ export default async function RootLayout({ children }) {
         />
       </head>
       <body>
+        <WebVitals />
         {children}
         <Analytics />
       </body>
