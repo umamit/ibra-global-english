@@ -343,7 +343,7 @@ export default function AdminCalendar() {
         <div className="topbar-title">
           <h1>Kelola Jadwal & Kalender Akademik</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-            Buat jadwal kelas rutin, liburan sekolah, serta kegiatan bimbingan belajar Ibra English Bobong
+            Buat jadwal kelas rutin, liburan sekolah, serta kegiatan bimbingan belajar Ibra Global English Bobong
           </p>
         </div>
         <button className="btn-portal-primary" onClick={() => handleOpenAddModal()}>
