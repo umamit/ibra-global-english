@@ -250,12 +250,9 @@ header.scrolled .logo-text p {
     font-size: 1.0rem;
   }
   
-  .logo-text p {
-    font-size: 0.65rem;
-  }
-  
+  .logo-text p,
   header.scrolled .logo-text p {
-    font-size: 0.575rem;
+    display: none;
   }
   
   .logo-link {
@@ -268,9 +265,6 @@ header.scrolled .logo-text p {
 }
 
 @media (max-width: 360px) {
-  .logo-text p {
-    display: none;
-  }
   .logo-text h1 {
     font-size: 0.95rem;
   }
