@@ -75,6 +75,7 @@ html {
   -webkit-text-size-adjust: 100%;
   background-color: var(--color-white);
   transition: background-color var(--transition-normal);
+  overflow-x: hidden;
 }
 
 body {
@@ -394,6 +395,7 @@ header.scrolled .logo-text p {
   opacity: 0;
   pointer-events: none;
   transition: var(--transition-normal);
+  overflow: hidden;
 }
 
 .mobile-nav.active {
@@ -636,6 +638,15 @@ header.scrolled .logo-text p {
 
 [data-theme="dark"] .hero-trilogy-label {
   color: #a7d8e0;
+}
+
+@media (max-width: 768px) {
+  .hero-trilogy {
+    margin-inline: auto;
+    justify-content: center;
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+  }
 }
 
 .btn-primary {
