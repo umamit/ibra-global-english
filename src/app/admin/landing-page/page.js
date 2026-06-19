@@ -1200,6 +1200,7 @@ export default function LandingPageCMS() {
                           <img
                             src={item.image_url}
                             alt={item.title}
+                            loading="lazy"
                             style={{ width: "80px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
                           />
                         </td>

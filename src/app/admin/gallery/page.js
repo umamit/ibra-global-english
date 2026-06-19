@@ -1,4 +1,7 @@
 "use client";
+
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 
 const CATEGORIES = ["Kegiatan", "Prestasi", "Fasilitas", "Kelas Online"];
@@ -156,7 +159,7 @@ export default function AdminGalleryPage() {
               {items.map(item => (
                 <div key={item.id} style={{ borderRadius: "12px", overflow: "hidden", border: "1.5px solid var(--color-gray-150)", opacity: item.is_active ? 1 : 0.55, position: "relative" }}>
                   <div style={{ position: "relative", height: "140px", overflow: "hidden", background: "var(--color-gray-100)" }}>
-                    <img src={item.image_url} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <img src={item.image_url} alt={item.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     {!item.is_active && (
                       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <span style={{ color: "white", fontWeight: "800", fontSize: "0.75rem" }}>TERSEMBUNYI</span>

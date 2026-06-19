@@ -229,6 +229,7 @@ export default function GalleryClient() {
                     <img
                       src={item.thumb}
                       alt={item.caption || "Foto kegiatan belajar mengajar aktif di Ibra Global English Bobong"}
+                      loading="lazy"
                       style={{
                         width: "100%",
                         height: "auto",

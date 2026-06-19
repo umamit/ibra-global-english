@@ -209,7 +209,7 @@ export default function Gallery({ onOpenLightbox }) {
                   onClick={() => handleCardClick(idx)}
                 >
                   <div className="gallery-card-image-wrap">
-                    <img src={item.thumb} alt={item.alt} />
+                    <img src={item.thumb} alt={item.alt} loading="lazy" />
                     <div className="gallery-card-overlay">
                       <h4>{item.title}</h4>
                       <p>{item.desc}</p>

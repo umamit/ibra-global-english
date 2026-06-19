@@ -197,6 +197,7 @@ export default function VerifyCertificate() {
                   <img 
                     src={qrCodeUrl} 
                     alt="Scan to Verify" 
+                    loading="lazy"
                     style={{ width: "70px", height: "70px", display: "block" }} 
                   />
                 </div>
