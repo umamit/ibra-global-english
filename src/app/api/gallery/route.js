@@ -1,10 +1,32 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 const adminSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
   process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
 );
+
+async function checkAdminAuth() {
+  try {
+    const cookieStore = await cookies();
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key",
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll() {},
+        },
+      }
+    );
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    return user?.user_metadata?.role === "admin";
+  } catch {
+    return false;
+  }
+}
 
 const BUCKET = "gallery-photos";
 
@@ -28,6 +50,9 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   const formData = await request.formData();
   const title = formData.get("title");
   const description = formData.get("description") || "";
@@ -62,6 +87,9 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   const body = await request.json();
   const { id, ...updates } = body;
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
@@ -72,6 +100,9 @@ export async function PATCH(request) {
 }
 
 export async function DELETE(request) {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });

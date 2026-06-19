@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 // Server-side only: uses service role key to bypass RLS
 const supabaseAdmin = createClient(
@@ -7,6 +9,26 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key",
   { auth: { persistSession: false } }
 );
+
+async function checkAdminAuth() {
+  try {
+    const cookieStore = await cookies();
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key",
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll() {},
+        },
+      }
+    );
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    return user?.user_metadata?.role === "admin";
+  } catch {
+    return false;
+  }
+}
 
 export async function POST(req) {
   try {
@@ -64,6 +86,9 @@ export async function POST(req) {
 
 // GET: Ambil semua data pendaftaran (untuk admin)
 export async function GET() {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   try {
     const { data, error } = await supabaseAdmin
       .from("registrations")
@@ -79,6 +104,9 @@ export async function GET() {
 
 // PATCH: Update status pendaftaran (approve/reject)
 export async function PATCH(req) {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   try {
     const { id, status, notes } = await req.json();
 
