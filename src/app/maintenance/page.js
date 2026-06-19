@@ -6,8 +6,6 @@ export default function MaintenancePage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         .maint-body {
@@ -17,7 +15,7 @@ export default function MaintenancePage() {
           align-items: center;
           justify-content: center;
           padding: 2rem 1.25rem;
-          font-family: 'Montserrat', sans-serif;
+          font-family: var(--font-sans), sans-serif;
           background: linear-gradient(135deg, #0f3741 0%, #164d57 40%, #216c7e 100%);
           position: relative;
           overflow: hidden;
