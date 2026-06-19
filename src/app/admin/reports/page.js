@@ -427,7 +427,7 @@ export default function ReportCardManagement() {
           <div className="report-scores-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center", marginBottom: "2.5rem" }}>
             
             {/* Scores List */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
                 <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
                 <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
@@ -585,7 +585,7 @@ export default function ReportCardManagement() {
             </div>
           </div>
 
-          <div className="form-grid" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
+          <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "1.25rem" }}>
             <div className="form-group">
               <label className="form-label">
                 {!selectedStudentProgram 

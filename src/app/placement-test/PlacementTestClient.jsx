@@ -838,7 +838,7 @@ export default function PlacementTestClient() {
                   untuk menyelesaikan ujian evaluasi kompetensi Bahasa Inggris umum online.
                 </p>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", maxWidth: "500px", margin: "0 auto 2.5rem" }}>
+                <div className="form-grid" style={{ gap: "2rem", maxWidth: "500px", margin: "0 auto 2.5rem" }}>
                   <div style={{ padding: "1.25rem", border: "1px solid var(--color-gray-100)", borderRadius: "8px", backgroundColor: "var(--color-gray-50)" }}>
                     <p style={{ fontSize: "0.8rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)" }}>Skor Capaian</p>
                     <p style={{ fontSize: "2rem", fontWeight: "900", color: "var(--color-primary)" }}>{finalResult.score} <span style={{ fontSize: "1.1rem", color: "var(--color-gray-400)" }}>/ 15</span></p>

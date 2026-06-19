@@ -108,7 +108,7 @@ export default function AdminOnlineSchedulePage() {
               <input className="form-input" placeholder="Contoh: Speaking Practice — Sesi 3" value={title} onChange={e => setTitle(e.target.value)} required />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+            <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
               <div className="form-group">
                 <label className="form-label">Program</label>
                 <select className="form-input" value={program} onChange={e => setProgram(e.target.value)}>
@@ -128,7 +128,7 @@ export default function AdminOnlineSchedulePage() {
               <input className="form-input" type="url" placeholder="https://meet.google.com/xxx-xxxx-xxx" value={meetingLink} onChange={e => setMeetingLink(e.target.value)} required />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+            <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
               <div className="form-group">
                 <label className="form-label">Tanggal &amp; Jam</label>
                 <input type="datetime-local" className="form-input" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)} required />

@@ -557,7 +557,7 @@ export default function StudentPortal() {
                         <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
                           
                           {/* Scores grid */}
-                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                          <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
                             <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "8px", border: "1px solid var(--color-gray-150)" }}>
                               <p style={{ fontSize: "1.35rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.speaking_score}</p>
                               <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "2px" }}>
