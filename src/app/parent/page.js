@@ -737,7 +737,7 @@ export default function ParentPortal() {
         <div className="sidebar-brand">
           <img src="/assets/logo.png" alt="Ibra Logo" className="sidebar-brand-img" />
           <div className="sidebar-brand-text">
-            <h2>Ibra English</h2>
+            <h2>Ibra Global English</h2>
             <p>Portal Orang Tua</p>
           </div>
         </div>
