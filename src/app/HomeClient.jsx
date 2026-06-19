@@ -2,20 +2,24 @@
 
 import { useState, useEffect } from "react";
 
+import dynamic from "next/dynamic";
+
 // Import modular components
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Programs from "@/components/Programs";
 import Benefits from "@/components/Benefits";
-import Testimonials from "@/components/Testimonials";
-import FAQ from "@/components/FAQ";
-import CTA from "@/components/CTA";
-import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import SocialFloat from "@/components/SocialFloat";
 import MarqueeBanner from "@/components/MarqueeBanner";
-import AIChatWidget from "@/components/AIChatWidget";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+
+// Dynamically load below-the-fold and interactive elements
+const Testimonials = dynamic(() => import("@/components/Testimonials"), { ssr: true });
+const FAQ = dynamic(() => import("@/components/FAQ"), { ssr: true });
+const CTA = dynamic(() => import("@/components/CTA"), { ssr: true });
+const Contact = dynamic(() => import("@/components/Contact"), { ssr: true });
+const SocialFloat = dynamic(() => import("@/components/SocialFloat"), { ssr: false });
+const AIChatWidget = dynamic(() => import("@/components/AIChatWidget"), { ssr: false });
 
 export default function HomeClient({ initialSettings }) {
   // Theme state
