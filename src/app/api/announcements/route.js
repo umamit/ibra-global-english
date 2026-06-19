@@ -1,10 +1,32 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 const adminSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
   process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
 );
+
+async function checkAdminAuth() {
+  try {
+    const cookieStore = await cookies();
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key",
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll() {},
+        },
+      }
+    );
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    return user?.user_metadata?.role === "admin";
+  } catch {
+    return false;
+  }
+}
 
 // GET: Ambil semua pengumuman aktif (bisa filter program)
 export async function GET(request) {
@@ -32,6 +54,9 @@ export async function GET(request) {
 
 // POST: Buat pengumuman baru (admin)
 export async function POST(request) {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   const body = await request.json();
   const { title, content, program, priority, expires_at } = body;
 
@@ -58,6 +83,9 @@ export async function POST(request) {
 
 // PATCH: Update / nonaktifkan pengumuman
 export async function PATCH(request) {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   const body = await request.json();
   const { id, is_active, title, content, program, priority } = body;
 
@@ -81,6 +109,9 @@ export async function PATCH(request) {
 
 // DELETE: Hapus pengumuman
 export async function DELETE(request) {
+  if (!(await checkAdminAuth())) {
+    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
+  }
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
