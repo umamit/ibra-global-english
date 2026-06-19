@@ -4653,6 +4653,17 @@ textarea:focus-visible {
     width: 1.75rem !important;
     height: 1.75rem !important;
   }
+
+  /* ──── Contact Tabs Scaling ──── */
+  .contact-tab-btn {
+    padding: 0.55rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    gap: 0.3rem !important;
+  }
+  .contact-tab-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
 }
 
 @media (max-width: 640px) {
@@ -4697,6 +4708,20 @@ textarea:focus-visible {
     width: 1.5rem !important;
     height: 1.5rem !important;
   }
+
+  /* ──── Extra Small Screen Scaling for Contact Tabs ──── */
+  .contact-tab-switcher {
+    gap: 0.25rem !important;
+    padding: 3px !important;
+  }
+  .contact-tab-btn {
+    padding: 0.5rem 0.4rem !important;
+    font-size: 0.75rem !important;
+  }
+  .contact-tab-btn svg {
+    display: none !important;
+  }
 }
+
 
 
