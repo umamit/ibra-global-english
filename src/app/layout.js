@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { WebVitals } from "@/components/WebVitals";
+import { getLandingSettings } from "@/utils/getLandingSettings";
 import "./globals.css";
 
 
@@ -22,32 +23,48 @@ export const viewport = {
   initialScale: 1,
 };
 
-export const metadata = {
-  title: "Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik",
-  description: "Ibra Global English Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!",
-  metadataBase: new URL("https://www.ibraglobalenglish.uk"),
-  alternates: {
-    canonical: "/",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  openGraph: {
-    title: "Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik",
-    description: "Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Metode interaktif, fun, dan tutor berpengalaman.",
-    url: "https://www.ibraglobalenglish.uk/",
-    type: "website",
-    images: [
-      {
-        url: "/assets/logo.png",
-        width: 512,
-        height: 512,
-        alt: "Ibra Global English Logo",
-      }
-    ],
-  },
-};
+export async function generateMetadata() {
+  const settings = await getLandingSettings();
+  
+  const heroTitle = settings.hero_title || "Ibra Global English Bobong";
+  const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris Terbaik";
+  const defaultTitle = `${heroTitle} - ${heroSubtitle}`;
+  
+  const description = settings.hero_desc || 
+    "Ibra Global English Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!";
+  
+  const heroImage = settings.hero_image || "/assets/logo.png";
+
+  return {
+    title: {
+      default: defaultTitle,
+      template: `%s | ${heroTitle}`,
+    },
+    description,
+    metadataBase: new URL("https://www.ibraglobalenglish.uk"),
+    alternates: {
+      canonical: "/",
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    openGraph: {
+      title: defaultTitle,
+      description,
+      url: "https://www.ibraglobalenglish.uk/",
+      type: "website",
+      images: [
+        {
+          url: heroImage,
+          width: 512,
+          height: 512,
+          alt: "Ibra Global English Logo",
+        }
+      ],
+    },
+  };
+}
 
 const educationalOrgSchema = {
   "@context": "https://schema.org",
