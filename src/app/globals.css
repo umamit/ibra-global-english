@@ -92,6 +92,7 @@ body {
 main {
   overflow-x: hidden;
   width: 100%;
+  max-width: 100%;
   position: relative;
 }
 
@@ -787,6 +788,8 @@ header.scrolled .logo-text p {
 /* Section base backgrounds */
 section {
   padding-block: 5rem;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 /* Programs Section */
@@ -1330,6 +1333,8 @@ footer {
   background-color: var(--color-primary-dark);
   color: var(--color-white);
   padding-block: 0 3rem;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .footer-yellow-ribbon {
@@ -1337,6 +1342,8 @@ footer {
   padding-block: 1.5rem;
   margin-bottom: 2.5rem;
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .footer-yellow-ribbon .footer-logo-text h3 {
