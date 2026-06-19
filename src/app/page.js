@@ -1,42 +1,44 @@
 export const dynamic = 'force-dynamic';
 
 import HomeClient from "./HomeClient";
-import { createClient } from "@/utils/supabase/server";
+import { getLandingSettings } from "@/utils/getLandingSettings";
 
-export const metadata = {
-  title: "Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik",
-  description: "Ibra Global English Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Metode interaktif, menyenangkan, dan tutor berpengalaman. Tingkatkan kemampuan berbicara (speaking) Anda sekarang!",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik",
-    description: "Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Metode interaktif, menyenangkan, dan tutor berpengalaman.",
-    url: "https://www.ibraglobalenglish.uk/",
-    type: "website",
-    images: [
-      {
-        url: "/assets/logo.png",
-        width: 512,
-        height: 512,
-        alt: "Ibra Global English Logo",
-      }
-    ],
-  },
-};
+export async function generateMetadata() {
+  const settings = await getLandingSettings();
+  
+  const heroTitle = settings.hero_title || "Ibra Global English Bobong";
+  const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris Terbaik";
+  const title = `${heroTitle} - ${heroSubtitle}`;
+  
+  const description = settings.hero_desc || 
+    "Ibra Global English Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Metode interaktif, menyenangkan, dan tutor berpengalaman. Tingkatkan kemampuan berbicara (speaking) Anda sekarang!";
+  
+  const heroImage = settings.hero_image || "/assets/logo.png";
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      title,
+      description,
+      url: "https://www.ibraglobalenglish.uk/",
+      type: "website",
+      images: [
+        {
+          url: heroImage,
+          width: 512,
+          height: 512,
+          alt: "Ibra Global English Logo",
+        }
+      ],
+    },
+  };
+}
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const { data: settingsData } = await supabase
-    .from("landing_settings")
-    .select("key, value");
-
-  const initialSettings = {};
-  if (settingsData) {
-    settingsData.forEach((item) => {
-      initialSettings[item.key] = item.value;
-    });
-  }
-
+  const initialSettings = await getLandingSettings();
   return <HomeClient initialSettings={initialSettings} />;
 }
