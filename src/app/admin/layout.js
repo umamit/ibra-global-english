@@ -124,7 +124,7 @@ export default function AdminLayout({ children }) {
           <img src="/assets/logo.png" alt="Ibra Logo" className="sidebar-brand-img" />
           <div className="sidebar-brand-text">
             <h2>Ibra English</h2>
-            <p>Portal Admin / Tutor</p>
+            <p>Portal Admin</p>
           </div>
         </div>
 
