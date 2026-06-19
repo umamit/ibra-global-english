@@ -15,3 +15,11 @@ Setiap perubahan, penulisan kode baru, atau optimasi di dalam dasbor admin wajib
 2. **React Suspense & Skeleton Loader**: Gunakan React `Suspense` dengan Skeleton Loader untuk tabel atau grafik yang membutuhkan waktu muat lama, agar performa TBT dan LCP halaman admin tetap bagus tanpa memutuskan koneksi data.
 3. **Validasi Peran Mutasi (RBAC)**: Pastikan semua fungsi mutasi data (POST/PATCH/DELETE) di dalam dasbor admin dan API endpoint terkait tetap melalui validasi peran (role-based access control, memastikan hanya role `admin` yang dapat mengeksekusi) sebelum dijalankan.
 
+## Aturan Khusus Metadata, Aksesibilitas, & Font Lokal
+
+1. **Metadata Dinamis**: Tag metadata (seperti `title`, `description`, `canonical URL`) wajib diatur secara dinamis melalui Metadata API bawaan Next.js (`generateMetadata`) tanpa memicu manipulasi header sisi server.
+2. **Aksesibilitas (WCAG AA)**: Seluruh tombol ikon harus memiliki `aria-label` yang dinamis dan deskriptif. Navigasi dot kuis/slider wajib menggunakan semantic `<button type="button">` agar ramah pembaca layar dan keyboard.
+3. **Kontras Warna**: Teks sekunder (seperti abu-abu) wajib menggunakan warna dengan rasio kontras minimal 4.5:1 terhadap latar belakang (contoh: `#59616e` di mode terang dan `#8c95a0` di mode gelap).
+4. **Font Lokal (Self-Hosted)**: Seluruh font wajib di-self-host menggunakan `next/font/google` secara lokal untuk menghindari pemuatan CDN eksternal yang memblokir render, menghilangkan pergeseran tata letak (CLS), dan memungkinkan penutupan domain eksternal Google Fonts (`fonts.googleapis.com` & `fonts.gstatic.com`) dari aturan Content Security Policy (CSP).
+
+
