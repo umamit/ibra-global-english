@@ -5,10 +5,12 @@ export async function proxy(request) {
   // Generate a random base64 nonce using standard Web Crypto API
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
   
+  const isDev = process.env.NODE_ENV === "development";
+
   // Define strict Content Security Policy
   const cspHeader = `
     default-src 'self';
-    script-src 'nonce-${nonce}' 'strict-dynamic' 'self' 'unsafe-eval' https://www.googletagmanager.com https://static.cloudflareinsights.com;
+    script-src 'nonce-${nonce}' 'strict-dynamic' 'self' 'report-sample' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net;
     font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net;
     img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com;
