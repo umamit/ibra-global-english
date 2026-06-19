@@ -26,6 +26,47 @@ export default function AdminAnnouncementsPage() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleAiPolish = async () => {
+    if (!title.trim() && !content.trim()) {
+      showToast("Harap isi judul atau isi pengumuman kasar terlebih dahulu.");
+      return;
+    }
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "announcement-polish",
+          payload: { title, content }
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.reply) {
+        const reply = data.reply;
+        const parts = reply.split("---");
+        if (parts.length >= 2) {
+          const polishedTitle = parts[0].replace("JUDUL:", "").trim();
+          const polishedContent = parts.slice(1).join("---").trim();
+          setTitle(polishedTitle);
+          setContent(polishedContent);
+          showToast("Pengumuman berhasil dipoles dengan AI! ✨");
+        } else {
+          setContent(reply);
+          showToast("Pengumuman dipoles dengan AI! ✨");
+        }
+      } else {
+        showToast(`Gagal memoles: ${data.error || "Error tidak diketahui"}`);
+      }
+    } catch {
+      showToast("Gagal menghubungi server AI.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const fetchAnnouncements = async () => {
     setLoading(true);
     const res = await fetch("/api/announcements?all=true");
@@ -104,7 +145,17 @@ export default function AdminAnnouncementsPage() {
             </div>
 
             <div className="form-group" style={{ marginBottom: "1rem" }}>
-              <label className="form-label">Isi Pengumuman</label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                <label className="form-label" style={{ marginBottom: 0 }}>Isi Pengumuman</label>
+                <button
+                  type="button"
+                  onClick={handleAiPolish}
+                  style={{ fontSize: "0.75rem", padding: "2px 8px", borderRadius: "4px", backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", border: "1px solid var(--color-primary-light)", cursor: "pointer", fontWeight: "bold" }}
+                  disabled={aiLoading}
+                >
+                  {aiLoading ? "🪄 Memoles..." : "✨ Poles Pengumuman dengan AI"}
+                </button>
+              </div>
               <textarea
                 className="form-input"
                 style={{ minHeight: "110px", fontFamily: "inherit", resize: "vertical" }}

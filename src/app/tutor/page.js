@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient, createServiceRoleClient } from "@/utils/supabase/client";
+import AICopilotWidget from "@/components/AICopilotWidget";
 
 export default function TutorPortal() {
   const router = useRouter();
@@ -33,6 +34,43 @@ export default function TutorPortal() {
   const [vocabularyScore, setVocabularyScore] = useState(85);
   const [activeScore, setActiveScore] = useState(85);
   const [tutorNotes, setTutorNotes] = useState("");
+
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleGenerateAiNotes = async () => {
+    if (!selectedStudent) {
+      alert("Harap pilih siswa terlebih dahulu!");
+      return;
+    }
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "auto-draft",
+          payload: {
+            name: selectedStudent.name,
+            program: selectedStudent.program,
+            speaking: speakingScore || 80,
+            grammar: grammarScore || 80,
+            vocabulary: vocabularyScore || 80,
+            active: activeScore || 80
+          }
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.reply) {
+        setTutorNotes(data.reply);
+      } else {
+        alert(`Gagal menulis catatan: ${data.error || "Error tidak diketahui"}`);
+      }
+    } catch {
+      alert("Gagal menghubungi server AI.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
   const [reportLoading, setReportLoading] = useState(false);
   const [reportsList, setReportsList] = useState([]);
   const [certificates, setCertificates] = useState([]);
@@ -776,7 +814,17 @@ export default function TutorPortal() {
                 </div>
 
                 <div className="form-group" style={{ marginBottom: "1.5rem" }}>
-                  <label className="form-label">Catatan Masukan Tutor</label>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                    <label className="form-label" style={{ marginBottom: 0 }}>Catatan Masukan Tutor</label>
+                    <button 
+                      type="button" 
+                      onClick={handleGenerateAiNotes}
+                      style={{ fontSize: "0.75rem", padding: "2px 8px", borderRadius: "4px", backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", border: "1px solid var(--color-primary-light)", cursor: "pointer", fontWeight: "bold" }}
+                      disabled={aiLoading}
+                    >
+                      {aiLoading ? "⚡ Menulis..." : "💡 Tulis otomatis dengan AI Groq"}
+                    </button>
+                  </div>
                   <textarea
                     className="form-input"
                     style={{ minHeight: "80px", fontFamily: "inherit" }}
@@ -1164,6 +1212,7 @@ export default function TutorPortal() {
         )}
 
       </main>
+      <AICopilotWidget />
     </div>
   );
 }
