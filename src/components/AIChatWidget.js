@@ -313,9 +313,7 @@ export default function AIChatWidget() {
           </button>
         </div>
 
-        <div className="ai-chat-footer">
-          Didukung oleh <strong>Groq Llama AI</strong>
-        </div>
+
       </div>
 
       {/* Tombol FAB */}
