@@ -161,11 +161,11 @@ header {
   -webkit-backdrop-filter: blur(16px);
   box-shadow: var(--shadow-sm);
   z-index: 100;
-  transition: var(--transition-normal);
+  transition: top 0s, background-color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 header.has-marquee {
-  top: 40px;
+  top: max(0px, calc(40px - var(--scroll-y, 0px)));
 }
 
 header.has-marquee.scrolled {
