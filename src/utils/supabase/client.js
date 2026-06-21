@@ -1,23 +1,27 @@
 import { createBrowserClient } from "@supabase/ssr";
 import { createClient as createCoreClient } from "@supabase/supabase-js";
 
-const browserStorage = typeof window !== "undefined" ? window.sessionStorage : undefined;
+let clientInstance;
 
 /**
  * Membuat klien Supabase untuk digunakan pada Client Components (browser-side)
  */
 export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key",
-    {
-      auth: {
-        storage: browserStorage,
-        persistSession: true,
-        detectSessionInUrl: true
-      }
-    }
-  );
+  if (typeof window === "undefined") {
+    return createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key"
+    );
+  }
+
+  if (!clientInstance) {
+    clientInstance = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key"
+    );
+  }
+
+  return clientInstance;
 }
 
 export function createAdminClient() {
