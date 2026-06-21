@@ -36,6 +36,8 @@ export default function Footer({ initialSettings }) {
             <a href="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Kebijakan Privasi</a>
             <span style={{ opacity: 0.5 }}>&bull;</span>
             <a href="/terms" style={{ color: "inherit", textDecoration: "none" }}>Syarat & Ketentuan</a>
+            <span style={{ opacity: 0.5 }}>&bull;</span>
+            <a href="/formulir-offline" style={{ color: "inherit", textDecoration: "none" }}>Formulir Offline</a>
           </span>
         </p>
       </div>

@@ -376,6 +376,32 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
               )}
             </>
           )}
+
+          {/* Option for offline registration */}
+          <div className="contact-offline-notice" style={{ 
+            marginTop: "1.5rem", 
+            paddingTop: "1.25rem", 
+            borderTop: "1px dashed var(--color-gray-200, #e5e7eb)", 
+            textAlign: "center",
+            fontSize: "0.875rem"
+          }}>
+            <span style={{ color: "var(--color-gray-500, #6b7280)" }}>
+              Lebih suka mendaftar secara manual?{" "}
+            </span>
+            <a 
+              href="/formulir-offline" 
+              style={{ 
+                color: "var(--color-primary, #216c7e)", 
+                fontWeight: "700",
+                textDecoration: "underline",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.25rem"
+              }}
+            >
+              📄 Cetak Formulir Offline
+            </a>
+          </div>
         </div>
       </div>
     </section>
