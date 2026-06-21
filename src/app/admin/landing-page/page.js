@@ -17,6 +17,10 @@ export default function LandingPageCMS() {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [savingMaintenance, setSavingMaintenance] = useState(false);
 
+  // Copy protection setting
+  const [allowPublicCopy, setAllowPublicCopy] = useState(false);
+  const [savingCopySetting, setSavingCopySetting] = useState(false);
+
   // ----------------------------------------------------
   // FORM STATES: HERO & CONTACT PROFILE
   // ----------------------------------------------------
@@ -127,6 +131,7 @@ export default function LandingPageCMS() {
         setCtaTitle(settings.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
         setCtaDesc(settings.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
         setCtaBrochureImage(settings.cta_brochure_image || "/assets/brochure.png");
+        setAllowPublicCopy(settings.allow_public_copy === "true");
 
         const programsRaw = settings.landing_programs;
         const benefitsRaw = settings.landing_benefits;
@@ -207,6 +212,23 @@ export default function LandingPageCMS() {
       showToast("Gagal menyimpan galeri video ke database.", "error");
     } finally {
       setSavingVideos(false);
+    }
+  };
+
+  const handleToggleCopySetting = async () => {
+    const newValue = !allowPublicCopy;
+    setSavingCopySetting(true);
+    try {
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert({ key: "allow_public_copy", value: String(newValue) });
+      if (error) throw error;
+      setAllowPublicCopy(newValue);
+      showToast(newValue ? "Proteksi salin dinonaktifkan!" : "Proteksi salin diaktifkan!");
+    } catch (err) {
+      showToast("Gagal mengubah pengaturan: " + err.message, "error");
+    } finally {
+      setSavingCopySetting(false);
     }
   };
 
@@ -678,7 +700,7 @@ export default function LandingPageCMS() {
           className={`btn-portal-outline ${activeTab === "maintenance" ? "active" : ""}`}
           style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap", borderColor: maintenanceMode ? "#ef4444" : undefined, color: maintenanceMode ? "#ef4444" : undefined }}
         >
-          {maintenanceMode ? "🔴" : "🟢"} Mode Maintenance
+          {maintenanceMode ? "🔴" : "⚙️"} Sistem & Keamanan
         </button>
       </div>
 
@@ -1869,6 +1891,69 @@ export default function LandingPageCMS() {
                 </button>
                 <span style={{ fontSize: "0.75rem", fontWeight: "700", color: maintenanceMode ? "#ef4444" : "#22c55e" }}>
                   {savingMaintenance ? "Menyimpan..." : (maintenanceMode ? "MAINTENANCE" : "ONLINE")}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Copy protection card */}
+          <div className="portal-card" style={{
+            padding: "2rem",
+            borderLeft: `5px solid ${allowPublicCopy ? "#3b82f6" : "#f59e0b"}`,
+            background: allowPublicCopy
+              ? "linear-gradient(135deg, rgba(59,130,246,0.06) 0%, rgba(255,255,255,0) 100%)"
+              : "linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(255,255,255,0) 100%)"
+          }}>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
+                  <span style={{
+                    width: "12px", height: "12px", borderRadius: "50%",
+                    backgroundColor: allowPublicCopy ? "#3b82f6" : "#f59e0b",
+                    display: "inline-block",
+                    boxShadow: `0 0 0 4px ${allowPublicCopy ? "rgba(59,130,246,0.2)" : "rgba(245,158,11,0.2)"}`
+                  }} />
+                  <span style={{ fontWeight: "800", fontSize: "1.1rem", color: "var(--color-gray-900)" }}>
+                    Proteksi Salin Konten (Copy Protection)
+                  </span>
+                </div>
+                <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", maxWidth: "480px", lineHeight: "1.6" }}>
+                  {allowPublicCopy
+                    ? "🔓 Proteksi dinonaktifkan. Pengunjung dapat melakukan klik kanan, menyeleksi teks, menyalin (copy) konten, dan men-drag gambar dari website publik."
+                    : "🔒 Proteksi aktif. Pengunjung dibatasi untuk melakukan klik kanan, menyeleksi teks, menyalin (copy) konten, atau menyeret gambar dari website publik demi keamanan konten."}
+                </p>
+              </div>
+
+              {/* Toggle switch */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+                <button
+                  onClick={handleToggleCopySetting}
+                  disabled={savingCopySetting}
+                  style={{
+                    position: "relative",
+                    width: "72px", height: "38px",
+                    borderRadius: "100px",
+                    border: "none",
+                    cursor: savingCopySetting ? "not-allowed" : "pointer",
+                    backgroundColor: allowPublicCopy ? "#3b82f6" : "#f59e0b",
+                    transition: "background-color 0.3s",
+                    padding: 0,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
+                  }}
+                >
+                  <span style={{
+                    position: "absolute",
+                    top: "4px",
+                    left: allowPublicCopy ? "38px" : "4px",
+                    width: "30px", height: "30px",
+                    borderRadius: "50%",
+                    backgroundColor: "white",
+                    transition: "left 0.3s",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
+                  }} />
+                </button>
+                <span style={{ fontSize: "0.75rem", fontWeight: "700", color: allowPublicCopy ? "#3b82f6" : "#f59e0b" }}>
+                  {savingCopySetting ? "Menyimpan..." : (allowPublicCopy ? "DIIZINKAN (OPEN)" : "TERPROTEKSI (SAFE)")}
                 </span>
               </div>
             </div>

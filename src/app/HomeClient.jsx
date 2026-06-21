@@ -115,8 +115,12 @@ export default function HomeClient({ initialSettings }) {
     }
   }, []);
 
-  // Mencegah klik kanan, salin (copy), dan seret (drag) gambar di landing page
+  // Mencegah klik kanan, salin (copy), dan seret (drag) gambar di landing page jika copy protection aktif
   useEffect(() => {
+    if (initialSettings?.allow_public_copy === "true") {
+      return;
+    }
+
     const handleContextMenu = (e) => {
       // Izinkan klik kanan pada elemen input/textarea agar form pendaftaran tetap berfungsi normal
       const target = e.target;
@@ -151,10 +155,10 @@ export default function HomeClient({ initialSettings }) {
       document.removeEventListener("copy", handleCopy);
       document.removeEventListener("dragstart", handleDragStart);
     };
-  }, []);
+  }, [initialSettings]);
 
   return (
-    <div className="nocopy-container">
+    <div className={initialSettings?.allow_public_copy === "true" ? "" : "nocopy-container"}>
       <MarqueeBanner initialSettings={initialSettings} />
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       <main>
