@@ -11,7 +11,7 @@ export async function proxy(request) {
   // Define strict Content Security Policy
   const cspHeader = `
     default-src 'self';
-    script-src 'nonce-${nonce}' 'strict-dynamic' 'self' 'report-sample' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com;
+    script-src 'nonce-${nonce}' 'self' 'unsafe-inline' 'report-sample' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.cloudflareinsights.com;
     style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     font-src 'self' https://cdn.jsdelivr.net;
     img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com;
