@@ -9,15 +9,15 @@ let clientInstance;
 export function createClient() {
   if (typeof window === "undefined") {
     return createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key"
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzenVraXB2cnZqcmdyaWt4ZndoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQ2MTQsImV4cCI6MjA5NjQzMDYxNH0.M6rlLPNiOFowcZODVj-mmNnv8X6ZkkY-m77Lg4vdXHA"
     );
   }
 
   if (!clientInstance) {
     clientInstance = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key"
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzenVraXB2cnZqcmdyaWt4ZndoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQ2MTQsImV4cCI6MjA5NjQzMDYxNH0.M6rlLPNiOFowcZODVj-mmNnv8X6ZkkY-m77Lg4vdXHA"
     );
   }
 
@@ -32,7 +32,7 @@ export function createServiceRoleClient() {
   const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
   if (serviceRoleKey) {
     return createCoreClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co",
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
       serviceRoleKey,
       {
         auth: {
