@@ -78,11 +78,11 @@ export default function OfflineFormPage() {
       }}>
         
         {/* Kop Surat (Letterhead) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", paddingBottom: "1rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", paddingBottom: "0.5rem" }}>
           <img 
             src="/assets/logo.png" 
             alt="Logo Ibra Global English" 
-            style={{ width: "85px", height: "85px", objectFit: "contain" }} 
+            style={{ width: "70px", height: "70px", objectFit: "contain" }} 
           />
           <div style={{ flex: 1 }}>
             <h1 style={{ 
@@ -112,22 +112,22 @@ export default function OfflineFormPage() {
         </div>
 
         {/* Thick Divider Line */}
-        <div style={{ borderBottom: "3px double #1f2937", marginBottom: "1.5rem" }}></div>
+        <div style={{ borderBottom: "3px double #1f2937", marginBottom: "1rem" }}></div>
 
         {/* Title */}
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", textTransform: "uppercase", color: "#111827", margin: 0, letterSpacing: "1px" }}>
+        <div style={{ textAlign: "center", marginBottom: "1.25rem" }}>
+          <h2 style={{ fontSize: "1.15rem", fontWeight: "800", textTransform: "uppercase", color: "#111827", margin: 0, letterSpacing: "1px" }}>
             FORMULIR PENDAFTARAN SISWA BARU
           </h2>
-          <span style={{ fontSize: "0.85rem", color: "#4b5563" }}>Silakan isi data di bawah ini dengan lengkap menggunakan huruf kapital</span>
+          <span style={{ fontSize: "0.8rem", color: "#4b5563" }}>Silakan isi data di bawah ini dengan lengkap menggunakan huruf kapital</span>
         </div>
 
         {/* Form Sections */}
-        <form style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }} onSubmit={(e) => e.preventDefault()}>
+        <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }} onSubmit={(e) => e.preventDefault()}>
           
           {/* Section 1: Data Siswa */}
           <div>
-            <h3 style={{ fontSize: "0.95rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.25rem", marginBottom: "1rem", color: "#1f2937", textTransform: "uppercase" }}>
+            <h3 style={{ fontSize: "0.9rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.2rem", marginBottom: "0.6rem", color: "#1f2937", textTransform: "uppercase" }}>
               A. DATA CALON SISWA
             </h3>
             
@@ -173,7 +173,7 @@ export default function OfflineFormPage() {
 
           {/* Section 2: Data Orang Tua */}
           <div>
-            <h3 style={{ fontSize: "0.95rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.25rem", marginBottom: "1rem", color: "#1f2937", textTransform: "uppercase" }}>
+            <h3 style={{ fontSize: "0.9rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.2rem", marginBottom: "0.6rem", color: "#1f2937", textTransform: "uppercase" }}>
               B. DATA ORANG TUA / WALI
             </h3>
             
@@ -214,13 +214,13 @@ export default function OfflineFormPage() {
 
           {/* Section 3: Program Pilihan */}
           <div>
-            <h3 style={{ fontSize: "0.95rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.25rem", marginBottom: "1rem", color: "#1f2937", textTransform: "uppercase" }}>
+            <h3 style={{ fontSize: "0.9rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.2rem", marginBottom: "0.6rem", color: "#1f2937", textTransform: "uppercase" }}>
               C. PROGRAM YANG DIMINATI
             </h3>
             
-            <p style={{ fontSize: "0.8rem", color: "#4b5563", margin: "0 0 0.75rem 0" }}>Silakan beri tanda centang (✓) pada program kursus yang dipilih:</p>
+            <p style={{ fontSize: "0.78rem", color: "#4b5563", margin: "0 0 0.5rem 0" }}>Silakan beri tanda centang (✓) pada program kursus yang dipilih:</p>
             
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", paddingLeft: "0.5rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", paddingLeft: "0.5rem" }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
                 <span style={{ fontWeight: "bold", fontSize: "1rem" }}>[  ]</span>
                 <div>
@@ -248,17 +248,17 @@ export default function OfflineFormPage() {
           </div>
 
           {/* Section 4: Tanda Tangan */}
-          <div style={{ marginTop: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ marginTop: "1rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div style={{ width: "45%", textAlign: "center" }}>
               {/* Left blank for notes or general space */}
             </div>
-            <div style={{ width: "45%", textAlign: "center", fontSize: "0.85rem", color: "#1f2937" }}>
-              <p style={{ margin: "0 0 4rem 0" }}>
+            <div style={{ width: "45%", textAlign: "center", fontSize: "0.8rem", color: "#1f2937" }}>
+              <p style={{ margin: "0 0 3.25rem 0" }}>
                 Bobong, ......................................... 20.... <br />
                 Orang Tua / Wali Siswa,
               </p>
               <p style={{ margin: 0, fontWeight: "bold" }}>( ........................................................ )</p>
-              <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>Nama Jelas & Tanda Tangan</span>
+              <span style={{ fontSize: "0.7rem", color: "#6b7280" }}>Nama Jelas & Tanda Tangan</span>
             </div>
           </div>
 
@@ -270,8 +270,8 @@ export default function OfflineFormPage() {
         .form-print-row {
           display: flex;
           align-items: flex-end;
-          margin-bottom: 0.85rem;
-          font-size: 0.85rem;
+          margin-bottom: 0.5rem;
+          font-size: 0.8rem;
           color: #374151;
         }
         .form-print-label {
@@ -287,11 +287,15 @@ export default function OfflineFormPage() {
         .form-print-line {
           flex-grow: 1;
           border-bottom: 1px dotted #4b5563;
-          height: 1.2rem;
+          height: 1.1rem;
           margin-bottom: 2px;
         }
 
         @media print {
+          @page {
+            size: A4;
+            margin: 10mm 15mm 8mm 15mm;
+          }
           .print-body-wrapper {
             background-color: white !important;
             padding: 0 !important;
