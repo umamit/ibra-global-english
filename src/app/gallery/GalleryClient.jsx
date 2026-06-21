@@ -22,6 +22,66 @@ export default function GalleryClient() {
   useScrollReveal();
 
   const [videos, setVideos] = useState([]);
+  const [allowPublicCopy, setAllowPublicCopy] = useState(false);
+
+  // Fetch copy protection setting
+  useEffect(() => {
+    async function fetchCopySetting() {
+      try {
+        const { data, error } = await supabase
+          .from('landing_settings')
+          .select('value')
+          .eq('key', 'allow_public_copy')
+          .single();
+        if (data) {
+          setAllowPublicCopy(data.value === "true");
+        }
+      } catch (e) {
+        console.warn("Gagal memuat pengaturan copy protection:", e);
+      }
+    }
+    fetchCopySetting();
+  }, []);
+
+  // Mencegah klik kanan, salin (copy), dan seret (drag) gambar jika copy protection aktif
+  useEffect(() => {
+    if (allowPublicCopy) {
+      return;
+    }
+
+    const handleContextMenu = (e) => {
+      const target = e.target;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+      }
+      e.preventDefault();
+    };
+
+    const handleCopy = (e) => {
+      const target = e.target;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+      }
+      e.preventDefault();
+    };
+
+    const handleDragStart = (e) => {
+      const target = e.target;
+      if (target.tagName === 'IMG') {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("copy", handleCopy);
+    document.addEventListener("dragstart", handleDragStart);
+
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("copy", handleCopy);
+      document.removeEventListener("dragstart", handleDragStart);
+    };
+  }, [allowPublicCopy]);
 
   // Auto-convert standard YouTube links to embed format
   const getEmbedUrl = (url) => {
@@ -172,7 +232,7 @@ export default function GalleryClient() {
   };
 
   return (
-    <div className="nocopy-container">
+    <div className={allowPublicCopy ? "" : "nocopy-container"}>
       <MarqueeBanner />
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       
