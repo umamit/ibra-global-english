@@ -50,13 +50,16 @@ export default function DailyAttendance() {
           sakit: 0,
           izin: 0,
           alfa: 0,
+          tidak_ada_kelas: 0,
           total: 0,
         };
       });
 
       attendanceList?.forEach((rec) => {
         if (recapMap[rec.student_id]) {
-          recapMap[rec.student_id][rec.status]++;
+          if (recapMap[rec.student_id][rec.status] !== undefined) {
+            recapMap[rec.student_id][rec.status]++;
+          }
           recapMap[rec.student_id].total++;
         }
       });
@@ -84,9 +87,10 @@ export default function DailyAttendance() {
 
   // Export rekapitulasi absensi ke CSV
   const exportRecapCSV = () => {
-    const headers = ["No", "Nama Siswa", "Program", "Hadir", "Sakit", "Izin", "Alfa", "Total", "Kehadiran (%)"];
+    const headers = ["No", "Nama Siswa", "Program", "Hadir", "Sakit", "Izin", "Alfa", "Tidak ada Kelas", "Total Sesi", "Kehadiran (%)"];
     const rows = filteredRecap.map((row, idx) => {
-      const pct = row.total > 0 ? Math.round((row.hadir / row.total) * 100) : 0;
+      const activeTotal = row.hadir + row.sakit + row.izin + row.alfa;
+      const pct = activeTotal > 0 ? Math.round((row.hadir / activeTotal) * 100) : 100;
       return [
         idx + 1,
         row.name,
@@ -95,6 +99,7 @@ export default function DailyAttendance() {
         row.sakit,
         row.izin,
         row.alfa,
+        row.tidak_ada_kelas || 0,
         row.total,
         `${pct}%`
       ];
@@ -467,6 +472,17 @@ export default function DailyAttendance() {
                                 />
                                 <span className={localData.status === "alfa" ? "badge-alfa" : ""} style={{ padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)" }}>Alfa</span>
                               </label>
+
+                              <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", cursor: "pointer", fontWeight: "600", fontSize: "0.85rem" }}>
+                                <input
+                                  type="radio"
+                                  name={`attendance-${student.id}`}
+                                  checked={localData.status === "tidak_ada_kelas"}
+                                  onChange={() => handleStatusChange(student.id, "tidak_ada_kelas")}
+                                  style={{ accentColor: "var(--color-gray-400)" }}
+                                />
+                                <span className={localData.status === "tidak_ada_kelas" ? "badge-tidak_ada_kelas" : ""} style={{ padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)" }}>Tidak ada Kelas</span>
+                              </label>
                             </div>
                           </td>
                           <td>
@@ -570,6 +586,7 @@ export default function DailyAttendance() {
                     <th style={{ textAlign: "center" }}>Sakit</th>
                     <th style={{ textAlign: "center" }}>Izin</th>
                     <th style={{ textAlign: "center" }}>Alfa</th>
+                    <th style={{ textAlign: "center" }}>Tidak ada Kelas</th>
                     <th style={{ textAlign: "center" }}>Total Sesi</th>
                     <th style={{ textAlign: "center", width: "150px" }}>Persentase Kehadiran</th>
                   </tr>
@@ -577,13 +594,14 @@ export default function DailyAttendance() {
                 <tbody>
                   {filteredRecap.length === 0 ? (
                     <tr>
-                      <td colSpan="9" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+                      <td colSpan="10" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
                         Tidak ada data rekapitulasi absensi siswa yang cocok dengan filter.
                       </td>
                     </tr>
                   ) : (
                     filteredRecap.map((row, idx) => {
-                      const rate = row.total > 0 ? Math.round((row.hadir / row.total) * 100) : 100;
+                      const activeTotal = row.hadir + row.sakit + row.izin + row.alfa;
+                      const rate = activeTotal > 0 ? Math.round((row.hadir / activeTotal) * 100) : 100;
                       return (
                         <tr key={row.id}>
                           <td style={{ fontWeight: "700" }}>{idx + 1}</td>
@@ -597,6 +615,7 @@ export default function DailyAttendance() {
                           <td style={{ textAlign: "center", fontWeight: "700", color: "#a16207" }}>{row.sakit}</td>
                           <td style={{ textAlign: "center", fontWeight: "700", color: "var(--color-primary)" }}>{row.izin}</td>
                           <td style={{ textAlign: "center", fontWeight: "700", color: "#ef4444" }}>{row.alfa}</td>
+                          <td style={{ textAlign: "center", fontWeight: "700", color: "var(--color-gray-500)" }}>{row.tidak_ada_kelas || 0}</td>
                           <td style={{ textAlign: "center", fontWeight: "700", color: "var(--color-gray-700)" }}>{row.total}</td>
                           <td style={{ textAlign: "center" }}>
                             {getAttendanceRateBadge(rate)}

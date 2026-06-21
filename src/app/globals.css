@@ -2724,7 +2724,7 @@ textarea:focus-visible {
 }
 
 /* Attendance Pill Badges */
-.badge-hadir, .badge-sakit, .badge-izin, .badge-alfa {
+.badge-hadir, .badge-sakit, .badge-izin, .badge-alfa, .badge-tidak_ada_kelas {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2758,6 +2758,12 @@ textarea:focus-visible {
   background-color: #ffeeeb;
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.badge-tidak_ada_kelas {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-600);
+  border: 1px solid var(--color-gray-200);
 }
 
 /* Modal Overlay & Modal Window */

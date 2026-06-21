@@ -656,16 +656,22 @@ export default function TutorPortal() {
                             </td>
                             <td>
                               <div style={{ display: "flex", gap: "0.75rem" }}>
-                                {["hadir", "sakit", "izin", "alfa"].map((statusOption) => (
-                                  <label key={statusOption} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>
+                                {[
+                                  { value: "hadir", label: "Hadir" },
+                                  { value: "sakit", label: "Sakit" },
+                                  { value: "izin", label: "Izin" },
+                                  { value: "alfa", label: "Alfa" },
+                                  { value: "tidak_ada_kelas", label: "Tidak ada Kelas" }
+                                ].map((option) => (
+                                  <label key={option.value} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>
                                     <input
                                       type="radio"
                                       name={`attendance-${s.id}`}
-                                      checked={data.status === statusOption}
-                                      onChange={() => handleStatusChange(s.id, statusOption)}
-                                      style={{ accentColor: "var(--color-primary)" }}
+                                      checked={data.status === option.value}
+                                      onChange={() => handleStatusChange(s.id, option.value)}
+                                      style={{ accentColor: option.value === "tidak_ada_kelas" ? "var(--color-gray-400)" : "var(--color-primary)" }}
                                     />
-                                    <span style={{ textTransform: "capitalize" }}>{statusOption}</span>
+                                    <span>{option.label}</span>
                                   </label>
                                 ))}
                               </div>

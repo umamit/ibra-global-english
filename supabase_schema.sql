@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.attendance (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
   date DATE NOT NULL DEFAULT CURRENT_DATE,
-  status TEXT NOT NULL CHECK (status IN ('hadir', 'sakit', 'izin', 'alfa')),
+  status TEXT NOT NULL CHECK (status IN ('hadir', 'sakit', 'izin', 'alfa', 'tidak_ada_kelas')),
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   -- Mencegah pencatatan absensi ganda untuk siswa yang sama di hari yang sama
