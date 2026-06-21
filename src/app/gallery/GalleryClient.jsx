@@ -363,9 +363,11 @@ export default function GalleryClient() {
               {/* Video Grid */}
               <div style={{ 
                 display: "grid", 
-                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 450px), 1fr))", 
-                gap: "3rem",
-                justifyContent: "center"
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", 
+                gap: "2.5rem",
+                justifyContent: "center",
+                maxWidth: "1100px",
+                margin: "0 auto"
               }}>
                 {videos.map((vid, idx) => (
                   <div 
@@ -379,7 +381,10 @@ export default function GalleryClient() {
                       overflow: "hidden",
                       boxShadow: "var(--shadow-lg)",
                       border: "1px solid var(--color-gray-150)",
-                      transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      maxWidth: "480px",
+                      width: "100%",
+                      margin: "0 auto"
                     }}
                   >
                     {/* Video Player Wrapper (16:9 Aspect Ratio) */}
