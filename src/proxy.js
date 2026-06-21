@@ -16,7 +16,7 @@ export async function proxy(request) {
     font-src 'self' https://cdn.jsdelivr.net;
     img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com;
     connect-src 'self' https://uszukipvrvjrgrikxfwh.supabase.co wss://uszukipvrvjrgrikxfwh.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://analytics.google.com https://stats.g.doubleclick.net;
-    frame-src 'self' https://*.canva.com https://www.canva.com;
+    frame-src 'self' https://*.canva.com https://www.canva.com https://www.youtube.com https://youtube.com;
     object-src 'none';
     base-uri 'none';
     form-action 'self';
