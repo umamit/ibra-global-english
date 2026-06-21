@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS public.registrations (
   student_name  TEXT NOT NULL,
   student_age   INT,
   parent_name   TEXT,
+  parent_email  TEXT,
   whatsapp      TEXT NOT NULL,
   program       TEXT NOT NULL,
   status        TEXT NOT NULL DEFAULT 'pending'

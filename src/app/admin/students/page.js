@@ -713,7 +713,14 @@ export default function StudentManagement() {
                               {reg.program?.split(" ")[0]}
                             </span>
                           </td>
-                          <td>{reg.parent_name || <span style={{ color: "var(--color-gray-400)", fontStyle: "italic" }}>-</span>}</td>
+                          <td>
+                            <div>{reg.parent_name || <span style={{ color: "var(--color-gray-400)", fontStyle: "italic" }}>-</span>}</div>
+                            {reg.parent_email && (
+                              <div style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", marginTop: "0.1rem" }}>
+                                {reg.parent_email}
+                              </div>
+                            )}
+                          </td>
                           <td>
                             <a href={`https://wa.me/${reg.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)", fontWeight: "600", textDecoration: "none" }}>
                               {reg.whatsapp}

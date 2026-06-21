@@ -196,6 +196,12 @@ export default function OfflineFormPage() {
             </div>
 
             <div className="form-print-row">
+              <span className="form-print-label">Email Orang Tua / Wali</span>
+              <span className="form-print-colon">:</span>
+              <span className="form-print-line"></span>
+            </div>
+
+            <div className="form-print-row">
               <span className="form-print-label">Hubungan dengan Siswa</span>
               <span className="form-print-colon">:</span>
               <span style={{ display: "inline-flex", gap: "2rem", paddingTop: "0.2rem", flex: 1 }}>
