@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/utils/supabase/server";
+import { getSupabaseConfig } from "@/utils/supabase/config";
 
 export async function DELETE(request) {
   try {
@@ -34,7 +35,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Tidak dapat menghapus akun sendiri." }, { status: 400 });
     }
     // Baca service role key — coba server-only key dulu, lalu fallback ke NEXT_PUBLIC_
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co";
+    const { url: supabaseUrl } = getSupabaseConfig();
     const serviceRoleKey =
       process.env.SUPABASE_SERVICE_ROLE_KEY ||
       process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
