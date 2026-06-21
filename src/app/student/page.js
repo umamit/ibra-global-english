@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import SpeakingPractice from "@/components/SpeakingPractice";
 
 // SUB-COMPONENT: Simple visual Radar Chart for Student Performance
 function MiniRadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
@@ -370,6 +371,15 @@ export default function StudentPortal() {
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
             <span>Pencapaian Koin</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab("speaking"); setMobileOpen(false); }}
+            className={`sidebar-nav-link ${activeTab === "speaking" ? "active" : ""}`}
+            style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.5rem" }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            <span>Latihan AI Speaking</span>
           </button>
         </div>
 
@@ -1095,6 +1105,11 @@ export default function StudentPortal() {
               </div>
             )}
           </div>
+        )}
+
+        {/* TAB 5: AI SPEAKING PRACTICE */}
+        {activeTab === "speaking" && (
+          <SpeakingPractice student={student} />
         )}
       </main>
 

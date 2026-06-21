@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import RadarChart from "@/components/RadarChart";
+import LineChart from "@/components/LineChart";
 
 export default function ParentPortal() {
   const router = useRouter();
@@ -96,6 +97,10 @@ export default function ParentPortal() {
   const [parentSchedules, setParentSchedules] = useState([]);
   const [uploadingReceipt, setUploadingReceipt] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+
+  // Notification states
+  const [notifications, setNotifications] = useState([]);
+  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
 
   // Print Mode State
   const [printReport, setPrintReport] = useState(null);
@@ -412,6 +417,56 @@ export default function ParentPortal() {
 
     loadChildDetails();
   }, [selectedChild]);
+
+  // Dynamic notifications calculation
+  useEffect(() => {
+    if (!selectedChild) return;
+
+    const list = [];
+    const currentMonthStr = new Date().toISOString().slice(0, 7); // e.g. "2026-06"
+    const currentPayment = parentPayments.find(p => p.month === currentMonthStr);
+    const dayOfMonth = new Date().getDate();
+
+    // 1. SPP Payment Alert
+    if (!currentPayment || (currentPayment.status !== "lunas" && currentPayment.status !== "menunggu_konfirmasi")) {
+      if (dayOfMonth >= 8) {
+        list.push({
+          id: "spp_warning",
+          type: "warning",
+          title: "Tagihan SPP Belum Lunas",
+          message: `Tagihan SPP bulan ${getMonthName(currentMonthStr)} untuk ${selectedChild.name} belum diselesaikan. Harap selesaikan sebelum tanggal 10.`,
+          action: () => setActiveView("finance")
+        });
+      }
+    }
+
+    // 2. Recent Reports (last 7 days)
+    const sevenDaysAgo = Date.now() - 7 * 24 * 3600 * 1000;
+    reports.forEach(r => {
+      if (new Date(r.created_at).getTime() > sevenDaysAgo) {
+        list.push({
+          id: `report_${r.id}`,
+          type: "info",
+          title: "Rapor Baru Diterbitkan",
+          message: `Rapor digital ${selectedChild.name} untuk ${r.module_name} telah diterbitkan oleh tutor.`,
+          action: () => setActiveView("progress")
+        });
+      }
+    });
+
+    // 3. Announcements
+    announcements.forEach(a => {
+      list.push({
+        id: `ann_${a.id}`,
+        type: a.priority === "urgent" ? "warning" : "info",
+        title: `📢 Pengumuman: ${a.title}`,
+        message: a.content,
+        action: () => setActiveView("progress")
+      });
+    });
+
+    setNotifications(list);
+  }, [selectedChild, parentPayments, reports, announcements]);
 
   // Dynamic printing
   const triggerPrint = (report) => {
@@ -799,7 +854,101 @@ export default function ParentPortal() {
               Silakan pantau absensi harian, agenda jadwal, dan hasil evaluasi belajar anak secara real-time.
             </p>
           </div>
-          <div className="topbar-user" style={{ gap: "1rem" }}>
+          <div className="topbar-user" style={{ gap: "1rem", position: "relative", display: "flex", alignItems: "center" }}>
+            
+            {/* Lonceng Notifikasi */}
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "var(--color-gray-600)",
+                  position: "relative",
+                  padding: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "50%",
+                  backgroundColor: showNotificationDropdown ? "var(--color-gray-100)" : "transparent",
+                  transition: "background-color 0.2s"
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                {notifications.length > 0 && (
+                  <span style={{
+                    position: "absolute",
+                    top: "2px",
+                    right: "2px",
+                    width: "8px",
+                    height: "8px",
+                    backgroundColor: "#ef4444",
+                    borderRadius: "50%",
+                    border: "1.5px solid white"
+                  }} />
+                )}
+              </button>
+
+              {/* Dropdown Notifikasi */}
+              {showNotificationDropdown && (
+                <div style={{
+                  position: "absolute",
+                  right: "0",
+                  top: "35px",
+                  width: "320px",
+                  backgroundColor: "white",
+                  borderRadius: "12px",
+                  boxShadow: "var(--shadow-xl)",
+                  border: "1px solid var(--color-gray-200)",
+                  zIndex: 100,
+                  overflow: "hidden"
+                }}>
+                  <div style={{ padding: "0.85rem 1.15rem", borderBottom: "1px solid var(--color-gray-100)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontWeight: "800", fontSize: "0.85rem", color: "var(--color-gray-900)" }}>Notifikasi ({notifications.length})</span>
+                  </div>
+                  <div style={{ maxHeight: "250px", overflowY: "auto" }}>
+                    {notifications.length === 0 ? (
+                      <div style={{ padding: "2rem 1rem", textAlign: "center", color: "var(--color-gray-400)", fontSize: "0.8rem" }}>
+                        Tidak ada notifikasi baru saat ini.
+                      </div>
+                    ) : (
+                      notifications.map((n, idx) => (
+                        <div
+                          key={n.id || idx}
+                          onClick={() => {
+                            n.action();
+                            setShowNotificationDropdown(false);
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--color-gray-50)"}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                          style={{
+                            padding: "0.85rem 1.15rem",
+                            borderBottom: idx < notifications.length - 1 ? "1px solid var(--color-gray-50)" : "none",
+                            cursor: "pointer",
+                            transition: "background-color 0.2s",
+                            textAlign: "left"
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-start" }}>
+                            <span style={{ fontSize: "1rem" }}>{n.type === "warning" ? "⚠️" : "🔔"}</span>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ fontSize: "0.8rem", fontWeight: "800", color: n.type === "warning" ? "#dc2626" : "var(--color-gray-900)", marginBottom: "2px" }}>
+                                {n.title}
+                              </p>
+                              <p style={{ fontSize: "0.75rem", color: "var(--color-gray-600)", lineHeight: "1.4" }}>
+                                {n.message}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <span className="user-badge">{parentName}</span>
           </div>
         </div>
@@ -1016,6 +1165,12 @@ export default function ParentPortal() {
                     Rapor Belajar Digital & Grafik Pencapaian
                   </h3>
                   
+                  {reports.length > 0 && !detailsLoading && (
+                    <div style={{ marginBottom: "2rem" }}>
+                      <LineChart reports={reports} isCalistung={selectedChild?.program?.toLowerCase()?.includes("calistung")} />
+                    </div>
+                  )}
+
                   {detailsLoading ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                       {Array.from({ length: 2 }).map((_, i) => (
