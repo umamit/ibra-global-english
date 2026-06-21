@@ -19,6 +19,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
     student_name: "",
     student_age: "",
     parent_name: "",
+    parent_email: "",
     whatsapp: "",
     program: "Kids Program (5-12 tahun)",
   });
@@ -78,6 +79,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
         student_name: "",
         student_age: "",
         parent_name: "",
+        parent_email: "",
         whatsapp: "",
         program: "Kids Program (5-12 tahun)",
       });
@@ -344,6 +346,20 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                       value={regForm.parent_name}
                       onChange={(e) => setRegForm({ ...regForm, parent_name: e.target.value })}
                       disabled={regSubmitting}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="reg-parent-email" className="form-label">Email Orang Tua / Wali</label>
+                    <input
+                      type="email"
+                      id="reg-parent-email"
+                      className="form-input"
+                      placeholder="Masukkan email aktif (contoh@email.com)"
+                      value={regForm.parent_email}
+                      onChange={(e) => setRegForm({ ...regForm, parent_email: e.target.value })}
+                      disabled={regSubmitting}
+                      autoComplete="email"
                     />
                   </div>
 

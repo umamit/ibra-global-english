@@ -36,7 +36,7 @@ async function checkAdminAuth() {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { student_name, student_age, parent_name, whatsapp, program } = body;
+    const { student_name, student_age, parent_name, parent_email, whatsapp, program } = body;
 
     // Validasi minimal
     if (!student_name || !whatsapp || !program) {
@@ -62,6 +62,7 @@ export async function POST(req) {
         student_name: student_name.trim(),
         student_age: student_age ? parseInt(student_age) : null,
         parent_name: parent_name ? parent_name.trim() : null,
+        parent_email: parent_email ? parent_email.trim() : null,
         whatsapp: numericWa,
         program: program.trim(),
         status: "pending",
