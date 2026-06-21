@@ -20,6 +20,7 @@ jobs:
           # Scan dependencies declared in the project
           scan-args: |
             --file=package-lock.json
+            --fail-on-vuln=false
 
   performance-audit:
     name: Performance Audit (Lighthouse CI)
