@@ -231,9 +231,7 @@ export default function AICopilotWidget() {
           </button>
         </div>
 
-        <div className="ai-chat-footer" style={{ borderTop: "1px solid var(--color-gray-100)" }}>
-          Didukung oleh <strong>Groq Llama AI</strong>
-        </div>
+
       </div>
 
       {/* Floating Button (FAB) - Placed at the bottom-left to avoid overlap with bottom-right mobile toggles */}
