@@ -59,17 +59,33 @@ export async function POST(request) {
     // 1. MODE: AUTO-DRAFT (Pembuat Catatan Ulasan Rapor)
     if (mode === "auto-draft") {
       const { name, program, speaking, grammar, vocabulary, active } = payload || {};
-      systemPrompt = `Kamu adalah asisten AI tutor bahasa Inggris di Ibra Global English Bobong. Tugasmu adalah menulis catatan kemajuan belajar yang profesional, memotivasi, dan konstruktif (maksimal 2 kalimat pendek) untuk siswa. Catatan ditulis dalam Bahasa Indonesia yang ramah, sopan, dan hangat untuk orang tua siswa.`;
-      userPrompt = `Buat ulasan rapor untuk siswa:
+      const isCalistung = program?.toLowerCase()?.includes("calistung");
+
+      if (isCalistung) {
+        systemPrompt = `Kamu adalah asisten AI tutor bimbingan belajar Calistung (Membaca, Menulis, Berhitung) di Ibra Global English Bobong. Tugasmu adalah menulis catatan kemajuan belajar membaca, menulis, dan berhitung dasar yang profesional, memotivasi, dan konstruktif (maksimal 2 kalimat pendek) untuk siswa. Catatan ditulis dalam Bahasa Indonesia yang ramah, sopan, dan hangat untuk orang tua siswa.`;
+        userPrompt = `Buat ulasan rapor untuk siswa:
 Nama Siswa: ${name || "Siswa"}
-Program Belajar: ${program || "General English"}
-Nilai Kompetensi:
-- Membaca/Speaking: ${speaking || 80}
-- Menulis/Grammar: ${grammar || 80}
-- Berhitung/Vocabulary: ${vocabulary || 80}
+Program Belajar: ${program || "Fun Calistung"}
+Nilai Kompetensi Calistung:
+- Membaca: ${speaking || 80}
+- Menulis: ${grammar || 80}
+- Berhitung: ${vocabulary || 80}
 - Keaktifan di Kelas: ${active || 80}
 
-Tulis masukan yang konkret, spesifik, dan memotivasi berdasarkan data nilai di atas. Jangan buat poin-poin, langsung tulis dalam 1-2 kalimat paragraf mengalir.`;
+PENTING: Program belajar siswa adalah Calistung (Membaca, Menulis, Berhitung dasar). DILARANG KERAS menyebutkan kata "Bahasa Inggris", "English", "speaking", "grammar", atau "vocabulary" dalam ulasan ini. Fokus pada perkembangan kelancaran membaca, menulis huruf/kata, berhitung dasar, serta keaktifan mereka di kelas. Tulis masukan yang konkret, spesifik, dan memotivasi berdasarkan data nilai di atas. Jangan buat poin-poin, langsung tulis dalam 1-2 kalimat paragraf mengalir.`;
+      } else {
+        systemPrompt = `Kamu adalah asisten AI tutor bahasa Inggris di Ibra Global English Bobong. Tugasmu adalah menulis catatan kemajuan belajar bahasa Inggris yang profesional, memotivasi, dan konstruktif (maksimal 2 kalimat pendek) untuk siswa. Catatan ditulis dalam Bahasa Indonesia yang ramah, sopan, dan hangat untuk orang tua siswa.`;
+        userPrompt = `Buat ulasan rapor untuk siswa:
+Nama Siswa: ${name || "Siswa"}
+Program Belajar: ${program || "General English"}
+Nilai Kompetensi Bahasa Inggris:
+- Speaking: ${speaking || 80}
+- Grammar: ${grammar || 80}
+- Vocabulary: ${vocabulary || 80}
+- Keaktifan di Kelas: ${active || 80}
+
+PENTING: Program belajar siswa adalah kursus Bahasa Inggris. Fokus ulasan harus pada kemampuan berbicara (speaking), pemahaman tata bahasa (grammar), kosakata (vocabulary) bahasa Inggris, serta keaktifan mereka dalam menggunakan Bahasa Inggris di kelas. Tulis masukan yang konkret, spesifik, dan memotivasi berdasarkan data nilai di atas. Jangan buat poin-poin, langsung tulis dalam 1-2 kalimat paragraf mengalir.`;
+      }
     } 
     // 2. MODE: ANNOUNCEMENT-POLISH (Pemoles Pengumuman)
     else if (mode === "announcement-polish") {
