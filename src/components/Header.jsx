@@ -9,13 +9,16 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
   // Handle scroll effect on header
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
+      const sy = window.scrollY;
+      document.documentElement.style.setProperty("--scroll-y", `${sy}px`);
+      if (sy > 50) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
       }
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Run once initially to sync scroll position
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
