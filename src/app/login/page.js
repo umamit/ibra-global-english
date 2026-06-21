@@ -29,21 +29,6 @@ export default function LoginPage() {
     document.documentElement.setAttribute("data-theme", initialTheme);
   }, []);
 
-  // Bersihkan sisa sesi saat masuk ke halaman login (untuk back browser logout)
-  useEffect(() => {
-    const clearAuth = async () => {
-      try {
-        await supabase.auth.signOut();
-      } catch (err) {
-        console.error("Kesalahan keluar sesi pada login page:", err);
-      }
-      if (typeof window !== "undefined") {
-        sessionStorage.clear();
-        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      }
-    };
-    clearAuth();
-  }, []);
 
   // Fungsi toggle tema mandiri
   const toggleTheme = () => {
