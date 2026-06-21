@@ -52,6 +52,7 @@ export default function TutorPortal() {
           payload: {
             name: selectedStudent.name,
             program: selectedStudent.program,
+            module_name: moduleName,
             speaking: speakingScore || 80,
             grammar: grammarScore || 80,
             vocabulary: vocabularyScore || 80,

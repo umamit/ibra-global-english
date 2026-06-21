@@ -51,6 +51,7 @@ export default function ReportCardManagement() {
           payload: {
             name: studentName,
             program: studentProgram,
+            module_name: moduleName,
             speaking: speakingScore || 80,
             grammar: grammarScore || 80,
             vocabulary: vocabularyScore || 80,
