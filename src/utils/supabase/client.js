@@ -1,5 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr";
 import { createClient as createCoreClient } from "@supabase/supabase-js";
+import { getSupabaseConfig } from "@/utils/supabase/config";
 
 let clientInstance;
 
@@ -7,18 +8,14 @@ let clientInstance;
  * Membuat klien Supabase untuk digunakan pada Client Components (browser-side)
  */
 export function createClient() {
+  const { url, anonKey } = getSupabaseConfig();
+
   if (typeof window === "undefined") {
-    return createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzenVraXB2cnZqcmdyaWt4ZndoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQ2MTQsImV4cCI6MjA5NjQzMDYxNH0.M6rlLPNiOFowcZODVj-mmNnv8X6ZkkY-m77Lg4vdXHA"
-    );
+    return createBrowserClient(url, anonKey);
   }
 
   if (!clientInstance) {
-    clientInstance = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzenVraXB2cnZqcmdyaWt4ZndoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQ2MTQsImV4cCI6MjA5NjQzMDYxNH0.M6rlLPNiOFowcZODVj-mmNnv8X6ZkkY-m77Lg4vdXHA"
-    );
+    clientInstance = createBrowserClient(url, anonKey);
   }
 
   return clientInstance;
@@ -30,9 +27,11 @@ export function createAdminClient() {
 
 export function createServiceRoleClient() {
   const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
+  const { url } = getSupabaseConfig();
+  
   if (serviceRoleKey) {
     return createCoreClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
+      url,
       serviceRoleKey,
       {
         auth: {

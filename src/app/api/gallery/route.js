@@ -2,9 +2,12 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { getSupabaseConfig } from "@/utils/supabase/config";
+
+const { url: supabaseUrl, anonKey: supabaseAnonKey } = getSupabaseConfig();
 
 const adminSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
+  supabaseUrl,
   process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
 );
 
@@ -12,8 +15,8 @@ async function checkAdminAuth() {
   try {
     const cookieStore = await cookies();
     const supabaseAuth = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://uszukipvrvjrgrikxfwh.supabase.co",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzenVraXB2cnZqcmdyaWt4ZndoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQ2MTQsImV4cCI6MjA5NjQzMDYxNH0.M6rlLPNiOFowcZODVj-mmNnv8X6ZkkY-m77Lg4vdXHA",
+      supabaseUrl,
+      supabaseAnonKey,
       {
         cookies: {
           getAll() { return cookieStore.getAll(); },
