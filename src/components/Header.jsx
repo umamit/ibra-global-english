@@ -11,7 +11,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
     const handleScroll = () => {
       const sy = window.scrollY;
       document.documentElement.style.setProperty("--scroll-y", `${sy}px`);
-      if (sy > 50) {
+      if (sy > 40) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);

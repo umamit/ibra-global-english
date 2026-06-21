@@ -168,6 +168,24 @@ header.has-marquee {
   top: max(0px, calc(40px - var(--scroll-y, 0px)));
 }
 
+/* Native Scroll-Driven Animation (Compositor Thread - Lag Free) */
+@supports (animation-timeline: scroll()) {
+  @keyframes header-slide {
+    from {
+      top: 40px;
+    }
+    to {
+      top: 0px;
+    }
+  }
+
+  header.has-marquee {
+    animation: header-slide linear both;
+    animation-timeline: scroll();
+    animation-range: 0px 40px;
+  }
+}
+
 header.has-marquee.scrolled {
   top: 0;
 }
