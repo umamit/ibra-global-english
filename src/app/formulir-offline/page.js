@@ -78,15 +78,15 @@ export default function OfflineFormPage() {
       }}>
         
         {/* Kop Surat (Letterhead) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", paddingBottom: "0.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", paddingBottom: "0.25rem" }}>
           <img 
             src="/assets/logo.png" 
             alt="Logo Ibra Global English" 
-            style={{ width: "70px", height: "70px", objectFit: "contain" }} 
+            style={{ width: "55px", height: "55px", objectFit: "contain" }} 
           />
           <div style={{ flex: 1 }}>
             <h1 style={{ 
-              fontSize: "1.6rem", 
+              fontSize: "1.3rem", 
               fontWeight: "900", 
               color: "#1f2937", 
               margin: 0, 
@@ -96,15 +96,15 @@ export default function OfflineFormPage() {
               IBRA GLOBAL ENGLISH BOBONG
             </h1>
             <p style={{ 
-              fontSize: "0.85rem", 
+              fontSize: "0.78rem", 
               fontWeight: "700", 
               color: "#4b5563", 
-              margin: "0.2rem 0",
+              margin: "0.1rem 0",
               fontStyle: "italic" 
             }}>
               English Course & Bimbingan Belajar Calistung Terbaik di Pulau Taliabu
             </p>
-            <p style={{ fontSize: "0.75rem", color: "#6b7280", margin: 0, lineHeight: "1.4" }}>
+            <p style={{ fontSize: "0.68rem", color: "#6b7280", margin: 0, lineHeight: "1.3" }}>
               Alamat: Jl. TPU Bobong, Belakang Mes Tambang, Kost Fitrah Lantai 1, Bobong, Pulau Taliabu, Maluku Utara <br />
               WhatsApp: +62 813-5700-1357 | Website: www.ibraglobalenglish.uk
             </p>
@@ -115,19 +115,19 @@ export default function OfflineFormPage() {
         <div style={{ borderBottom: "3px double #1f2937", marginBottom: "1rem" }}></div>
 
         {/* Title */}
-        <div style={{ textAlign: "center", marginBottom: "1.25rem" }}>
-          <h2 style={{ fontSize: "1.15rem", fontWeight: "800", textTransform: "uppercase", color: "#111827", margin: 0, letterSpacing: "1px" }}>
+        <div style={{ textAlign: "center", marginBottom: "0.8rem" }}>
+          <h2 style={{ fontSize: "1.05rem", fontWeight: "800", textTransform: "uppercase", color: "#111827", margin: 0, letterSpacing: "1px" }}>
             FORMULIR PENDAFTARAN SISWA BARU
           </h2>
-          <span style={{ fontSize: "0.8rem", color: "#4b5563" }}>Silakan isi data di bawah ini dengan lengkap menggunakan huruf kapital</span>
+          <span style={{ fontSize: "0.75rem", color: "#4b5563" }}>Silakan isi data di bawah ini dengan lengkap menggunakan huruf kapital</span>
         </div>
 
         {/* Form Sections */}
-        <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }} onSubmit={(e) => e.preventDefault()}>
+        <form style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }} onSubmit={(e) => e.preventDefault()}>
           
           {/* Section 1: Data Siswa */}
           <div>
-            <h3 style={{ fontSize: "0.9rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.2rem", marginBottom: "0.6rem", color: "#1f2937", textTransform: "uppercase" }}>
+            <h3 style={{ fontSize: "0.85rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.15rem", marginBottom: "0.4rem", color: "#1f2937", textTransform: "uppercase" }}>
               A. DATA CALON SISWA
             </h3>
             
@@ -173,7 +173,7 @@ export default function OfflineFormPage() {
 
           {/* Section 2: Data Orang Tua */}
           <div>
-            <h3 style={{ fontSize: "0.9rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.2rem", marginBottom: "0.6rem", color: "#1f2937", textTransform: "uppercase" }}>
+            <h3 style={{ fontSize: "0.85rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.15rem", marginBottom: "0.4rem", color: "#1f2937", textTransform: "uppercase" }}>
               B. DATA ORANG TUA / WALI
             </h3>
             
@@ -214,51 +214,29 @@ export default function OfflineFormPage() {
 
           {/* Section 3: Program Pilihan */}
           <div>
-            <h3 style={{ fontSize: "0.9rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.2rem", marginBottom: "0.6rem", color: "#1f2937", textTransform: "uppercase" }}>
-              C. PROGRAM YANG DIMINATI
+            <h3 style={{ fontSize: "0.85rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.15rem", marginBottom: "0.4rem", color: "#1f2937", textTransform: "uppercase" }}>
+              C. PROGRAM YANG DIMINATI (Beri tanda centang ✓)
             </h3>
             
-            <p style={{ fontSize: "0.78rem", color: "#4b5563", margin: "0 0 0.5rem 0" }}>Silakan beri tanda centang (✓) pada program kursus yang dipilih:</p>
-            
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", paddingLeft: "0.5rem" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-                <span style={{ fontWeight: "bold", fontSize: "1rem" }}>[  ]</span>
-                <div>
-                  <strong style={{ fontSize: "0.85rem", color: "#1f2937" }}>Kids Program (Usia 5-12 tahun)</strong>
-                  <p style={{ fontSize: "0.75rem", color: "#4b5563", margin: 0 }}>Fokus pada kosakata dasar, percakapan interaktif, kuis, dan bernyanyi.</p>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-                <span style={{ fontWeight: "bold", fontSize: "1rem" }}>[  ]</span>
-                <div>
-                  <strong style={{ fontSize: "0.85rem", color: "#1f2937" }}>Teens Program (Usia 13-17 tahun)</strong>
-                  <p style={{ fontSize: "0.75rem", color: "#4b5563", margin: 0 }}>Fokus pada tata bahasa (grammar), menulis (writing), diskusi kelompok, dan speaking.</p>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-                <span style={{ fontWeight: "bold", fontSize: "1rem" }}>[  ]</span>
-                <div>
-                  <strong style={{ fontSize: "0.85rem", color: "#1f2937" }}>Fun Calistung (Usia 5-7 tahun)</strong>
-                  <p style={{ fontSize: "0.75rem", color: "#4b5563", margin: 0 }}>Bimbingan belajar membaca, menulis, dan berhitung dengan metode menyenangkan bagi anak usia dini.</p>
-                </div>
-              </div>
+            <div style={{ display: "flex", gap: "2.5rem", paddingLeft: "0.5rem", paddingTop: "0.15rem", fontSize: "0.78rem", color: "#1f2937", fontWeight: "600" }}>
+              <span>[  ] Kids Program (5-12 tahun)</span>
+              <span>[  ] Teens Program (13-17 tahun)</span>
+              <span>[  ] Fun Calistung (5-7 tahun)</span>
             </div>
           </div>
 
           {/* Section 4: Tanda Tangan */}
-          <div style={{ marginTop: "1rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ marginTop: "0.75rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div style={{ width: "45%", textAlign: "center" }}>
               {/* Left blank for notes or general space */}
             </div>
-            <div style={{ width: "45%", textAlign: "center", fontSize: "0.8rem", color: "#1f2937" }}>
-              <p style={{ margin: "0 0 3.25rem 0" }}>
+            <div style={{ width: "45%", textAlign: "center", fontSize: "0.78rem", color: "#1f2937" }}>
+              <p style={{ margin: "0 0 2.25rem 0" }}>
                 Bobong, ......................................... 20.... <br />
                 Orang Tua / Wali Siswa,
               </p>
               <p style={{ margin: 0, fontWeight: "bold" }}>( ........................................................ )</p>
-              <span style={{ fontSize: "0.7rem", color: "#6b7280" }}>Nama Jelas & Tanda Tangan</span>
+              <span style={{ fontSize: "0.68rem", color: "#6b7280" }}>Nama Jelas & Tanda Tangan</span>
             </div>
           </div>
 
@@ -270,8 +248,8 @@ export default function OfflineFormPage() {
         .form-print-row {
           display: flex;
           align-items: flex-end;
-          margin-bottom: 0.5rem;
-          font-size: 0.8rem;
+          margin-bottom: 0.38rem;
+          font-size: 0.78rem;
           color: #374151;
         }
         .form-print-label {
@@ -287,14 +265,18 @@ export default function OfflineFormPage() {
         .form-print-line {
           flex-grow: 1;
           border-bottom: 1px dotted #4b5563;
-          height: 1.1rem;
+          height: 1.0rem;
           margin-bottom: 2px;
         }
 
         @media print {
           @page {
             size: A4;
-            margin: 10mm 15mm 8mm 15mm;
+            margin: 8mm 12mm 8mm 12mm;
+          }
+          html, body {
+            height: 99%;
+            overflow: hidden;
           }
           .print-body-wrapper {
             background-color: white !important;
