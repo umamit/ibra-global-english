@@ -32,3 +32,9 @@ Setiap perubahan, penulisan kode baru, atau optimasi di dalam dasbor admin wajib
 1. **Hindari Bloatware**: Dilarang menginstal library/pustaka pihak ketiga baru yang tidak krusial yang dapat memperbesar ukuran bundel kompilasi (build size).
 2. **Efisiensi Bandwidth Supabase**: Hindari query database yang boros bandwidth (seperti mengambil kolom besar yang tidak diperlukan, atau memanggil query secara berulang tanpa pembatasan `.limit()` atau tanpa pagination).
 3. **Pembatasan Optimasi Gambar**: Gunakan komponen `next/image` hanya untuk gambar LCP utama dengan properti `priority`. Semua gambar kecil dan di bawah lipatan layar harus menggunakan tag `<img>` HTML biasa dengan `loading="lazy"` agar hemat kuota optimasi gambar Vercel (maksimal 1.000 gambar per bulan).
+
+## Aturan Khusus Sesi Autentikasi & Supabase Client Sisi Browser
+
+1. **Pola Klien Singleton**: Di sisi browser (client-side), gunakan pola singleton untuk `createClient()` Supabase (simpan instance di tingkat modul) agar tidak terjadi instansiasi ulang klien pada setiap siklus rendering. Ini mencegah pembersihan `useEffect` yang tidak disengaja yang dapat memicu `signOut()`.
+2. **Penyimpanan Default (Cookie-based)**: Jangan pernah melakukan override opsi penyimpanan auth Supabase (`storage`) menggunakan `window.sessionStorage` secara global pada browser client, karena hal ini merusak sinkronisasi cookie sesi otomatis dari `@supabase/ssr` ke Next.js Server Components / API middleware.
+3. **Pemisahan Logika Sesi**: Jika ingin menerapkan deteksi penutupan tab atau kedaluwarsa sesi kustom (seperti `login_time`), simpan status tersebut secara independen (misal: di cookie atau sessionStorage kustom) tanpa mengganggu penyimpanan sesi utama milik Supabase.
