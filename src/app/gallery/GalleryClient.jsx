@@ -9,13 +9,12 @@ import LightboxModal from "@/components/LightboxModal";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import { createClient } from "@/utils/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { STATIC_GALLERY } from "./galleryData";
 import { DEFAULT_VIDEOS } from "@/utils/fallbackData";
 
 export default function GalleryClient() {
   const supabase = createClient();
   const [theme, setTheme] = useState("light");
-  const [galleryItems, setGalleryItems] = useState(STATIC_GALLERY);
+  const [galleryItems, setGalleryItems] = useState([]);
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [lightbox, setLightbox] = useState({ isOpen: false, src: "", caption: "", index: 0 });
 
@@ -167,15 +166,17 @@ export default function GalleryClient() {
         if (res.ok) {
           const { data } = await res.json();
           if (data && data.length > 0) {
-            const mappedData = data.map((item) => ({
-              title: item.title,
-              desc: item.description || "",
-              thumb: item.image_url,
-              full: item.image_url,
-              caption: item.title,
-              category: item.category || "Kegiatan"
-            }));
-            setGalleryItems([...mappedData, ...STATIC_GALLERY]);
+            const mappedData = data
+              .filter((item) => item.image_url && item.image_url !== "")
+              .map((item) => ({
+                title: item.title,
+                desc: item.description || "",
+                thumb: item.image_url,
+                full: item.image_url,
+                caption: item.title,
+                category: item.category || "Kegiatan"
+              }));
+            setGalleryItems(mappedData);
             return;
           }
         }
@@ -185,18 +186,20 @@ export default function GalleryClient() {
           .select('*')
           .order('created_at', { ascending: false });
         if (oldData && oldData.length > 0) {
-          const mappedData = oldData.map((item) => ({
-            title: item.title,
-            desc: item.description || "",
-            thumb: item.image_url,
-            full: item.image_url,
-            caption: item.caption || item.title,
-            category: item.category || "Kegiatan"
-          }));
-          setGalleryItems([...mappedData, ...STATIC_GALLERY]);
+          const mappedData = oldData
+            .filter((item) => item.image_url && item.image_url !== "")
+            .map((item) => ({
+              title: item.title,
+              desc: item.description || "",
+              thumb: item.image_url,
+              full: item.image_url,
+              caption: item.caption || item.title,
+              category: item.category || "Kegiatan"
+            }));
+          setGalleryItems(mappedData);
         }
       } catch (e) {
-        console.warn("Gagal memuat galeri dari database, menggunakan data statis.", e);
+        console.warn("Gagal memuat galeri dari database.", e);
       }
     }
     fetchGallery();
@@ -242,94 +245,97 @@ export default function GalleryClient() {
       <main style={{ minHeight: "100vh", backgroundColor: "var(--color-gray-50)", padding: "7rem 1rem 8rem" }} className="gallery-page">
         <div className="container">
           
-          {/* Header Section */}
-          <div className="section-header" style={{ textAlign: "center", marginBottom: "3rem" }}>
-            <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "2px", display: "inline-block", marginBottom: "0.5rem" }}>
-              Dokumentasi Belajar
-            </span>
-            <h1 style={{ fontSize: "2.5rem", fontWeight: "900", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
-              Galeri Kegiatan Siswa
-            </h1>
-            <p style={{ color: "var(--color-gray-600)", maxWidth: "600px", margin: "0 auto", fontSize: "1.05rem" }}>
-              Keseruan proses belajar-mengajar aktif, latihan percakapan, games kelompok, dan keceriaan siswa Ibra Global English Bobong.
-            </p>
-          </div>
+          {/* Header Section & Category Tabs & Gallery Grid */}
+          {galleryItems.length > 0 && (
+            <>
+              {/* Header Section */}
+              <div className="section-header" style={{ textAlign: "center", marginBottom: "3rem" }}>
+                <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "2px", display: "inline-block", marginBottom: "0.5rem" }}>
+                  Dokumentasi Belajar
+                </span>
+                <h1 style={{ fontSize: "2.5rem", fontWeight: "900", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
+                  Galeri Kegiatan Siswa
+                </h1>
+                <p style={{ color: "var(--color-gray-600)", maxWidth: "600px", margin: "0 auto", fontSize: "1.05rem" }}>
+                  Keseruan proses belajar-mengajar aktif, latihan percakapan, games kelompok, dan keceriaan siswa Ibra Global English Bobong.
+                </p>
+              </div>
 
-          {/* Category Tabs */}
-          <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "0.75rem", marginBottom: "3rem" }}>
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={activeCategory === cat ? "btn-portal-primary" : "btn-portal-outline"}
-                style={{
-                  padding: "0.6rem 1.5rem",
-                  borderRadius: "50px",
-                  fontWeight: "700",
-                  fontSize: "0.9rem",
-                  boxShadow: activeCategory === cat ? "0 4px 12px rgba(33, 108, 126, 0.2)" : "none"
-                }}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+              {/* Category Tabs */}
+              <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "0.75rem", marginBottom: "3rem" }}>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={activeCategory === cat ? "btn-portal-primary" : "btn-portal-outline"}
+                    style={{
+                      padding: "0.6rem 1.5rem",
+                      borderRadius: "50px",
+                      fontWeight: "700",
+                      fontSize: "0.9rem",
+                      boxShadow: activeCategory === cat ? "0 4px 12px rgba(33, 108, 126, 0.2)" : "none"
+                    }}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
 
-          {/* Gallery Grid */}
-          {filteredItems.length === 0 ? null : (
-            <div className="gallery-masonry">
-              {filteredItems.map((item, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => openLightbox(item.full, item.caption, idx)}
-                  className="gallery-masonry-item"
-                >
-                  <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
-                    <img
-                      src={item.thumb}
-                      alt={item.caption || "Foto kegiatan belajar mengajar aktif di Ibra Global English Bobong"}
-                      loading="lazy"
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        display: "block",
-                        transition: "transform 0.5s ease"
-                      }}
-                      className="gallery-item-image"
-                    />
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        backgroundColor: "rgba(33, 108, 126, 0.4)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        opacity: 0,
-                        transition: "opacity 0.3s ease"
-                      }}
-                      className="gallery-item-overlay"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-                      </svg>
+              {/* Gallery Grid */}
+              <div className="gallery-masonry">
+                {filteredItems.map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => openLightbox(item.full, item.caption, idx)}
+                    className="gallery-masonry-item"
+                  >
+                    <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
+                      <img
+                        src={item.thumb}
+                        alt={item.caption || "Foto kegiatan belajar mengajar aktif di Ibra Global English Bobong"}
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                          display: "block",
+                          transition: "transform 0.5s ease"
+                        }}
+                        className="gallery-item-image"
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          backgroundColor: "rgba(33, 108, 126, 0.4)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          opacity: 0,
+                          transition: "opacity 0.3s ease"
+                        }}
+                        className="gallery-item-overlay"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                          <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div style={{ padding: "1.25rem" }}>
+                      <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", display: "inline-block", marginBottom: "0.25rem" }}>
+                        {item.category}
+                      </span>
+                      <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.35rem" }}>
+                        {item.title}
+                      </h3>
+                      <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", lineHeight: "1.4" }}>
+                        {item.desc}
+                      </p>
                     </div>
                   </div>
-                  <div style={{ padding: "1.25rem" }}>
-                    <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", display: "inline-block", marginBottom: "0.25rem" }}>
-                      {item.category}
-                    </span>
-                    <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.35rem" }}>
-                      {item.title}
-                    </h3>
-                    <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", lineHeight: "1.4" }}>
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
 
           {/* Dedicated Video Gallery Section */}
