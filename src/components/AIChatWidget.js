@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-
-function parseMarkdown(text) {
-  if (!text) return "";
-  return text
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/`(.+?)`/g, "<code>$1</code>")
-    .replace(/\n/g, "<br/>");
-}
+import { parseMarkdownSecure } from "@/utils/security";
 
 export default function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -238,7 +230,7 @@ export default function AIChatWidget() {
                 </div>
               )}
               <div className="ai-msg-bubble-wrap">
-                <div className="ai-msg-bubble" dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />
+                <div className="ai-msg-bubble" dangerouslySetInnerHTML={{ __html: parseMarkdownSecure(msg.content) }} />
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", marginTop: "4px" }}>
                   <div className="ai-msg-time">{formatTime(msg.timestamp)}</div>
                   {msg.role === "assistant" && (

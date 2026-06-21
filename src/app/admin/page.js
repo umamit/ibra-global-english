@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient, createAdminClient } from "@/utils/supabase/client";
+import { parseMarkdownSecure } from "@/utils/security";
 
 export default function AdminDashboard() {
   const supabase = createClient();
@@ -23,14 +24,14 @@ export default function AdminDashboard() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
 
-  const fetchAiInsights = async () => {
+  const fetchAiInsights = async (force = false) => {
     setAiLoading(true);
     setAiError("");
     try {
       const res = await fetch("/api/admin/ai-assist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "insights" })
+        body: JSON.stringify({ mode: "insights", forceRefresh: force })
       });
       const data = await res.json();
       if (res.ok && data.reply) {
@@ -46,12 +47,7 @@ export default function AdminDashboard() {
   };
 
   const formatMarkdown = (text) => {
-    if (!text) return "";
-    return text
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/^- (.*)$/gm, "• $1<br/>")
-      .replace(/\n/g, "<br/>");
+    return parseMarkdownSecure(text);
   };
 
   useEffect(() => {
@@ -185,7 +181,7 @@ export default function AdminDashboard() {
                 <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", margin: 0 }}>Analisis AI Insights & Rekomendasi</h3>
               </div>
               <button 
-                onClick={fetchAiInsights} 
+                onClick={() => fetchAiInsights(true)} 
                 style={{ fontSize: "0.75rem", padding: "4px 10px", borderRadius: "4px", backgroundColor: "rgba(166, 136, 73, 0.1)", color: "var(--color-accent)", border: "1px solid rgba(166, 136, 73, 0.2)", cursor: "pointer", fontWeight: "bold" }}
                 disabled={aiLoading}
               >

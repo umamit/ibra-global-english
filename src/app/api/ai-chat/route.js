@@ -1,6 +1,35 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { getSupabaseConfig } from "@/utils/supabase/config";
+import { detectPromptInjection } from "@/utils/security";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const { url: supabaseUrl } = getSupabaseConfig();
+
+const adminSupabase = createClient(
+  supabaseUrl,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
+);
+
+// Logger penggunaan AI ke dalam database (untuk publik)
+async function logAiUsage(tokensUsed, status, errorMessage = null) {
+  try {
+    const { error } = await adminSupabase.from("ai_usage_logs").insert({
+      user_id: null,
+      email: null,
+      role: "public",
+      mode: "public-chat",
+      tokens_used: tokensUsed || null,
+      status: status,
+      error_message: errorMessage || null
+    });
+    if (error) {
+      console.warn("Failed to write to ai_usage_logs table (make sure migrations are run):", error.message);
+    }
+  } catch (e) {
+    console.warn("Error inserting public AI log:", e.message);
+  }
+}
 
 const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Global English Bobong**, sebuah lembaga kursus bahasa Inggris terkemuka yang berlokasi di Bobong, Pulau Taliabu, Maluku Utara, Indonesia.
 
@@ -69,6 +98,16 @@ export async function POST(request) {
       );
     }
 
+    // 1. Validasi Keamanan: Cek Prompt Injection pada pesan terakhir user
+    const lastUserMessage = messages[messages.length - 1]?.content;
+    if (detectPromptInjection(lastUserMessage)) {
+      await logAiUsage(0, "failed", "Prompt Injection Blocked");
+      return NextResponse.json(
+        { error: "Aktivitas mencurigakan terdeteksi. Silakan kirim pesan yang wajar." },
+        { status: 400 }
+      );
+    }
+
     // Format messages for OpenAI / Groq compatibility
     const formattedMessages = [
       { role: "system", content: SYSTEM_PROMPT },
@@ -97,6 +136,8 @@ export async function POST(request) {
     if (!response.ok) {
       console.error("Groq API error response:", data);
       const errMsg = data?.error?.message || "Gagal mendapat respons dari server Groq.";
+      await logAiUsage(0, "failed", errMsg);
+
       if (response.status === 401 || response.status === 403) {
         return NextResponse.json(
           { error: "❌ API Key Groq tidak valid. Periksa konfigurasi API Anda." },
@@ -116,17 +157,23 @@ export async function POST(request) {
     }
 
     const aiText = data?.choices?.[0]?.message?.content;
+    const tokensUsed = data?.usage?.total_tokens || 0;
 
     if (!aiText) {
+      await logAiUsage(0, "failed", "AI text response was empty");
       return NextResponse.json(
         { error: "AI tidak dapat menghasilkan respons saat ini." },
         { status: 500 }
       );
     }
 
+    // Log sukses pemakaian AI
+    await logAiUsage(tokensUsed, "success");
+
     return NextResponse.json({ reply: aiText });
   } catch (err) {
     console.error("AI Chat error:", err);
+    await logAiUsage(0, "failed", err.message);
     return NextResponse.json(
       { error: "Terjadi kesalahan pada server AI Groq. Silakan coba lagi." },
       { status: 500 }

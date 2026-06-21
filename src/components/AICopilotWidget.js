@@ -1,16 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-
-function parseMarkdown(text) {
-  if (!text) return "";
-  return text
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/`(.+?)`/g, "<code>$1</code>")
-    .replace(/^- (.*)$/gm, "• $1<br/>")
-    .replace(/\n/g, "<br/>");
-}
+import { parseMarkdownSecure } from "@/utils/security";
 
 export default function AICopilotWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -182,7 +173,7 @@ export default function AICopilotWidget() {
                   backgroundColor: msg.role === "user" ? "var(--color-primary-dark)" : "white",
                   color: msg.role === "user" ? "white" : "var(--color-gray-800)",
                   border: msg.role === "user" ? "none" : "1px solid var(--color-gray-150)"
-                }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />
+                }} dangerouslySetInnerHTML={{ __html: parseMarkdownSecure(msg.content) }} />
                 <div className="ai-msg-time">{formatTime(msg.timestamp)}</div>
               </div>
             </div>
