@@ -12,6 +12,32 @@ const getMonthName = (ym) => {
   return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
 };
 
+const terbilang = (n) => {
+  const bilangan = [
+    "", "Satu", "Dua", "Tiga", "Empat", "Lima",
+    "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"
+  ];
+  const num = parseInt(n);
+  if (num < 12) {
+    return bilangan[num];
+  } else if (num < 20) {
+    return terbilang(num - 10) + " Belas";
+  } else if (num < 100) {
+    return terbilang(Math.floor(num / 10)) + " Puluh " + terbilang(num % 10);
+  } else if (num < 200) {
+    return "Seratus " + terbilang(num - 100);
+  } else if (num < 1000) {
+    return terbilang(Math.floor(num / 100)) + " Ratus " + terbilang(num % 100);
+  } else if (num < 2000) {
+    return "Seribu " + terbilang(num - 1000);
+  } else if (num < 1000000) {
+    return terbilang(Math.floor(num / 1000)) + " Ribu " + terbilang(num % 1000);
+  } else if (num < 1000000000) {
+    return terbilang(Math.floor(num / 1000000)) + " Juta " + terbilang(num % 1000000);
+  }
+  return "";
+};
+
 export default function AdminFinance() {
   const supabase = createClient();
 
@@ -378,6 +404,250 @@ export default function AdminFinance() {
     return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(num);
   };
 
+  const handlePrintReceipt = (student, pay) => {
+    const formattedAmount = formatRupiah(pay.amount);
+    const amountInWords = (terbilang(pay.amount) || "Nol").trim() + " Rupiah";
+    const receiptNo = `INV/${pay.month.replace("-", "")}/${student.id.substring(0, 6).toUpperCase()}`;
+    const paymentDateStr = pay.payment_date 
+      ? new Date(pay.payment_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
+      : new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+    const monthName = getMonthName(pay.month);
+
+    const printWindow = window.open("", "_blank", "width=850,height=650");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Kuitansi Pembayaran SPP - ${student.name}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+            body {
+              font-family: 'Outfit', sans-serif;
+              color: #1e293b;
+              background-color: #fff;
+              margin: 0;
+              padding: 40px;
+            }
+            .receipt-container {
+              border: 2px solid #216c7e;
+              padding: 30px;
+              position: relative;
+              max-width: 700px;
+              margin: 0 auto;
+              background-color: #fff;
+            }
+            .header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              border-bottom: 2px solid #216c7e;
+              padding-bottom: 15px;
+              margin-bottom: 25px;
+            }
+            .logo-text h1 {
+              font-size: 1.5rem;
+              font-weight: 800;
+              color: #216c7e;
+              margin: 0;
+              letter-spacing: 0.03em;
+            }
+            .logo-text p {
+              font-size: 0.8rem;
+              color: #64748b;
+              margin: 3px 0 0 0;
+              font-weight: 500;
+            }
+            .receipt-title {
+              text-align: right;
+            }
+            .receipt-title h2 {
+              font-size: 2rem;
+              font-weight: 800;
+              color: #216c7e;
+              margin: 0;
+              text-transform: uppercase;
+              letter-spacing: 0.1em;
+            }
+            .receipt-title p {
+              font-size: 0.85rem;
+              color: #475569;
+              margin: 5px 0 0 0;
+              font-weight: 700;
+              font-family: monospace;
+            }
+            .content-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 30px;
+            }
+            .content-table td {
+              padding: 12px 0;
+              vertical-align: middle;
+              font-size: 0.95rem;
+            }
+            .content-table td.label {
+              width: 170px;
+              font-weight: 600;
+              color: #475569;
+              text-transform: uppercase;
+              font-size: 0.8rem;
+              letter-spacing: 0.05em;
+            }
+            .content-table td.value {
+              color: #0f172a;
+            }
+            .dotted-underline {
+              border-bottom: 1.5px dotted #cbd5e1;
+              display: block;
+              padding-bottom: 3px;
+            }
+            .amount-box {
+              background-color: #f8fafc;
+              border: 2.5px solid #216c7e;
+              padding: 12px 25px;
+              font-size: 1.4rem;
+              font-weight: 800;
+              color: #216c7e;
+              display: inline-block;
+              margin-top: 5px;
+              border-radius: 4px;
+              letter-spacing: 0.02em;
+            }
+            .footer-section {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+              margin-top: 40px;
+            }
+            .note {
+              font-size: 0.75rem;
+              color: #64748b;
+              max-width: 320px;
+              line-height: 1.4;
+            }
+            .signature {
+              text-align: center;
+              width: 220px;
+            }
+            .signature p {
+              margin: 0;
+              font-size: 0.85rem;
+              color: #475569;
+            }
+            .signature .name {
+              font-weight: 700;
+              color: #0f172a;
+              margin-top: 75px;
+              border-bottom: 1.5px solid #0f172a;
+              padding-bottom: 4px;
+              display: inline-block;
+              width: 100%;
+              text-transform: uppercase;
+              font-size: 0.9rem;
+              letter-spacing: 0.03em;
+            }
+            .watermark {
+              position: absolute;
+              top: 55%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-15deg);
+              font-size: 4.5rem;
+              font-weight: 900;
+              color: rgba(33, 108, 126, 0.04);
+              text-transform: uppercase;
+              letter-spacing: 0.15em;
+              white-space: nowrap;
+              pointer-events: none;
+              user-select: none;
+            }
+            @media print {
+              body {
+                padding: 0;
+              }
+              .receipt-container {
+                border: 2px solid #000;
+              }
+              .amount-box {
+                background-color: #fff !important;
+                border: 2px solid #000;
+              }
+              .watermark {
+                color: rgba(0, 0, 0, 0.02);
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="receipt-container">
+            <div class="watermark">IBRA GLOBAL</div>
+            
+            <div class="header">
+              <div class="logo-text">
+                <h1>IBRA GLOBAL ENGLISH</h1>
+                <p>Jl. TPU Bobong, Pulau Taliabu, Maluku Utara</p>
+                <p>HP/WA: +62 813-5700-1357 | Email: admin@ibraglobalenglish.uk</p>
+              </div>
+              <div class="receipt-title">
+                <h2>Kuitansi</h2>
+                <p>No: ${receiptNo}</p>
+              </div>
+            </div>
+            
+            <table class="content-table">
+              <tr>
+                <td class="label">Diterima Dari</td>
+                <td class="value">
+                  <span class="dotted-underline"><strong>${student.profiles?.full_name || "-"}</strong> (Orang Tua/Wali dari <strong>${student.name}</strong>)</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">Untuk Pembayaran</td>
+                <td class="value">
+                  <span class="dotted-underline">SPP Bimbingan Belajar Program <strong>${student.program}</strong> - Bulan <strong>${monthName}</strong></span>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">Sejumlah Uang</td>
+                <td class="value">
+                  <span class="dotted-underline" style="font-style: italic; font-weight: 600;"># ${amountInWords} #</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">Metode Bayar</td>
+                <td class="value">
+                  <span class="dotted-underline">${pay.payment_method || "Transfer Bank"}</span>
+                </td>
+              </tr>
+            </table>
+            
+            <div class="footer-section">
+              <div>
+                <p style="margin: 0; font-size: 0.85rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">Jumlah Nominal:</p>
+                <div class="amount-box">${formattedAmount}</div>
+                <div class="note" style="margin-top: 15px;">
+                  * Bukti pembayaran ini diterbitkan secara sah dan elektronik.<br/>
+                  * Pembayaran yang telah lunas tidak dapat ditarik kembali.
+                </div>
+              </div>
+              
+              <div class="signature">
+                <p>Bobong, ${paymentDateStr}</p>
+                <p style="margin-top: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Penerima / Admin,</p>
+                <span class="name">Husnita Usman, M.Pd.</span>
+                <p style="margin-top: 5px; font-size: 0.75rem; font-weight: 600; color: #64748b;">Ibra Global English</p>
+              </div>
+            </div>
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+            }
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   return (
     <div style={{ padding: "1.5rem 1rem", maxWidth: "1200px", margin: "0 auto" }}>
       {/* Toast Alert */}
@@ -635,6 +905,16 @@ export default function AdminFinance() {
                             Setujui Lunas
                           </button>
                         )}
+                        {pay.status === "lunas" && (
+                          <button
+                            onClick={() => handlePrintReceipt(student, pay)}
+                            className="btn-portal-outline"
+                            style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem", borderColor: "var(--color-primary-dark)", color: "var(--color-primary-dark)" }}
+                            title="Cetak Kuitansi Pembayaran"
+                          >
+                            🖨️ Kuitansi
+                          </button>
+                        )}
                         <button
                           onClick={() => handleOpenEditModal(student)}
                           className="btn-portal-outline"
@@ -836,6 +1116,24 @@ export default function AdminFinance() {
                   paddingTop: "1rem",
                 }}
               >
+                {modalStatus === "lunas" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const payObj = {
+                        amount: modalAmount,
+                        month: selectedMonth,
+                        payment_method: modalMethod,
+                        payment_date: getStudentPayment(modalStudent.id).payment_date
+                      };
+                      handlePrintReceipt(modalStudent, payObj);
+                    }}
+                    className="btn-portal-outline"
+                    style={{ padding: "0.5rem 1.2rem", fontWeight: "600", color: "#10b981", borderColor: "#10b981", marginRight: "auto" }}
+                  >
+                    🖨️ Cetak Kuitansi
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
