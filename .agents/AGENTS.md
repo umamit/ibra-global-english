@@ -38,3 +38,14 @@ Setiap perubahan, penulisan kode baru, atau optimasi di dalam dasbor admin wajib
 1. **Pola Klien Singleton**: Di sisi browser (client-side), gunakan pola singleton untuk `createClient()` Supabase (simpan instance di tingkat modul) agar tidak terjadi instansiasi ulang klien pada setiap siklus rendering. Ini mencegah pembersihan `useEffect` yang tidak disengaja yang dapat memicu `signOut()`.
 2. **Penyimpanan Default (Cookie-based)**: Jangan pernah melakukan override opsi penyimpanan auth Supabase (`storage`) menggunakan `window.sessionStorage` secara global pada browser client, karena hal ini merusak sinkronisasi cookie sesi otomatis dari `@supabase/ssr` ke Next.js Server Components / API middleware.
 3. **Pemisahan Logika Sesi**: Jika ingin menerapkan deteksi penutupan tab atau kedaluwarsa sesi kustom (seperti `login_time`), simpan status tersebut secara independen (misal: di cookie atau sessionStorage kustom) tanpa mengganggu penyimpanan sesi utama milik Supabase.
+
+## Aturan Khusus Content Security Policy (CSP) & Integrasi Cloudflare (Zaraz, GTM, Rocket Loader)
+
+Untuk mencegah pemblokiran total JavaScript di lingkungan produksi akibat intervensi proksi edge Cloudflare atau injeksi pihak ketiga:
+1. **Larangan 'strict-dynamic' dengan Nonce pada script-src**: Dilarang menggunakan kombinasi `'strict-dynamic'` dan `'nonce-...'` pada directive `script-src` di dalam header CSP jika situs terintegrasi dengan Cloudflare Zaraz, Google Tag Manager, atau Rocket Loader. Proksi edge ini menyuntikkan script dinamis/inline tanpa nonce, yang menyebabkan browser mengabaikan `'unsafe-inline'` dan memblokir seluruh JavaScript (merusak hidrasi React/Next.js).
+2. **Whitelist Asal Domain Aman**: Gunakan kombinasi `'self'` dan `'unsafe-inline'`, serta tambahkan whitelist domain eksternal tepercaya pada `script-src`:
+   * Google Tag Manager: `https://www.googletagmanager.com`
+   * Cloudflare Scripts/Zaraz: `https://*.cloudflare.com`
+   * Cloudflare Analytics: `https://static.cloudflareinsights.com` dan `https://*.cloudflareinsights.com`
+3. **Verifikasi Headers & Purge Cache**: Setiap kali melakukan perubahan middleware/routing header, lakukan verifikasi via request browser simulasi untuk memastikan header baru sudah live di Vercel, dan ingatkan pengguna untuk melakukan pembersihan cache Cloudflare (*Purge Cache*) agar browser tidak memuat HTML usang.
+
