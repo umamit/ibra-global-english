@@ -82,16 +82,17 @@ export default function GalleryClient() {
     };
   }, [allowPublicCopy]);
 
-  // Auto-convert standard YouTube links to embed format
+  // Auto-convert standard YouTube links to privacy-enhanced embed format
   const getEmbedUrl = (url) => {
     if (!url) return "";
     
+    // Convert to youtube-nocookie.com domain to prevent Error 153 and enhance privacy
     // 1. YouTube watch link: https://www.youtube.com/watch?v=XXXX
     if (url.includes("youtube.com/watch")) {
       try {
         const urlObj = new URL(url);
         const v = urlObj.searchParams.get("v");
-        if (v) return `https://www.youtube.com/embed/${v}`;
+        if (v) return `https://www.youtube-nocookie.com/embed/${v}`;
       } catch (e) {}
     }
     
@@ -99,14 +100,19 @@ export default function GalleryClient() {
     if (url.includes("youtu.be/")) {
       const parts = url.split("/");
       const id = parts[parts.length - 1]?.split("?")[0];
-      if (id) return `https://www.youtube.com/embed/${id}`;
+      if (id) return `https://www.youtube-nocookie.com/embed/${id}`;
     }
     
     // 3. YouTube shorts link: https://www.youtube.com/shorts/XXXX
     if (url.includes("youtube.com/shorts/")) {
       const parts = url.split("/shorts/");
       const id = parts[1]?.split("?")[0];
-      if (id) return `https://www.youtube.com/embed/${id}`;
+      if (id) return `https://www.youtube-nocookie.com/embed/${id}`;
+    }
+    
+    // Fallback if the URL already has youtube.com/embed/
+    if (url.includes("youtube.com/embed/")) {
+      return url.replace("youtube.com/embed/", "youtube-nocookie.com/embed/");
     }
     
     return url;
@@ -391,6 +397,7 @@ export default function GalleryClient() {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                         loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         style={{ 
                           position: "absolute", 
                           top: 0, 
