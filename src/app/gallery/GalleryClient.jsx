@@ -207,7 +207,10 @@ export default function GalleryClient() {
     ? galleryItems 
     : galleryItems.filter(item => item.category === activeCategory);
 
-  const categories = ["Semua", "Kegiatan", "Prestasi", "Fasilitas", "Kelas Online", "Kids Program", "Teens Program"];
+  const allCategories = ["Semua", "Kegiatan", "Prestasi", "Fasilitas", "Kelas Online", "Kids Program", "Teens Program"];
+  const categories = allCategories.filter(cat => 
+    cat === "Semua" || galleryItems.some(item => item.category === cat)
+  );
 
   const openLightbox = (src, caption, index) => {
     setLightbox({ isOpen: true, src, caption, index });
@@ -273,11 +276,7 @@ export default function GalleryClient() {
           </div>
 
           {/* Gallery Grid */}
-          {filteredItems.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "4rem 1rem", color: "var(--color-gray-500)" }}>
-              Tidak ada foto di kategori ini.
-            </div>
-          ) : (
+          {filteredItems.length === 0 ? null : (
             <div className="gallery-masonry">
               {filteredItems.map((item, idx) => (
                 <div
