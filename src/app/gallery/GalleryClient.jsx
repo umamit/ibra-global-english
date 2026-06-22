@@ -186,24 +186,8 @@ export default function GalleryClient() {
             return;
           }
         }
-        // Fallback ke tabel gallery lama
-        const { data: oldData } = await supabase
-          .from('gallery')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (oldData && oldData.length > 0) {
-          const mappedData = oldData
-            .filter((item) => item.image_url && item.image_url !== "")
-            .map((item) => ({
-              title: item.title,
-              desc: item.description || "",
-              thumb: item.image_url,
-              full: item.image_url,
-              caption: item.caption || item.title,
-              category: item.category || "Kegiatan"
-            }));
-          setGalleryItems(mappedData);
-        }
+        // Jika API gagal atau tidak ada data, gunakan data fallback statis
+        console.warn("Gagal memuat galeri dari API. Menggunakan data default (statis).");
       } catch (e) {
         console.warn("Gagal memuat galeri dari database.", e);
       }

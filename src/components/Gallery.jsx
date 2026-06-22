@@ -75,8 +75,10 @@ export default function Gallery({ onOpenLightbox }) {
     async function fetchGallery() {
       try {
         const { data, error } = await supabase
-          .from('gallery')
+          .from('gallery_items')
           .select('*')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true })
           .order('created_at', { ascending: false });
         if (error) throw error;
         if (data && data.length > 0) {

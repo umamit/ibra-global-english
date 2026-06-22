@@ -1,35 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { getSupabaseConfig } from "@/utils/supabase/config";
+import { checkAdminAuth } from "@/utils/supabase/adminAuth";
 
-const { url: supabaseUrl, anonKey: supabaseAnonKey } = getSupabaseConfig();
+const { url: supabaseUrl } = getSupabaseConfig();
 
 const adminSupabase = createClient(
   supabaseUrl,
   process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
 );
-
-async function checkAdminAuth() {
-  try {
-    const cookieStore = await cookies();
-    const supabaseAuth = createServerClient(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll(); },
-          setAll() {},
-        },
-      }
-    );
-    const { data: { user } } = await supabaseAuth.auth.getUser();
-    return user?.user_metadata?.role === "admin";
-  } catch {
-    return false;
-  }
-}
 
 // GET: Ambil semua pengumuman aktif (bisa filter program)
 export async function GET(request) {

@@ -1,10 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { getSupabaseConfig } from "@/utils/supabase/config";
+import { checkAdminAuth } from "@/utils/supabase/adminAuth";
 
-const { url: supabaseUrl, anonKey: supabaseAnonKey } = getSupabaseConfig();
+const { url: supabaseUrl } = getSupabaseConfig();
 
 // Server-side only: uses service role key to bypass RLS
 const supabaseAdmin = createClient(
@@ -12,26 +11,6 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key",
   { auth: { persistSession: false } }
 );
-
-async function checkAdminAuth() {
-  try {
-    const cookieStore = await cookies();
-    const supabaseAuth = createServerClient(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll(); },
-          setAll() {},
-        },
-      }
-    );
-    const { data: { user } } = await supabaseAuth.auth.getUser();
-    return user?.user_metadata?.role === "admin";
-  } catch {
-    return false;
-  }
-}
 
 export async function POST(req) {
   try {
@@ -134,9 +113,10 @@ export async function PATCH(req) {
         .single();
 
       if (reg) {
+        const validAge = reg.student_age && reg.student_age > 0 ? reg.student_age : 5;
         await supabaseAdmin.from("students").insert({
           name: reg.student_name,
-          age: reg.student_age || 0,
+          age: validAge,
           program: reg.program,
           parent_id: null,
         });

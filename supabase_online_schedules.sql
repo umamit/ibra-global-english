@@ -1,7 +1,7 @@
 -- B2: Tabel online_schedules untuk Jadwal Kelas Online
 -- Jalankan di Supabase SQL Editor
 
-CREATE TABLE IF NOT EXISTS online_schedules (
+CREATE TABLE IF NOT EXISTS public.online_schedules (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,                          -- Contoh: "Sesi Speaking Practice"
   program TEXT NOT NULL,                        -- 'Kids Program', 'Teens Program', 'Fun Calistung'
@@ -16,21 +16,22 @@ CREATE TABLE IF NOT EXISTS online_schedules (
 );
 
 -- Enable RLS
-ALTER TABLE online_schedules ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.online_schedules ENABLE ROW LEVEL SECURITY;
 
 -- Policy: authenticated user bisa baca jadwal aktif yang akan datang
 CREATE POLICY "Authenticated users bisa baca jadwal online aktif"
-ON online_schedules FOR SELECT
+ON public.online_schedules FOR SELECT
 TO authenticated
 USING (is_active = TRUE);
 
--- Policy: service role bisa semua operasi
-CREATE POLICY "Service role bisa semua operasi di online_schedules"
-ON online_schedules FOR ALL
-TO service_role
-USING (TRUE)
-WITH CHECK (TRUE);
+-- Policy: Admin bisa semua operasi (CRUD jadwal online)
+DROP POLICY IF EXISTS "Admin full access to online_schedules" ON public.online_schedules;
+CREATE POLICY "Admin full access to online_schedules"
+ON public.online_schedules FOR ALL
+TO authenticated
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
 
 -- Index
-CREATE INDEX IF NOT EXISTS idx_online_schedules_active ON online_schedules(is_active, scheduled_at DESC);
-CREATE INDEX IF NOT EXISTS idx_online_schedules_program ON online_schedules(program, scheduled_at);
+CREATE INDEX IF NOT EXISTS idx_online_schedules_active ON public.online_schedules(is_active, scheduled_at DESC);
+CREATE INDEX IF NOT EXISTS idx_online_schedules_program ON public.online_schedules(program, scheduled_at);

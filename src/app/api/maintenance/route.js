@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { getSupabaseConfig } from "@/utils/supabase/config";
+import { checkAdminAuth } from "@/utils/supabase/adminAuth";
 
 export const dynamic = 'force-dynamic';
 
@@ -30,23 +30,7 @@ export async function GET() {
 // POST: ubah status maintenance (hanya admin)
 export async function POST(request) {
   try {
-    // Verifikasi bahwa request berasal dari admin yang terautentikasi
-    const cookieStore = await cookies();
-    const supabaseAuth = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll(); },
-          setAll() {},
-        },
-      }
-    );
-
-    const { data: { user } } = await supabaseAuth.auth.getUser();
-    const role = user?.user_metadata?.role;
-
-    if (!user || role !== "admin") {
+    if (!(await checkAdminAuth())) {
       return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang dapat mengubah mode maintenance." }, { status: 403 });
     }
 
@@ -57,8 +41,9 @@ export async function POST(request) {
     }
 
     // Gunakan service role key untuk bypass RLS
+    const { url: supabaseUrl } = getSupabaseConfig();
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      supabaseUrl,
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
