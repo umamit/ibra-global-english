@@ -41,6 +41,14 @@ export async function generateMetadata() {
       template: `%s | ${heroTitle}`,
     },
     description,
+    keywords: [
+      "kursus bahasa inggris bobong",
+      "ibra global english bobong",
+      "kursus inggris taliabu",
+      "les bahasa inggris bobong",
+      "bimbel calistung bobong",
+      "belajar bahasa inggris taliabu"
+    ],
     metadataBase: new URL("https://www.ibraglobalenglish.uk"),
     alternates: {
       canonical: "/",
