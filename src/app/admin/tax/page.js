@@ -412,8 +412,44 @@ export default function AdminTaxPage() {
         </div>
       )}
 
+      {/* Kop Laporan Resmi (Hanya muncul saat dicetak) */}
+      <div className="print-only" style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", borderBottom: "3px double #1f2937", paddingBottom: "0.75rem" }}>
+          <img 
+            src="/assets/logo.png" 
+            alt="Logo Ibra Global English" 
+            style={{ width: "65px", height: "65px", objectFit: "contain" }} 
+          />
+          <div style={{ flex: 1 }}>
+            <h1 style={{ 
+              fontSize: "1.4rem", 
+              fontWeight: "900", 
+              color: "#111827", 
+              margin: 0, 
+              letterSpacing: "0.5px", 
+              textTransform: "uppercase" 
+            }}>
+              IBRA GLOBAL ENGLISH BOBONG
+            </h1>
+            <p style={{ 
+              fontSize: "0.85rem", 
+              fontWeight: "700", 
+              color: "#4b5563", 
+              margin: "0.1rem 0",
+              fontStyle: "italic" 
+            }}>
+              English Course & Bimbingan Belajar Calistung Terbaik di Pulau Taliabu
+            </p>
+            <p style={{ fontSize: "0.7rem", color: "#6b7280", margin: 0, lineHeight: "1.3" }}>
+              Alamat: Jl. TPU Bobong, Belakang Mes Tambang, Kost Fitrah Lantai 1, Bobong, Pulau Taliabu, Maluku Utara <br />
+              WhatsApp: +62 813-5700-1357 | Website: www.ibraglobalenglish.uk
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Top Header */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
+      <div className="no-print" style={{ display: "flex", flexDirection: "column", gap: "0.25rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
         <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>
           SPT Pajak PT Perseorangan
         </h1>
@@ -423,7 +459,7 @@ export default function AdminTaxPage() {
       </div>
 
       {/* Sub Tab Switching */}
-      <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
+      <div className="no-print" style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
         <button
           onClick={() => setActiveSubTab("calculator")}
           className={`btn-portal-outline ${activeSubTab === "calculator" ? "active" : ""}`}
@@ -515,7 +551,7 @@ export default function AdminTaxPage() {
               </div>
 
               {/* Hasil Perhitungan */}
-              <div className="portal-card" style={{ padding: "2rem", display: "flex", flexDirection: "column", justifyContent: "space-between", border: resultFinal ? "2px solid var(--color-primary)" : undefined }}>
+              <div className="portal-card print-card" style={{ padding: "2rem", display: "flex", flexDirection: "column", justifyContent: "space-between", border: resultFinal ? "2px solid var(--color-primary)" : undefined }}>
                 <div>
                   <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.25rem" }}>
                     Hasil Analisis PPh Final 0.5%
@@ -546,10 +582,36 @@ export default function AdminTaxPage() {
                 </div>
 
                 {resultFinal && (
-                  <div style={{ marginTop: "1rem", backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "10px", borderLeft: "4px solid var(--color-primary)" }}>
-                    <p style={{ fontSize: "0.8rem", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>
-                      💡 **Catatan Kepatuhan**: PPh Final 0.5% Badan PT Perseorangan berlaku maksimal 4 tahun pajak sejak didirikan. Penyetoran bulanan paling lambat tanggal 15 bulan berikutnya, dan pelaporan SPT Tahunan paling lambat 30 April tahun berikutnya.
-                    </p>
+                  <div>
+                    <div style={{ marginTop: "1rem", backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "10px", borderLeft: "4px solid var(--color-primary)" }}>
+                      <p style={{ fontSize: "0.8rem", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>
+                        💡 **Catatan Kepatuhan**: PPh Final 0.5% Badan PT Perseorangan berlaku maksimal 4 tahun pajak sejak didirikan. Penyetoran bulanan paling lambat tanggal 15 bulan berikutnya, dan pelaporan SPT Tahunan paling lambat 30 April tahun berikutnya.
+                      </p>
+                    </div>
+                    <div className="no-print" style={{ display: "flex", gap: "0.5rem", marginTop: "1.25rem" }}>
+                      <button
+                        onClick={() => window.print()}
+                        className="btn-portal-primary"
+                        style={{ flex: 1, padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
+                      >
+                        🖨️ Cetak Hasil (PDF)
+                      </button>
+                      <button
+                        onClick={() => {
+                          setFormYear(new Date().getFullYear());
+                          setFormPeriod("Bulanan");
+                          setFormType("PPh Final 0.5% (PP 55/2022)");
+                          setFormRevenue(resultFinal.revenue);
+                          setFormTaxDue(resultFinal.taxDue);
+                          setActiveSubTab("archive");
+                          showToast("Form arsip berhasil diisi otomatis, silakan klik 'Rekam Laporan SPT'!");
+                        }}
+                        className="btn-portal-outline"
+                        style={{ padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
+                      >
+                        💾 Simpan ke Arsip
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -561,7 +623,7 @@ export default function AdminTaxPage() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "2rem" }}>
               
               {/* Form Input */}
-              <div className="portal-card" style={{ padding: "2rem" }}>
+              <div className="portal-card no-print" style={{ padding: "2rem" }}>
                 <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.25rem" }}>
                   Simulasi Pajak PPh Badan (Fasilitas 31E)
                 </h3>
@@ -616,7 +678,7 @@ export default function AdminTaxPage() {
               </div>
 
               {/* Hasil Perhitungan */}
-              <div className="portal-card" style={{ padding: "2rem", display: "flex", flexDirection: "column", justifyContent: "space-between", border: resultBadan ? "2px solid var(--color-primary)" : undefined }}>
+              <div className="portal-card print-card" style={{ padding: "2rem", display: "flex", flexDirection: "column", justifyContent: "space-between", border: resultBadan ? "2px solid var(--color-primary)" : undefined }}>
                 <div>
                   <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.25rem" }}>
                     Hasil Analisis PPh Badan
@@ -655,10 +717,36 @@ export default function AdminTaxPage() {
                 </div>
 
                 {resultBadan && (
-                  <div style={{ marginTop: "1rem", backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "10px", borderLeft: "4px solid var(--color-primary)" }}>
-                    <p style={{ fontSize: "0.8rem", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>
-                      ℹ️ **Aturan HPP**: Fasilitas pengurangan tarif 50% berlaku atas Penghasilan Kena Pajak yang merupakan bagian dari peredaran bruto sampai dengan Rp4,8 Miliar. Tarif PPh Badan standar di Indonesia adalah 22%.
-                    </p>
+                  <div>
+                    <div style={{ marginTop: "1rem", backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "10px", borderLeft: "4px solid var(--color-primary)" }}>
+                      <p style={{ fontSize: "0.8rem", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>
+                        ℹ️ **Aturan HPP**: Fasilitas pengurangan tarif 50% berlaku atas Penghasilan Kena Pajak yang merupakan bagian dari peredaran bruto sampai dengan Rp4,8 Miliar. Tarif PPh Badan standar di Indonesia adalah 22%.
+                      </p>
+                    </div>
+                    <div className="no-print" style={{ display: "flex", gap: "0.5rem", marginTop: "1.25rem" }}>
+                      <button
+                        onClick={() => window.print()}
+                        className="btn-portal-primary"
+                        style={{ flex: 1, padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
+                      >
+                        🖨️ Cetak Hasil (PDF)
+                      </button>
+                      <button
+                        onClick={() => {
+                          setFormYear(new Date().getFullYear());
+                          setFormPeriod("Tahunan");
+                          setFormType("PPh Badan Pasal 31E (Fasilitas)");
+                          setFormRevenue(resultBadan.revenue);
+                          setFormTaxDue(resultBadan.taxDue);
+                          setActiveSubTab("archive");
+                          showToast("Form arsip berhasil diisi otomatis, silakan klik 'Rekam Laporan SPT'!");
+                        }}
+                        className="btn-portal-outline"
+                        style={{ padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
+                      >
+                        💾 Simpan ke Arsip
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -673,7 +761,7 @@ export default function AdminTaxPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           
           {/* Form Perekaman Baru */}
-          <div className="portal-card" style={{ padding: "2rem" }}>
+          <div className="portal-card no-print" style={{ padding: "2rem" }}>
             <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>
               Rekam Pelaporan SPT / Pembayaran PPh Baru
             </h3>
@@ -813,10 +901,21 @@ export default function AdminTaxPage() {
           </div>
 
           {/* Tabel Rekapitulasi Arsip */}
-          <div className="portal-card" style={{ padding: "2rem" }}>
-            <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>
-              Riwayat Pembayaran & Pelaporan SPT PT Perseorangan
-            </h3>
+          <div className="portal-card print-card" style={{ padding: "2rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
+              <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-800)", margin: 0 }}>
+                Riwayat Pembayaran & Pelaporan SPT PT Perseorangan
+              </h3>
+              {!loading && records.length > 0 && (
+                <button
+                  onClick={() => window.print()}
+                  className="btn-portal-outline no-print"
+                  style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700" }}
+                >
+                  🖨️ Cetak Riwayat (PDF)
+                </button>
+              )}
+            </div>
             
             {loading ? (
               <div style={{ textAlign: "center", padding: "3rem 1rem", color: "var(--color-gray-400)" }}>
@@ -837,7 +936,7 @@ export default function AdminTaxPage() {
                       <th style={{ padding: "12px 10px" }}>Pajak Terutang</th>
                       <th style={{ padding: "12px 10px" }}>Status</th>
                       <th style={{ padding: "12px 10px" }}>Detail Dokumen</th>
-                      <th style={{ padding: "12px 10px", textAlign: "right" }}>Aksi</th>
+                      <th className="no-print" style={{ padding: "12px 10px", textAlign: "right" }}>Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -878,7 +977,7 @@ export default function AdminTaxPage() {
                           <div>🔑 NTPN: {rec.ntpn_code}</div>
                           <div>📄 BPE: {rec.bpe_code}</div>
                         </td>
-                        <td style={{ padding: "14px 10px", textAlign: "right" }}>
+                        <td className="no-print" style={{ padding: "14px 10px", textAlign: "right" }}>
                           <button
                             onClick={() => handleDeleteRecord(rec.id)}
                             className="btn-portal-danger"
