@@ -1,8 +1,19 @@
 -- =====================================================================
 -- IBRA GLOBAL ENGLISH - TUTOR RLS POLICIES & CONSTRAINTS SETUP
 -- =====================================================================
--- Jalankan skrip SQL ini di Supabase SQL Editor (Dashboard Supabase -> SQL Editor)
--- Untuk mengizinkan akun pengajar (Tutor) membaca siswa, absensi, dan rapor modul.
+--
+-- NOTE: Fungsi is_tutor() dan kebijakan RLS untuk tutor sudah
+-- TERINTEGRASI di dalam supabase_schema.sql (bagian 2b dan 3).
+--
+-- Skrip ini dipertahankan sebagai referensi / migration terpisah
+-- jika Anda hanya perlu menambahkan kebijakan tutor tanpa
+-- menjalankan ulang seluruh schema.sql.
+--
+-- Jalankan skrip ini jika:
+-- 1. Anda SUDAH menjalankan supabase_schema.sql versi LAMA
+--    (yang belum memiliki fungsi is_tutor / is_admin_or_tutor)
+-- 2. Anda hanya ingin menambahkan akses tutor saja
+-- =====================================================================
 
 -- 1. Perbarui check constraint pada tabel profiles agar mengizinkan peran 'tutor' dan 'student'
 ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
@@ -20,7 +31,6 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- 3. Kebijakan RLS untuk tabel: students
--- Mengizinkan Tutor untuk melihat (SELECT) data semua siswa bimbingan
 DROP POLICY IF EXISTS "Tutors can view all students" ON public.students;
 CREATE POLICY "Tutors can view all students" 
 ON public.students FOR SELECT 
@@ -28,7 +38,6 @@ TO authenticated
 USING (public.is_tutor());
 
 -- 4. Kebijakan RLS untuk tabel: attendance
--- Mengizinkan Tutor untuk melakukan semua operasi (SELECT, INSERT, UPDATE, DELETE) pada absensi harian
 DROP POLICY IF EXISTS "Tutors have full access to attendance" ON public.attendance;
 CREATE POLICY "Tutors have full access to attendance" 
 ON public.attendance FOR ALL 
@@ -37,7 +46,6 @@ USING (public.is_tutor())
 WITH CHECK (public.is_tutor());
 
 -- 5. Kebijakan RLS untuk tabel: reports
--- Mengizinkan Tutor untuk melakukan semua operasi (SELECT, INSERT, UPDATE, DELETE) pada rapor modul
 DROP POLICY IF EXISTS "Tutors have full access to reports" ON public.reports;
 CREATE POLICY "Tutors have full access to reports" 
 ON public.reports FOR ALL 

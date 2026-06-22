@@ -28,19 +28,32 @@ if (!fs.existsSync(envPath)) {
 
 const envContent = fs.readFileSync(envPath, 'utf8');
 const supabaseUrl = (envContent.match(/NEXT_PUBLIC_SUPABASE_URL\s*=\s*(.*)/) || [])[1]?.trim()?.replace(/["']/g, '');
-const supabaseAnonKey = (envContent.match(/NEXT_PUBLIC_SUPABASE_ANON_KEY\s*=\s*(.*)/) || [])[1]?.trim()?.replace(/["']/g, '');
+const supabaseServiceKey = (envContent.match(/SUPABASE_SERVICE_ROLE_KEY\s*=\s*(.*)/) || [])[1]?.trim()?.replace(/["']/g, '');
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error(`${colors.red}❌ Error: Variabel lingkungan Supabase di .env.local tidak lengkap!`);
-  console.log(`Pastikan NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_ANON_KEY sudah terisi dengan benar.${colors.reset}`);
-  process.exit(1);
+if (!supabaseUrl || !supabaseServiceKey) {
+  // Fallback: coba baca anon key jika service role key tidak ada
+  const supabaseAnonKey = (envContent.match(/NEXT_PUBLIC_SUPABASE_ANON_KEY\s*=\s*(.*)/) || [])[1]?.trim()?.replace(/["']/g, '');
+  
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(`${colors.red}❌ Error: Variabel lingkungan Supabase di .env.local tidak lengkap!`);
+    console.log(`Pastikan NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY sudah terisi dengan benar.${colors.reset}`);
+    process.exit(1);
+  }
+
+  console.log(`${colors.yellow}⚠ SUPABASE_SERVICE_ROLE_KEY tidak ditemukan. Menggunakan anon key (mungkin gagal pada tabel dengan RLS).${colors.reset}`);
+  console.log(`${colors.green}✓ Menggunakan konfigurasi dari .env.local${colors.reset}`);
+  console.log(`🔗 URL: ${supabaseUrl.substring(0, 30)}...\n${colors.reset}`);
+  
+  var supabase = createClient(supabaseUrl, supabaseAnonKey);
+} else {
+  console.log(`${colors.green}✓ Berhasil membaca konfigurasi Supabase dari .env.local`);
+  console.log(`🔗 URL: ${supabaseUrl.substring(0, 30)}...`);
+  console.log(`🔑 Menggunakan SUPABASE_SERVICE_ROLE_KEY (bypass RLS)\n${colors.reset}`);
+  
+  var supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { persistSession: false }
+  });
 }
-
-console.log(`${colors.green}✓ Berhasil membaca konfigurasi Supabase dari .env.local`);
-console.log(`🔗 URL: ${supabaseUrl.substring(0, 30)}...`);
-console.log(`🔑 Key: ${supabaseAnonKey.substring(0, 20)}...\n${colors.reset}`);
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function seed() {
   try {

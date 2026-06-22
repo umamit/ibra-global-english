@@ -1,37 +1,49 @@
--- B3: Tabel gallery_items untuk Galeri Foto Kegiatan
--- Jalankan di Supabase SQL Editor
+-- ============================================================
+-- MIGRASI GALERI: Tambahan Kolom & Migrasi gallery → gallery_items
+-- ============================================================
+--
+-- CATATAN PENTING:
+-- Aplikasi menggunakan tabel "gallery_items" (bukan "gallery").
+-- Tabel "gallery_items" sudah didefinisikan di supabase_schema.sql.
+--
+-- Jika Anda sebelumnya menjalankan supabase_schema.sql versi LAMA
+-- yang membuat tabel "public.gallery", gunakan skrip ini untuk:
+-- 1. Menambahkan kolom baru ke gallery_items
+-- 2. Memigrasikan data dari gallery → gallery_items
+-- 3. (Opsional) Menghapus tabel gallery lama
+-- ============================================================
 
-CREATE TABLE IF NOT EXISTS gallery_items (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  title TEXT NOT NULL,
-  description TEXT DEFAULT '',
-  image_url TEXT NOT NULL,           -- URL dari Supabase Storage
-  storage_path TEXT DEFAULT '',      -- Path internal storage untuk hapus file
-  category TEXT DEFAULT 'Kegiatan', -- 'Kegiatan', 'Prestasi', 'Fasilitas', 'Kelas Online'
-  display_order INTEGER DEFAULT 0,
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- 1. Tambahkan kolom tambahan ke gallery_items (jika belum ada)
+ALTER TABLE public.gallery_items ADD COLUMN IF NOT EXISTS storage_path TEXT DEFAULT '';
+ALTER TABLE public.gallery_items ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Kegiatan';
+ALTER TABLE public.gallery_items ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
+ALTER TABLE public.gallery_items ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;
 
--- Enable RLS
-ALTER TABLE gallery_items ENABLE ROW LEVEL SECURITY;
-
--- Policy: semua orang (termasuk public) bisa baca galeri aktif
-CREATE POLICY "Public bisa baca galeri aktif"
-ON gallery_items FOR SELECT
-TO public
+-- 2. Perbarui RLS policy untuk gallery_items
+-- Pastikan policy yang benar ada
+DROP POLICY IF EXISTS "Allow public read access to gallery_items" ON public.gallery_items;
+CREATE POLICY "Allow public read access to gallery_items" 
+ON public.gallery_items FOR SELECT 
 USING (is_active = TRUE);
 
--- Policy: service role bisa semua operasi
-CREATE POLICY "Service role bisa semua operasi di gallery_items"
-ON gallery_items FOR ALL
-TO service_role
-USING (TRUE)
-WITH CHECK (TRUE);
+-- 3. Buat index untuk performa query galeri aktif
+CREATE INDEX IF NOT EXISTS idx_gallery_items_active ON public.gallery_items(is_active, display_order, created_at DESC);
 
--- Index
-CREATE INDEX IF NOT EXISTS idx_gallery_active ON gallery_items(is_active, display_order, created_at DESC);
+-- ============================================================
+-- MIGRASI DATA: gallery → gallery_items (Jika Tabel gallery Ada)
+-- ============================================================
+-- Jalankan jika Anda memiliki data di tabel "gallery" lama:
+--
+-- INSERT INTO public.gallery_items (title, description, image_url, storage_path, category, display_order, is_active)
+-- SELECT title, description, image_url, '', 'Kegiatan', 0, true
+-- FROM public.gallery
+-- WHERE image_url IS NOT NULL AND image_url != '';
+--
+-- SETELAH data termigrasi, verifikasi dulu, lalu hapus tabel lama:
+-- DROP TABLE IF EXISTS public.gallery;
 
--- Buat bucket storage untuk galeri (jalankan juga di Storage section Supabase)
--- Bucket name: gallery-photos
--- Public: YES (agar gambar bisa ditampilkan tanpa auth)
+-- ============================================================
+-- CATATAN STORAGE BUCKET
+-- ============================================================
+-- Bucket storage untuk galeri: gallery-photos
+-- (SUDAH dibuat di supabase_schema.sql bagian 7)

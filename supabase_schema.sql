@@ -4,9 +4,6 @@
 -- Jalankan skrip SQL ini di Supabase SQL Editor untuk menginisialisasi
 -- basis data yang diperlukan untuk portal Admin dan Orang Tua.
 
--- Nonaktifkan sementara kebijakan keamanan agar proses setup lancar (opsional)
--- SET check_function_bodies = false;
-
 -- =====================================================================
 -- 1. PEMBUATAN TABEL-TABEL UTAMA
 -- =====================================================================
@@ -16,13 +13,12 @@
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name TEXT NOT NULL,
-  role TEXT NOT NULL CHECK (role IN ('admin', 'parent')),
-  email TEXT, -- Menyimpan alamat email pendaftar untuk memudahkan Admin
+  role TEXT NOT NULL CHECK (role IN ('admin', 'parent', 'tutor', 'student')),
+  email TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 -- TABEL: students (Data Siswa)
--- Menyimpan informasi siswa yang terdaftar di bimbingan belajar.
 CREATE TABLE IF NOT EXISTS public.students (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
@@ -33,7 +29,6 @@ CREATE TABLE IF NOT EXISTS public.students (
 );
 
 -- TABEL: attendance (Absensi Harian)
--- Mencatat kehadiran siswa pada setiap pertemuan kelas harian.
 CREATE TABLE IF NOT EXISTS public.attendance (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
@@ -41,16 +36,14 @@ CREATE TABLE IF NOT EXISTS public.attendance (
   status TEXT NOT NULL CHECK (status IN ('hadir', 'sakit', 'izin', 'alfa', 'tidak_ada_kelas')),
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-  -- Mencegah pencatatan absensi ganda untuk siswa yang sama di hari yang sama
   CONSTRAINT unique_student_attendance_per_day UNIQUE (student_id, date)
 );
 
--- TABEL: reports (Rapor Belajar Digital / Rapor Modul)
--- Menyimpan nilai akademis, evaluasi sub-kemampuan, dan catatan tutor.
+-- TABEL: reports (Rapor Belajar Digital)
 CREATE TABLE IF NOT EXISTS public.reports (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
-  module_name TEXT NOT NULL, -- Contoh: "Module 1 - Basic Greeting"
+  module_name TEXT NOT NULL,
   speaking_score INTEGER NOT NULL CHECK (speaking_score >= 0 AND speaking_score <= 100),
   grammar_score INTEGER NOT NULL CHECK (grammar_score >= 0 AND grammar_score <= 100),
   vocabulary_score INTEGER NOT NULL CHECK (vocabulary_score >= 0 AND vocabulary_score <= 100),
@@ -63,36 +56,25 @@ CREATE TABLE IF NOT EXISTS public.reports (
 -- 2. OTOMATISASI DAN TRIGGER (PROFILE CREATION)
 -- =====================================================================
 
--- Fungsi trigger untuk otomatis menyisipkan record ke public.profiles
--- saat pengguna baru mendaftar (signup) di Supabase Auth.
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 DECLARE
   default_role TEXT := 'parent';
   full_name_val TEXT;
 BEGIN
-  -- Dapatkan peran default dari metadata pengguna jika dikirim saat registrasi
   IF new.raw_user_meta_data->>'role' IS NOT NULL THEN
     default_role := new.raw_user_meta_data->>'role';
   END IF;
 
-  -- Cari nama lengkap dari metadata, atau gunakan bagian email jika kosong
   IF new.raw_user_meta_data->>'full_name' IS NOT NULL THEN
     full_name_val := new.raw_user_meta_data->>'full_name';
   ELSE
     full_name_val := COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1));
   END IF;
 
-  -- 1. Sisipkan profil ke tabel public.profiles
   INSERT INTO public.profiles (id, full_name, role, email)
-  VALUES (
-    new.id,
-    full_name_val,
-    default_role,
-    new.email
-  );
+  VALUES (new.id, full_name_val, default_role, new.email);
 
-  -- 2. Konfirmasi email secara otomatis di auth.users agar tidak memicu error "Email not confirmed"
   UPDATE auth.users 
   SET email_confirmed_at = COALESCE(email_confirmed_at, now()) 
   WHERE id = new.id;
@@ -101,19 +83,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger pada tabel auth.users
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- =====================================================================
--- 2b. KEAMANAN SECURITY DEFINER (Mencegah Infinite Recursion)
+-- 2b. KEAMANAN SECURITY DEFINER (Helper Functions)
 -- =====================================================================
 
--- Fungsi pembantu untuk mengecek apakah pengguna aktif adalah admin.
--- Ditandai dengan SECURITY DEFINER agar berjalan melewati RLS tabel profiles,
--- sehingga menghindari bug "infinite recursion" pada PostgreSQL.
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS boolean AS $$
 BEGIN
@@ -124,93 +102,89 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+CREATE OR REPLACE FUNCTION public.is_tutor()
+RETURNS boolean AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'tutor'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION public.is_admin_or_tutor()
+RETURNS boolean AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND (role = 'admin' OR role = 'tutor')
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- =====================================================================
 -- 3. ROW LEVEL SECURITY (RLS) POLICIES
 -- =====================================================================
 
--- Aktifkan RLS pada seluruh tabel
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
 
--- KEBIJAKAN UNTUK TABEL: profiles
--- Admin memiliki akses penuh.
+-- profiles
 CREATE POLICY "Admins have full access to profiles" 
-ON public.profiles FOR ALL 
-TO authenticated 
-USING (public.is_admin())
-WITH CHECK (public.is_admin());
+ON public.profiles FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- Pengguna terautentikasi dapat membaca profil mereka sendiri.
 CREATE POLICY "Users can view their own profile" 
-ON public.profiles FOR SELECT 
-TO authenticated 
+ON public.profiles FOR SELECT TO authenticated 
 USING (auth.uid() = id);
 
--- Pengguna terautentikasi dapat memperbarui profil mereka sendiri.
 CREATE POLICY "Users can update their own profile" 
-ON public.profiles FOR UPDATE 
-TO authenticated 
+ON public.profiles FOR UPDATE TO authenticated 
 USING (auth.uid() = id);
 
-
--- KEBIJAKAN UNTUK TABEL: students
--- Admin memiliki akses penuh.
+-- students
 CREATE POLICY "Admins have full access to students" 
-ON public.students FOR ALL 
-TO authenticated 
-USING (public.is_admin())
-WITH CHECK (public.is_admin());
+ON public.students FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- Orang Tua dapat membaca data siswa yang merupakan anak mereka (parent_id cocok).
+CREATE POLICY "Tutors can view all students" 
+ON public.students FOR SELECT TO authenticated 
+USING (public.is_tutor());
+
 CREATE POLICY "Parents can view their own students" 
-ON public.students FOR SELECT 
-TO authenticated 
+ON public.students FOR SELECT TO authenticated 
 USING (parent_id = auth.uid());
 
-
--- KEBIJAKAN UNTUK TABEL: attendance
--- Admin memiliki akses penuh.
+-- attendance
 CREATE POLICY "Admins have full access to attendance" 
-ON public.attendance FOR ALL 
-TO authenticated 
-USING (public.is_admin())
-WITH CHECK (public.is_admin());
+ON public.attendance FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- Orang Tua dapat membaca riwayat absensi anak-anak mereka.
+CREATE POLICY "Tutors have full access to attendance" 
+ON public.attendance FOR ALL TO authenticated 
+USING (public.is_tutor()) WITH CHECK (public.is_tutor());
+
 CREATE POLICY "Parents can view their own children attendance" 
-ON public.attendance FOR SELECT 
-TO authenticated 
-USING (
-  student_id IN (
-    SELECT id FROM public.students 
-    WHERE parent_id = auth.uid()
-  )
-);
+ON public.attendance FOR SELECT TO authenticated 
+USING (student_id IN (SELECT id FROM public.students WHERE parent_id = auth.uid()));
 
-
--- KEBIJAKAN UNTUK TABEL: reports
--- Admin memiliki akses penuh.
+-- reports
 CREATE POLICY "Admins have full access to reports" 
-ON public.reports FOR ALL 
-TO authenticated 
-USING (public.is_admin())
-WITH CHECK (public.is_admin());
+ON public.reports FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- Orang Tua dapat membaca rapor belajar digital anak-anak mereka.
+CREATE POLICY "Tutors have full access to reports" 
+ON public.reports FOR ALL TO authenticated 
+USING (public.is_tutor()) WITH CHECK (public.is_tutor());
+
 CREATE POLICY "Parents can view their own children reports" 
-ON public.reports FOR SELECT 
-TO authenticated 
-USING (
-  student_id IN (
-    SELECT id FROM public.students 
-    WHERE parent_id = auth.uid()
-  )
-);
+ON public.reports FOR SELECT TO authenticated 
+USING (student_id IN (SELECT id FROM public.students WHERE parent_id = auth.uid()));
 
 -- =====================================================================
--- 4. INDEKS UNTUK OPTIMALISASI KINERJA (INDEXES)
+-- 4. INDEKS
 -- =====================================================================
 CREATE INDEX IF NOT EXISTS idx_students_parent_id ON public.students(parent_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_student_id ON public.attendance(student_id);
@@ -218,17 +192,17 @@ CREATE INDEX IF NOT EXISTS idx_attendance_date ON public.attendance(date);
 CREATE INDEX IF NOT EXISTS idx_reports_student_id ON public.reports(student_id);
 
 -- =====================================================================
--- 5. TABEL TAMBAHAN UNTUK CMS LANDING PAGE DINAMIS
+-- 5. TABEL CMS LANDING PAGE
 -- =====================================================================
 
--- TABEL: landing_settings (Konfigurasi Landing Page)
+-- landing_settings (Konfigurasi Landing Page)
 CREATE TABLE IF NOT EXISTS public.landing_settings (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- TABEL: testimonials (Testimoni Landing Page)
+-- testimonials
 CREATE TABLE IF NOT EXISTS public.testimonials (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   rating INTEGER NOT NULL DEFAULT 5 CHECK (rating >= 1 AND rating <= 5),
@@ -238,77 +212,71 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- TABEL: gallery (Galeri Landing Page)
-CREATE TABLE IF NOT EXISTS public.gallery (
+-- gallery_items (Galeri Foto - nama tabel konsisten dengan kode aplikasi)
+-- NOTE: Aplikasi menggunakan tabel gallery_items (bukan gallery).
+-- Jika Anda memiliki tabel lama bernama "gallery", migrasikan data ke sini.
+CREATE TABLE IF NOT EXISTS public.gallery_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
-  description TEXT,
+  description TEXT DEFAULT '',
   image_url TEXT NOT NULL,
-  caption TEXT,
+  storage_path TEXT DEFAULT '',
+  category TEXT DEFAULT 'Kegiatan',
+  display_order INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Aktifkan RLS pada tabel-tabel baru
 ALTER TABLE public.landing_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.gallery ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.gallery_items ENABLE ROW LEVEL SECURITY;
 
--- Kebijakan RLS untuk public.landing_settings
+-- landing_settings
 CREATE POLICY "Allow public read access to landing_settings" 
-ON public.landing_settings FOR SELECT 
-USING (true);
+ON public.landing_settings FOR SELECT USING (true);
 
 CREATE POLICY "Allow admin full access to landing_settings" 
-ON public.landing_settings FOR ALL 
-TO authenticated 
-USING (public.is_admin())
-WITH CHECK (public.is_admin());
+ON public.landing_settings FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- Kebijakan RLS untuk public.testimonials
+-- testimonials
 CREATE POLICY "Allow public read access to testimonials" 
-ON public.testimonials FOR SELECT 
-USING (true);
+ON public.testimonials FOR SELECT USING (true);
 
 CREATE POLICY "Allow admin full access to testimonials" 
-ON public.testimonials FOR ALL 
-TO authenticated 
-USING (public.is_admin())
-WITH CHECK (public.is_admin());
+ON public.testimonials FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- Kebijakan RLS untuk public.gallery
-CREATE POLICY "Allow public read access to gallery" 
-ON public.gallery FOR SELECT 
-USING (true);
+-- gallery_items
+CREATE POLICY "Allow public read access to gallery_items" 
+ON public.gallery_items FOR SELECT USING (is_active = TRUE);
 
-CREATE POLICY "Allow admin full access to gallery" 
-ON public.gallery FOR ALL 
-TO authenticated 
-USING (public.is_admin())
-WITH CHECK (public.is_admin());
+CREATE POLICY "Allow admin full access to gallery_items" 
+ON public.gallery_items FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- Buat indeks untuk optimalisasi pencarian/kinerja
-CREATE INDEX IF NOT EXISTS idx_gallery_created_at ON public.gallery(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_gallery_items_active ON public.gallery_items(is_active, display_order, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_testimonials_created_at ON public.testimonials(created_at DESC);
 
 -- =====================================================================
--- 6. TABEL-TABEL NEXT LEVEL (KEUANGAN, TES PENEMPATAN, & JADWAL)
+-- 6. TABEL KEUANGAN, TES PENEMPATAN, & JADWAL
 -- =====================================================================
 
--- TABEL: tuition_payments (Pembayaran SPP)
+-- tuition_payments
 CREATE TABLE IF NOT EXISTS public.tuition_payments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
-  month TEXT NOT NULL, -- Format: "YYYY-MM" (contoh: "2026-06")
-  amount INTEGER NOT NULL DEFAULT 150000, -- Nominal rupiah
+  month TEXT NOT NULL,
+  amount INTEGER NOT NULL DEFAULT 150000,
   status TEXT NOT NULL DEFAULT 'belum_bayar' CHECK (status IN ('lunas', 'belum_bayar', 'menunggu_konfirmasi')),
   payment_method TEXT CHECK (payment_method IN ('Transfer Bank', 'Tunai', 'Lainnya')),
-  receipt_url TEXT, -- Tautan gambar bukti transfer di Supabase Storage
+  receipt_url TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   CONSTRAINT unique_student_payment_per_month UNIQUE (student_id, month)
 );
 
--- TABEL: placement_test_submissions (Hasil Tes Penempatan Publik)
+-- placement_test_submissions
 CREATE TABLE IF NOT EXISTS public.placement_test_submissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   full_name TEXT NOT NULL,
@@ -320,7 +288,7 @@ CREATE TABLE IF NOT EXISTS public.placement_test_submissions (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- TABEL: academic_schedules (Kalender Jadwal Kelas & Kegiatan)
+-- academic_schedules
 CREATE TABLE IF NOT EXISTS public.academic_schedules (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -333,12 +301,11 @@ CREATE TABLE IF NOT EXISTS public.academic_schedules (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Aktifkan RLS
 ALTER TABLE public.tuition_payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.placement_test_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.academic_schedules ENABLE ROW LEVEL SECURITY;
 
--- KEBIJAKAN RLS: tuition_payments
+-- tuition_payments RLS
 CREATE POLICY "Admins have full access to tuition_payments"
 ON public.tuition_payments FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
@@ -346,18 +313,18 @@ CREATE POLICY "Parents can view their children payments"
 ON public.tuition_payments FOR SELECT TO authenticated
 USING (student_id IN (SELECT id FROM public.students WHERE parent_id = auth.uid()));
 
-CREATE POLICY "Parents can insert/update payment receipts for their children"
-ON public.tuition_payments FOR ALL TO authenticated
-USING (student_id IN (SELECT id FROM public.students WHERE parent_id = auth.uid()));
+CREATE POLICY "Parents can insert payment receipts for their children"
+ON public.tuition_payments FOR INSERT TO authenticated
+WITH CHECK (student_id IN (SELECT id FROM public.students WHERE parent_id = auth.uid()));
 
--- KEBIJAKAN RLS: placement_test_submissions
+-- placement_test_submissions RLS
 CREATE POLICY "Allow anyone to insert placement test submissions"
 ON public.placement_test_submissions FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Admins have full access to placement_test_submissions"
 ON public.placement_test_submissions FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- KEBIJAKAN RLS: academic_schedules
+-- academic_schedules RLS
 CREATE POLICY "Admins have full access to academic_schedules"
 ON public.academic_schedules FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
@@ -367,19 +334,38 @@ ON public.academic_schedules FOR SELECT TO authenticated USING (true);
 -- Indeks Tambahan
 CREATE INDEX IF NOT EXISTS idx_tuition_payments_student_id ON public.tuition_payments(student_id);
 CREATE INDEX IF NOT EXISTS idx_academic_schedules_start_time ON public.academic_schedules(start_time);
+CREATE INDEX IF NOT EXISTS idx_placement_test_status ON public.placement_test_submissions(status, created_at DESC);
 
 -- =====================================================================
--- 7. KONFIGURASI STORAGE BUCKETS DAN KEBIJAKAN (POLICIES)
+-- 7. STORAGE BUCKETS
 -- =====================================================================
 
--- Buat bucket penyimpanan jika belum ada (gallery-uploads dan spp-receipts)
 INSERT INTO storage.buckets (id, name, public)
 VALUES 
+  ('gallery-photos', 'gallery-photos', true),
   ('gallery-uploads', 'gallery-uploads', true),
   ('spp-receipts', 'spp-receipts', true)
 ON CONFLICT (id) DO NOTHING;
 
--- Kebijakan RLS untuk Storage - gallery-uploads (Hanya Admin yang bisa modifikasi, Publik bisa baca)
+-- gallery-photos bucket (digunakan oleh API /api/gallery)
+DROP POLICY IF EXISTS "Public Access - gallery-photos" ON storage.objects;
+CREATE POLICY "Public Access - gallery-photos"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'gallery-photos');
+
+DROP POLICY IF EXISTS "Admin Upload - gallery-photos" ON storage.objects;
+CREATE POLICY "Admin Upload - gallery-photos"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'gallery-photos' AND public.is_admin());
+
+DROP POLICY IF EXISTS "Admin Delete - gallery-photos" ON storage.objects;
+CREATE POLICY "Admin Delete - gallery-photos"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'gallery-photos' AND public.is_admin());
+
+-- gallery-uploads bucket (backup/cadangan)
 DROP POLICY IF EXISTS "Public Access - gallery-uploads" ON storage.objects;
 CREATE POLICY "Public Access - gallery-uploads"
 ON storage.objects FOR SELECT
@@ -391,21 +377,13 @@ ON storage.objects FOR INSERT
 TO authenticated
 WITH CHECK (bucket_id = 'gallery-uploads' AND public.is_admin());
 
-DROP POLICY IF EXISTS "Admin Update - gallery-uploads" ON storage.objects;
-CREATE POLICY "Admin Update - gallery-uploads"
-ON storage.objects FOR UPDATE
-TO authenticated
-USING (bucket_id = 'gallery-uploads' AND public.is_admin())
-WITH CHECK (bucket_id = 'gallery-uploads' AND public.is_admin());
-
 DROP POLICY IF EXISTS "Admin Delete - gallery-uploads" ON storage.objects;
 CREATE POLICY "Admin Delete - gallery-uploads"
 ON storage.objects FOR DELETE
 TO authenticated
 USING (bucket_id = 'gallery-uploads' AND public.is_admin());
 
-
--- Kebijakan RLS untuk Storage - spp-receipts (Pengguna Terautentikasi bisa upload, Publik bisa baca)
+-- spp-receipts bucket
 DROP POLICY IF EXISTS "Public Access - spp-receipts" ON storage.objects;
 CREATE POLICY "Public Access - spp-receipts"
 ON storage.objects FOR SELECT
@@ -423,26 +401,16 @@ ON storage.objects FOR DELETE
 TO authenticated
 USING (bucket_id = 'spp-receipts' AND public.is_admin());
 
-
 -- =====================================================================
 -- Catatan Penting untuk Administrator:
--- Untuk menetapkan peran pengguna pertama sebagai 'admin', Anda dapat
--- mendaftar melalui aplikasi secara normal (default: parent), lalu
--- jalankan perintah SQL ini dengan mengganti UUID-nya:
---
 -- UPDATE public.profiles SET role = 'admin' WHERE id = 'UUID_AKUN_ANDA';
 -- =====================================================================
 
-
 -- =====================================================================
--- INOVASI FASE 22 - SCHEMA UPDATES (Tutor, Student, Rewards, Certificates)
+-- INOVASI FASE 22 - SCHEMA UPDATES (Rewards, Certificates)
 -- =====================================================================
 
--- 1. Alter profiles role constraint
-ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
-ALTER TABLE public.profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('admin', 'parent', 'tutor', 'student'));
-
--- 2. Create student_rewards table (Gamification)
+-- student_rewards (Gamification)
 CREATE TABLE IF NOT EXISTS public.student_rewards (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
@@ -451,18 +419,17 @@ CREATE TABLE IF NOT EXISTS public.student_rewards (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- RLS for student_rewards
 ALTER TABLE public.student_rewards ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Public select student_rewards" ON public.student_rewards;
 CREATE POLICY "Public select student_rewards" ON public.student_rewards
   FOR SELECT USING (true);
 
-DROP POLICY IF EXISTS "Admin/Tutor modify student_rewards" ON public.student_rewards;
 CREATE POLICY "Admin/Tutor modify student_rewards" ON public.student_rewards
-  FOR ALL USING (true) WITH CHECK (true);
+  FOR ALL TO authenticated
+  USING (public.is_admin_or_tutor())
+  WITH CHECK (public.is_admin_or_tutor());
 
--- 3. Create certificates table
+-- certificates
 CREATE TABLE IF NOT EXISTS public.certificates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
@@ -473,16 +440,16 @@ CREATE TABLE IF NOT EXISTS public.certificates (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- RLS for certificates
 ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Public select certificates" ON public.certificates;
 CREATE POLICY "Public select certificates" ON public.certificates
   FOR SELECT USING (true);
 
-DROP POLICY IF EXISTS "Admin modify certificates" ON public.certificates;
 CREATE POLICY "Admin modify certificates" ON public.certificates
-  FOR ALL USING (true) WITH CHECK (true);
+  FOR ALL TO authenticated
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
-
-
+-- Indeks
+CREATE INDEX IF NOT EXISTS idx_student_rewards_student_id ON public.student_rewards(student_id);
+CREATE INDEX IF NOT EXISTS idx_certificates_student_id ON public.certificates(student_id);

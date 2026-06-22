@@ -26,13 +26,30 @@ CREATE INDEX IF NOT EXISTS idx_registrations_status
 CREATE INDEX IF NOT EXISTS idx_registrations_created_at
   ON public.registrations (created_at DESC);
 
--- Enable RLS (tabel ini hanya diakses via service role dari server)
+-- Enable RLS
 ALTER TABLE public.registrations ENABLE ROW LEVEL SECURITY;
 
--- Policy: hanya service role (server-side) yang bisa baca/tulis
--- Client-side tidak bisa akses langsung (aman)
-CREATE POLICY "Service role full access"
+-- Policy: siapa pun bisa insert pendaftaran baru (dari landing page)
+DROP POLICY IF EXISTS "Public can insert registrations" ON public.registrations;
+CREATE POLICY "Public can insert registrations"
+  ON public.registrations
+  FOR INSERT
+  WITH CHECK (true);
+
+-- Policy: admin bisa melihat dan mengelola semua pendaftaran
+DROP POLICY IF EXISTS "Admin full access to registrations" ON public.registrations;
+CREATE POLICY "Admin full access to registrations"
   ON public.registrations
   FOR ALL
+  TO authenticated
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+
+-- Policy: service role bisa semua operasi (untuk server-side)
+DROP POLICY IF EXISTS "Service role full access to registrations" ON public.registrations;
+CREATE POLICY "Service role full access to registrations"
+  ON public.registrations
+  FOR ALL
+  TO service_role
   USING (true)
   WITH CHECK (true);

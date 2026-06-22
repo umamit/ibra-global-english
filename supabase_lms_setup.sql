@@ -17,11 +17,13 @@ USING (bucket_id = 'lms-files');
 DROP POLICY IF EXISTS "Authenticated Upload - lms-files" ON storage.objects;
 CREATE POLICY "Authenticated Upload - lms-files"
 ON storage.objects FOR INSERT
+TO authenticated
 WITH CHECK (bucket_id = 'lms-files');
 
 DROP POLICY IF EXISTS "Authenticated Manage - lms-files" ON storage.objects;
 CREATE POLICY "Authenticated Manage - lms-files"
 ON storage.objects FOR ALL
+TO authenticated
 USING (bucket_id = 'lms-files')
 WITH CHECK (bucket_id = 'lms-files');
 
@@ -42,13 +44,17 @@ CREATE TABLE IF NOT EXISTS public.lms_materials (
 -- RLS untuk lms_materials
 ALTER TABLE public.lms_materials ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Public select lms_materials" ON public.lms_materials;
-CREATE POLICY "Public select lms_materials" ON public.lms_materials
-  FOR SELECT USING (true);
+-- Semua pengguna terautentikasi (siswa, orang tua, tutor, admin) bisa melihat materi/tugas
+DROP POLICY IF EXISTS "Authenticated can view lms_materials" ON public.lms_materials;
+CREATE POLICY "Authenticated can view lms_materials" ON public.lms_materials
+  FOR SELECT TO authenticated USING (true);
 
-DROP POLICY IF EXISTS "All modify lms_materials" ON public.lms_materials;
-CREATE POLICY "All modify lms_materials" ON public.lms_materials
-  FOR ALL USING (true) WITH CHECK (true);
+-- Hanya Admin dan Tutor yang bisa menambah/mengubah/menghapus materi/tugas
+DROP POLICY IF EXISTS "Admin/Tutor modify lms_materials" ON public.lms_materials;
+CREATE POLICY "Admin/Tutor modify lms_materials" ON public.lms_materials
+  FOR ALL TO authenticated
+  USING (public.is_admin_or_tutor())
+  WITH CHECK (public.is_admin_or_tutor());
 
 
 -- 3. Buat tabel lms_submissions (Pengumpulan Tugas dari Siswa)
@@ -66,10 +72,44 @@ CREATE TABLE IF NOT EXISTS public.lms_submissions (
 -- RLS untuk lms_submissions
 ALTER TABLE public.lms_submissions ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Public select lms_submissions" ON public.lms_submissions;
-CREATE POLICY "Public select lms_submissions" ON public.lms_submissions
-  FOR SELECT USING (true);
+-- Setiap user bisa melihat submission miliknya (siswa), admin, atau tutor
+DROP POLICY IF EXISTS "View own or admin/tutor lms_submissions" ON public.lms_submissions;
+CREATE POLICY "View own or admin/tutor lms_submissions" ON public.lms_submissions
+  FOR SELECT TO authenticated USING (
+    -- Admin dan tutor bisa melihat semua submission
+    public.is_admin_or_tutor()
+    OR
+    -- Siswa bisa melihat submission mereka sendiri
+    student_id IN (
+      SELECT id FROM public.students WHERE id = lms_submissions.student_id
+    )
+    OR
+    -- Orang tua bisa melihat submission anaknya
+    student_id IN (
+      SELECT id FROM public.students WHERE parent_id = auth.uid()
+    )
+  );
 
-DROP POLICY IF EXISTS "All modify lms_submissions" ON public.lms_submissions;
-CREATE POLICY "All modify lms_submissions" ON public.lms_submissions
-  FOR ALL USING (true) WITH CHECK (true);
+-- Hanya Admin dan Tutor yang bisa memberi nilai/umpan balik (UPDATE)
+DROP POLICY IF EXISTS "Admin/Tutor grade lms_submissions" ON public.lms_submissions;
+CREATE POLICY "Admin/Tutor grade lms_submissions" ON public.lms_submissions
+  FOR UPDATE TO authenticated
+  USING (public.is_admin_or_tutor())
+  WITH CHECK (public.is_admin_or_tutor());
+
+-- Siswa (atau siapa pun) bisa mengumpulkan submission (INSERT)
+DROP POLICY IF EXISTS "Authenticated can submit lms_submissions" ON public.lms_submissions;
+CREATE POLICY "Authenticated can submit lms_submissions" ON public.lms_submissions
+  FOR INSERT TO authenticated
+  WITH CHECK (true);
+
+-- Hanya Admin yang bisa menghapus submission
+DROP POLICY IF EXISTS "Admin delete lms_submissions" ON public.lms_submissions;
+CREATE POLICY "Admin delete lms_submissions" ON public.lms_submissions
+  FOR DELETE TO authenticated
+  USING (public.is_admin());
+
+-- Indeks untuk performa query
+CREATE INDEX IF NOT EXISTS idx_lms_submissions_student_id ON public.lms_submissions(student_id);
+CREATE INDEX IF NOT EXISTS idx_lms_submissions_material_id ON public.lms_submissions(material_id);
+CREATE INDEX IF NOT EXISTS idx_lms_materials_program ON public.lms_materials(program);

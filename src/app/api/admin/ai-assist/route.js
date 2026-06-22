@@ -1,44 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { getSupabaseConfig } from "@/utils/supabase/config";
 import { detectPromptInjection } from "@/utils/security";
+import { checkAdminOrTutorAuth, checkAdminAuth } from "@/utils/supabase/adminAuth";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
-const { url: supabaseUrl, anonKey: supabaseAnonKey } = getSupabaseConfig();
+const { url: supabaseUrl } = getSupabaseConfig();
 
 const adminSupabase = createClient(
   supabaseUrl,
   process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
 );
-
-// Helper untuk memeriksa autentikasi admin atau tutor
-async function checkAuth() {
-  try {
-    const cookieStore = await cookies();
-    const supabaseAuth = createServerClient(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll(); },
-          setAll() {},
-        },
-      }
-    );
-    const { data: { user } } = await supabaseAuth.auth.getUser();
-    const role = user?.user_metadata?.role;
-    return {
-      isAuthenticated: !!user && (role === "admin" || role === "tutor"),
-      isAdmin: role === "admin",
-      role,
-      user
-    };
-  } catch {
-    return { isAuthenticated: false, isAdmin: false };
-  }
-}
 
 // Logger penggunaan AI ke dalam database
 async function logAiUsage(userId, email, role, mode, tokensUsed, status, errorMessage = null) {
@@ -169,10 +141,8 @@ export async function POST(request) {
   let authUser = { id: null, email: null, role: null };
   
   try {
-    const auth = await checkAuth();
-    authUser = { id: auth.user?.id, email: auth.user?.email, role: auth.role };
-
-    if (!auth.isAuthenticated) {
+    const isAuthenticated = await checkAdminOrTutorAuth();
+    if (!isAuthenticated) {
       return NextResponse.json({ error: "Tidak diizinkan. Hanya Admin/Tutor." }, { status: 403 });
     }
 
@@ -253,7 +223,8 @@ JUDUL: [Judul baru yang menarik dan profesional]
     } 
     // 4. MODE: INSIGHTS (Analisis Dasbor Ringkasan)
     else if (mode === "insights") {
-      if (!auth.isAdmin) {
+      const isAdmin = await checkAdminAuth();
+      if (!isAdmin) {
         return NextResponse.json({ error: "Hanya Admin yang dapat melihat Insights." }, { status: 403 });
       }
 

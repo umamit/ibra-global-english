@@ -8,9 +8,6 @@ const nextConfig = {
     cpus: 1,
   },
   
-  // Disable static generation to avoid OOM
-  output: 'standalone',
-
   outputFileTracingRoot: __dirname,
 
   // Optimize Webpack build
