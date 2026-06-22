@@ -309,6 +309,7 @@ header.scrolled .logo-text p {
   position: relative;
   padding-block: 0.25rem;
   letter-spacing: -0.01em;
+  text-decoration: none;
 }
 
 .nav-link::after {
@@ -316,19 +317,23 @@ header.scrolled .logo-text p {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 0;
+  width: 100%;
   height: 2px;
   background-color: var(--color-primary);
-  transition: var(--transition-fast);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--transition-fast);
 }
 
 .nav-link:hover {
   color: var(--color-primary);
+  text-decoration: none;
 }
 
 .nav-link:hover::after {
-  width: 100%;
+  transform: scaleX(1);
 }
+
 
 .nav-btn {
   background-color: var(--color-primary);
