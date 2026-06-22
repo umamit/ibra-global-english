@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import packageInfo from "../../package.json";
 
 export default function Footer({ initialSettings }) {
@@ -10,6 +10,43 @@ export default function Footer({ initialSettings }) {
     }
     return "Belajar Seru Lancar Bicara";
   });
+
+  const [visitorCount, setVisitorCount] = useState(null);
+
+  useEffect(() => {
+    async function trackVisitor() {
+      try {
+        const tracked = localStorage.getItem("ibra_unique_visitor_tracked");
+        let res;
+        if (!tracked) {
+          res = await fetch("/api/visitor", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ isNew: true })
+          });
+          if (res.ok) {
+            localStorage.setItem("ibra_unique_visitor_tracked", "true");
+          }
+        } else {
+          res = await fetch("/api/visitor", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ isNew: false })
+          });
+        }
+
+        if (res && res.ok) {
+          const data = await res.json();
+          if (typeof data.count === "number") {
+            setVisitorCount(data.count);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to track visitor count:", err);
+      }
+    }
+    trackVisitor();
+  }, []);
 
   return (
     <footer>
@@ -39,6 +76,15 @@ export default function Footer({ initialSettings }) {
             <span style={{ opacity: 0.5 }}>&bull;</span>
             <a href="/formulir-offline" style={{ color: "inherit", textDecoration: "none" }}>Formulir Offline</a>
           </span>
+          {visitorCount !== null && (
+            <span style={{ fontSize: "0.8rem", opacity: 0.8, display: "inline-flex", alignItems: "center", gap: "0.25rem", marginTop: "0.5rem" }} className="footer-visitor-counter">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: "middle" }}>
+                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              {visitorCount.toLocaleString("id-ID")} Pengunjung Unik
+            </span>
+          )}
         </p>
       </div>
     </footer>

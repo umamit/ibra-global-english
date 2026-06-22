@@ -21,6 +21,10 @@ export default function LandingPageCMS() {
   const [allowPublicCopy, setAllowPublicCopy] = useState(false);
   const [savingCopySetting, setSavingCopySetting] = useState(false);
 
+  // Visitor counter offset
+  const [visitorOffset, setVisitorOffset] = useState("0");
+  const [savingVisitorOffset, setSavingVisitorOffset] = useState(false);
+
   // ----------------------------------------------------
   // FORM STATES: HERO & CONTACT PROFILE
   // ----------------------------------------------------
@@ -132,6 +136,7 @@ export default function LandingPageCMS() {
         setCtaDesc(settings.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
         setCtaBrochureImage(settings.cta_brochure_image || "/assets/brochure.png");
         setAllowPublicCopy(settings.allow_public_copy === "true");
+        setVisitorOffset(settings.visitor_offset || "0");
 
         const programsRaw = settings.landing_programs;
         const benefitsRaw = settings.landing_benefits;
@@ -229,6 +234,22 @@ export default function LandingPageCMS() {
       showToast("Gagal mengubah pengaturan: " + err.message, "error");
     } finally {
       setSavingCopySetting(false);
+    }
+  };
+
+  const handleSaveVisitorOffset = async (e) => {
+    e.preventDefault();
+    setSavingVisitorOffset(true);
+    try {
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert({ key: "visitor_offset", value: visitorOffset.trim() });
+      if (error) throw error;
+      showToast("Angka awal pengunjung berhasil disimpan!");
+    } catch (err) {
+      showToast("Gagal menyimpan angka awal pengunjung: " + err.message, "error");
+    } finally {
+      setSavingVisitorOffset(false);
     }
   };
 
@@ -1957,6 +1978,64 @@ export default function LandingPageCMS() {
                 </span>
               </div>
             </div>
+          </div>
+
+          {/* Visitor counter card */}
+          <div className="portal-card" style={{
+            padding: "2rem",
+            borderLeft: "5px solid #14b8a6",
+            background: "linear-gradient(135deg, rgba(20,184,166,0.06) 0%, rgba(255,255,255,0) 100%)"
+          }}>
+            <form onSubmit={handleSaveVisitorOffset}>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
+                <div style={{ flex: 1, minWidth: "280px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
+                    <span style={{
+                      width: "12px", height: "12px", borderRadius: "50%",
+                      backgroundColor: "#14b8a6",
+                      display: "inline-block",
+                      boxShadow: "0 0 0 4px rgba(20,184,166,0.2)"
+                    }} />
+                    <span style={{ fontWeight: "800", fontSize: "1.1rem", color: "var(--color-gray-900)" }}>
+                      Pengaturan Angka Awal Pengunjung (Visitor Offset)
+                    </span>
+                  </div>
+                  <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", maxWidth: "480px", lineHeight: "1.6", marginBottom: "1rem" }}>
+                    Tentukan angka awal untuk memulai penghitung pengunjung di website utama. Nilai ini akan ditambahkan ke jumlah pengunjung unik baru yang terdeteksi di database.
+                  </p>
+                  
+                  <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem", maxWidth: "250px" }}>
+                    <label style={{ fontWeight: "700", color: "var(--color-gray-700)", fontSize: "0.85rem" }}>Angka Awal Pengunjung</label>
+                    <input
+                      type="number"
+                      className="form-input"
+                      style={{ width: "100%", padding: "0.6rem 0.8rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
+                      placeholder="Contoh: 1210"
+                      value={visitorOffset}
+                      onChange={(e) => setVisitorOffset(e.target.value)}
+                      min="0"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "flex-end" }}>
+                  <button
+                    type="submit"
+                    className="btn-portal"
+                    disabled={savingVisitorOffset}
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      fontWeight: "700",
+                      borderRadius: "6px",
+                      cursor: savingVisitorOffset ? "not-allowed" : "pointer"
+                    }}
+                  >
+                    {savingVisitorOffset ? "Menyimpan..." : "Simpan Angka Awal"}
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
 
           {/* Info card */}
