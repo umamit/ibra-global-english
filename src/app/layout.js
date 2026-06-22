@@ -91,6 +91,7 @@ const educationalOrgSchema = {
   },
   "description": "Kursus Bahasa Inggris offline dan bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu dengan metode interaktif, fun, dan tutor berpengalaman.",
   "sameAs": [
+    "https://maps.app.goo.gl/weuM3h6yCu3rK3ov8",
     "https://www.facebook.com/IbraGlobalEnglish",
     "https://www.instagram.com/ibraglobalenglish/"
   ],
