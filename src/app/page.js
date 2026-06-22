@@ -18,6 +18,14 @@ export async function generateMetadata() {
   return {
     title,
     description,
+    keywords: [
+      "kursus bahasa inggris bobong",
+      "ibra global english bobong",
+      "kursus inggris taliabu",
+      "les bahasa inggris bobong",
+      "bimbel calistung bobong",
+      "belajar bahasa inggris taliabu"
+    ],
     alternates: {
       canonical: "/",
     },
