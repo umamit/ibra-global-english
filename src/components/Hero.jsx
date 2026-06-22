@@ -50,7 +50,7 @@ export default function Hero({ initialSettings }) {
 
       <div className="container hero-grid">
         <div className="hero-content" data-aos="fade-right">
-          <h2>{heroTitle}</h2>
+          <h1>{heroTitle}</h1>
           <p className="hero-subtitle">{renderSubtitle(heroSubtitle)}</p>
           <p className="hero-desc">{heroDesc}</p>
           <div className="hero-actions">
