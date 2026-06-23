@@ -172,6 +172,11 @@ export default function LoginPage() {
 
   return (
     <div className="auth-wrapper">
+      {/* Background blobs for premium fluid design */}
+      <div className="auth-bg-blob blob-1"></div>
+      <div className="auth-bg-blob blob-2"></div>
+      <div className="auth-bg-blob blob-3"></div>
+
       <button onClick={toggleTheme} className="auth-theme-toggle" aria-label="Toggle theme">
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
@@ -279,64 +284,76 @@ export default function LoginPage() {
             <>
               <div className="form-group">
                 <label htmlFor="name-input" className="form-label">Nama Lengkap</label>
-                <input
-                  type="text"
-                  id="name-input"
-                  className="form-input"
-                  placeholder="Masukkan Nama Lengkap Anda"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  disabled={loading}
-                />
+                <div className="input-with-icon">
+                  <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <input
+                    type="text"
+                    id="name-input"
+                    className="form-input"
+                    placeholder="Masukkan Nama Lengkap Anda"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
               </div>
 
-              <div className="form-group" style={{ marginBottom: "1rem" }}>
+              <div className="form-group">
                 <label htmlFor="role-input" className="form-label">Daftar Sebagai (Peran)</label>
-                <select
-                  id="role-input"
-                  className="form-input"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  disabled={loading}
-                  style={{ cursor: "pointer" }}
-                >
-                  <option value="parent">Wali Murid / Orang Tua</option>
-                  <option value="student">Siswa / Pelajar</option>
-                  <option value="tutor">Pengajar / Tutor</option>
-                </select>
+                <div className="input-with-icon">
+                  <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <select
+                    id="role-input"
+                    className="form-input"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    disabled={loading}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="parent">Wali Murid / Orang Tua</option>
+                    <option value="student">Siswa / Pelajar</option>
+                    <option value="tutor">Pengajar / Tutor</option>
+                  </select>
+                </div>
               </div>
             </>
           )}
 
           <div className="form-group">
             <label htmlFor="email-input" className="form-label">Alamat Email</label>
-            <input
-              type="email"
-              id="email-input"
-              className="form-input"
-              placeholder="nama@email.com"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-            />
+            <div className="input-with-icon">
+              <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input
+                type="email"
+                id="email-input"
+                className="form-input"
+                placeholder="nama@email.com"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="password-input" className="form-label">Kata Sandi</label>
-            <input
-              type="password"
-              id="password-input"
-              className="form-input"
-              placeholder="••••••••"
-              required
-              autoComplete={isRegister ? "new-password" : "current-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-            />
+            <div className="input-with-icon">
+              <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input
+                type="password"
+                id="password-input"
+                className="form-input"
+                placeholder="••••••••"
+                required
+                autoComplete={isRegister ? "new-password" : "current-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+            </div>
           </div>
 
           <button type="submit" className="form-btn" disabled={loading}>
