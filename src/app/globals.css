@@ -2896,6 +2896,10 @@ textarea:focus-visible {
     bottom: 0;
     left: -280px;
     box-shadow: var(--shadow-2xl);
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   .dashboard-sidebar.open {
