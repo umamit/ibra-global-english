@@ -131,7 +131,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                 </p>
                 <div className="whatsapp-qr-container" style={{ marginTop: "0.75rem" }}>
                   <img
-                    src={`https://quickchart.io/qr?text=${encodeURIComponent(`https://wa.me/${rawPhone}`)}&size=150`}
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://wa.me/${rawPhone}`)}`}
                     alt="QR Code WhatsApp Ibra Global English"
                     className="whatsapp-qr-img"
                     style={{
@@ -141,7 +141,8 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                       border: "2px solid var(--color-gray-200)",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                       transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                      cursor: "pointer"
+                      cursor: "pointer",
+                      backgroundColor: "#fff"
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "scale(1.05)";
@@ -152,7 +153,35 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                       e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
                     }}
                     onClick={() => window.open(`https://wa.me/${rawPhone}`, '_blank')}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                    }}
                   />
+                  <div style={{
+                    display: 'none',
+                    width: '120px',
+                    height: '120px',
+                    borderRadius: '12px',
+                    border: '2px solid var(--color-gray-200)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#f9fafb',
+                    flexDirection: 'column',
+                    gap: '0.5rem'
+                  }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-gray-400)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect width="5" height="5" x="3" y="3" rx="1"/>
+                      <rect width="5" height="5" x="16" y="3" rx="1"/>
+                      <rect width="5" height="5" x="3" y="16" rx="1"/>
+                      <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                      <path d="M21 21v.01"/>
+                      <path d="M12 7v5a2 2 0 0 1-2 2H7"/>
+                      <path d="M3 12h.01"/>
+                      <path d="M6 21v-2a2 2 0 0 1 2-2h3"/>
+                    </svg>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--color-gray-500)', textAlign: 'center', padding: '0 0.5rem' }}>QR tidak tersedia</span>
+                  </div>
                   <p style={{
                     fontSize: "0.75rem",
                     color: "var(--color-gray-500)",
