@@ -16,7 +16,7 @@ function jsonResponse(data, init = {}) {
   return NextResponse.json(data, { ...init, headers });
 }
 
-// POST: Kirim pesan WhatsApp via Fonnte
+// POST: Kirim pesan WhatsApp via Fonnte (Mendukung pengiriman ke banyak nomor sekaligus)
 export async function POST(request) {
   // Validasi hanya admin yang bisa mengirim
   if (!(await checkAdminAuth())) {
@@ -33,56 +33,72 @@ export async function POST(request) {
       );
     }
 
-    // Bersihkan nomor telepon (hanya angka)
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
-    if (cleanPhone.length < 9) {
+    // Pisahkan nomor telepon berdasarkan koma untuk pengiriman massal
+    const numbers = phone
+      .split(",")
+      .map((n) => n.trim().replace(/[^0-9]/g, ""))
+      .filter((n) => n.length >= 9);
+
+    if (numbers.length === 0) {
       return jsonResponse(
-        { error: "Nomor telepon tidak valid." },
+        { error: "Tidak ada nomor telepon yang valid." },
         { status: 400 }
       );
     }
 
-    console.log(`[WA GATEWAY] Type: ${type || "manual"}, To: ${cleanPhone}`);
-
-    // Kirim via Fonnte jika token tersedia
-    let sentReal = false;
-    let fonnteResult = null;
     const fonnteToken = process.env.FONNTE_API_TOKEN;
 
-    if (fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA") {
-      try {
-        const formData = new FormData();
-        formData.append("target", cleanPhone);
-        formData.append("message", message);
-        formData.append("countryCode", "62");
+    // Kirim pesan ke semua nomor secara paralel
+    const results = await Promise.all(
+      numbers.map(async (cleanPhone) => {
+        let sentReal = false;
+        let fonnteResult = null;
 
-        const waRes = await fetch("https://api.fonnte.com/send", {
-          method: "POST",
-          headers: {
-            Authorization: fonnteToken,
-          },
-          body: formData,
-        });
+        if (fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA") {
+          try {
+            const formData = new FormData();
+            formData.append("target", cleanPhone);
+            formData.append("message", message);
+            formData.append("countryCode", "62");
 
-        fonnteResult = await waRes.json();
-        console.log("[WA GATEWAY - FONNTE RESULT]", fonnteResult);
-        sentReal = fonnteResult.status === true;
-      } catch (waErr) {
-        console.error("Gagal mengirim WA via Fonnte:", waErr);
-      }
-    }
+            const waRes = await fetch("https://api.fonnte.com/send", {
+              method: "POST",
+              headers: {
+                Authorization: fonnteToken,
+              },
+              body: formData,
+            });
 
-    // Tulis log setelah percobaan pengiriman ke file di /tmp
-    const status = sentReal ? "SENT" : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA" ? "FAILED" : "SIMULATED";
-    const logEntry = `[${new Date().toISOString()}] TYPE: ${type || "manual"} | TO: ${cleanPhone} | STATUS: ${status} | MSG: ${message}\n`;
-    fs.appendFileSync(logPath, logEntry, "utf8");
+            fonnteResult = await waRes.json();
+            sentReal = fonnteResult.status === true;
+          } catch (waErr) {
+            console.error(`Gagal mengirim ke ${cleanPhone}:`, waErr);
+          }
+        }
+
+        // Tulis log untuk masing-masing nomor
+        const status = sentReal ? "SENT" : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA" ? "FAILED" : "SIMULATED";
+        const logEntry = `[${new Date().toISOString()}] TYPE: ${type || "manual"} | TO: ${cleanPhone} | STATUS: ${status} | MSG: ${message}\n`;
+        fs.appendFileSync(logPath, logEntry, "utf8");
+
+        return { phone: cleanPhone, sentReal, status, fonnteResult };
+      })
+    );
+
+    const sentCount = results.filter((r) => r.sentReal).length;
+    const simulatedCount = results.filter((r) => r.status === "SIMULATED").length;
+    const failedCount = results.filter((r) => r.status === "FAILED").length;
 
     return jsonResponse({
       success: true,
       logged: true,
-      sentReal,
-      status,
-      fonnteResult,
+      results,
+      stats: {
+        total: numbers.length,
+        sent: sentCount,
+        simulated: simulatedCount,
+        failed: failedCount,
+      },
     });
   } catch (error) {
     console.error("WA Gateway error:", error);
@@ -93,7 +109,7 @@ export async function POST(request) {
   }
 }
 
-// GET: Ambil log pengiriman & status perangkat Fonnte
+// GET: Ambil log pengiriman, status perangkat Fonnte, atau daftar kontak
 export async function GET(request) {
   if (!(await checkAdminAuth())) {
     return jsonResponse({ error: "Tidak diizinkan." }, { status: 403 });
@@ -103,7 +119,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get("action");
 
-    // Cek status perangkat Fonnte
+    // 1. Cek status perangkat Fonnte
     if (action === "device") {
       const fonnteToken = process.env.FONNTE_API_TOKEN;
 
@@ -115,7 +131,6 @@ export async function GET(request) {
       }
 
       try {
-        // API Fonnte memerlukan POST untuk /device
         const res = await fetch("https://api.fonnte.com/device", {
           method: "POST",
           headers: { Authorization: fonnteToken },
@@ -130,6 +145,68 @@ export async function GET(request) {
           connected: false,
           reason: "Gagal terhubung ke Fonnte: " + err.message,
         });
+      }
+    }
+
+    // 2. Ambil seluruh kontak dari Registrasi dan Placement Test (otomatis)
+    if (action === "contacts") {
+      try {
+        const { createClient } = require("@supabase/supabase-js");
+        const { getSupabaseConfig } = require("@/utils/supabase/config");
+        const { url: supabaseUrl } = getSupabaseConfig();
+        const supabaseAdmin = createClient(
+          supabaseUrl,
+          process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key",
+          { auth: { persistSession: false } }
+        );
+
+        // Ambil data pendaftaran
+        const { data: regData } = await supabaseAdmin
+          .from("registrations")
+          .select("student_name, parent_name, whatsapp")
+          .order("created_at", { ascending: false });
+
+        // Ambil data tes penempatan
+        const { data: testData } = await supabaseAdmin
+          .from("placement_test_submissions")
+          .select("full_name, whatsapp_number")
+          .order("created_at", { ascending: false });
+
+        const contacts = [];
+        const seen = new Set();
+
+        if (regData) {
+          regData.forEach((r) => {
+            const clean = r.whatsapp.replace(/[^0-9]/g, "");
+            if (clean && !seen.has(clean)) {
+              seen.add(clean);
+              contacts.push({
+                name: r.parent_name ? `${r.parent_name} (Ortu ${r.student_name})` : r.student_name,
+                phone: clean,
+                source: "Pendaftaran",
+              });
+            }
+          });
+        }
+
+        if (testData) {
+          testData.forEach((t) => {
+            const clean = t.whatsapp_number.replace(/[^0-9]/g, "");
+            if (clean && !seen.has(clean)) {
+              seen.add(clean);
+              contacts.push({
+                name: `${t.full_name}`,
+                phone: clean,
+                source: "Tes Penempatan",
+              });
+            }
+          });
+        }
+
+        return jsonResponse({ contacts });
+      } catch (dbErr) {
+        console.error("Gagal memuat kontak dari DB:", dbErr);
+        return jsonResponse({ contacts: [], error: dbErr.message });
       }
     }
 
