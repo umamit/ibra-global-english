@@ -131,7 +131,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                 </p>
                 <div className="whatsapp-qr-container" style={{ marginTop: "0.75rem" }}>
                   <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/${rawPhone}`}
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://wa.me/${rawPhone}`)}`}
                     alt="QR Code WhatsApp Ibra Global English"
                     className="whatsapp-qr-img"
                     style={{
