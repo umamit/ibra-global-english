@@ -1,47 +1,3 @@
-/* Responsive Overrides */
-@media (max-width: 1024px) {
-  .dashboard-sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: -280px;
-    box-shadow: var(--shadow-2xl);
-    height: 100vh;
-    height: 100dvh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .dashboard-sidebar.open {
-    left: 0;
-  }
-  
-  .dashboard-main {
-    padding: 1.5rem;
-  }
-}
-
-/* Mobile Sidebar Backdrop Overlay */
-@media (max-width: 1024px) {
-  .dashboard-container::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--transition-normal);
-    z-index: 85;
-  }
-  
-  .dashboard-container.sidebar-open::before {
-    opacity: 1;
-    pointer-events: auto;
-  }
-}
-
 /* Printing optimization for digital report cards */
 @media print {
   .no-print,
@@ -256,3 +212,81 @@
   }
 }
 
+
+/* ──── A1: Print Finance Report ──── */
+@media print {
+  /* Sembunyikan semua elemen non-laporan */
+  .dashboard-sidebar,
+  .mobile-nav-toggle,
+  .topbar-user,
+  .btn-portal-primary,
+  .btn-portal-outline,
+  .btn-portal-danger,
+  .btn-logout,
+  .portal-modal-overlay,
+  [class*="tab-btn"],
+  .dashboard-topbar .topbar-user {
+    display: none !important;
+  }
+
+  /* Tampilkan header cetak */
+  .finance-print-header {
+    display: block !important;
+    text-align: center;
+    padding: 1rem 0 1.5rem;
+    border-bottom: 2px solid #216c7e;
+    margin-bottom: 1.5rem;
+  }
+
+  .finance-print-header h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #216c7e !important;
+  }
+
+  .finance-print-header p {
+    font-size: 0.875rem;
+    color: #555 !important;
+  }
+
+  /* Layout satu kolom full width */
+  .dashboard-layout {
+    display: block !important;
+  }
+
+  .dashboard-main {
+    margin: 0 !important;
+    padding: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Tabel laporan */
+  .portal-table {
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    border-collapse: collapse !important;
+  }
+
+  .portal-table th,
+  .portal-table td {
+    padding: 0.4rem 0.6rem !important;
+    border: 1px solid #ccc !important;
+    color: #111 !important;
+  }
+
+  .portal-table th {
+    background: #e8f4f7 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .table-wrapper {
+    overflow: visible !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 1.5cm;
+  }
+}
