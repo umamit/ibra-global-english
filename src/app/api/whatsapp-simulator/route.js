@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { checkAdminAuth } from "@/utils/supabase/adminAuth";
+
+// Tentukan path log di temp directory agar aman di read-only file system (Vercel)
+const logPath = path.join(os.tmpdir(), "whatsapp_logs.txt");
 
 // Helper untuk respons JSON dengan Cache-Control private (sesuai aturan keamanan admin)
 function jsonResponse(data, init = {}) {
@@ -40,14 +44,6 @@ export async function POST(request) {
 
     console.log(`[WA GATEWAY] Type: ${type || "manual"}, To: ${cleanPhone}`);
 
-    // Log ke file lokal
-    const logDir = path.join(process.cwd(), "public", "assets");
-    if (!fs.existsSync(logDir)) {
-      fs.mkdirSync(logDir, { recursive: true });
-    }
-
-    const logPath = path.join(logDir, "whatsapp_logs.txt");
-
     // Kirim via Fonnte jika token tersedia
     let sentReal = false;
     let fonnteResult = null;
@@ -76,7 +72,7 @@ export async function POST(request) {
       }
     }
 
-    // Tulis log setelah percobaan pengiriman
+    // Tulis log setelah percobaan pengiriman ke file di /tmp
     const status = sentReal ? "SENT" : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA" ? "FAILED" : "SIMULATED";
     const logEntry = `[${new Date().toISOString()}] TYPE: ${type || "manual"} | TO: ${cleanPhone} | STATUS: ${status} | MSG: ${message}\n`;
     fs.appendFileSync(logPath, logEntry, "utf8");
@@ -119,7 +115,7 @@ export async function GET(request) {
       }
 
       try {
-        // PERBAIKAN: API Fonnte memerlukan POST untuk /device
+        // API Fonnte memerlukan POST untuk /device
         const res = await fetch("https://api.fonnte.com/device", {
           method: "POST",
           headers: { Authorization: fonnteToken },
@@ -138,9 +134,8 @@ export async function GET(request) {
     }
 
     // Default: ambil log pengiriman
-    const logPath = path.join(process.cwd(), "public", "assets", "whatsapp_logs.txt");
     if (!fs.existsSync(logPath)) {
-      return jsonResponse({ logs: [], stats: { total: 0, today: 0, sent: 0, simulated: 0 } });
+      return jsonResponse({ logs: [], stats: { total: 0, today: 0, sent: 0, simulated: 0, failed: 0 } });
     }
 
     const content = fs.readFileSync(logPath, "utf8");
