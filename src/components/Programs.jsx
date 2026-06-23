@@ -36,7 +36,15 @@ export default function Programs({ initialSettings }) {
         
         <div className="programs-grid">
           {programs.map((prog, idx) => (
-            <div key={idx} className="program-card glowing-card" data-aos="fade-up" data-aos-delay={idx * 100}>
+            <div 
+              key={idx} 
+              className="program-card glowing-card" 
+              data-aos="fade-up" 
+              data-aos-delay={idx * 150}
+              style={{ 
+                transform: `translateY(${idx % 2 === 1 ? '20px' : '0'})`,
+              }}
+            >
               <div className="program-icon-box">
                 {ICON_MAP[prog.iconKey] || ICON_MAP.book}
               </div>
