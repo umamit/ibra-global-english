@@ -49,4 +49,27 @@ Untuk mencegah pemblokiran total JavaScript di lingkungan produksi akibat interv
    * Cloudflare Scripts/Zaraz: `https://*.cloudflare.com`
    * Cloudflare Analytics: `https://static.cloudflareinsights.com` dan `https://*.cloudflareinsights.com`
 3. **Verifikasi Headers & Purge Cache**: Setiap kali melakukan perubahan middleware/routing header, lakukan verifikasi via request browser simulasi untuk memastikan header baru sudah live di Vercel, dan ingatkan pengguna untuk melakukan pembersihan cache Cloudflare (*Purge Cache*) agar browser tidak memuat HTML usang.
+## INTEGRATION: REFRACTORING CSS WITH SECURITY-FIRST & ARCHITECTURE CONSTRAINTS
+
+When executing the "Split + Scope" refactoring for the 5000+ line global.css file, the AI Agent MUST strictly combine the Next.js optimization logic with the following project security and tier constraints:
+
+### 1. Hard Code-Length Limit (Crucial)
+- Referencing "Aturan Batasan Vercel Hobby & Supabase Free Tier": Every newly created `[Component].module.css` or split CSS file MUST NOT exceed **300 lines** (stricter than the general project rule of 800 lines) to maintain extreme maintainability.
+- If a component's styles exceed 300 lines, split it further into sub-components or atomic style utilities.
+
+### 2. Guarding the Admin Dashboard (`app/admin`)
+- When applying CSS Modules to components inside `app/admin`, you are STRICTLY FORBIDDEN from adding any static caching triggers, public export configs, or global styles that might interfere with server-side dynamic rendering. 
+- Ensure that the CSS Modules refactor does not accidentally block or hide React `Suspense` Skeleton Loaders used for tables or charts.
+
+### 3. Fonts & Content Security Policy (CSP) Compliance
+- Referencing "Aturan Khusus Metadata, Aksesibilitas, & Font Lokal": Do NOT touch, move, or alter the `next/font/google` configuration. 
+- Ensure that no external font CDN links (like `fonts.googleapis.com` or `fonts.gstatic.com`) are injected into the CSS during the cleanup. The font loading must remain 100% self-hosted/local to comply with the project's strict CSP rules.
+
+### 4. Accessibility & Color Contrast (WCAG AA) Validation
+- While extracting and splitting styles, verify that text colors and background utilities maintain the minimum contrast ratio of **4.5:1** (e.g., keeping `#59616e` for light mode and `#8c95a0` for dark mode).
+- Do not remove or alter style properties related to focus states (`:focus`, `:focus-visible`) that ensure keyboard and screen-reader accessibility for buttons or sliders.
+
+### 5. Local Build Verification & Cloudflare Purge Reminder
+- After completing a batch of CSS splitting, the sub-agent MUST execute `npm run build` (or yarn/pnpm equivalent) to ensure zero compilation or broken import errors.
+- In the final execution report, remind the user to trigger a **Cloudflare Purge Cache** to clear out cached CSS chunks at the edge proxies and avoid hydration mismatch on client browsers.
 
