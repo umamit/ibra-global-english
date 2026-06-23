@@ -81,10 +81,15 @@ export default function StudentManagement() {
     }
   };
 
-  // Approve: update status + auto-insert ke students via API
+  // State untuk feedback pengiriman WA
+  const [waSendingId, setWaSendingId] = useState(null);
+  const [waFeedback, setWaFeedback] = useState({ id: null, success: null, msg: "" });
+
+  // Approve: update status + auto-insert ke students + kirim WA via Fonnte
   const handleApprove = async (reg) => {
-    if (!confirm(`Setujui pendaftaran "${reg.student_name}"? Data siswa akan otomatis ditambahkan ke daftar siswa.`)) return;
+    if (!confirm(`Setujui pendaftaran "${reg.student_name}"? Data siswa akan otomatis ditambahkan ke daftar siswa dan notifikasi WhatsApp akan dikirim ke orang tua.`)) return;
     try {
+      // 1. Update status di database
       const res = await fetch("/api/register", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -92,20 +97,38 @@ export default function StudentManagement() {
       });
       if (!res.ok) throw new Error("Gagal menyetujui pendaftaran.");
       fetchRegistrations();
-      fetchData(); // Refresh daftar siswa juga
+      fetchData();
 
-      // A3: Buka WA otomatis dengan pesan selamat datang
+      // 2. Kirim notifikasi WA otomatis via Fonnte API
       const waNumber = reg.whatsapp.replace(/[^0-9]/g, "");
       const msg = `Assalamu'alaikum, Bapak/Ibu ${reg.parent_name || "Wali"}! 🎉\n\nPendaftaran *${reg.student_name}* ke program *${reg.program}* di *Ibra Global English Bobong* telah kami *SETUJUI* ✅.\n\nKami akan segera menghubungi Anda untuk informasi jadwal belajar perdana. Terima kasih telah mempercayakan pendidikan anak kepada kami! 🌟\n\n_Tim Ibra Global English_`;
-      window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, "_blank");
+
+      setWaSendingId(reg.id);
+      const waRes = await fetch("/api/whatsapp-simulator", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: waNumber, message: msg, type: "approval" }),
+      });
+      const waData = await waRes.json();
+      setWaSendingId(null);
+
+      if (waData.sentReal) {
+        setWaFeedback({ id: reg.id, success: true, msg: "✅ Notifikasi WA berhasil terkirim via Fonnte!" });
+      } else if (waData.status === "SIMULATED") {
+        setWaFeedback({ id: reg.id, success: null, msg: "⚠️ WA disimulasikan (token Fonnte belum aktif). Cek log di /admin/whatsapp." });
+      } else {
+        setWaFeedback({ id: reg.id, success: false, msg: "❌ Gagal kirim WA via Fonnte. Cek konfigurasi token." });
+      }
+      setTimeout(() => setWaFeedback({ id: null, success: null, msg: "" }), 5000);
     } catch (err) {
       alert(err.message);
     }
   };
 
-  // Reject: tampilkan modal input alasan
+  // Reject: tampilkan modal input alasan + kirim WA notifikasi penolakan
   const handleReject = async () => {
     if (!rejectModalId) return;
+    const reg = registrations.find(r => r.id === rejectModalId);
     try {
       const res = await fetch("/api/register", {
         method: "PATCH",
@@ -113,6 +136,19 @@ export default function StudentManagement() {
         body: JSON.stringify({ id: rejectModalId, status: "rejected", notes: rejectNotes }),
       });
       if (!res.ok) throw new Error("Gagal menolak pendaftaran.");
+
+      // Kirim notifikasi WA penolakan
+      if (reg?.whatsapp) {
+        const waNumber = reg.whatsapp.replace(/[^0-9]/g, "");
+        const alasan = rejectNotes?.trim() ? `\n\nAlasan: _${rejectNotes.trim()}_` : "";
+        const msg = `Assalamu'alaikum, Bapak/Ibu ${reg.parent_name || "Wali"}.\n\nMohon maaf, pendaftaran *${reg.student_name}* ke program *${reg.program}* di *Ibra Global English Bobong* belum dapat kami proses saat ini.${alasan}\n\nJika ada pertanyaan, silakan hubungi kami kembali. Terima kasih atas perhatian Anda.\n\n_Tim Ibra Global English_`;
+        fetch("/api/whatsapp-simulator", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone: waNumber, message: msg, type: "rejection" }),
+        }).catch(console.error); // fire-and-forget
+      }
+
       setRejectModalId(null);
       setRejectNotes("");
       fetchRegistrations();
@@ -737,21 +773,36 @@ export default function StudentManagement() {
                           </td>
                           <td style={{ textAlign: "right" }}>
                             {reg.status === "pending" && (
-                              <div style={{ display: "inline-flex", gap: "0.4rem" }}>
-                                <button
-                                  className="btn-portal-primary"
-                                  style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
-                                  onClick={() => handleApprove(reg)}
-                                >
-                                  Setujui
-                                </button>
-                                <button
-                                  className="btn-portal-danger"
-                                  style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
-                                  onClick={() => { setRejectModalId(reg.id); setRejectNotes(""); }}
-                                >
-                                  Tolak
-                                </button>
+                              <div style={{ display: "inline-flex", flexDirection: "column", gap: "0.35rem", alignItems: "flex-end" }}>
+                                <div style={{ display: "inline-flex", gap: "0.4rem" }}>
+                                  <button
+                                    className="btn-portal-primary"
+                                    style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                                    onClick={() => handleApprove(reg)}
+                                    disabled={waSendingId === reg.id}
+                                  >
+                                    {waSendingId === reg.id ? "⏳ Mengirim WA..." : "Setujui"}
+                                  </button>
+                                  <button
+                                    className="btn-portal-danger"
+                                    style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                                    onClick={() => { setRejectModalId(reg.id); setRejectNotes(""); }}
+                                    disabled={waSendingId === reg.id}
+                                  >
+                                    Tolak
+                                  </button>
+                                </div>
+                                {waFeedback.id === reg.id && waFeedback.msg && (
+                                  <span style={{
+                                    fontSize: "0.72rem",
+                                    color: waFeedback.success === true ? "var(--color-green)" : waFeedback.success === false ? "var(--color-red)" : "#b45309",
+                                    fontWeight: "600",
+                                    maxWidth: "200px",
+                                    textAlign: "right"
+                                  }}>
+                                    {waFeedback.msg}
+                                  </span>
+                                )}
                               </div>
                             )}
                           </td>
