@@ -26,13 +26,13 @@ export const viewport = {
 export async function generateMetadata() {
   const settings = await getLandingSettings();
   
-  const heroTitle = settings.hero_title || "Ibra Global English Bobong";
+  const heroTitle = settings.hero_title || "Kursus di Bobong | Ibra Global English";
   const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris Terbaik";
   const defaultTitle = `${heroTitle} - ${heroSubtitle}`;
-  
-  const description = settings.hero_desc || 
-    "Ibra Global English Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!";
-  
+
+  const description = settings.hero_desc ||
+    "Kursus di Bobong terbaik di Ibra Global English. Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!";
+
   const heroImage = settings.hero_image || "/assets/logo.png";
 
   return {
@@ -42,6 +42,7 @@ export async function generateMetadata() {
     },
     description,
     keywords: [
+      "kursus di bobong",
       "kursus bahasa inggris bobong",
       "ibra global english bobong",
       "kursus inggris taliabu",

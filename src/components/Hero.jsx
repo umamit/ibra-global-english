@@ -5,9 +5,9 @@ import Image from "next/image";
 import CountUp from "./CountUp";
 
 export default function Hero({ initialSettings }) {
-  const [heroTitle, setHeroTitle] = useState(initialSettings?.hero_title || "Ibra Global English Bobong");
+  const [heroTitle, setHeroTitle] = useState(initialSettings?.hero_title || "Kursus di Bobong | Ibra Global English");
   const [heroSubtitle, setHeroSubtitle] = useState(initialSettings?.hero_subtitle || "Belajar Seru | Lancar Bicara");
-  const [heroDesc, setHeroDesc] = useState(initialSettings?.hero_desc || "Kursus bahasa Inggris offline terbaik di Bobong, Pulau Taliabu. Dengan metode pembelajaran yang menyenangkan dan efektif untuk tingkatkan kemampuan speaking Anda bersama tutor berpengalaman!");
+  const [heroDesc, setHeroDesc] = useState(initialSettings?.hero_desc || "Kursus di Bobong terbaik di Ibra Global English. Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!");
   const [heroImage, setHeroImage] = useState(initialSettings?.hero_image || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='100%' height='100%' fill='%23f3f4f6'/><g transform='translate(400, 300)'><rect x='-60' y='-80' width='120' height='90' rx='10' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='0' cy='-35' r='20' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='40' cy='-65' r='6' fill='%239ca3af'/><text x='0' y='70' font-family='system-ui, sans-serif' font-size='28' font-weight='800' fill='%236b7280' text-anchor='middle'>Belum Ada Foto</text><text x='0' y='110' font-family='system-ui, sans-serif' font-size='18' fill='%239ca3af' text-anchor='middle'>Foto utama akan diperbarui oleh Admin</text></g></svg>");
   const [studentCount, setStudentCount] = useState(100);
 
