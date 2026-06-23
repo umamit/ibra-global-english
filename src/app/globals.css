@@ -3378,38 +3378,38 @@ textarea:focus-visible {
 .auth-bg-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
+  filter: blur(120px);
+  opacity: 0.45; /* Ditingkatkan agar bola-bola gradien terlihat kaya warna */
   z-index: 1;
   pointer-events: none;
 }
 
 .blob-1 {
-  width: 300px;
-  height: 300px;
+  width: 550px; /* Diperbesar agar sebaran warna gradien menyelimuti layar */
+  height: 550px;
   background-color: var(--color-primary);
-  top: -50px;
-  left: -50px;
+  top: -150px;
+  left: -150px;
   animation: float-blob-1 25s infinite alternate ease-in-out;
 }
 
 .blob-2 {
-  width: 250px;
-  height: 250px;
+  width: 500px; /* Diperbesar agar sebaran warna gradien menyelimuti layar */
+  height: 500px;
   background-color: var(--color-accent);
-  bottom: -50px;
-  right: -50px;
+  bottom: -150px;
+  right: -150px;
   animation: float-blob-2 20s infinite alternate ease-in-out;
 }
 
 .blob-3 {
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 300px;
   background-color: var(--color-primary-dark);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  opacity: 0.05;
+  opacity: 0.1;
 }
 
 @keyframes float-blob-1 {
@@ -3693,7 +3693,7 @@ textarea:focus-visible {
 }
 
 [data-theme="dark"] .auth-bg-blob {
-  opacity: 0.1;
+  opacity: 0.25; /* Ditingkatkan agar gelembung warna tidak tenggelam di tema gelap */
 }
 
 [data-theme="dark"] .auth-card {
