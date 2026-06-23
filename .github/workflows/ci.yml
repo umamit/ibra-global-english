@@ -26,6 +26,12 @@ jobs:
   performance-audit:
     name: Performance Audit (Lighthouse CI)
     runs-on: ubuntu-latest
+    # Dummy credentials for both build and server start. getSupabaseConfig()
+    # throws on any value containing "placeholder", so use non-placeholder
+    # dummies; no live Supabase calls happen during the audit.
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://dummy-ci-build.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-ci-build-anon-key
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -41,17 +47,6 @@ jobs:
 
       - name: Build Next.js App
         run: npm run build
-        env:
-          # Dummy build-time credentials. getSupabaseConfig() throws on any value
-          # containing "placeholder", so use non-placeholder dummies that let the
-          # static build compile (no live Supabase calls happen during the build).
-          NEXT_PUBLIC_SUPABASE_URL: https://dummy-ci-build.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-ci-build-anon-key
-
-      - name: Copy static files for standalone server
-        run: |
-          cp -r public .next/standalone/
-          cp -r .next/static .next/standalone/.next/
 
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
