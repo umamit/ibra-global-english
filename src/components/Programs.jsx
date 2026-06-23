@@ -31,7 +31,7 @@ export default function Programs({ initialSettings }) {
       <div className="container">
         <div className="section-header" data-aos="fade-up">
           <h2>Program Kursus di Bobong</h2>
-          <p>Pilih program kursus bahasa Inggris dan bimbingan belajar terbaik untuk Anda di Pulau Taliabu</p>
+          <p>Pilih program kursus di Bobong terbaik: kursus bahasa Inggris dan bimbingan belajar Calistung untuk Anda di Pulau Taliabu</p>
         </div>
         
         <div className="programs-grid">
