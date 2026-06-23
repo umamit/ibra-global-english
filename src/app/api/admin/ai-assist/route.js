@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { getSupabaseConfig } from "@/utils/supabase/config";
 import { detectPromptInjection } from "@/utils/security";
-import { checkAdminOrTutorAuth, checkAdminAuth } from "@/utils/supabase/adminAuth";
+import { getAdminOrTutorUser } from "@/utils/supabase/adminAuth";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const { url: supabaseUrl } = getSupabaseConfig();
@@ -141,10 +141,11 @@ export async function POST(request) {
   let authUser = { id: null, email: null, role: null };
   
   try {
-    const isAuthenticated = await checkAdminOrTutorAuth();
-    if (!isAuthenticated) {
+    const currentUser = await getAdminOrTutorUser();
+    if (!currentUser) {
       return NextResponse.json({ error: "Tidak diizinkan. Hanya Admin/Tutor." }, { status: 403 });
     }
+    authUser = currentUser;
 
     if (!GROQ_API_KEY) {
       return NextResponse.json({ error: "API Key Groq belum dikonfigurasi." }, { status: 500 });
@@ -223,8 +224,7 @@ JUDUL: [Judul baru yang menarik dan profesional]
     } 
     // 4. MODE: INSIGHTS (Analisis Dasbor Ringkasan)
     else if (mode === "insights") {
-      const isAdmin = await checkAdminAuth();
-      if (!isAdmin) {
+      if (authUser.role !== "admin") {
         return NextResponse.json({ error: "Hanya Admin yang dapat melihat Insights." }, { status: 403 });
       }
 
