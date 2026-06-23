@@ -1,0 +1,82 @@
+const fs = require('fs');
+const path = require('path');
+
+const SITEMAP_PATH = path.join(__dirname, '..', 'sitemap.xml');
+
+const today = new Date().toISOString().split('T')[0];
+
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.ibraglobalenglish.uk/assets/logo.png</image:loc>
+      <image:title>Logo Ibra Global English Bobong</image:title>
+      <image:caption>Logo resmi Ibra Global English Bobong, kursus bahasa Inggris terbaik di Pulau Taliabu.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.ibraglobalenglish.uk/assets/fun_classroom_games.jpg</image:loc>
+      <image:title>Fun Classroom Games di Bobong</image:title>
+      <image:caption>Aktivitas menyenangkan belajar kosakata bahasa Inggris lewat permainan kata di Bobong.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.ibraglobalenglish.uk/assets/interactive_study_group.jpg</image:loc>
+      <image:title>Interactive Study Group Bobong</image:title>
+      <image:caption>Belajar berkelompok secara aktif dan interaktif bersama tutor berpengalaman di Pulau Taliabu.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.ibraglobalenglish.uk/assets/brochure.png</image:loc>
+      <image:title>Brosur Program Ibra Global English Bobong</image:title>
+      <image:caption>Brosur rincian program belajar dan biaya pendaftaran di Ibra Global English Bobong.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/placement-test</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/gallery</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/formulir-offline</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/privacy</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/terms</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/verify</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.ibraglobalenglish.uk/maintenance</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>`;
+
+fs.writeFileSync(SITEMAP_PATH, sitemap, 'utf8');
+console.log(`Sitemap updated with lastmod: ${today}`);

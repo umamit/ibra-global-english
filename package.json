@@ -9,7 +9,9 @@
     "dev": "next dev",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=12288 next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "postbuild": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
