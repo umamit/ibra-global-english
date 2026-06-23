@@ -123,12 +123,45 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                 </svg>
               </div>
               <div className="contact-details">
-                <h4>Telepon</h4>
+                <h4>Telepon / WhatsApp</h4>
                 <p>
                   <a href={`tel:${rawPhone}`} className="contact-phone-link">
                     {phone}
                   </a>
                 </p>
+                <div className="whatsapp-qr-container" style={{ marginTop: "0.75rem" }}>
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/${rawPhone}`}
+                    alt="QR Code WhatsApp Ibra Global English"
+                    className="whatsapp-qr-img"
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      borderRadius: "12px",
+                      border: "2px solid var(--color-gray-200)",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      cursor: "pointer"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.05)";
+                      e.currentTarget.style.boxShadow = "0 4px 16px rgba(33,108,126,0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+                    }}
+                    onClick={() => window.open(`https://wa.me/${rawPhone}`, '_blank')}
+                  />
+                  <p style={{
+                    fontSize: "0.75rem",
+                    color: "var(--color-gray-500)",
+                    marginTop: "0.5rem",
+                    fontWeight: "600"
+                  }}>
+                    Scan untuk chat WhatsApp
+                  </p>
+                </div>
               </div>
             </div>
             
