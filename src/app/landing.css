@@ -391,9 +391,10 @@ header.scrolled .logo-text p {
 }
 
 /* Hero Section */
+/* padding-top = marquee (40px) + header height (~6.5rem) + breathing room (1rem) */
 .hero {
   position: relative;
-  padding-top: 8rem;
+  padding-top: calc(40px + 7.5rem);
   padding-bottom: 6rem;
   background: 
     radial-gradient(ellipse at 20% 30%, rgba(33, 108, 126, 0.08) 0%, transparent 50%),
@@ -496,6 +497,10 @@ header.scrolled .logo-text p {
 }
 
 @media (max-width: 768px) {
+  /* Mobile: header lebih kecil (~5.5rem) tapi marquee tetap 40px */
+  .hero {
+    padding-top: calc(40px + 6rem);
+  }
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
