@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import AICopilotWidget from "@/components/AICopilotWidget";
+import "@/app/portal.css";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();

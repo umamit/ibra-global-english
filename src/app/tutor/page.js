@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient, createServiceRoleClient } from "@/utils/supabase/client";
 import AICopilotWidget from "@/components/AICopilotWidget";
+import "@/app/portal.css";
 
 export default function TutorPortal() {
   const router = useRouter();

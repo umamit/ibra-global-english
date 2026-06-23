@@ -1,0 +1,555 @@
+/* =====================================================================
+   INNOVASI VISUAL — SKELETON LOADER & GLOWING CARDS
+   ===================================================================== */
+
+.skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(229, 231, 235, 0.4) 25%,
+    rgba(209, 213, 219, 0.6) 50%,
+    rgba(229, 231, 235, 0.4) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+}
+
+[data-theme="dark"] .skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(31, 41, 55, 0.4) 25%,
+    rgba(55, 65, 81, 0.6) 50%,
+    rgba(31, 41, 55, 0.4) 75%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.skeleton-text {
+  height: 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.skeleton-title {
+  height: 20px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* --- Glowing Glassmorphic Cards --- */
+.glowing-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.glowing-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 1.5px; /* Border thickness */
+  background: linear-gradient(135deg, rgba(33, 108, 126, 0.2), rgba(166, 136, 73, 0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: background var(--transition-normal);
+}
+
+.glowing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(33, 108, 126, 0.15);
+}
+
+.glowing-card:hover::before {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+}
+
+/* --- Scroll-Driven Animations (Custom useScrollReveal) --- */
+.reveal-hidden {
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, opacity;
+}
+
+.reveal-fade-up {
+  transform: translateY(40px);
+}
+
+.reveal-fade-right {
+  transform: translateX(-40px);
+}
+
+.reveal-fade-left {
+  transform: translateX(40px);
+}
+
+.reveal-zoom-in {
+  transform: scale(0.92);
+}
+
+.reveal-active {
+  opacity: 1 !important;
+  transform: translate(0) scale(1) !important;
+}
+
+/* --- PRINTING SYSTEM FOR PLACEMENT TEST STATEMENT OF RESULT --- */
+.print-only {
+  display: none !important;
+}
+
+@media print {
+  /* Hide all screen-only wrappers when printing */
+  #header,
+  header,
+  footer,
+  .placement-test-page,
+  .social-float-group,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Display and format the print-only certificate */
+  .print-only {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #ffffff !important;
+    position: relative !important;
+  }
+
+  /* Preserve colors and backgrounds inside print-only view */
+  .print-only,
+  .print-only * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Ensure double golden border prints correctly */
+  .print-only > div {
+    border: 10px double #A68849 !important;
+    background-color: #ffffff !important;
+    padding: 2cm !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    min-height: 270mm !important;
+  }
+
+  /* Set target print color override */
+  .print-only h1 {
+    color: #216c7e !important;
+  }
+  
+  .print-only h2 {
+    color: #000000 !important;
+  }
+
+  .print-only h3 {
+    color: #A68849 !important;
+  }
+
+  .print-only p {
+    color: #111111 !important;
+  }
+
+  .print-only hr {
+    border-color: #A68849 !important;
+    background-color: #A68849 !important;
+    border-style: solid !important;
+    opacity: 1 !important;
+  }
+
+  body, html {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 1cm;
+}
+
+
+/* ──── A1: Print Finance Report ──── */
+@media print {
+  /* Sembunyikan semua elemen non-laporan */
+  .dashboard-sidebar,
+  .mobile-nav-toggle,
+  .topbar-user,
+  .btn-portal-primary,
+  .btn-portal-outline,
+  .btn-portal-danger,
+  .btn-logout,
+  .portal-modal-overlay,
+  [class*="tab-btn"],
+  .dashboard-topbar .topbar-user {
+    display: none !important;
+  }
+
+  /* Tampilkan header cetak */
+  .finance-print-header {
+    display: block !important;
+    text-align: center;
+    padding: 1rem 0 1.5rem;
+    border-bottom: 2px solid #216c7e;
+    margin-bottom: 1.5rem;
+  }
+
+  .finance-print-header h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #216c7e !important;
+  }
+
+  .finance-print-header p {
+    font-size: 0.875rem;
+    color: #555 !important;
+  }
+
+  /* Layout satu kolom full width */
+  .dashboard-layout {
+    display: block !important;
+  }
+
+  .dashboard-main {
+    margin: 0 !important;
+    padding: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Tabel laporan */
+  .portal-table {
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    border-collapse: collapse !important;
+  }
+
+  .portal-table th,
+  .portal-table td {
+    padding: 0.4rem 0.6rem !important;
+    border: 1px solid #ccc !important;
+    color: #111 !important;
+  }
+
+  .portal-table th {
+    background: #e8f4f7 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .table-wrapper {
+    overflow: visible !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 1.5cm;
+  }
+}
+
+/* Sembunyikan print header di layar */
+.finance-print-header {
+  display: none;
+}
+
+/* ──── A2: LMS Progress Ring SVG ──── */
+.lms-progress-ring-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lms-progress-ring circle.track {
+  fill: none;
+  stroke: var(--color-gray-200);
+}
+
+.lms-progress-ring circle.fill {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.lms-progress-ring-text {
+  position: absolute;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1;
+}
+
+.lms-progress-ring-text span {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  margin-top: 2px;
+}
+
+/* ──── Responsive nav optimize ──── */
+@media (min-width: 769px) and (max-width: 1180px) {
+  .nav-links {
+    gap: 1.0rem !important;
+  }
+  
+  .nav-link {
+    font-size: 0.85rem !important;
+  }
+  
+  .logo-text p {
+    display: none !important;
+  }
+  
+  .logo-text h1 {
+    font-size: 1.15rem !important;
+  }
+  
+  .logo-img {
+    width: 3.6rem !important;
+    height: 3.6rem !important;
+  }
+  
+  .nav-btn,
+  .nav-btn-outline {
+    padding: 0.35rem 0.8rem !important;
+    font-size: 0.725rem !important;
+    height: 1.95rem !important;
+  }
+  
+  .nav-right-group {
+    gap: 0.5rem !important;
+  }
+}
+
+/* ──── Dashboard report-detail-layout responsive stacking ──── */
+@media (max-width: 1024px) {
+  .report-detail-layout {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
+/* ──── Responsive Custom Grids (3-column, 4-column, receipt, signature blocks, etc.) ──── */
+.three-column-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.four-column-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.receipt-row {
+  display: grid;
+  grid-template-columns: 180px 10px 1fr;
+  border-bottom: 1px dashed var(--color-gray-250);
+  padding-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .three-column-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .four-column-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .report-scores-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  /* ──── Header Mobile Scaling ──── */
+  header {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .nav-container {
+    padding-inline: 1rem !important;
+    gap: 0.5rem !important;
+  }
+  .logo-link {
+    gap: 0.45rem !important;
+    max-width: 70% !important;
+  }
+  .logo-img {
+    width: 3.2rem !important;
+    height: 3.2rem !important;
+    flex-shrink: 0 !important;
+  }
+  header.scrolled .logo-img {
+    width: 2.6rem !important;
+    height: 2.6rem !important;
+  }
+  .logo-text {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    flex-shrink: 1 !important;
+  }
+  .logo-text h1 {
+    font-size: 1.1rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  header.scrolled .logo-text h1 {
+    font-size: 0.95rem !important;
+  }
+  .logo-text p,
+  header.scrolled .logo-text p {
+    display: none !important;
+  }
+  .nav-right-group {
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+  .theme-toggle {
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+  }
+  .menu-toggle {
+    width: 1.35rem !important;
+    height: 0.9rem !important;
+  }
+
+  /* ──── Footer Mobile Scaling ──── */
+  footer {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .footer-yellow-ribbon {
+    padding-inline: 1rem !important;
+  }
+  .footer-logo {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 0.5rem !important;
+  }
+  .footer-logo-text {
+    text-align: center !important;
+  }
+  .footer-logo-text h3 {
+    font-size: 1.15rem !important;
+  }
+  .footer-logo-text p {
+    font-size: 0.7rem !important;
+  }
+  .footer-copyright {
+    padding-inline: 1rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* ──── Floating Social Scaling ──── */
+  .social-float-group {
+    right: 1.25rem !important;
+    bottom: 1.5rem !important;
+    gap: 0.75rem !important;
+    max-width: 60px !important;
+  }
+  .social-float {
+    width: 3.25rem !important;
+    height: 3.25rem !important;
+  }
+  .social-float svg {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+  }
+
+  /* ──── Contact Tabs Scaling ──── */
+  .contact-tab-btn {
+    padding: 0.55rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    gap: 0.3rem !important;
+  }
+  .contact-tab-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .student-info-grid {
+    grid-template-columns: 1fr !important;
+    text-align: left !important;
+    gap: 1rem !important;
+  }
+  .student-info-grid > div {
+    text-align: left !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .four-column-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .signature-block {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+  }
+  .receipt-row {
+    grid-template-columns: 1fr !important;
+    gap: 0.25rem !important;
+  }
+  .receipt-row span:nth-child(2) {
+    display: none !important;
+  }
+
+  /* ──── Extra Small Screen Scaling for Floating Elements ──── */
+  .social-float-group {
+    right: 1.0rem !important;
+    bottom: 1.25rem !important;
+    gap: 0.5rem !important;
+    max-width: 50px !important;
+  }
+  .social-float {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+  }
+  .social-float svg {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  /* ──── Extra Small Screen Scaling for Contact Tabs ──── */
+  .contact-tab-switcher {
+    gap: 0.25rem !important;
+    padding: 3px !important;
+  }
+  .contact-tab-btn {
+    padding: 0.5rem 0.4rem !important;
+    font-size: 0.75rem !important;
+  }
+  .contact-tab-btn svg {
+    display: none !important;
+  }
+}
