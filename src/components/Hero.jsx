@@ -50,6 +50,9 @@ export default function Hero({ initialSettings }) {
 
       <div className="container hero-grid">
         <div className="hero-content" data-aos="fade-right">
+          <div className="hero-badge">
+            <span>📍 Kursus Bahasa Inggris di Bobong, Pulau Taliabu</span>
+          </div>
           <h1>{heroTitle}</h1>
           <p className="hero-subtitle">{renderSubtitle(heroSubtitle)}</p>
           <p className="hero-desc">{heroDesc}</p>
