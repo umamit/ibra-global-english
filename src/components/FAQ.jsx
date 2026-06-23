@@ -1,4 +1,5 @@
 "use client";
+import "./FAQ.css";
 
 import { useState } from "react";
 import { DEFAULT_FAQS } from "../utils/fallbackData";

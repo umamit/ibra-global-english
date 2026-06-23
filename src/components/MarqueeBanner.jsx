@@ -1,4 +1,5 @@
 "use client";
+import "./MarqueeBanner.css";
 
 import { useState } from "react";
 

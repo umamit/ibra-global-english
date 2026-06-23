@@ -1,4 +1,5 @@
 "use client";
+import "./Testimonials.css";
 
 import { useState, useEffect } from "react";
 import { createClient } from "../utils/supabase/client";

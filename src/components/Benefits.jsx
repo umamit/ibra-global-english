@@ -1,4 +1,5 @@
 "use client";
+import "./Benefits.css";
 
 import { useState } from "react";
 import { DEFAULT_BENEFITS } from "../utils/fallbackData";
