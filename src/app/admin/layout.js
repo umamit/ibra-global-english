@@ -13,6 +13,17 @@ export default function AdminLayout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
 
+  // Escape key handler untuk menutup sidebar
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && mobileOpen) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [mobileOpen]);
+
   // Fetch jumlah pendaftaran pending untuk badge notifikasi
   useEffect(() => {
     const fetchPendingCount = async () => {
@@ -88,14 +99,14 @@ export default function AdminLayout({ children }) {
   const isActive = (path) => pathname === path;
 
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${mobileOpen ? "sidebar-open" : ""}`}>
       {/* Tombol Toggle Menu Mobile */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
         style={{
           position: "fixed",
-          bottom: "20px",
-          right: "20px",
+          bottom: "max(20px, env(safe-area-inset-bottom, 20px))",
+          right: "max(20px, env(safe-area-inset-right, 20px))",
           zIndex: 100,
           width: "50px",
           height: "50px",
@@ -110,7 +121,9 @@ export default function AdminLayout({ children }) {
           justifyContent: "center",
         }}
         className="mobile-toggle-btn"
-        aria-label="Toggle Sidebar"
+        aria-expanded={mobileOpen}
+        aria-controls="admin-sidebar"
+        aria-label={mobileOpen ? "Tutup menu navigasi" : "Buka menu navigasi"}
       >
         {mobileOpen ? (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -120,7 +133,11 @@ export default function AdminLayout({ children }) {
       </button>
 
       {/* Sidebar Navigasi */}
-      <aside className={`dashboard-sidebar ${mobileOpen ? "open" : ""}`}>
+      <aside
+        id="admin-sidebar"
+        className={`dashboard-sidebar ${mobileOpen ? "open" : ""}`}
+        aria-hidden={!mobileOpen}
+      >
         <div className="sidebar-brand">
           <img src="/assets/logo.png" alt="Ibra Logo" className="sidebar-brand-img" />
           <div className="sidebar-brand-text">

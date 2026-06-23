@@ -95,7 +95,22 @@ export default function StudentManagement() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: reg.id, status: "approved" }),
       });
-      if (!res.ok) throw new Error("Gagal menyetujui pendaftaran.");
+      const result = await res.json();
+
+      if (!res.ok || result.success === false) {
+        const errorMsg = result.error || "Gagal menyetujui pendaftaran.";
+        const details = result.details ? `\n\nDetail: ${result.details}` : "";
+        const hint = result.hint ? `\n\nSaran: ${result.hint}` : "";
+        alert(`❌ ${errorMsg}${details}${hint}`);
+        return;
+      }
+
+      // Tampilkan pesan sukses jika ada
+      if (result.message) {
+        setWaFeedback({ id: reg.id, success: true, msg: `✅ ${result.message}` });
+        setTimeout(() => setWaFeedback({ id: null, success: null, msg: "" }), 5000);
+      }
+
       fetchRegistrations();
       fetchData();
 
@@ -121,7 +136,7 @@ export default function StudentManagement() {
       }
       setTimeout(() => setWaFeedback({ id: null, success: null, msg: "" }), 5000);
     } catch (err) {
-      alert(err.message);
+      alert(`❌ Terjadi kesalahan: ${err.message}`);
     }
   };
 

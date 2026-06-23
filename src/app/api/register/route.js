@@ -106,24 +106,82 @@ export async function PATCH(req) {
 
     // Jika disetujui, auto-insert ke tabel students
     if (status === "approved") {
-      const { data: reg } = await supabaseAdmin
+      const { data: reg, error: fetchError } = await supabaseAdmin
         .from("registrations")
         .select("*")
         .eq("id", id)
         .single();
 
+      if (fetchError) {
+        console.error("Gagal mengambil data pendaftaran:", fetchError);
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: "Gagal mengambil data pendaftaran untuk insert siswa.",
+            details: fetchError.message 
+          },
+          { status: 500 }
+        );
+      }
+
       if (reg) {
+        // Validasi data sebelum insert
+        if (!reg.student_name || !reg.program) {
+          return NextResponse.json(
+            { 
+              success: false, 
+              error: "Data pendaftaran tidak lengkap. Nama siswa dan program harus diisi." 
+            },
+            { status: 400 }
+          );
+        }
+
+        // Validasi program sesuai constraint database
+        const validPrograms = ['Kids Program', 'Teens Program', 'Fun Calistung'];
+        if (!validPrograms.includes(reg.program)) {
+          return NextResponse.json(
+            { 
+              success: false, 
+              error: `Program "${reg.program}" tidak valid. Program harus salah satu dari: ${validPrograms.join(', ')}.` 
+            },
+            { status: 400 }
+          );
+        }
+
         const validAge = reg.student_age && reg.student_age > 0 ? reg.student_age : 5;
-        await supabaseAdmin.from("students").insert({
-          name: reg.student_name,
-          age: validAge,
-          program: reg.program,
-          parent_id: null,
-        });
+
+        const { data: studentData, error: insertError } = await supabaseAdmin
+          .from("students")
+          .insert({
+            name: reg.student_name.trim(),
+            age: validAge,
+            program: reg.program.trim(),
+            parent_id: null,
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error("Gagal insert ke tabel students:", insertError);
+          return NextResponse.json(
+            { 
+              success: false, 
+              error: "Gagal menambahkan siswa ke database.",
+              details: insertError.message,
+              hint: "Pastikan program yang dipilih sesuai: Kids Program, Teens Program, atau Fun Calistung"
+            },
+            { status: 500 }
+          );
+        }
+
+        console.log("✅ Siswa berhasil ditambahkan:", studentData);
       }
     }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ 
+      success: true, 
+      message: status === "approved" ? "Pendaftaran disetujui dan siswa berhasil ditambahkan ke database." : "Status pendaftaran berhasil diperbarui."
+    }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

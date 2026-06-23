@@ -2984,6 +2984,27 @@ textarea:focus-visible {
   }
 }
 
+/* Mobile Sidebar Backdrop Overlay */
+@media (max-width: 1024px) {
+  .dashboard-container::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+    z-index: 85;
+  }
+  
+  .dashboard-container.sidebar-open::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 /* Printing optimization for digital report cards */
 @media print {
   .no-print,
