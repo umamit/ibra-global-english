@@ -32,6 +32,7 @@ Setiap perubahan, penulisan kode baru, atau optimasi di dalam dasbor admin wajib
 1. **Hindari Bloatware**: Dilarang menginstal library/pustaka pihak ketiga baru yang tidak krusial yang dapat memperbesar ukuran bundel kompilasi (build size).
 2. **Efisiensi Bandwidth Supabase**: Hindari query database yang boros bandwidth (seperti mengambil kolom besar yang tidak diperlukan, atau memanggil query secara berulang tanpa pembatasan `.limit()` atau tanpa pagination).
 3. **Pembatasan Optimasi Gambar**: Gunakan komponen `next/image` hanya untuk gambar LCP utama dengan properti `priority`. Semua gambar kecil dan di bawah lipatan layar harus menggunakan tag `<img>` HTML biasa dengan `loading="lazy"` agar hemat kuota optimasi gambar Vercel (maksimal 1.000 gambar per bulan).
+4. **Batasan Ukuran File Kode**: Setiap file source code (baik CSS maupun JavaScript/JSX/TSX) dilarang keras melebihi 800 baris (Lines) guna menjaga kemudahan pemeliharaan (maintainability), keterbacaan, dan performa kompilasi.
 
 ## Aturan Khusus Sesi Autentikasi & Supabase Client Sisi Browser
 
