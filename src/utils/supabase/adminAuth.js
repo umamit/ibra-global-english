@@ -46,6 +46,16 @@ export async function checkAdminAuth() {
  * Check if the current user is an admin OR tutor by querying the profiles table.
  */
 export async function checkAdminOrTutorAuth() {
+  const user = await getAdminOrTutorUser();
+  return user !== null;
+}
+
+/**
+ * Resolve the currently authenticated admin/tutor user.
+ * Returns { id, email, role } when the caller is an admin or tutor, otherwise null.
+ * Use this when the route needs to attribute actions to the user (e.g. usage logs).
+ */
+export async function getAdminOrTutorUser() {
   try {
     const cookieStore = await cookies();
     const supabaseAuth = createServerClient(
@@ -59,7 +69,7 @@ export async function checkAdminOrTutorAuth() {
       }
     );
     const { data: { user } } = await supabaseAuth.auth.getUser();
-    if (!user) return false;
+    if (!user) return null;
 
     const { data: profile } = await supabaseAuth
       .from("profiles")
@@ -67,8 +77,10 @@ export async function checkAdminOrTutorAuth() {
       .eq("id", user.id)
       .single();
 
-    return profile?.role === "admin" || profile?.role === "tutor";
+    if (profile?.role !== "admin" && profile?.role !== "tutor") return null;
+
+    return { id: user.id, email: user.email, role: profile.role };
   } catch {
-    return false;
+    return null;
   }
 }
