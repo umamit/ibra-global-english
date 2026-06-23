@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 import dynamic from "next/dynamic";
+import "./landing.css";
 
 // Import modular components
 import Header from "@/components/Header";
