@@ -40,22 +40,18 @@ export default function FAQ({ initialSettings }) {
               return (
                 <div key={faqId} className={`faq-item ${activeFaq === faqId ? "active" : ""}`} data-aos="fade-up">
                   <button 
-                    className="faq-trigger" 
+                    className="faq-question" 
                     aria-expanded={activeFaq === faqId} 
-                    aria-controls={`faq-content-${faqId}`}
+                    aria-controls={`faq-answer-${faqId}`}
                     onClick={() => toggleFaq(faqId)}
                   >
                     <span>{faq.question}</span>
-                    <span className="faq-icon">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="6 9 12 15 18 9"/>
-                      </svg>
-                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
                   </button>
-                  <div id={`faq-content-${faqId}`} className="faq-content" aria-hidden={activeFaq !== faqId}>
-                    <div className="faq-content-inner">
-                      <p>{faq.answer}</p>
-                    </div>
+                  <div id={`faq-answer-${faqId}`} className="faq-answer" aria-hidden={activeFaq !== faqId}>
+                    <p>{faq.answer}</p>
                   </div>
                 </div>
               );
