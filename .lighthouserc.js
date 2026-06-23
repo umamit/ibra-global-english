@@ -1,8 +1,8 @@
 module.exports = {
   ci: {
     collect: {
-      // Command to start the standalone production build
-      startServerCommand: 'node .next/standalone/server.js',
+      // Command to start the production server for the audit
+      startServerCommand: 'npm run start',
       // Wait for the ready message in Next.js logs
       startServerReadyPattern: 'Ready in',
       url: [
