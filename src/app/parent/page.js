@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import "@/app/portal.css";
 import RadarChart from "@/components/RadarChart";
 import LineChart from "@/components/LineChart";
 

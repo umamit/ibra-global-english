@@ -1,0 +1,423 @@
+/* =====================================================================
+   PORTAL & LOGIN PREMIUM STYLES (Ibra Global English) - Glassmorphism
+   ===================================================================== */
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  background-image: radial-gradient(circle at center, rgba(74, 155, 168, 0.04) 0%, #ffffff 80%);
+  padding: 2rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: background-color var(--transition-normal);
+}
+
+/* Background Blobs */
+.auth-bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.45; /* Ditingkatkan agar bola-bola gradien terlihat kaya warna */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.blob-1 {
+  width: 550px; /* Diperbesar agar sebaran warna gradien menyelimuti layar */
+  height: 550px;
+  background-color: var(--color-primary);
+  top: -150px;
+  left: -150px;
+  animation: float-blob-1 25s infinite alternate ease-in-out;
+}
+
+.blob-2 {
+  width: 500px; /* Diperbesar agar sebaran warna gradien menyelimuti layar */
+  height: 500px;
+  background-color: var(--color-accent);
+  bottom: -150px;
+  right: -150px;
+  animation: float-blob-2 20s infinite alternate ease-in-out;
+}
+
+.blob-3 {
+  width: 300px;
+  height: 300px;
+  background-color: var(--color-primary-dark);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.1;
+}
+
+@keyframes float-blob-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, 80px) scale(1.1); }
+}
+
+@keyframes float-blob-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-40px, -60px) scale(1.15); }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px; /* Sedikit dilebarkan agar input rounded terlihat lega */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
+  padding: 2.5rem;
+  z-index: 10;
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-logo-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  transition: transform var(--transition-normal);
+  filter: drop-shadow(0 4px 12px rgba(33, 108, 126, 0.15));
+}
+
+.auth-logo-img:hover {
+  transform: scale(1.05) rotate(-3deg);
+}
+
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  opacity: 0.8;
+}
+
+/* Tab Switcher Minimalis */
+.auth-tabs {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 0.25rem;
+  border-radius: 30px;
+  margin-bottom: 1.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  border-radius: 25px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+.auth-tab:hover {
+  color: var(--color-gray-900);
+}
+
+.auth-tab.active {
+  background-color: #ffffff;
+  color: var(--color-primary-dark);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Banner Notifikasi Tipis */
+.auth-error-banner,
+.auth-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  animation: scaleIn 0.2s ease;
+}
+
+.auth-error-banner {
+  background-color: #fef2f2;
+  border: 1px solid rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.auth-success-banner {
+  background-color: #f0fdf4;
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+/* Elemen Isian Formulir rounded */
+.auth-card .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.auth-card .form-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-gray-600);
+  margin-left: 0.5rem;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+/* input with icon */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--color-gray-400);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.auth-card .form-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid var(--color-gray-200);
+  color: var(--color-gray-900);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 30px;
+  transition: all var(--transition-fast);
+}
+
+.auth-card .form-input::placeholder {
+  color: var(--color-gray-300);
+}
+
+.auth-card .form-input:focus {
+  outline: none;
+  background-color: #ffffff !important;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(74, 155, 168, 0.1);
+}
+
+.auth-card .form-input:focus + .input-icon,
+.input-with-icon:focus-within .input-icon {
+  color: var(--color-primary);
+}
+
+/* Tombol Submit Premium Gradient */
+.auth-card .form-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1a8fa5 100%);
+  color: #ffffff;
+  padding: 0.85rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 15px rgba(33, 108, 126, 0.2);
+  margin-top: 1rem;
+}
+
+.auth-card .form-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(33, 108, 126, 0.3);
+  filter: brightness(1.05);
+}
+
+.auth-card .form-btn:active {
+  transform: translateY(0);
+}
+
+/* Tombol Kembali */
+.auth-back-link {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.auth-back-link a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-gray-500);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.auth-back-link a:hover {
+  color: var(--color-primary-dark);
+}
+
+.back-arrow-icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+  transition: transform var(--transition-fast);
+}
+
+.auth-back-link a:hover .back-arrow-icon {
+  transform: translateX(-4px);
+}
+
+/* Tombol Toggle Tema Melayang Minimalis */
+.auth-theme-toggle {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--color-gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.auth-theme-toggle:hover {
+  background-color: #ffffff;
+  color: var(--color-primary);
+  transform: scale(1.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.auth-theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* =====================================================================
+   DARK THEME OVERRIDES (Ibra Global English) - Glassmorphism Auth
+   ===================================================================== */
+
+[data-theme="dark"] .auth-wrapper {
+  background-color: #090d16;
+  background-image: radial-gradient(circle at center, rgba(74, 155, 168, 0.05) 0%, #090d16 80%);
+}
+
+[data-theme="dark"] .auth-bg-blob {
+  opacity: 0.25; /* Ditingkatkan agar gelembung warna tidak tenggelam di tema gelap */
+}
+
+[data-theme="dark"] .auth-card {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .auth-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .auth-subtitle {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .auth-tabs {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .auth-tab {
+  color: var(--color-gray-500);
+}
+
+[data-theme="dark"] .auth-tab:hover {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .auth-tab.active {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .auth-error-banner {
+  background-color: rgba(153, 27, 27, 0.15);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .auth-success-banner {
+  background-color: rgba(21, 128, 61, 0.15);
+  border-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+[data-theme="dark"] .auth-card .form-label {
+  color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .auth-card .form-input {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .auth-card .form-input::placeholder {
+  color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .auth-card .form-input:focus {
+  background-color: #0f172a !important;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(74, 155, 168, 0.15);
+}
+
+[data-theme="dark"] .auth-back-link a {
+  color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .auth-back-link a:hover {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .auth-theme-toggle {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.06);
+  color: var(--color-yellow);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .auth-theme-toggle:hover {
+  background-color: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+}

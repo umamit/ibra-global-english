@@ -5,6 +5,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { WebVitals } from "@/components/WebVitals";
 import { getLandingSettings } from "@/utils/getLandingSettings";
 import "./globals.css";
+import "./innovations.css";
+import "./landing.css";
 
 
 export const dynamic = 'force-dynamic';

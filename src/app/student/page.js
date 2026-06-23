@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import SpeakingPractice from "@/components/SpeakingPractice";
+import "@/app/portal.css";
 
 // SUB-COMPONENT: Simple visual Radar Chart for Student Performance
 function MiniRadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
