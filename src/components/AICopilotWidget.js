@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { parseMarkdownSecure } from "@/utils/security";
+import "@/components/AIChatWidget.css";
 
 export default function AICopilotWidget() {
   const [isOpen, setIsOpen] = useState(false);
