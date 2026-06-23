@@ -265,10 +265,15 @@ export default function StudentManagement() {
             .single();
 
           if (profile?.role === "student") {
-            // Hapus akun dari auth.users Supabase (otomatis menghapus tabel profiles karena CASCADE)
-            const { error: errAuth } = await supabase.auth.admin.deleteUser(linkedUserId);
-            if (errAuth) {
-              console.warn("Gagal menghapus akun login siswa dari sistem auth:", errAuth.message);
+            // Hapus akun dari auth.users Supabase via API route server-side
+            const resAuth = await fetch("/api/admin/delete-user", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId: linkedUserId }),
+            });
+            if (!resAuth.ok) {
+              const errData = await resAuth.json();
+              console.warn("Gagal menghapus akun login siswa dari sistem auth:", errData.error);
             }
           }
         }
@@ -308,22 +313,15 @@ export default function StudentManagement() {
   const handleUpdateRole = async (userId, newRole) => {
     if (confirm(`Apakah Anda yakin ingin mengubah peran pengguna ini menjadi '${newRole}'?`)) {
       try {
-        // 1. Update profiles table
-        const { error } = await supabase
-          .from("profiles")
-          .update({ role: newRole })
-          .eq("id", userId);
-        
-        if (error) throw error;
-
-        // 2. Update auth.users metadata and auto-confirm email since admin has verified this role change
-        const { error: authError } = await supabase.auth.admin.updateUserById(userId, {
-          user_metadata: { role: newRole },
-          email_confirm: true
+        const res = await fetch("/api/admin/update-role", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, role: newRole }),
         });
 
-        if (authError) {
-          console.warn("Gagal memperbarui metadata auth.users, namun profil berhasil diperbarui:", authError);
+        const result = await res.json();
+        if (!res.ok) {
+          throw new Error(result.error || "Gagal mengubah peran.");
         }
         
         alert("Peran berhasil diperbarui!");
