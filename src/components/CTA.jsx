@@ -1,4 +1,5 @@
 "use client";
+import "./CTA.css";
 
 import { useState } from "react";
 

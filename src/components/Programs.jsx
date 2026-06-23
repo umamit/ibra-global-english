@@ -1,4 +1,5 @@
 "use client";
+import "./Programs.css";
 
 import { useState } from "react";
 import { DEFAULT_PROGRAMS } from "../utils/fallbackData";

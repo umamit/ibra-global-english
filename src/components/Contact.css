@@ -1,0 +1,180 @@
+/* Contact & Registration Section */
+.contact-section {
+  background-color: var(--color-white);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+.contact-info-panel h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+.contact-info-panel > p {
+  font-size: 1.25rem;
+  color: var(--color-gray-600);
+  margin-bottom: 2.5rem;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.contact-icon-box {
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--color-primary-light);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-icon-box svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-primary);
+}
+
+.contact-details h4 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.contact-details p {
+  color: var(--color-gray-600);
+}
+
+.contact-email-link,
+.contact-phone-link,
+.contact-address-link {
+  transition: color var(--transition-fast);
+}
+
+.contact-email-link:hover,
+.contact-phone-link:hover,
+.contact-address-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Registration Form Panel */
+.form-panel {
+  background: linear-gradient(135deg, var(--color-bg-teal-50) 0%, var(--color-white) 100%);
+  padding: 3rem;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--color-bg-teal-100);
+}
+
+@media (max-width: 576px) {
+  .form-panel {
+    padding: 2rem 1.5rem;
+  }
+}
+
+.form-panel h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+/* ──── Contact Tab Switcher ──── */
+.contact-tab-switcher {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.contact-tab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  background: transparent;
+  color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
+.contact-tab-btn.active {
+  background: white;
+  color: var(--color-primary-dark);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.contact-tab-btn:hover:not(.active) {
+  color: var(--color-primary);
+  background: rgba(255,255,255,0.5);
+}
+
+/* ──── Registration Success Card ──── */
+.reg-success-card {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: linear-gradient(135deg, rgba(52,199,89,0.08) 0%, rgba(255,255,255,0.6) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(52,199,89,0.2);
+}
+
+.reg-success-icon {
+  width: 72px;
+  height: 72px;
+  background: rgba(52,199,89,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: var(--color-green, #22c55e);
+}
+
+.reg-success-card h4 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  margin-bottom: 0.75rem;
+}
+
+.reg-success-card p {
+  color: var(--color-gray-600);
+  font-size: 0.925rem;
+  line-height: 1.6;
+  max-width: 340px;
+  margin: 0 auto;
+}

@@ -1,4 +1,5 @@
 "use client";
+import "./Footer.css";
 
 import { useState, useEffect } from "react";
 import packageInfo from "../../package.json";

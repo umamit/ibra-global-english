@@ -1,4 +1,5 @@
 "use client";
+import "./Contact.css";
 
 import { useState } from "react";
 

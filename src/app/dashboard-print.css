@@ -1,0 +1,258 @@
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -280px;
+    box-shadow: var(--shadow-2xl);
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .dashboard-sidebar.open {
+    left: 0;
+  }
+  
+  .dashboard-main {
+    padding: 1.5rem;
+  }
+}
+
+/* Mobile Sidebar Backdrop Overlay */
+@media (max-width: 1024px) {
+  .dashboard-container::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+    z-index: 85;
+  }
+  
+  .dashboard-container.sidebar-open::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Printing optimization for digital report cards */
+@media print {
+  .no-print,
+  .dashboard-sidebar,
+  .mobile-toggle-btn {
+    display: none !important;
+  }
+  
+  body, .dashboard-container, .dashboard-main {
+    background-color: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+    display: block !important;
+  }
+  
+  .printable-report,
+  .printable-receipt {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  .printable-report {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    color: black !important;
+  }
+  
+  .report-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px double #000000;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .report-logo-text {
+    text-align: right;
+  }
+  
+  .report-logo-text h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  
+  .report-logo-text p {
+    font-size: 0.8rem;
+    margin: 0;
+  }
+  
+  .student-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .score-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .score-display-card {
+    border: 1px solid #000000;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 4px;
+  }
+  
+  .score-num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  
+  .score-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+  }
+  
+  .notes-block {
+    border: 1px solid #000000;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 2.5rem;
+  }
+  
+  .notes-block h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  
+  .signature-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  
+  .sig-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sig-space {
+    height: 70px;
+  }
+
+  /* Force exactly 1 page printing by compacting page elements */
+  @page {
+    size: A4;
+    margin: 0.8cm 1.2cm !important;
+  }
+
+  .printable-report {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    padding: 0 !important;
+  }
+
+  .printable-report .report-header-section {
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+
+  .printable-report .student-info-grid {
+    margin-bottom: 0.75rem !important;
+    padding: 0.5rem 1rem !important;
+    gap: 1rem !important;
+  }
+
+  .printable-report h3 {
+    font-size: 0.95rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  .printable-report .report-scores-grid {
+    margin-bottom: 0.75rem !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Compact the 4 score cards grid in print */
+  .printable-report .report-scores-grid .form-grid {
+    gap: 0.5rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .printable-report .report-scores-grid .form-grid > div {
+    padding: 0.6rem 0.8rem !important;
+  }
+
+  .printable-report .report-scores-grid .form-grid > div p:first-child {
+    font-size: 1.4rem !important;
+  }
+
+  /* Compact the Radar Chart wrapper in print */
+  .printable-report .report-scores-grid > div > div {
+    max-width: 200px !important;
+    padding: 0.4rem !important;
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    margin: 0 auto !important;
+  }
+
+  .printable-report .report-scores-grid > div > div p {
+    font-size: 0.7rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  .printable-report svg {
+    width: 180px !important;
+    height: 180px !important;
+    transform: none !important;
+  }
+
+  .printable-report .report-notes-container {
+    margin: 0.5rem 0 !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .printable-report .report-notes-container p {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .printable-report .signature-block {
+    margin-top: 1rem !important;
+    gap: 1.5rem !important;
+  }
+
+  .printable-report .signature-block p {
+    font-size: 0.85rem !important;
+  }
+
+  .printable-report .signature-block p:first-child {
+    margin-bottom: 2.25rem !important;
+  }
+}
+
