@@ -168,7 +168,13 @@ export default function GalleryClient() {
     async function fetchGallery() {
       try {
         // Coba ambil dari gallery_items (tabel baru yang dikelola admin)
-        const res = await fetch("/api/gallery");
+        const res = await fetch(`/api/gallery?t=${Date.now()}`, {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+        });
         if (res.ok) {
           const { data } = await res.json();
           if (data && data.length > 0) {
