@@ -10,7 +10,8 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 101;
+  /* z-index di bawah header agar header bisa menimpa/menyembunyikan marquee saat scroll */
+  z-index: 99;
 }
 
 .marquee-track {

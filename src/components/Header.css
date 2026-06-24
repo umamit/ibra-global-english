@@ -8,28 +8,35 @@ header {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: var(--shadow-sm);
+  /* z-index lebih tinggi dari marquee (99) agar bisa menutupi marquee saat scroll */
   z-index: 100;
-  transition: top 0s, background-color var(--transition-normal), box-shadow var(--transition-normal);
+  transition: background-color var(--transition-normal), box-shadow var(--transition-normal), top 0s;
 }
 
+/* Saat ada marquee: header dimulai di bawah marquee (top: 40px) */
 header.has-marquee {
+  top: 40px;
+  /* Fallback smooth: hitung posisi top berdasarkan --scroll-y untuk browser lama */
   top: max(0px, calc(40px - var(--scroll-y, 0px)));
 }
 
-/* Native Scroll-Driven Animation (Compositor Thread - Lag Free) */
+/* Scroll-driven animation: header naik dari top:40px ke top:0, menutupi marquee */
 @supports (animation-timeline: scroll()) {
   @keyframes header-slide {
     from { top: 40px; }
-    to { top: 0px; }
+    to   { top: 0px; }
   }
 
   header.has-marquee {
+    /* Override fallback calc() dengan scroll-driven animation yang lebih smooth */
+    top: 40px;
     animation: header-slide linear both;
     animation-timeline: scroll();
     animation-range: 0px 40px;
   }
 }
 
+/* Hard-lock setelah scroll melewati 40px (fallback untuk JS class toggle) */
 header.has-marquee.scrolled {
   top: 0;
 }
