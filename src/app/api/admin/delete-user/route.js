@@ -34,11 +34,10 @@ export async function DELETE(request) {
     if (userId === user.id) {
       return NextResponse.json({ error: "Tidak dapat menghapus akun sendiri." }, { status: 400 });
     }
-    // Baca service role key — coba server-only key dulu, lalu fallback ke NEXT_PUBLIC_
+    // Baca service role key — hanya dari server-only env var (tanpa NEXT_PUBLIC_)
     const { url: supabaseUrl } = getSupabaseConfig();
-    const serviceRoleKey =
-      process.env.SUPABASE_SERVICE_ROLE_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
 
     if (!serviceRoleKey) {
       return NextResponse.json({ error: "Konfigurasi server tidak lengkap (service role key tidak ditemukan)." }, { status: 500 });

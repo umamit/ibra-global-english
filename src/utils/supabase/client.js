@@ -1,11 +1,16 @@
 import { createBrowserClient } from "@supabase/ssr";
-import { createClient as createCoreClient } from "@supabase/supabase-js";
 import { getSupabaseConfig } from "@/utils/supabase/config";
 
 let clientInstance;
 
 /**
- * Membuat klien Supabase untuk digunakan pada Client Components (browser-side)
+ * Membuat klien Supabase untuk digunakan pada Client Components (browser-side).
+ *
+ * CATATAN KEAMANAN: Hanya gunakan fungsi ini untuk operasi yang sudah melalui
+ * Row Level Security (RLS) Supabase. Jangan gunakan untuk operasi admin.
+ * Operasi admin (service role) hanya boleh dilakukan di Server Components
+ * atau API Routes melalui @/utils/supabase/server.js dengan
+ * SUPABASE_SERVICE_ROLE_KEY (tanpa prefix NEXT_PUBLIC_).
  */
 export function createClient() {
   const { url, anonKey } = getSupabaseConfig();
@@ -20,29 +25,3 @@ export function createClient() {
 
   return clientInstance;
 }
-
-export function createAdminClient() {
-  return createServiceRoleClient();
-}
-
-export function createServiceRoleClient() {
-  const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
-  const { url } = getSupabaseConfig();
-  
-  if (serviceRoleKey) {
-    return createCoreClient(
-      url,
-      serviceRoleKey,
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false,
-          detectSessionInUrl: false
-        }
-      }
-    );
-  }
-  return createClient();
-}
-
-

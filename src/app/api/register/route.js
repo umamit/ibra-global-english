@@ -174,7 +174,6 @@ export async function PATCH(req) {
           );
         }
 
-        console.log("✅ Siswa berhasil ditambahkan:", studentData);
       }
     }
 
