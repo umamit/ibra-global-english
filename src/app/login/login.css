@@ -421,3 +421,50 @@
   background-color: #1e293b;
   border-color: rgba(255, 255, 255, 0.1);
 }
+
+/* Responsive & Mobile Fixes to prevent cut-off on the right side */
+@media (max-width: 480px) {
+  .auth-wrapper {
+    padding: 1.5rem 0.75rem; /* Kurangi padding wrapper untuk menghemat ruang */
+  }
+  
+  .auth-card {
+    padding: 1.75rem 1.25rem; /* Kurangi padding dalam card agar content area lebih lebar */
+    border-radius: 16px;
+  }
+  
+  .auth-title {
+    font-size: 1.35rem;
+  }
+  
+  .auth-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .auth-tabs {
+    margin-bottom: 1.25rem;
+  }
+  
+  .auth-card .form-input {
+    font-size: 16px; /* Mencegah auto-zoom viewport pada iOS Safari */
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+  }
+  
+  .auth-error-banner,
+  .auth-success-banner {
+    font-size: 0.775rem;
+    padding: 0.65rem 0.85rem;
+  }
+  
+  .auth-back-link {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Pastikan banner notifikasi melipat baris dengan benar dan tidak overflow */
+.auth-error-banner span,
+.auth-success-banner span {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}

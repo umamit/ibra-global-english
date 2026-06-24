@@ -97,69 +97,82 @@ export async function PATCH(req) {
       return NextResponse.json({ error: "ID dan status wajib diisi." }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
+    // 1. Dapatkan data pendaftaran terlebih dahulu
+    const { data: reg, error: fetchError } = await supabaseAdmin
       .from("registrations")
-      .update({ status, notes: notes || null })
-      .eq("id", id);
+      .select("*")
+      .eq("id", id)
+      .single();
 
-    if (error) throw error;
+    if (fetchError) {
+      console.error("Gagal mengambil data pendaftaran:", fetchError);
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "Gagal mengambil data pendaftaran untuk memproses persetujuan.",
+          details: fetchError.message 
+        },
+        { status: 500 }
+      );
+    }
 
-    // Jika disetujui, auto-insert ke tabel students
+    // 2. Jika disetujui, auto-insert ke tabel students terlebih dahulu sebelum mengubah status registrations
     if (status === "approved") {
-      const { data: reg, error: fetchError } = await supabaseAdmin
-        .from("registrations")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (fetchError) {
-        console.error("Gagal mengambil data pendaftaran:", fetchError);
+      if (!reg.student_name || !reg.program) {
         return NextResponse.json(
           { 
             success: false, 
-            error: "Gagal mengambil data pendaftaran untuk insert siswa.",
-            details: fetchError.message 
+            error: "Data pendaftaran tidak lengkap. Nama siswa dan program harus diisi." 
           },
-          { status: 500 }
+          { status: 400 }
         );
       }
 
-      if (reg) {
-        // Validasi data sebelum insert
-        if (!reg.student_name || !reg.program) {
-          return NextResponse.json(
-            { 
-              success: false, 
-              error: "Data pendaftaran tidak lengkap. Nama siswa dan program harus diisi." 
-            },
-            { status: 400 }
-          );
-        }
+      // Normalisasi program (buang suffix usia seperti " (5-12 tahun)" jika ada)
+      let normalizedProgram = reg.program.trim();
+      if (normalizedProgram.startsWith("Kids Program")) {
+        normalizedProgram = "Kids Program";
+      } else if (normalizedProgram.startsWith("Teens Program")) {
+        normalizedProgram = "Teens Program";
+      } else if (normalizedProgram.startsWith("Fun Calistung")) {
+        normalizedProgram = "Fun Calistung";
+      }
 
-        // Validasi program sesuai constraint database
-        const validPrograms = ['Kids Program', 'Teens Program', 'Fun Calistung'];
-        if (!validPrograms.includes(reg.program)) {
-          return NextResponse.json(
-            { 
-              success: false, 
-              error: `Program "${reg.program}" tidak valid. Program harus salah satu dari: ${validPrograms.join(', ')}.` 
-            },
-            { status: 400 }
-          );
-        }
+      // Validasi program sesuai constraint database
+      const validPrograms = ['Kids Program', 'Teens Program', 'Fun Calistung'];
+      if (!validPrograms.includes(normalizedProgram)) {
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: `Program "${reg.program}" tidak valid. Program harus mengandung salah satu dari: ${validPrograms.join(', ')}.` 
+          },
+          { status: 400 }
+        );
+      }
 
-        const validAge = reg.student_age && reg.student_age > 0 ? reg.student_age : 5;
+      const validAge = reg.student_age && reg.student_age > 0 ? reg.student_age : 5;
 
-        const { data: studentData, error: insertError } = await supabaseAdmin
+      // Cek duplikasi siswa sebelum memasukkan data baru
+      const { data: existingStudent, error: checkExistError } = await supabaseAdmin
+        .from("students")
+        .select("id")
+        .eq("name", reg.student_name.trim())
+        .eq("program", normalizedProgram)
+        .maybeSingle();
+
+      if (checkExistError) {
+        console.error("Gagal memeriksa duplikasi siswa:", checkExistError);
+      }
+
+      if (!existingStudent) {
+        const { error: insertError } = await supabaseAdmin
           .from("students")
           .insert({
             name: reg.student_name.trim(),
             age: validAge,
-            program: reg.program.trim(),
+            program: normalizedProgram,
             parent_id: null,
-          })
-          .select()
-          .single();
+          });
 
         if (insertError) {
           console.error("Gagal insert ke tabel students:", insertError);
@@ -173,9 +186,16 @@ export async function PATCH(req) {
             { status: 500 }
           );
         }
-
       }
     }
+
+    // 3. Update status di database registrations setelah proses di atas sukses
+    const { error: updateError } = await supabaseAdmin
+      .from("registrations")
+      .update({ status, notes: notes || null })
+      .eq("id", id);
+
+    if (updateError) throw updateError;
 
     return NextResponse.json({ 
       success: true, 

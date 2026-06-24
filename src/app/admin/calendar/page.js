@@ -12,8 +12,9 @@ function getLocalDateString(dateObj) {
   return `${y}-${m}-${d}`;
 }
 
+const supabase = createClient();
+
 export default function AdminCalendar() {
-  const supabase = createClient();
 
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -366,13 +367,28 @@ export default function AdminCalendar() {
           {getMonthNameIndonesian(viewMonth)} {viewYear}
         </h2>
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button className="btn-portal-outline" style={{ padding: "0.45rem 1rem" }} onClick={() => navigateMonth("prev")}>
+          <button 
+            className="btn-portal-outline" 
+            style={{ padding: "0.45rem 1rem" }} 
+            onClick={() => navigateMonth("prev")}
+            aria-label="Tampilkan bulan sebelumnya"
+          >
             ◀ Bulan Lalu
           </button>
-          <button className="btn-portal-outline" style={{ padding: "0.45rem 1rem" }} onClick={() => setCurrentDate(new Date())}>
+          <button 
+            className="btn-portal-outline" 
+            style={{ padding: "0.45rem 1rem" }} 
+            onClick={() => setCurrentDate(new Date())}
+            aria-label="Kembali ke hari ini"
+          >
             Hari Ini
           </button>
-          <button className="btn-portal-outline" style={{ padding: "0.45rem 1rem" }} onClick={() => navigateMonth("next")}>
+          <button 
+            className="btn-portal-outline" 
+            style={{ padding: "0.45rem 1rem" }} 
+            onClick={() => navigateMonth("next")}
+            aria-label="Tampilkan bulan berikutnya"
+          >
             Bulan Depan ▶
           </button>
         </div>
@@ -406,6 +422,15 @@ export default function AdminCalendar() {
                   <div
                     key={idx}
                     onClick={() => handleOpenAddModal(cell.dateString)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Tambah agenda untuk tanggal ${cell.day} ${getMonthNameIndonesian(cell.month)} ${cell.year}`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleOpenAddModal(cell.dateString);
+                      }
+                    }}
                     style={{
                       minHeight: "120px",
                       backgroundColor: cell.isCurrentMonth ? "white" : "var(--color-gray-50)",
@@ -466,6 +491,15 @@ export default function AdminCalendar() {
                           <div
                             key={s.id}
                             onClick={(e) => handleOpenEditModal(s, e)}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`Agenda: ${s.title}, Jam: ${cleanTimeStr}. Tekan Enter untuk mengubah.`}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                handleOpenEditModal(s, e);
+                              }
+                            }}
                             style={{
                               backgroundColor: badgeBg,
                               color: badgeColor,
@@ -476,7 +510,8 @@ export default function AdminCalendar() {
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
-                              boxShadow: "var(--shadow-sm)"
+                              boxShadow: "var(--shadow-sm)",
+                              cursor: "pointer"
                             }}
                             title={`${s.title} (${cleanTimeStr})`}
                           >
