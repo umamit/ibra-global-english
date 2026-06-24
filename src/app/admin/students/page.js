@@ -427,7 +427,11 @@ export default function StudentManagement() {
         display: "flex", 
         borderBottom: "2px solid var(--color-gray-100)", 
         marginBottom: "1.75rem",
-        gap: "0.5rem"
+        gap: "0.5rem",
+        overflowX: "auto",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+        WebkitOverflowScrolling: "touch"
       }}>
         <button
           onClick={() => setActiveTab("students")}
@@ -444,7 +448,8 @@ export default function StudentManagement() {
             display: "inline-flex",
             alignItems: "center",
             gap: "0.5rem",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            flexShrink: 0
           }}
         >
           <span>Daftar Siswa</span>
@@ -474,7 +479,8 @@ export default function StudentManagement() {
             display: "inline-flex",
             alignItems: "center",
             gap: "0.5rem",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            flexShrink: 0
           }}
         >
           <span>Kelola Peran & Pengguna</span>
@@ -505,7 +511,8 @@ export default function StudentManagement() {
             alignItems: "center",
             gap: "0.5rem",
             transition: "all 0.2s ease",
-            position: "relative"
+            position: "relative",
+            flexShrink: 0
           }}
         >
           <span>Pendaftaran Masuk</span>
@@ -723,7 +730,7 @@ export default function StudentManagement() {
             </div>
           ) : (
             <div className="table-wrapper">
-              <table className="portal-table">
+              <table className="portal-table registration-table">
                 <thead>
                   <tr>
                     <th>No</th>

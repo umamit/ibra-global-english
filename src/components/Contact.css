@@ -178,3 +178,41 @@
   max-width: 340px;
   margin: 0 auto;
 }
+
+/* Form Grid System to lay out form elements nicely */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 576px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* Mobile responsive enhancements for Contact Registration Form to prevent overflow */
+@media (max-width: 480px) {
+  .form-panel {
+    padding: 1.5rem 1rem; /* Reduce padding from 2rem 1.5rem to fit mobile screens */
+    border-radius: var(--radius-xl);
+  }
+
+  .contact-tab-btn {
+    font-size: 0.75rem; /* Shrink font size to prevent layout overflow */
+    padding: 0.5rem 0.35rem;
+    gap: 0.25rem;
+  }
+  
+  .contact-tab-btn svg {
+    width: 13px;
+    height: 13px;
+  }
+  
+  .form-panel h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
