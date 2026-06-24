@@ -538,7 +538,7 @@ export default function StudentManagement() {
               borderRadius: "10px",
               fontWeight: "700"
             }}>
-              {registrations.length}
+              {registrations.filter(r => r.status !== "approved").length}
             </span>
           )}
         </button>
@@ -745,14 +745,14 @@ export default function StudentManagement() {
                   </tr>
                 </thead>
                 <tbody>
-                  {registrations.length === 0 ? (
+                  {registrations.filter(r => r.status !== "approved").length === 0 ? (
                     <tr>
                       <td colSpan="9" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
-                        Belum ada pendaftaran masuk dari landing page.
+                        Tidak ada pendaftaran yang perlu ditindaklanjuti.
                       </td>
                     </tr>
                   ) : (
-                    registrations.map((reg, idx) => {
+                    registrations.filter(r => r.status !== "approved").map((reg, idx) => {
                       const statusColor = reg.status === "approved"
                         ? { bg: "var(--color-green-light)", text: "var(--color-green)", label: "✓ Disetujui" }
                         : reg.status === "rejected"
