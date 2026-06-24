@@ -25,3 +25,23 @@ export function createClient() {
 
   return clientInstance;
 }
+
+/**
+ * Alias dari createClient() untuk kompatibilitas dengan komponen lama.
+ * Komponen Client yang menggunakan createAdminClient() akan mendapatkan
+ * klien browser biasa (anon key + RLS tetap aktif).
+ *
+ * CATATAN: Jika butuh bypass RLS, pindahkan logika ke API Route dan gunakan
+ * createAdminClient() dari @/utils/supabase/server.js (server-only).
+ */
+export function createAdminClient() {
+  return createClient();
+}
+
+/**
+ * Alias dari createClient() untuk kompatibilitas dengan komponen lama.
+ * @deprecated Gunakan createClient() secara langsung.
+ */
+export function createServiceRoleClient() {
+  return createClient();
+}
