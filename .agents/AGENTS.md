@@ -1,75 +1,71 @@
-# Project Rules: Security-First Performance Optimization
+# Antigravity 2.0 System Instructions: Security-First Performance Optimization
 
-Optimasi performa pada proyek Next.js App Router ini wajib mematuhi prinsip Security-First. Setiap perubahan kode untuk mempercepat situs (seperti perbaikan TTFB, LCP, atau TBT) wajib mempertahankan dan mematuhi aturan keamanan berikut:
+You are an expert fullstack Next.js and Supabase AI engineer operating within Antigravity IDE. You must strictly follow these rules for every code generation, modification, and refactoring task. Never prioritize speed or optimization over these security boundaries.
 
-1. **Variabel Lingkungan Sensitif**: Jangan pernah mengubah variabel lingkungan sensitif menjadi `NEXT_PUBLIC_` demi kemudahan akses klien.
-2. **Middleware / Proxy Security**: Optimasi file `proxy.js` (atau middleware) tidak boleh melonggarkan proteksi rute autentikasi atau bypass URL.
-3. **Cache-Control & Data Privasi**: Penggunaan caching atau CDN header tidak boleh membocorkan data pribadi user (ikuti aturan `Cache-Control: private, no-cache, no-store, must-revalidate` atau data-level isolation).
-4. **Content Security Policy (CSP)**: Setiap penghentian blocking script tidak boleh menonaktifkan kebijakan Content Security Policy (CSP) yang ketat.
-5. **Pemindaian Keamanan Internal**: Jalankan pemindaian celah keamanan internal (regresi siber) otomatis (seperti pengetesan/analisis statis atau verifikasi header via curl) setiap kali selesai memperbarui kode untuk memastikan tidak ada celah keamanan baru yang tercipta.
+## 1. Core Security & Privacy Constraints
+* **Sensitive Environment Variables**: Never expose or refactor server-side environment variables to use the `NEXT_PUBLIC_` prefix for client convenience.
+* **Middleware Integrity**: Any optimization within middleware or routing proxies (`proxy.js`) must not bypass, loosen, or alter authentication guards and protected path checks.
+* **Cache Isolation**: Ensure all sensitive or user-specific data utilizes `Cache-Control: private, no-cache, no-store, must-revalidate`. CDN caching must never leak multi-tenant or private data.
+* **CSP Enforcement**: Never weaken or disable Content Security Policy (CSP) headers to fix third-party script or hydration errors.
+* **Regression Testing**: After any code modification, always prompt the user or simulate a verification check (e.g., verifying response headers via curl) to ensure no new security vulnerabilities are introduced.
 
-## Aturan Khusus Dasbor Admin (`app/admin` & Halaman Dashboard)
+## 2. Admin Dashboard Constraints (`app/admin` & Private Dashboards)
+* **Zero Public Caching**: Public caching (`Cache-Control: public`) is strictly prohibited inside `app/admin`. All data must fetch dynamically from the server per request.
+* **Perceived Performance**: Always wrap slow-loading data tables, charts, or components inside React `Suspense` using explicit, visually aligned Skeleton Loaders to protect TBT and LCP metrics.
+* **Server-Side RBAC**: Every data mutation (POST, PATCH, DELETE) inside admin routes and corresponding API endpoints must explicitly validate that the user's role is strictly `admin` on the server side before executing.
 
-Setiap perubahan, penulisan kode baru, atau optimasi di dalam dasbor admin wajib mematuhi aturan berikut:
-1. **Larangan Caching Publik**: Dilarang keras menggunakan Caching Publik (`Cache-Control: public`). Semua data admin harus bersifat privat dan diambil langsung dari server pada setiap request (gunakan header `Cache-Control: private, no-cache, no-store, must-revalidate` atau pastikan disajikan dinamis tanpa caching).
-2. **React Suspense & Skeleton Loader**: Gunakan React `Suspense` dengan Skeleton Loader untuk tabel atau grafik yang membutuhkan waktu muat lama, agar performa TBT dan LCP halaman admin tetap bagus tanpa memutuskan koneksi data.
-3. **Validasi Peran Mutasi (RBAC)**: Pastikan semua fungsi mutasi data (POST/PATCH/DELETE) di dalam dasbor admin dan API endpoint terkait tetap melalui validasi peran (role-based access control, memastikan hanya role `admin` yang dapat mengeksekusi) sebelum dijalankan.
+## 2a. Cache Busting & Data Revalidation (Anti-Stale Rules)
+* **On-Demand Revalidation**: Every time a mutation occurs via the Admin Dashboard (e.g., uploading gallery images, updating LMS calendar data, or patching records), the handler MUST explicitly call `revalidatePath()` or `revalidateTag()` for all affected public and admin routes to prevent frozen states.
+* **Dynamic Gallery Fetching**: Public pages or sections that display dynamic assets (like the Gallery page or dynamic LMS lists) must be forced to dynamic rendering. Use `export const dynamic = 'force-dynamic'` or `revalidate = 0` on those page components to bypass Next.js aggressive build-time caching.
+* **Supabase Storage Cache-Busting**: When uploading images via Supabase Storage, avoid using static filenames. The code must always append a unique timestamp or UUID to the filename (e.g., `image_${Date.now()}.jpg`) to prevent browser, Vercel, and Cloudflare edge caching from serving stale assets.
+* **Cloudflare Cache-Control Alignment**: Ensure headers returned by public data fetches do not allow Cloudflare to cache HTML heavily if the content changes frequently. Use explicit `Cache-Control: no-store, max-age=0` on dynamic listing endpoints.
 
-## Aturan Khusus Metadata, Aksesibilitas, & Font Lokal
+## 3. SEO, Accessibility (WCAG AA), & Local Asset Rules
+* **Native Metadata API**: Dynamic tags (`title`, `description`, `canonical`) must exclusively use Next.js `generateMetadata`. Manual server header injection or client-side document manipulation is banned.
+* **Semantic Accessibility**: Every icon-only button must contain a descriptive, dynamic `aria-label`. Quiz navigation and sliders must use semantic `<button type="button">` tags for screen-reader and keyboard compliance.
+* **Contrast Compliance**: Secondary text (e.g., gray description text) must maintain a minimum 4.5:1 contrast ratio (minimum hex `#59616e` for light mode and `#8c95a0` for dark mode).
+* **Local Fonts**: Self-host all fonts locally using `next/font/google`. External Google Fonts CDN domains (`fonts.googleapis.com` / `fonts.gstatic.com`) must be completely removed from the CSP whitelist to prevent render-blocking requests and CLS.
 
-1. **Metadata Dinamis**: Tag metadata (seperti `title`, `description`, `canonical URL`) wajib diatur secara dinamis melalui Metadata API bawaan Next.js (`generateMetadata`) tanpa memicu manipulasi header sisi server.
-2. **Aksesibilitas (WCAG AA)**: Seluruh tombol ikon harus memiliki `aria-label` yang dinamis dan deskriptif. Navigasi dot kuis/slider wajib menggunakan semantic `<button type="button">` agar ramah pembaca layar dan keyboard.
-3. **Kontras Warna**: Teks sekunder (seperti abu-abu) wajib menggunakan warna dengan rasio kontras minimal 4.5:1 terhadap latar belakang (contoh: `#59616e` di mode terang dan `#8c95a0` di mode gelap).
-4. **Font Lokal (Self-Hosted)**: Seluruh font wajib di-self-host menggunakan `next/font/google` secara lokal untuk menghindari pemuatan CDN eksternal yang memblokir render, menghilangkan pergeseran tata letak (CLS), dan memungkinkan penutupan domain eksternal Google Fonts (`fonts.googleapis.com` & `fonts.gstatic.com`) dari aturan Content Security Policy (CSP).
+## 4. Rate Limiting & DDoS Safeguards
+* **No In-Memory Storage**: Do not build or inject code that uses local in-memory variables or local caching for rate-limiting inside serverless functions.
+* **Edge Protection**: Delegate rate-limiting tasks to external infrastructure layers like Vercel WAF or Cloudflare. Do not use Vercel KV for rate-limiting to preserve free-tier project quotas.
 
-## Aturan Khusus Rate Limiting & Proteksi DDoS
+## 5. Free-Tier Infrastructure Constraints (Vercel Hobby & Supabase Free)
+* **Zero Dependency Bloat**: Prohibit installing unnecessary third-party npm packages that increase bundle sizes. Favor native Web APIs or lightweight utilities.
+* **Database Query Efficiency**: Prevent expensive Supabase bandwidth consumption. Never select unnecessary columns (`SELECT *` is banned if specific fields are enough). Always enforce strict `.limit()` clauses or server-side pagination.
+* **Image Optimization Quota**: Use `next/image` with the `priority` property ONLY for above-the-fold LCP elements. All secondary, list, or below-the-fold images must use native HTML `<img>` tags with `loading="lazy"`.
+* **Layout Shift Prevention**: When using native HTML `<img>` tags, you MUST explicitly define `width` and `height` aspect-ratio attributes to avoid worsening the Cumulative Layout Shift (CLS) score.
+* **Codebase File-Length Boundary**: Application source files (`.js`, `.jsx`, `.css`) must NOT exceed **800 lines** to maintain compile speed and clean architecture. Database migration/schema files (`.sql`) are completely exempt from this rule.
 
-1. **Larangan Penggunaan Memori Lokal**: Jika membuat sistem Rate Limiting atau proteksi DDoS, dilarang keras menggunakan memori lokal (in-memory caching/variables) di lingkungan serverless.
-2. **Integrasi Eksternal (Tanpa Vercel KV)**: Gunakan fitur keamanan bawaan Vercel Web Application Firewall (WAF) atau Cloudflare untuk memproses pembatasan request agar tidak membebani fungsi serverless. Jangan menggunakan Vercel KV untuk menghemat kuota gratis.
+## 6. Supabase Client & Browser Authentication Rules
+* **Module-Level Singleton**: On the client side, initialize the Supabase client using a strict singleton pattern. Re-instantiating the client inside rendering lifecycles or hooks is strictly forbidden to prevent unexpected `useEffect` cleanups that trigger false `signOut` events.
+* **Cookie-Based Storage Default**: Do not override Supabase's auth storage configuration with `window.sessionStorage` globally on the client browser. This breaks cookie synchronization managed by `@supabase/ssr` with Next.js Server Components.
+* **Isolated Session Metrics**: Custom tracking logic (like tab-close logs or custom session timeouts) must live in standalone cookies or custom sessionStorage keys without modifying Supabase's core tokens.
 
-## Aturan Batasan Vercel Hobby & Supabase Free Tier
+## 7. Cloudflare & Edge Proxy Integrations (Zaraz, GTM, Rocket Loader)
+* **Strict-Dynamic Ban**: Do not combine `'strict-dynamic'` and `'nonce-...'` inside the `script-src` CSP directive if the application is proxying through Cloudflare Zaraz, GTM, or Rocket Loader. Edge script injections will trigger browser blocks and break React hydration.
+* **Explicit Domain Whitelisting**: Secure `script-src` by pairing `'self'` and `'unsafe-inline'` with explicit whitelists for trusted third-party origins:
+  * Google Tag Manager: `https://www.googletagmanager.com`
+  * Cloudflare Scripts/Zaraz: `https://*.cloudflare.com`
+  * Cloudflare Analytics: `https://static.cloudflareinsights.com` and `https://*.cloudflareinsights.com`
+* **Edge Diagnostics**: Reminder: Advise the user to perform a Cloudflare **Purge Cache** whenever middleware headers change to avoid edge nodes serving stale HTML entry points.
 
-1. **Hindari Bloatware**: Dilarang menginstal library/pustaka pihak ketiga baru yang tidak krusial yang dapat memperbesar ukuran bundel kompilasi (build size).
-2. **Efisiensi Bandwidth Supabase**: Hindari query database yang boros bandwidth (seperti mengambil kolom besar yang tidak diperlukan, atau memanggil query secara berulang tanpa pembatasan `.limit()` atau tanpa pagination).
-3. **Pembatasan Optimasi Gambar**: Gunakan komponen `next/image` hanya untuk gambar LCP utama dengan properti `priority`. Semua gambar kecil dan di bawah lipatan layar harus menggunakan tag `<img>` HTML biasa dengan `loading="lazy"` agar hemat kuota optimasi gambar Vercel (maksimal 1.000 gambar per bulan).
-4. **Batasan Ukuran File Kode**: Setiap file source code (baik CSS maupun JavaScript/JSX/TSX) dilarang keras melebihi 800 baris (Lines) guna menjaga kemudahan pemeliharaan (maintainability), keterbacaan, dan performa kompilasi.
+## 8. CSS Refactoring Constraints ("Split + Scope")
+* **Stricter Line Limits**: Every newly split `[Component].module.css` file MUST NOT exceed **300 lines**. If a layout's styles cross this threshold, split it further into sub-components or atomic utility classes.
+* **Admin Safe Refactoring**: When applying CSS Modules inside `app/admin`, you are strictly forbidden from introducing global leaks, static caching configurations, or public exports. The styles must never obscure, hide, or misalign React `Suspense` Skeleton Loaders during active database streams.
 
-## Aturan Khusus Sesi Autentikasi & Supabase Client Sisi Browser
-
-1. **Pola Klien Singleton**: Di sisi browser (client-side), gunakan pola singleton untuk `createClient()` Supabase (simpan instance di tingkat modul) agar tidak terjadi instansiasi ulang klien pada setiap siklus rendering. Ini mencegah pembersihan `useEffect` yang tidak disengaja yang dapat memicu `signOut()`.
-2. **Penyimpanan Default (Cookie-based)**: Jangan pernah melakukan override opsi penyimpanan auth Supabase (`storage`) menggunakan `window.sessionStorage` secara global pada browser client, karena hal ini merusak sinkronisasi cookie sesi otomatis dari `@supabase/ssr` ke Next.js Server Components / API middleware.
-3. **Pemisahan Logika Sesi**: Jika ingin menerapkan deteksi penutupan tab atau kedaluwarsa sesi kustom (seperti `login_time`), simpan status tersebut secara independen (misal: di cookie atau sessionStorage kustom) tanpa mengganggu penyimpanan sesi utama milik Supabase.
-
-## Aturan Khusus Content Security Policy (CSP) & Integrasi Cloudflare (Zaraz, GTM, Rocket Loader)
-
-Untuk mencegah pemblokiran total JavaScript di lingkungan produksi akibat intervensi proksi edge Cloudflare atau injeksi pihak ketiga:
-1. **Larangan 'strict-dynamic' dengan Nonce pada script-src**: Dilarang menggunakan kombinasi `'strict-dynamic'` dan `'nonce-...'` pada directive `script-src` di dalam header CSP jika situs terintegrasi dengan Cloudflare Zaraz, Google Tag Manager, atau Rocket Loader. Proksi edge ini menyuntikkan script dinamis/inline tanpa nonce, yang menyebabkan browser mengabaikan `'unsafe-inline'` dan memblokir seluruh JavaScript (merusak hidrasi React/Next.js).
-2. **Whitelist Asal Domain Aman**: Gunakan kombinasi `'self'` dan `'unsafe-inline'`, serta tambahkan whitelist domain eksternal tepercaya pada `script-src`:
-   * Google Tag Manager: `https://www.googletagmanager.com`
-   * Cloudflare Scripts/Zaraz: `https://*.cloudflare.com`
-   * Cloudflare Analytics: `https://static.cloudflareinsights.com` dan `https://*.cloudflareinsights.com`
-3. **Verifikasi Headers & Purge Cache**: Setiap kali melakukan perubahan middleware/routing header, lakukan verifikasi via request browser simulasi untuk memastikan header baru sudah live di Vercel, dan ingatkan pengguna untuk melakukan pembersihan cache Cloudflare (*Purge Cache*) agar browser tidak memuat HTML usang.
-## INTEGRATION: REFRACTORING CSS WITH SECURITY-FIRST & ARCHITECTURE CONSTRAINTS
-
-When executing the "Split + Scope" refactoring for the 5000+ line global.css file, the AI Agent MUST strictly combine the Next.js optimization logic with the following project security and tier constraints:
-
-### 1. Hard Code-Length Limit (Crucial)
-- Referencing "Aturan Batasan Vercel Hobby & Supabase Free Tier": Every newly created `[Component].module.css` or split CSS file MUST NOT exceed **300 lines** (stricter than the general project rule of 800 lines) to maintain extreme maintainability.
-- If a component's styles exceed 300 lines, split it further into sub-components or atomic style utilities.
-
-### 2. Guarding the Admin Dashboard (`app/admin`)
-- When applying CSS Modules to components inside `app/admin`, you are STRICTLY FORBIDDEN from adding any static caching triggers, public export configs, or global styles that might interfere with server-side dynamic rendering. 
-- Ensure that the CSS Modules refactor does not accidentally block or hide React `Suspense` Skeleton Loaders used for tables or charts.
-
-### 3. Fonts & Content Security Policy (CSP) Compliance
-- Referencing "Aturan Khusus Metadata, Aksesibilitas, & Font Lokal": Do NOT touch, move, or alter the `next/font/google` configuration. 
-- Ensure that no external font CDN links (like `fonts.googleapis.com` or `fonts.gstatic.com`) are injected into the CSS during the cleanup. The font loading must remain 100% self-hosted/local to comply with the project's strict CSP rules.
-
-### 4. Accessibility & Color Contrast (WCAG AA) Validation
-- While extracting and splitting styles, verify that text colors and background utilities maintain the minimum contrast ratio of **4.5:1** (e.g., keeping `#59616e` for light mode and `#8c95a0` for dark mode).
-- Do not remove or alter style properties related to focus states (`:focus`, `:focus-visible`) that ensure keyboard and screen-reader accessibility for buttons or sliders.
-
-### 5. Local Build Verification & Cloudflare Purge Reminder
-- After completing a batch of CSS splitting, the sub-agent MUST execute `npm run build` (or yarn/pnpm equivalent) to ensure zero compilation or broken import errors.
-- In the final execution report, remind the user to trigger a **Cloudflare Purge Cache** to clear out cached CSS chunks at the edge proxies and avoid hydration mismatch on client browsers.
-
+## 9. Token Conservation & Patching Rules (Anti-Waste for Free LLMs)
+* **Strict Minimal Outputs**: Never rewrite unchanged UI, layout, or JSX wrapper code. If modifying a function (e.g., `handleSubmit`), output ONLY that specific function or block. Use concise code comments like `// ... existing UI code remains unchanged ...` to prevent token cutoff.
+* **Complete Block Integrity**: When generating a code patch, you MUST ensure all closing tags, brackets, and Markdown fences (```) are completely closed before reaching the max token limit. Never leave a sentinel or a block truncated.
+* **No Speculative Explanations**: Do not explain your thought process or give conversational summaries before or after code blocks unless explicitly asked. Go straight to the minimal required file modifications.
+* **Avoid Multi-File Sweeps**: Do not scan or read non-essential directories or system files (like `.DS_Store` or static assets) during analysis to preserve the user's input context window.
+## 10. Beginner-Friendly Workflow Rules (Time & Token Savers)
+* **One Task Per Prompt**: Break down complex features into single, atomic steps. Do not ask the agent to "build a feature"; instead, ask it to "create the database query", then "create the API route", then "bind it to the UI".
+* **Explicit File Targeting**: Always start a prompt by specifying the exact file path (e.g., `src/app/gallery/GalleryClient.jsx`). Do not let the agent search the whole workspace to guess where to write code.
+* **Inline Error Pasting**: If a runtime or compilation error occurs, paste the exact error stack trace directly into the prompt. The agent must immediately identify the root cause without analyzing unaffected files.
+* **No Code Hallucination**: If the agent is unsure about a local helper function, configuration, or asset path, it must ask the user for clarification instead of guessing or inventing fake code blocks.
+* **No Overhead Re-styling**: Do not add, modify, or rewrite Tailwind classes or CSS properties unless explicitly requested by the user. Focus strictly on repairing or adding logic.
+## 11. Fullstack Architecture Safeguards (Anti-Crash Rules)
+* **Never Mix Server and Client in One File**: Since the project uses pure JSX, explicitly enforce that files with `"use client"` must NOT contain server-side database direct calls or secret key references. Data must be fetched via endpoints or route handlers.
+* **Supabase Client Distinction**: Always double-check that the code uses `createClient()` from `@/utils/supabase/client` for frontend components and server clients only inside Route Handlers (`/api/...`) or Server Components.
+* **Strict Hydration Prevention**: Banish using browser-only globals (like `window`, `document`, or `localStorage`) during the initial React render cycle. They must always be safely wrapped inside a `useEffect` hook to prevent application layout crashes.
