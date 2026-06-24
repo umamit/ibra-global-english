@@ -11,6 +11,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
   useEffect(() => {
     const handleScroll = () => {
       const sy = window.scrollY;
+      // CSS variable untuk fallback kalkulasi top di browser non-scroll-driven
       document.documentElement.style.setProperty("--scroll-y", `${sy}px`);
       if (sy > 40) {
         setIsScrolled(true);
