@@ -63,4 +63,4 @@ export const POST = withAdminAuth(async (request) => {
     console.error("Maintenance mode toggle error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
-}
+});

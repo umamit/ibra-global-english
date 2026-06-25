@@ -69,4 +69,4 @@ export const DELETE = withAdminAuth(async (request) => {
     console.error("Gagal menghapus pengguna:", err);
     return NextResponse.json({ error: err.message || "Terjadi kesalahan server." }, { status: 500 });
   }
-}
+});

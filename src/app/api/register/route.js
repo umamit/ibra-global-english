@@ -71,7 +71,7 @@ export const GET = withAdminAuth(async () => {
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
-}
+});
 
 // PATCH: Update status pendaftaran (approve/reject)
 export const PATCH = withAdminAuth(async (req) => {
@@ -189,4 +189,4 @@ export const PATCH = withAdminAuth(async (req) => {
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
-}
+});

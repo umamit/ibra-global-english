@@ -58,7 +58,7 @@ export const POST = withAdminAuth(async (request) => {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ data });
-}
+});
 
 export const PATCH = withAdminAuth(async (request) => {
   const body = await request.json();
@@ -68,7 +68,7 @@ export const PATCH = withAdminAuth(async (request) => {
   const { error } = await adminSupabase.from("gallery_items").update(updates).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
-}
+});
 
 export const DELETE = withAdminAuth(async (request) => {
   const { searchParams } = new URL(request.url);
@@ -84,4 +84,4 @@ export const DELETE = withAdminAuth(async (request) => {
   const { error } = await adminSupabase.from("gallery_items").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
-}
+});

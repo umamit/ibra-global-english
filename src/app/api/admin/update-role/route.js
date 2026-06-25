@@ -4,12 +4,7 @@ import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 export const PATCH = withAdminAuth(async (request) => {
   try {
     const adminSupabase = getAdminSupabase();
-      return NextResponse.json(
-        { error: "Tidak diizinkan. Hanya administrator yang dapat mengubah peran." },
-        { status: 403 }
-      );
-    }
-
+    
     const { userId, role } = await request.json();
 
     if (!userId || !role) {
@@ -77,4 +72,4 @@ export const PATCH = withAdminAuth(async (request) => {
       { status: 500 }
     );
   }
-}
+});

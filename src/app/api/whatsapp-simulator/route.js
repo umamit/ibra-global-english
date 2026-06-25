@@ -103,7 +103,7 @@ export const POST = withAdminAuth(async (request) => {
       { status: 500 }
     );
   }
-}
+});
 
 // GET: Ambil log pengiriman, status perangkat Fonnte, atau daftar kontak
 export const GET = withAdminAuth(async (request) => {
@@ -252,4 +252,4 @@ export const GET = withAdminAuth(async (request) => {
       { status: 500 }
     );
   }
-}
+});
