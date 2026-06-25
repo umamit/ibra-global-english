@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
-import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 function getLocalDateString(dateObj) {
   const y = dateObj.getFullYear();
@@ -12,9 +12,8 @@ function getLocalDateString(dateObj) {
   return `${y}-${m}-${d}`;
 }
 
-const supabase = createClient();
-
 export default function AdminCalendar() {
+  const supabase = createClient();
 
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
