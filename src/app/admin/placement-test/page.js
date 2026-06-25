@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
-import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 export default function AdminPlacementTest() {
   const supabase = createClient();

@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, useRef } from "react";
-import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 const getMonthName = (ym) => {
   if (!ym) return "";
@@ -313,10 +313,16 @@ export default function AdminFinance() {
 
     setSavingPayment(true);
     try {
+      const parsedAmount = parseInt(modalAmount);
+      if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        showToast("Nominal pembayaran tidak valid.", "error");
+        setSavingPayment(false);
+        return;
+      }
       const payload = {
         student_id: modalStudent.id,
         month: selectedMonth,
-        amount: parseInt(modalAmount),
+        amount: parsedAmount,
         status: modalStatus,
         payment_method: modalMethod,
         receipt_url: modalReceiptUrl || null,

@@ -4,12 +4,10 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient, createAdminClient } from "@/utils/supabase/client";
-import { parseMarkdownSecure } from "@/utils/security";
+import { createClient } from "@/utils/supabase/client";
 
 export default function AdminDashboard() {
   const supabase = createClient();
-  const dbSupabase = createAdminClient();
   const [adminName, setAdminName] = useState("Admin");
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -46,10 +44,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const formatMarkdown = (text) => {
-    return parseMarkdownSecure(text);
-  };
-
   useEffect(() => {
     async function fetchDashboardData() {
       try {
@@ -60,12 +54,12 @@ export default function AdminDashboard() {
         }
 
         // 2. Fetch total siswa
-        const { count: studentCount, error: errS } = await dbSupabase
+        const { count: studentCount, error: errS } = await supabase
           .from("students")
           .select("*", { count: "exact", head: true });
 
         // 3. Fetch total akun orang tua
-        const { count: parentCount, error: errP } = await dbSupabase
+        const { count: parentCount, error: errP } = await supabase
           .from("profiles")
           .select("*", { count: "exact", head: true })
           .eq("role", "parent");
@@ -73,14 +67,14 @@ export default function AdminDashboard() {
         // 4. Fetch absensi hadir hari ini
         const todayObj = new Date();
         const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, "0")}-${String(todayObj.getDate()).padStart(2, "0")}`;
-        const { count: attendanceCount, error: errA } = await dbSupabase
+        const { count: attendanceCount, error: errA } = await supabase
           .from("attendance")
           .select("*", { count: "exact", head: true })
           .eq("date", todayStr)
           .eq("status", "hadir");
 
         // 5. Fetch total rapor modul
-        const { count: reportCount, error: errR } = await dbSupabase
+        const { count: reportCount, error: errR } = await supabase
           .from("reports")
           .select("*", { count: "exact", head: true });
 
@@ -98,13 +92,34 @@ export default function AdminDashboard() {
     }
 
     fetchDashboardData();
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     if (!loading) {
       fetchAiInsights();
     }
   }, [loading]);
+
+  /**
+   * Render AI insights text safely as plain text with basic line breaks
+   */
+  const renderSafeInsights = (text) => {
+    if (!text) return null;
+    // Strip HTML tags for safety, preserve line breaks
+    const safeText = text
+      .replace(/<[^>]*>/g, "")
+      .replace(/&/g, "&")
+      .replace(/</g, "<")
+      .replace(/>/g, ">")
+      .replace(/"/g, '"')
+      .replace(/&#039;/g, "'");
+    
+    return safeText.split("\n").map((line, i) => (
+      <p key={i} style={{ margin: "0.25rem 0" }}>
+        {line || "\u00A0"}
+      </p>
+    ));
+  };
 
   return (
     <div>
@@ -193,10 +208,9 @@ export default function AdminDashboard() {
             ) : aiError ? (
               <p style={{ color: "var(--color-red)", fontSize: "0.85rem", margin: 0 }}>⚠️ Gagal memuat analisis: {aiError}</p>
             ) : (
-              <div 
-                style={{ fontSize: "0.875rem", color: "var(--color-gray-700)", lineHeight: 1.6 }}
-                dangerouslySetInnerHTML={{ __html: formatMarkdown(aiInsights) }}
-              />
+              <div style={{ fontSize: "0.875rem", color: "var(--color-gray-700)", lineHeight: 1.6 }}>
+                {renderSafeInsights(aiInsights)}
+              </div>
             )}
           </div>
 

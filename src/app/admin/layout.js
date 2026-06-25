@@ -42,61 +42,50 @@ export default function AdminLayout({ children }) {
       } catch {}
     };
     fetchPendingCount();
-    const interval = setInterval(fetchPendingCount, 60000); // refresh tiap 1 menit
+    const interval = setInterval(fetchPendingCount, 60000);
     return () => clearInterval(interval);
   }, []);
 
+  // Session checker using Supabase's built-in session management only
   useEffect(() => {
+    let isMounted = true;
+    let intervalId = null;
+
     const checkSession = async () => {
-      if (typeof window === "undefined") return;
+      if (typeof window === "undefined" || !isMounted) return;
 
-      let loginTimeStr = sessionStorage.getItem("login_time");
-      if (!loginTimeStr && document.cookie.includes("login_time=active")) {
-        loginTimeStr = Date.now().toString();
-        sessionStorage.setItem("login_time", loginTimeStr);
-      }
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          // No session - redirect to login
+          window.location.href = "/login";
+          return;
+        }
 
-      if (!loginTimeStr) {
-        // Tab baru dibuka, sessionStorage kosong! Log out otomatis.
-        await supabase.auth.signOut();
-        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        window.location.href = "/login";
-        return;
-      }
-
-      // Check max-age 1 jam (3600000 ms)
-      const loginTime = parseInt(loginTimeStr);
-      const oneHour = 3600 * 1000;
-      if (Date.now() - loginTime > oneHour) {
-        await supabase.auth.signOut();
-        sessionStorage.removeItem("login_time");
-        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        alert("Sesi login Admin Anda telah berakhir (maksimal 1 jam). Silakan masuk kembali.");
-        window.location.href = "/login";
+        // Check session expiry (default Supabase session is 1 hour)
+        const expiresAt = session.expires_at ? session.expires_at * 1000 : 0;
+        if (expiresAt > 0 && Date.now() > expiresAt) {
+          await supabase.auth.signOut();
+          window.location.href = "/login";
+          return;
+        }
+      } catch (err) {
+        console.error("Session check error:", err);
       }
     };
 
     checkSession();
-    const interval = setInterval(checkSession, 15000); // Cek setiap 15 detik
+    intervalId = setInterval(checkSession, 30000); // Cek setiap 30 detik
 
-    // Cleanup: jika pengguna berpindah rute keluar dari rute /admin (tombol back atau link)
     return () => {
-      clearInterval(interval);
-      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/admin")) {
-        supabase.auth.signOut();
-        sessionStorage.clear();
-        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      }
+      isMounted = false;
+      if (intervalId) clearInterval(intervalId);
     };
   }, [supabase]);
 
   const handleLogout = async () => {
-    if (confirm("Apakah Anda yakin ingin keluar dari portal Admin?")) {
+    if (window.confirm("Apakah Anda yakin ingin keluar dari portal Admin?")) {
       await supabase.auth.signOut();
-      if (typeof window !== "undefined") {
-        sessionStorage.clear();
-        document.cookie = "login_time=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      }
       router.push("/login");
       router.refresh();
     }

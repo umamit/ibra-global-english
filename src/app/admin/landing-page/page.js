@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, useRef } from "react";
-import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { DEFAULT_PROGRAMS, DEFAULT_BENEFITS, DEFAULT_FAQS, DEFAULT_VIDEOS } from "@/utils/fallbackData";
 
 export default function LandingPageCMS() {

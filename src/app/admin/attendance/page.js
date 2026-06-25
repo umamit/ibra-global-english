@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
-import { createAdminClient as createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 export default function DailyAttendance() {
   const supabase = createClient();
@@ -165,7 +165,7 @@ export default function DailyAttendance() {
         // Cari apakah ada data absensi untuk siswa ini
         const recorded = attendanceList?.find((a) => a.student_id === student.id);
         initialMap[student.id] = {
-          status: recorded ? recorded.status : "hadir", // Default jika belum tercatat: hadir
+          status: recorded ? recorded.status : "", // Empty default - admin must explicitly choose
           notes: recorded ? recorded.notes || "" : "",
           isExisting: !!recorded,
         };
