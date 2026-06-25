@@ -5,6 +5,14 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { DEFAULT_PROGRAMS, DEFAULT_BENEFITS, DEFAULT_FAQS, DEFAULT_VIDEOS } from "@/utils/fallbackData";
+import HeroSettings from "./components/HeroSettings";
+import GalleryManager from "./components/GalleryManager";
+import VideoGallery from "./components/VideoGallery";
+import TestimonialManager from "./components/TestimonialManager";
+import ProgramManager from "./components/ProgramManager";
+import BenefitManager from "./components/BenefitManager";
+import FAQManager from "./components/FAQManager";
+import MaintenanceSettings from "./components/MaintenanceSettings";
 
 export default function LandingPageCMS() {
   const supabase = createClient();
@@ -626,6 +634,25 @@ export default function LandingPageCMS() {
     }
   };
 
+  const handleSaveMaintenance = async (enabled, message) => {
+    setSavingMaintenance(true);
+    try {
+      const res = await fetch("/api/maintenance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled, message }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Gagal menyimpan pengaturan maintenance");
+      setMaintenanceMode(enabled);
+      showToast("Pengaturan mode pemeliharaan berhasil disimpan!", enabled ? "error" : "success");
+    } catch (err) {
+      showToast("Gagal menyimpan pengaturan: " + err.message, "error");
+    } finally {
+      setSavingMaintenance(false);
+    }
+  };
+
   return (
     <div style={{ padding: "1.5rem 1rem", maxWidth: "1200px", margin: "0 auto" }}>
       {/* Toast Alert */}
@@ -725,1340 +752,108 @@ export default function LandingPageCMS() {
         </button>
       </div>
 
-      {/* =====================================================================
-          TAB 1: PROFIL & HERO UTAMA
-          ===================================================================== */}
+      {/* Tab Contents */}
       {activeTab === "hero" && (
-        <div className="portal-card" style={{ padding: "2rem" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Profil & Hero Utama</h2>
-          
-          <form onSubmit={handleSaveHeroSettings} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.25rem" }}>
-              
-              {/* Judul Hero */}
-              <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nama Lembaga (Judul Hero)</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                  placeholder="Contoh: Ibra Global English Bobong"
-                  value={heroTitle}
-                  onChange={(e) => setHeroTitle(e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Subjudul Hero */}
-              <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Tagline Subjudul Hero</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                  placeholder="Gunakan tanda pipe '|' untuk bagian warna ungu. Contoh: Belajar Seru | Lancar Bicara"
-                  value={heroSubtitle}
-                  onChange={(e) => setHeroSubtitle(e.target.value)}
-                  required
-                />
-                <span style={{ fontSize: "0.8rem", color: "var(--color-gray-400)" }}>
-                  Kata-kata setelah tanda pipe ( | ) otomatis memiliki warna gradasi ungu neon yang mewah di halaman publik.
-                </span>
-              </div>
-
-              {/* Deskripsi Hero */}
-              <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Deskripsi Singkat Hero</label>
-                <textarea
-                  className="form-input"
-                  style={{ width: "100%", height: "100px", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)", resize: "vertical" }}
-                  placeholder="Ketik deskripsi singkat kursus bimbingan belajar Anda..."
-                  value={heroDesc}
-                  onChange={(e) => setHeroDesc(e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Upload Gambar Hero */}
-              <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Foto Hero Utama</label>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "center" }}>
-                  {heroImage && (
-                    <div style={{ width: "120px", height: "80px", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--color-gray-300)" }}>
-                      <img src={heroImage} alt="Hero Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    </div>
-                  )}
-                  <div style={{ flex: 1, minWidth: "200px" }}>
-                    <input
-                      type="file"
-                      ref={heroFileRef}
-                      accept="image/*"
-                      onChange={handleHeroImageChange}
-                      style={{ display: "none" }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => heroFileRef.current?.click()}
-                      className="btn-portal-outline"
-                      style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", marginBottom: "0.5rem" }}
-                      disabled={uploadingHero}
-                    >
-                      {uploadingHero ? "Mengunggah..." : "Pilih Berkas Foto Baru"}
-                    </button>
-                    <input
-                      type="text"
-                      className="form-input"
-                      style={{ width: "100%", padding: "0.5rem", fontSize: "0.85rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)", opacity: 0.8 }}
-                      placeholder="Atau masukkan tautan URL gambar eksternal di sini..."
-                      value={heroImage}
-                      onChange={(e) => setHeroImage(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <hr style={{ border: "none", borderTop: "1px solid var(--color-gray-200)", margin: "1rem 0" }} />
-
-              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)" }}>Kontak & Lokasi Hubungi Kami</h3>
-
-              <div className="three-column-grid" style={{ gap: "1rem" }}>
-                {/* Alamat Google Map */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Alamat Lengkap Lembaga</label>
-                  <textarea
-                    className="form-input"
-                    style={{ width: "100%", height: "80px", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah"
-                    value={contactAddress}
-                    onChange={(e) => setContactAddress(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* No Telepon */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nomor WA / Telepon</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: +62 813-5700-1357"
-                    value={contactPhone}
-                    onChange={(e) => setContactPhone(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Email */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Alamat Email</label>
-                  <input
-                    type="email"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: admin@ibraglobalenglish.uk"
-                    value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <hr style={{ border: "none", borderTop: "1px solid var(--color-gray-200)", margin: "2rem 0 1rem" }} />
-
-              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1rem" }}>Konfigurasi Rekening & Nominal SPP</h3>
-
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem" }}>
-                {/* Nama Bank */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nama Bank</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Bank Mandiri"
-                    value={paymentBankName}
-                    onChange={(e) => setPaymentBankName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Nomor Rekening */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nomor Rekening</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: 137-00-1234567-8"
-                    value={paymentAccountNumber}
-                    onChange={(e) => setPaymentAccountNumber(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Atas Nama Rekening */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Atas Nama Rekening</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Ibra Global English"
-                    value={paymentAccountName}
-                    onChange={(e) => setPaymentAccountName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Sub-text Rekening */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Sub-keterangan Atas Nama</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Bobong Learning Centre"
-                    value={paymentAccountSub}
-                    onChange={(e) => setPaymentAccountSub(e.target.value)}
-                  />
-                </div>
-
-                {/* Nominal SPP Per Program */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Kids Program (Rupiah)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: 300000"
-                    value={paymentSppKids}
-                    onChange={(e) => setPaymentSppKids(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Teens Program (Rupiah)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: 300000"
-                    value={paymentSppTeens}
-                    onChange={(e) => setPaymentSppTeens(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nominal SPP Fun Calistung (Rupiah)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: 350000"
-                    value={paymentSppCalistung}
-                    onChange={(e) => setPaymentSppCalistung(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <hr style={{ border: "none", borderTop: "1px solid var(--color-gray-200)", margin: "2rem 0 1rem" }} />
-
-              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1rem" }}>Konfigurasi Teks Pengumuman Berjalan (Marquee)</h3>
-              <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginBottom: "1.5rem" }}>
-                Atur 3 kalimat pengumuman yang akan ditampilkan berjalan di bagian atas halaman Landing Page.
-              </p>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Teks Pengumuman Box 1</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Kalimat pengumuman pertama..."
-                    value={marqueeText1}
-                    onChange={(e) => setMarqueeText1(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Teks Pengumuman Box 2</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Kalimat pengumuman kedua..."
-                    value={marqueeText2}
-                    onChange={(e) => setMarqueeText2(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Teks Pengumuman Box 3</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Kalimat pengumuman ketiga..."
-                    value={marqueeText3}
-                    onChange={(e) => setMarqueeText3(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <hr style={{ border: "none", borderTop: "1px solid var(--color-gray-200)", margin: "2rem 0 1rem" }} />
-
-              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1rem" }}>Konfigurasi Banner Promosi & Brosur (CTA)</h3>
-              <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginBottom: "1.5rem" }}>
-                Atur judul, deskripsi tag, dan unggah berkas brosur promosi untuk bagian Call to Action (CTA) di landing page.
-              </p>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Tag Promosi CTA (Kecil di Atas)</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Promo Terbatas!"
-                    value={ctaTag}
-                    onChange={(e) => setCtaTag(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Judul Banner CTA (Gunakan '&' untuk teks highlight kuning)</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Belajar Cepat & Jadi Percaya Diri!"
-                    value={ctaTitle}
-                    onChange={(e) => setCtaTitle(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Deskripsi Banner CTA</label>
-                  <textarea
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)", minHeight: "100px", resize: "vertical" }}
-                    placeholder="Masukkan teks deskripsi promosi..."
-                    value={ctaDesc}
-                    onChange={(e) => setCtaDesc(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Upload Gambar Brosur Promosi */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Brosur Promosi (Tampilan di Bawah CTA Banner)</label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "center" }}>
-                    {ctaBrochureImage && (
-                      <div style={{ width: "160px", height: "90px", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--color-gray-300)", position: "relative" }}>
-                        {getCanvaEmbedUrl(ctaBrochureImage) ? (
-                          <iframe
-                            src={getCanvaEmbedUrl(ctaBrochureImage)}
-                            style={{ width: "100%", height: "100%", border: "none" }}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <img src={ctaBrochureImage} alt="Brochure Preview" style={{ width: "100%", height: "100%", objectFit: "contain", backgroundColor: "var(--color-gray-50)" }} />
-                        )}
-                      </div>
-                    )}
-                    <div style={{ flex: 1, minWidth: "200px" }}>
-                      <input
-                        type="file"
-                        ref={ctaBrochureFileRef}
-                        accept="image/*"
-                        onChange={handleCtaBrochureImageChange}
-                        style={{ display: "none" }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => ctaBrochureFileRef.current?.click()}
-                        className="btn-portal-outline"
-                        style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", marginBottom: "0.5rem" }}
-                        disabled={uploadingCtaBrochure}
-                      >
-                        {uploadingCtaBrochure ? "Mengunggah..." : "Pilih Berkas Brosur Baru"}
-                      </button>
-                      <input
-                        type="text"
-                        className="form-input"
-                        style={{ width: "100%", padding: "0.5rem", fontSize: "0.85rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)", opacity: 0.8 }}
-                        placeholder="Atau masukkan tautan URL gambar eksternal di sini..."
-                        value={ctaBrochureImage}
-                        onChange={(e) => setCtaBrochureImage(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "1rem" }}>
-              <button
-                type="submit"
-                className="btn-portal-primary"
-                style={{ padding: "0.75rem 1.5rem", fontWeight: "700" }}
-                disabled={loading}
-              >
-                {loading ? "Menyimpan..." : "Simpan Perubahan Landing Page"}
-              </button>
-            </div>
-          </form>
-        </div>
+        <HeroSettings
+          heroTitle={heroTitle} setHeroTitle={setHeroTitle}
+          heroSubtitle={heroSubtitle} setHeroSubtitle={setHeroSubtitle}
+          heroDesc={heroDesc} setHeroDesc={setHeroDesc}
+          heroImage={heroImage} setHeroImage={setHeroImage}
+          contactAddress={contactAddress} setContactAddress={setContactAddress}
+          contactPhone={contactPhone} setContactPhone={setContactPhone}
+          contactEmail={contactEmail} setContactEmail={setContactEmail}
+          paymentBankName={paymentBankName} setPaymentBankName={setPaymentBankName}
+          paymentAccountNumber={paymentAccountNumber} setPaymentAccountNumber={setPaymentAccountNumber}
+          paymentAccountName={paymentAccountName} setPaymentAccountName={setPaymentAccountName}
+          paymentAccountSub={paymentAccountSub} setPaymentAccountSub={setPaymentAccountSub}
+          paymentSppKids={paymentSppKids} setPaymentSppKids={setPaymentSppKids}
+          paymentSppTeens={paymentSppTeens} setPaymentSppTeens={setPaymentSppTeens}
+          paymentSppCalistung={paymentSppCalistung} setPaymentSppCalistung={setPaymentSppCalistung}
+          marqueeText1={marqueeText1} setMarqueeText1={setMarqueeText1}
+          marqueeText2={marqueeText2} setMarqueeText2={setMarqueeText2}
+          marqueeText3={marqueeText3} setMarqueeText3={setMarqueeText3}
+          ctaTag={ctaTag} setCtaTag={setCtaTag}
+          ctaTitle={ctaTitle} setCtaTitle={setCtaTitle}
+          ctaDesc={ctaDesc} setCtaDesc={setCtaDesc}
+          ctaBrochureImage={ctaBrochureImage} setCtaBrochureImage={setCtaBrochureImage}
+          uploadingHero={uploadingHero} setUploadingHero={setUploadingHero}
+          uploadingCtaBrochure={uploadingCtaBrochure} setUploadingCtaBrochure={setUploadingCtaBrochure}
+          heroFileRef={heroFileRef} ctaBrochureFileRef={ctaBrochureFileRef}
+          handleUploadToStorage={handleUploadToStorage}
+          onSave={handleSaveHeroSettings}
+        />
       )}
 
-      {/* =====================================================================
-          TAB 2: KELOLA GALERI KEGIATAN
-          ===================================================================== */}
       {activeTab === "gallery" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-          
-          {/* Form Tambah Item */}
-          <div className="portal-card" style={{ padding: "2rem" }}>
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Unggah Foto Kegiatan Baru</h2>
-            
-            <form onSubmit={handleAddGalleryItem} style={{ display: "flex", flexFlow: "column", gap: "1.25rem" }}>
-              <div className="form-grid" style={{ gap: "1rem" }}>
-                
-                {/* Judul Kegiatan */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Judul Kegiatan</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Speaking Practice Session"
-                    value={galleryTitle}
-                    onChange={(e) => setGalleryTitle(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Keterangan */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Deskripsi Singkat (Kecil)</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Belajar seru melalui aktivitas kuis interaktif"
-                    value={galleryDesc}
-                    onChange={(e) => setGalleryDesc(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="form-grid" style={{ gap: "1rem" }}>
-                {/* Caption / Keterangan Lightbox */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Keterangan Lengkap (Caption Foto)</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Suasana Latihan Percakapan Speaking Practice Kelas Dewasa"
-                    value={galleryCaption}
-                    onChange={(e) => setGalleryCaption(e.target.value)}
-                  />
-                </div>
-
-                {/* Pilih Berkas */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Berkas Gambar (Foto)</label>
-                  <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                    {galleryPreview && (
-                      <div style={{ width: "70px", height: "50px", borderRadius: "4px", overflow: "hidden", border: "1px solid var(--color-gray-300)", flexShrink: 0 }}>
-                        <img src={galleryPreview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      </div>
-                    )}
-                    <input
-                      type="file"
-                      ref={galleryFileRef}
-                      accept="image/*"
-                      onChange={handleGalleryFileChange}
-                      style={{ display: "none" }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => galleryFileRef.current?.click()}
-                      className="btn-portal-outline"
-                      style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", width: "100%" }}
-                    >
-                      {galleryFile ? galleryFile.name : "Pilih Berkas Foto..."}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  className="btn-portal-primary"
-                  style={{ padding: "0.6rem 1.2rem", fontWeight: "700" }}
-                  disabled={addingGallery}
-                >
-                  {addingGallery ? "Mengunggah & Menyimpan..." : "Tambah Foto Kegiatan"}
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* List Item Galeri */}
-          <div className="portal-card" style={{ padding: "2rem" }}>
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Daftar Foto Galeri Aktif</h2>
-            
-            {galleryLoading ? (
-              <p style={{ color: "var(--color-gray-400)" }}>Memuat foto galeri...</p>
-            ) : galleryList.length === 0 ? (
-              <p style={{ color: "var(--color-gray-400)" }}>Tidak ada foto kegiatan tambahan di database. Landing page akan menggunakan foto default aslinya (statis).</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table className="portal-table" style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: "left", padding: "10px" }}>Foto</th>
-                      <th style={{ textAlign: "left", padding: "10px" }}>Judul & Subjudul</th>
-                      <th style={{ textAlign: "left", padding: "10px" }}>Caption Lightbox</th>
-                      <th style={{ textAlign: "right", padding: "10px" }}>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {galleryList.map((item) => (
-                      <tr key={item.id} style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
-                        <td style={{ padding: "10px" }}>
-                          <img
-                            src={item.image_url}
-                            alt={item.title}
-                            loading="lazy"
-                            style={{ width: "80px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
-                          />
-                        </td>
-                        <td style={{ padding: "10px" }}>
-                          <div style={{ fontWeight: "700", color: "var(--color-gray-800)" }}>{item.title}</div>
-                          <div style={{ fontSize: "0.85rem", color: "var(--color-gray-500)" }}>{item.description}</div>
-                        </td>
-                        <td style={{ padding: "10px", fontSize: "0.9rem", color: "var(--color-gray-600)" }}>
-                          {item.caption || "-"}
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "right" }}>
-                          <button
-                            onClick={() => handleDeleteGalleryItem(item.id)}
-                            className="btn-portal-danger"
-                            style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem" }}
-                          >
-                            Hapus
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-
-        </div>
+        <GalleryManager
+          galleryTitle={galleryTitle} setGalleryTitle={setGalleryTitle}
+          galleryDesc={galleryDesc} setGalleryDesc={setGalleryDesc}
+          galleryCaption={galleryCaption} setGalleryCaption={setGalleryCaption}
+          galleryPreview={galleryPreview} setGalleryPreview={setGalleryPreview}
+          galleryFile={galleryFile} setGalleryFile={setGalleryFile}
+          galleryFileRef={galleryFileRef}
+          addingGallery={addingGallery} setAddingGallery={setAddingGallery}
+          galleryList={galleryList} setGalleryItems={setGalleryItems}
+          galleryLoading={galleryLoading}
+          handleGalleryFileChange={handleGalleryFileChange}
+          handleAddGalleryItem={handleAddGalleryItem}
+          handleDeleteGalleryItem={handleDeleteGalleryItem}
+        />
       )}
 
-      {/* =====================================================================
-          TAB EXTRA: KELOLA GALERI VIDEO
-          ===================================================================== */}
       {activeTab === "videos" && (
-        <div className="portal-card" style={{ padding: "2rem" }}>
-          <div style={{ borderBottom: "1px solid var(--color-gray-250)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-primary-dark)" }}>Kelola Galeri Video Kegiatan</h2>
-            <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>
-              Tambahkan tautan video dokumentasi kegiatan Ibra Global English. Tautan YouTube biasa atau YouTube Shorts otomatis dikonversi ke format embed yang bisa diputar di web.
-            </p>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {videosList.map((vid, idx) => (
-              <div 
-                key={idx} 
-                style={{ 
-                  padding: "1.5rem", 
-                  backgroundColor: "var(--color-gray-50)", 
-                  borderRadius: "var(--radius-xl)", 
-                  border: "1px solid var(--color-gray-200)",
-                  position: "relative"
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => {
-                    const updated = videosList.filter((_, i) => i !== idx);
-                    setVideosList(updated);
-                  }}
-                  className="btn-portal-danger"
-                  style={{ position: "absolute", top: "1.5rem", right: "1.5rem", padding: "0.3rem 0.8rem", fontSize: "0.8rem" }}
-                >
-                  Hapus Video
-                </button>
-
-                <h4 style={{ fontWeight: "700", color: "var(--color-gray-700)", marginBottom: "1rem" }}>Video #{idx + 1}</h4>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.25rem" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>Judul Video</label>
-                    <input
-                      type="text"
-                      value={vid.title}
-                      onChange={(e) => {
-                        const updated = [...videosList];
-                        updated[idx].title = e.target.value;
-                        setVideosList(updated);
-                      }}
-                      className="portal-input"
-                      placeholder="Contoh: Belajar Ceria Bersama Siswa Kids Program"
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>Deskripsi Singkat</label>
-                    <textarea
-                      value={vid.desc}
-                      onChange={(e) => {
-                        const updated = [...videosList];
-                        updated[idx].desc = e.target.value;
-                        setVideosList(updated);
-                      }}
-                      className="portal-input"
-                      rows="2"
-                      placeholder="Keterangan singkat tentang apa yang dilakukan siswa di video ini"
-                      style={{ resize: "vertical" }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>URL Tautan Video (YouTube/CapCut)</label>
-                    <input
-                      type="text"
-                      value={vid.url}
-                      onChange={(e) => {
-                        const updated = [...videosList];
-                        updated[idx].url = e.target.value;
-                        setVideosList(updated);
-                      }}
-                      className="portal-input"
-                      placeholder="Contoh: https://www.youtube.com/watch?v=XXXX atau https://youtu.be/XXXX"
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-              <button
-                type="button"
-                onClick={() => setVideosList([...videosList, { title: "", desc: "", url: "" }])}
-                className="btn-portal-outline"
-                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-              >
-                + Tambah Video Baru
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSaveVideos(videosList)}
-                disabled={savingVideos}
-                className="btn-portal-primary"
-              >
-                {savingVideos ? "Menyimpan..." : "Simpan Semua Video"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <VideoGallery
+          videosList={videosList} setVideosList={setVideosList}
+          savingVideos={savingVideos} setSavingVideos={setSavingVideos}
+          handleSaveVideos={handleSaveVideos}
+        />
       )}
 
-      {/* =====================================================================
-          TAB 3: KELOLA ULASAN & TESTIMONI
-          ===================================================================== */}
       {activeTab === "testimonials" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-          
-          {/* Form Testimoni */}
-          <div className="portal-card" style={{ padding: "2rem" }}>
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>
-              {editingTestimonialId ? "Sunting Ulasan Testimoni" : "Tambah Ulasan Testimoni Baru"}
-            </h2>
-            
-            <form onSubmit={handleSaveTestimonial} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              <div className="three-column-grid" style={{ gap: "1rem" }}>
-                
-                {/* Nama Penulis */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Nama Penulis</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Bapak Andi / Rania"
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Peran / Identitas */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Peran / Identitas</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    placeholder="Contoh: Orang Tua Siswa / Siswa SMP"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Rating Bintang */}
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Rating Bintang</label>
-                  <select
-                    className="form-input"
-                    style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                    value={rating}
-                    onChange={(e) => setRating(parseInt(e.target.value))}
-                  >
-                    <option value={5}>5 Bintang (Sangat Puas)</option>
-                    <option value={4}>4 Bintang (Puas)</option>
-                    <option value={3}>3 Bintang (Cukup)</option>
-                    <option value={2}>2 Bintang (Kurang)</option>
-                    <option value={1}>1 Bintang (Buruk)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Teks Ulasan */}
-              <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Teks Isi Ulasan</label>
-                <textarea
-                  className="form-input"
-                  style={{ width: "100%", height: "100px", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                  placeholder="Ketik komentar, ulasan positif, atau saran wali murid di sini..."
-                  value={testimonialText}
-                  onChange={(e) => setTestimonialText(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: "0.75rem" }}>
-                <button
-                  type="submit"
-                  className="btn-portal-primary"
-                  style={{ padding: "0.6rem 1.2rem", fontWeight: "700" }}
-                  disabled={savingTestimonial}
-                >
-                  {savingTestimonial ? "Menyimpan..." : editingTestimonialId ? "Simpan Perubahan" : "Tambah Testimoni"}
-                </button>
-                {editingTestimonialId && (
-                  <button
-                    type="button"
-                    onClick={handleCancelEditTestimonial}
-                    className="btn-portal-outline"
-                    style={{ padding: "0.6rem 1.2rem", fontWeight: "600" }}
-                  >
-                    Batal
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
-
-          {/* List Testimoni */}
-          <div className="portal-card" style={{ padding: "2rem" }}>
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Daftar Testimoni Aktif</h2>
-            
-            {testimonialsLoading ? (
-              <p style={{ color: "var(--color-gray-400)" }}>Memuat ulasan testimoni...</p>
-            ) : testimonialsList.length === 0 ? (
-              <p style={{ color: "var(--color-gray-400)" }}>Tidak ada testimoni tambahan di database. Landing page akan menggunakan testimoni default aslinya (statis).</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table className="portal-table" style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: "left", padding: "10px", width: "100px" }}>Bintang</th>
-                      <th style={{ textAlign: "left", padding: "10px", width: "180px" }}>Penulis</th>
-                      <th style={{ textAlign: "left", padding: "10px" }}>Teks Isi Ulasan</th>
-                      <th style={{ textAlign: "right", padding: "10px", width: "150px" }}>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {testimonialsList.map((t) => (
-                      <tr key={t.id} style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
-                        <td style={{ padding: "10px" }}>
-                          <span style={{ color: "#fbbf24", fontWeight: "bold" }}>{"★".repeat(t.rating)}</span>
-                        </td>
-                        <td style={{ padding: "10px" }}>
-                          <div style={{ fontWeight: "700", color: "var(--color-gray-800)" }}>{t.author}</div>
-                          <div style={{ fontSize: "0.85rem", color: "var(--color-gray-500)" }}>{t.role}</div>
-                        </td>
-                        <td style={{ padding: "10px", fontSize: "0.9rem", color: "var(--color-gray-600)" }}>
-                          "{t.text}"
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "right" }}>
-                          <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                            <button
-                              onClick={() => handleEditTestimonialClick(t)}
-                              className="btn-portal-outline"
-                              style={{ padding: "0.3rem 0.6rem", fontSize: "0.8rem" }}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDeleteTestimonial(t.id)}
-                              className="btn-portal-danger"
-                              style={{ padding: "0.3rem 0.6rem", fontSize: "0.8rem" }}
-                            >
-                              Hapus
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-
-        </div>
+        <TestimonialManager
+          editingTestimonialId={editingTestimonialId} setEditingTestimonialId={setEditingTestimonialId}
+          author={author} setAuthor={setAuthor}
+          role={role} setRole={setRole}
+          rating={rating} setRating={setRating}
+          testimonialText={testimonialText} setTestimonialText={setTestimonialText}
+          savingTestimonial={savingTestimonial} setSavingTestimonial={setSavingTestimonial}
+          testimonialsList={testimonialsList} setTestimonials={setTestimonials}
+          testimonialsLoading={testimonialsLoading}
+          handleSaveTestimonial={handleSaveTestimonial}
+          handleCancelEditTestimonial={handleCancelEditTestimonial}
+          handleEditTestimonialClick={handleEditTestimonialClick}
+          handleDeleteTestimonial={handleDeleteTestimonial}
+        />
       )}
 
-      {/* =====================================================================
-          TAB: PROGRAMS
-          ===================================================================== */}
       {activeTab === "programs" && (
-        <div className="portal-card" style={{ padding: "2rem" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Kelola Program Kursus</h2>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {programsList.map((prog, idx) => (
-              <div key={idx} style={{ padding: "1.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-lg)", position: "relative" }}>
-                <button 
-                  onClick={() => {
-                    const next = [...programsList];
-                    next.splice(idx, 1);
-                    handleSavePrograms(next);
-                  }}
-                  className="btn-portal-danger" 
-                  style={{ position: "absolute", top: "1rem", right: "1rem", padding: "0.4rem 0.8rem", fontSize: "0.8rem" }}
-                >
-                  Hapus
-                </button>
-                
-                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
-                  <div className="form-group">
-                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Nama Program</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={prog.title} 
-                      onChange={(e) => {
-                        const next = [...programsList];
-                        next[idx] = { ...next[idx], title: e.target.value };
-                        setProgramsList(next);
-                      }} 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Kategori Umur / Keterangan</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={prog.age} 
-                      onChange={(e) => {
-                        const next = [...programsList];
-                        next[idx] = { ...next[idx], age: e.target.value };
-                        setProgramsList(next);
-                      }} 
-                    />
-                  </div>
-                </div>
-
-                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
-                  <div className="form-group">
-                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Deskripsi Singkat</label>
-                    <textarea 
-                      className="form-input" 
-                      value={prog.desc} 
-                      style={{ height: "80px", resize: "none" }}
-                      onChange={(e) => {
-                        const next = [...programsList];
-                        next[idx] = { ...next[idx], desc: e.target.value };
-                        setProgramsList(next);
-                      }} 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Pilihan Ikon</label>
-                    <select
-                      className="form-input"
-                      value={prog.iconKey || "book"}
-                      onChange={(e) => {
-                        const next = [...programsList];
-                        next[idx] = { ...next[idx], iconKey: e.target.value };
-                        setProgramsList(next);
-                      }}
-                    >
-                      <option value="book">Book (Buku)</option>
-                      <option value="graduation">Graduation (Topi Toga)</option>
-                      <option value="users">Users (Kelompok/Orang)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Fitur / Materi Unggulan (Pisahkan dengan koma)</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    value={(prog.features || []).join(", ")} 
-                    onChange={(e) => {
-                      const next = [...programsList];
-                      next[idx] = { ...next[idx], features: e.target.value.split(",").map(f => f.trim()) };
-                      setProgramsList(next);
-                    }} 
-                  />
-                </div>
-              </div>
-            ))}
-            
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-              <button 
-                onClick={() => {
-                  const next = [...programsList, { title: "Program Baru", age: "5-10 tahun", desc: "Deskripsi program baru", iconKey: "book", features: ["Fitur 1"] }];
-                  setProgramsList(next);
-                }} 
-                className="btn-portal-outline"
-              >
-                + Tambah Program Baru
-              </button>
-              <button 
-                onClick={() => handleSavePrograms(programsList)}
-                className="btn-portal-primary"
-              >
-                Simpan Semua Program
-              </button>
-            </div>
-          </div>
-        </div>
+        <ProgramManager
+          programsList={programsList} setProgramsList={setProgramsList}
+          handleSavePrograms={handleSavePrograms}
+        />
       )}
 
-      {/* =====================================================================
-          TAB: BENEFITS
-          ===================================================================== */}
       {activeTab === "benefits" && (
-        <div className="portal-card" style={{ padding: "2rem" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Kelola Keunggulan</h2>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {benefitsList.map((b, idx) => (
-              <div key={idx} style={{ padding: "1.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-lg)", position: "relative" }}>
-                <button 
-                  onClick={() => {
-                    const next = [...benefitsList];
-                    next.splice(idx, 1);
-                    handleSaveBenefits(next);
-                  }}
-                  className="btn-portal-danger" 
-                  style={{ position: "absolute", top: "1rem", right: "1rem", padding: "0.4rem 0.8rem", fontSize: "0.8rem" }}
-                >
-                  Hapus
-                </button>
-                
-                <div className="form-grid" style={{ gap: "1rem" }}>
-                  <div className="form-group">
-                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Judul Keunggulan</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={b.title} 
-                      onChange={(e) => {
-                        const next = [...benefitsList];
-                        next[idx] = { ...next[idx], title: e.target.value };
-                        setBenefitsList(next);
-                      }} 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Pilihan Ikon</label>
-                    <select
-                      className="form-input"
-                      value={b.iconKey || "check"}
-                      onChange={(e) => {
-                        const next = [...benefitsList];
-                        next[idx] = { ...next[idx], iconKey: e.target.value };
-                        setBenefitsList(next);
-                      }}
-                    >
-                      <option value="users">Users (Kelompok)</option>
-                      <option value="award">Award (Penghargaan)</option>
-                      <option value="clock">Clock (Jam/Waktu)</option>
-                      <option value="trophy">Trophy (Piala)</option>
-                      <option value="message">Message (Pesan)</option>
-                      <option value="check">Checkmark (Centang)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-group" style={{ marginTop: "1rem" }}>
-                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Deskripsi Keunggulan</label>
-                  <textarea 
-                    className="form-input" 
-                    value={b.desc} 
-                    style={{ height: "60px", resize: "none" }}
-                    onChange={(e) => {
-                      const next = [...benefitsList];
-                      next[idx] = { ...next[idx], desc: e.target.value };
-                      setBenefitsList(next);
-                    }} 
-                  />
-                </div>
-              </div>
-            ))}
-            
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-              <button 
-                onClick={() => {
-                  const next = [...benefitsList, { title: "Keunggulan Baru", desc: "Deskripsi keunggulan baru", iconKey: "check" }];
-                  setBenefitsList(next);
-                }} 
-                className="btn-portal-outline"
-              >
-                + Tambah Keunggulan Baru
-              </button>
-              <button 
-                onClick={() => handleSaveBenefits(benefitsList)}
-                className="btn-portal-primary"
-              >
-                Simpan Semua Keunggulan
-              </button>
-            </div>
-          </div>
-        </div>
+        <BenefitManager
+          benefitsList={benefitsList} setBenefitsList={setBenefitsList}
+          handleSaveBenefits={handleSaveBenefits}
+        />
       )}
 
-      {/* =====================================================================
-          TAB: FAQ
-          ===================================================================== */}
       {activeTab === "faq" && (
-        <div className="portal-card" style={{ padding: "2rem" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Kelola Tanya Jawab (FAQ)</h2>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {faqsList.map((faq, idx) => (
-              <div key={idx} style={{ padding: "1.5rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-lg)", position: "relative" }}>
-                <button 
-                  onClick={() => {
-                    const next = [...faqsList];
-                    next.splice(idx, 1);
-                    handleSaveFaqs(next);
-                  }}
-                  className="btn-portal-danger" 
-                  style={{ position: "absolute", top: "1rem", right: "1rem", padding: "0.4rem 0.8rem", fontSize: "0.8rem" }}
-                >
-                  Hapus
-                </button>
-                
-                <div className="form-group">
-                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Pertanyaan</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    value={faq.question} 
-                    onChange={(e) => {
-                      const next = [...faqsList];
-                      next[idx] = { ...next[idx], question: e.target.value };
-                      setFaqsList(next);
-                    }} 
-                  />
-                </div>
-
-                <div className="form-group" style={{ marginTop: "1rem" }}>
-                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Jawaban</label>
-                  <textarea 
-                    className="form-input" 
-                    value={faq.answer} 
-                    style={{ height: "100px", resize: "none" }}
-                    onChange={(e) => {
-                      const next = [...faqsList];
-                      next[idx] = { ...next[idx], answer: e.target.value };
-                      setFaqsList(next);
-                    }} 
-                  />
-                </div>
-              </div>
-            ))}
-            
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-              <button 
-                onClick={() => {
-                  const next = [...faqsList, { question: "Pertanyaan Baru?", answer: "Jawaban baru." }];
-                  setFaqsList(next);
-                }} 
-                className="btn-portal-outline"
-              >
-                + Tambah FAQ Baru
-              </button>
-              <button 
-                onClick={() => handleSaveFaqs(faqsList)}
-                className="btn-portal-primary"
-              >
-                Simpan Semua FAQ
-              </button>
-            </div>
-          </div>
-        </div>
+        <FAQManager
+          faqsList={faqsList} setFaqsList={setFaqsList}
+          handleSaveFaqs={handleSaveFaqs}
+        />
       )}
 
-      {/* =====================================================================
-          TAB 4: MODE MAINTENANCE
-          ===================================================================== */}
       {activeTab === "maintenance" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-
-          {/* Status card */}
-          <div className="portal-card" style={{
-            padding: "2rem",
-            borderLeft: `5px solid ${maintenanceMode ? "#ef4444" : "#22c55e"}`,
-            background: maintenanceMode
-              ? "linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(255,255,255,0) 100%)"
-              : "linear-gradient(135deg, rgba(34,197,94,0.06) 0%, rgba(255,255,255,0) 100%)"
-          }}>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
-                  <span style={{
-                    width: "12px", height: "12px", borderRadius: "50%",
-                    backgroundColor: maintenanceMode ? "#ef4444" : "#22c55e",
-                    display: "inline-block",
-                    boxShadow: `0 0 0 4px ${maintenanceMode ? "rgba(239,68,68,0.2)" : "rgba(34,197,94,0.2)"}`,
-                    animation: "pulse-dot 2s infinite"
-                  }} />
-                  <span style={{ fontWeight: "800", fontSize: "1.1rem", color: "var(--color-gray-900)" }}>
-                    Status Website: {maintenanceMode ? "🔴 Mode Maintenance AKTIF" : "🟢 Website Normal (Online)"}
-                  </span>
-                </div>
-                <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", maxWidth: "480px", lineHeight: "1.6" }}>
-                  {maintenanceMode
-                    ? "Website sedang dalam mode maintenance. Pengunjung umum & orang tua akan diarahkan ke halaman maintenance. Admin tetap bisa login dan mengakses dashboard."
-                    : "Website berjalan normal. Semua pengguna dapat mengakses landing page dan portal orang tua."}
-                </p>
-              </div>
-
-              {/* Toggle switch */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
-                <button
-                  onClick={async () => {
-                    const newValue = !maintenanceMode;
-                    setSavingMaintenance(true);
-                    try {
-                      const res = await fetch("/api/maintenance", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ enabled: newValue }),
-                      });
-                      const result = await res.json();
-                      if (!res.ok) throw new Error(result.error || "Gagal mengubah mode maintenance");
-                      setMaintenanceMode(newValue);
-                      showToast(newValue ? "Mode Maintenance DIAKTIFKAN. Website tidak dapat diakses publik." : "Mode Maintenance DINONAKTIFKAN. Website kembali online!", newValue ? "error" : "success");
-                    } catch (err) {
-                      showToast("Gagal mengubah mode maintenance: " + err.message, "error");
-                    } finally {
-                      setSavingMaintenance(false);
-                    }
-                  }}
-                  disabled={savingMaintenance}
-                  style={{
-                    position: "relative",
-                    width: "72px", height: "38px",
-                    borderRadius: "100px",
-                    border: "none",
-                    cursor: savingMaintenance ? "not-allowed" : "pointer",
-                    backgroundColor: maintenanceMode ? "#ef4444" : "#22c55e",
-                    transition: "background-color 0.3s",
-                    padding: 0,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
-                  }}
-                >
-                  <span style={{
-                    position: "absolute",
-                    top: "4px",
-                    left: maintenanceMode ? "38px" : "4px",
-                    width: "30px", height: "30px",
-                    borderRadius: "50%",
-                    backgroundColor: "white",
-                    transition: "left 0.3s",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
-                  }} />
-                </button>
-                <span style={{ fontSize: "0.75rem", fontWeight: "700", color: maintenanceMode ? "#ef4444" : "#22c55e" }}>
-                  {savingMaintenance ? "Menyimpan..." : (maintenanceMode ? "MAINTENANCE" : "ONLINE")}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Copy protection card */}
-          <div className="portal-card" style={{
-            padding: "2rem",
-            borderLeft: `5px solid ${allowPublicCopy ? "#3b82f6" : "#f59e0b"}`,
-            background: allowPublicCopy
-              ? "linear-gradient(135deg, rgba(59,130,246,0.06) 0%, rgba(255,255,255,0) 100%)"
-              : "linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(255,255,255,0) 100%)"
-          }}>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
-                  <span style={{
-                    width: "12px", height: "12px", borderRadius: "50%",
-                    backgroundColor: allowPublicCopy ? "#3b82f6" : "#f59e0b",
-                    display: "inline-block",
-                    boxShadow: `0 0 0 4px ${allowPublicCopy ? "rgba(59,130,246,0.2)" : "rgba(245,158,11,0.2)"}`
-                  }} />
-                  <span style={{ fontWeight: "800", fontSize: "1.1rem", color: "var(--color-gray-900)" }}>
-                    Proteksi Salin Konten (Copy Protection)
-                  </span>
-                </div>
-                <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", maxWidth: "480px", lineHeight: "1.6" }}>
-                  {allowPublicCopy
-                    ? "🔓 Proteksi dinonaktifkan. Pengunjung dapat melakukan klik kanan, menyeleksi teks, menyalin (copy) konten, dan men-drag gambar dari website publik."
-                    : "🔒 Proteksi aktif. Pengunjung dibatasi untuk melakukan klik kanan, menyeleksi teks, menyalin (copy) konten, atau menyeret gambar dari website publik demi keamanan konten."}
-                </p>
-              </div>
-
-              {/* Toggle switch */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
-                <button
-                  onClick={handleToggleCopySetting}
-                  disabled={savingCopySetting}
-                  style={{
-                    position: "relative",
-                    width: "72px", height: "38px",
-                    borderRadius: "100px",
-                    border: "none",
-                    cursor: savingCopySetting ? "not-allowed" : "pointer",
-                    backgroundColor: allowPublicCopy ? "#3b82f6" : "#f59e0b",
-                    transition: "background-color 0.3s",
-                    padding: 0,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
-                  }}
-                >
-                  <span style={{
-                    position: "absolute",
-                    top: "4px",
-                    left: allowPublicCopy ? "38px" : "4px",
-                    width: "30px", height: "30px",
-                    borderRadius: "50%",
-                    backgroundColor: "white",
-                    transition: "left 0.3s",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
-                  }} />
-                </button>
-                <span style={{ fontSize: "0.75rem", fontWeight: "700", color: allowPublicCopy ? "#3b82f6" : "#f59e0b" }}>
-                  {savingCopySetting ? "Menyimpan..." : (allowPublicCopy ? "DIIZINKAN (OPEN)" : "TERPROTEKSI (SAFE)")}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Visitor counter card */}
-          <div className="portal-card" style={{
-            padding: "2rem",
-            borderLeft: "5px solid #14b8a6",
-            background: "linear-gradient(135deg, rgba(20,184,166,0.06) 0%, rgba(255,255,255,0) 100%)"
-          }}>
-            <form onSubmit={handleSaveVisitorOffset}>
-              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
-                <div style={{ flex: 1, minWidth: "280px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
-                    <span style={{
-                      width: "12px", height: "12px", borderRadius: "50%",
-                      backgroundColor: "#14b8a6",
-                      display: "inline-block",
-                      boxShadow: "0 0 0 4px rgba(20,184,166,0.2)"
-                    }} />
-                    <span style={{ fontWeight: "800", fontSize: "1.1rem", color: "var(--color-gray-900)" }}>
-                      Pengaturan Angka Awal Pengunjung (Visitor Offset)
-                    </span>
-                  </div>
-                  <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", maxWidth: "480px", lineHeight: "1.6", marginBottom: "1rem" }}>
-                    Tentukan angka awal untuk memulai penghitung pengunjung di website utama. Nilai ini akan ditambahkan ke jumlah pengunjung unik baru yang terdeteksi di database.
-                  </p>
-                  
-                  <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem", maxWidth: "250px" }}>
-                    <label style={{ fontWeight: "700", color: "var(--color-gray-700)", fontSize: "0.85rem" }}>Angka Awal Pengunjung</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      style={{ width: "100%", padding: "0.6rem 0.8rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                      placeholder="Contoh: 1210"
-                      value={visitorOffset}
-                      onChange={(e) => setVisitorOffset(e.target.value)}
-                      min="0"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "flex-end" }}>
-                  <button
-                    type="submit"
-                    className="btn-portal"
-                    disabled={savingVisitorOffset}
-                    style={{
-                      padding: "0.75rem 1.5rem",
-                      fontWeight: "700",
-                      borderRadius: "6px",
-                      cursor: savingVisitorOffset ? "not-allowed" : "pointer"
-                    }}
-                  >
-                    {savingVisitorOffset ? "Menyimpan..." : "Simpan Angka Awal"}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          {/* Info card */}
-          <div className="portal-card" style={{ padding: "1.5rem" }}>
-            <h3 style={{ fontWeight: "800", fontSize: "1rem", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
-              ℹ️ Cara Kerja Mode Maintenance
-            </h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {[
-                { icon: "🌐", text: "Landing page utama (/) akan menampilkan halaman maintenance yang elegan." },
-                { icon: "👨‍💼", text: "Admin tetap bisa login dan mengakses dashboard secara penuh." },
-                { icon: "👪", text: "Orang tua yang sudah login atau mencoba login akan diarahkan ke halaman maintenance." },
-                { icon: "📞", text: "Halaman maintenance menampilkan tombol WhatsApp agar orang tua tetap bisa menghubungi." },
-              ].map((item, i) => (
-                <div key={i} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-                  <span style={{ fontSize: "1.1rem", flexShrink: 0 }}>{item.icon}</span>
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-gray-600)", lineHeight: "1.6" }}>{item.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
+        <MaintenanceSettings
+          maintenanceEnabled={maintenanceMode} setMaintenanceEnabled={setMaintenanceMode}
+          maintenanceMessage={""} setMaintenanceMessage={() => {}}
+          savingMaintenance={savingMaintenance} setSavingMaintenance={setSavingMaintenance}
+          handleSaveMaintenance={handleSaveMaintenance}
+        />
       )}
     </div>
   );
