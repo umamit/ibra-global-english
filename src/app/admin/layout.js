@@ -5,11 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import AICopilotWidget from "@/components/AICopilotWidget";
-import "@/app/dashboard-layout.css";
-import "@/app/dashboard-ui.css";
-import "@/app/dashboard-modal.css";
-import "@/app/dashboard-mobile.css";
-import "@/app/dashboard-utilities.css";
+import "@/app/dashboard.css";
 import "@/app/dashboard-print.css";
 
 export default function AdminLayout({ children }) {

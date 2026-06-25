@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { checkAdminAuth } from "@/utils/supabase/adminAuth";
+import { withAdminAuth, getAdminSupabase } from "@/app/api/_middleware";
 
 // Tentukan path log di temp directory agar aman di read-only file system (Vercel)
 const logPath = path.join(os.tmpdir(), "whatsapp_logs.txt");
@@ -17,11 +17,7 @@ function jsonResponse(data, init = {}) {
 }
 
 // POST: Kirim pesan WhatsApp via Fonnte (Mendukung pengiriman ke banyak nomor sekaligus)
-export async function POST(request) {
-  // Validasi hanya admin yang bisa mengirim
-  if (!(await checkAdminAuth())) {
-    return jsonResponse({ error: "Tidak diizinkan." }, { status: 403 });
-  }
+export const POST = withAdminAuth(async (request) => {
 
   try {
     const { phone, message, type } = await request.json();
@@ -110,10 +106,7 @@ export async function POST(request) {
 }
 
 // GET: Ambil log pengiriman, status perangkat Fonnte, atau daftar kontak
-export async function GET(request) {
-  if (!(await checkAdminAuth())) {
-    return jsonResponse({ error: "Tidak diizinkan." }, { status: 403 });
-  }
+export const GET = withAdminAuth(async (request) => {
 
   try {
     const { searchParams } = new URL(request.url);
@@ -151,14 +144,7 @@ export async function GET(request) {
     // 2. Ambil seluruh kontak dari Registrasi dan Placement Test (otomatis)
     if (action === "contacts") {
       try {
-        const { createClient } = require("@supabase/supabase-js");
-        const { getSupabaseConfig } = require("@/utils/supabase/config");
-        const { url: supabaseUrl } = getSupabaseConfig();
-        const supabaseAdmin = createClient(
-          supabaseUrl,
-          process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key",
-          { auth: { persistSession: false } }
-        );
+        const supabaseAdmin = getAdminSupabase();
 
         // Ambil data pendaftaran
         const { data: regData } = await supabaseAdmin

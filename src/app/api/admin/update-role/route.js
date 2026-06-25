@@ -1,13 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-import { checkAdminAuth } from "@/utils/supabase/adminAuth";
-import { getSupabaseConfig } from "@/utils/supabase/config";
+import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 
-export async function PATCH(request) {
+export const PATCH = withAdminAuth(async (request) => {
   try {
-    // 1. Verifikasi apakah pemohon adalah admin
-    const isAdmin = await checkAdminAuth();
-    if (!isAdmin) {
+    const adminSupabase = getAdminSupabase();
       return NextResponse.json(
         { error: "Tidak diizinkan. Hanya administrator yang dapat mengubah peran." },
         { status: 403 }

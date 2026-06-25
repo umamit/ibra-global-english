@@ -1,15 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-import { getSupabaseConfig } from "@/utils/supabase/config";
+import { getAdminSupabase } from "@/app/api/_middleware";
 import { detectPromptInjection } from "@/utils/security";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
-const { url: supabaseUrl } = getSupabaseConfig();
-
-const adminSupabase = createClient(
-  supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
-);
+const adminSupabase = getAdminSupabase();
 
 // Logger penggunaan AI ke dalam database (untuk publik)
 async function logAiUsage(tokensUsed, status, errorMessage = null) {

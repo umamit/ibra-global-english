@@ -1,16 +1,9 @@
 export const dynamic = 'force-dynamic';
 
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { getSupabaseConfig } from "@/utils/supabase/config";
-import { checkAdminAuth } from "@/utils/supabase/adminAuth";
+import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 
-const { url: supabaseUrl } = getSupabaseConfig();
-
-const adminSupabase = createClient(
-  supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
-);
+const adminSupabase = getAdminSupabase();
 
 const BUCKET = "gallery-photos";
 
@@ -33,10 +26,7 @@ export async function GET(request) {
   return NextResponse.json({ data });
 }
 
-export async function POST(request) {
-  if (!(await checkAdminAuth())) {
-    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
-  }
+export const POST = withAdminAuth(async (request) => {
   const formData = await request.formData();
   const title = formData.get("title");
   const description = formData.get("description") || "";
@@ -70,10 +60,7 @@ export async function POST(request) {
   return NextResponse.json({ data });
 }
 
-export async function PATCH(request) {
-  if (!(await checkAdminAuth())) {
-    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
-  }
+export const PATCH = withAdminAuth(async (request) => {
   const body = await request.json();
   const { id, ...updates } = body;
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
@@ -83,10 +70,7 @@ export async function PATCH(request) {
   return NextResponse.json({ success: true });
 }
 
-export async function DELETE(request) {
-  if (!(await checkAdminAuth())) {
-    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
-  }
+export const DELETE = withAdminAuth(async (request) => {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
