@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-import { createClient as createServerClient } from "@/utils/supabase/server";
-import { getSupabaseConfig } from "@/utils/supabase/config";
+import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 
-export async function DELETE(request) {
+export const DELETE = withAdminAuth(async (request) => {
   try {
     const { userId } = await request.json();
 

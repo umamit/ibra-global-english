@@ -1,19 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { getAdminSupabase } from "@/app/api/_middleware";
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      return NextResponse.json({ error: "Missing environment variables" }, { status: 500 });
-    }
-
-    // Initialize Supabase with service role key to bypass RLS safely on the server side
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = getAdminSupabase();
 
     // Fetch count of students from students table
     const { count, error } = await supabase

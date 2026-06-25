@@ -6,11 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import SpeakingPractice from "@/components/SpeakingPractice";
-import "@/app/dashboard-layout.css";
-import "@/app/dashboard-ui.css";
-import "@/app/dashboard-modal.css";
-import "@/app/dashboard-mobile.css";
-import "@/app/dashboard-utilities.css";
+import "@/app/dashboard.css";
 import "@/app/dashboard-print.css";
 
 // SUB-COMPONENT: Simple visual Radar Chart for Student Performance

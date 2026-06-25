@@ -1,16 +1,7 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { getSupabaseConfig } from "@/utils/supabase/config";
-import { checkAdminAuth } from "@/utils/supabase/adminAuth";
+import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 
-const { url: supabaseUrl } = getSupabaseConfig();
-
-// Server-side only: uses service role key to bypass RLS
-const supabaseAdmin = createClient(
-  supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key",
-  { auth: { persistSession: false } }
-);
+const supabaseAdmin = getAdminSupabase();
 
 export async function POST(req) {
   try {
@@ -68,10 +59,7 @@ export async function POST(req) {
 }
 
 // GET: Ambil semua data pendaftaran (untuk admin)
-export async function GET() {
-  if (!(await checkAdminAuth())) {
-    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
-  }
+export const GET = withAdminAuth(async () => {
   try {
     const { data, error } = await supabaseAdmin
       .from("registrations")
@@ -86,10 +74,7 @@ export async function GET() {
 }
 
 // PATCH: Update status pendaftaran (approve/reject)
-export async function PATCH(req) {
-  if (!(await checkAdminAuth())) {
-    return NextResponse.json({ error: "Tidak diizinkan. Hanya admin yang diizinkan." }, { status: 403 });
-  }
+export const PATCH = withAdminAuth(async (req) => {
   try {
     const { id, status, notes } = await req.json();
 

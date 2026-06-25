@@ -1,18 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { getAdminSupabase } from "@/app/api/_middleware";
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      return NextResponse.json({ error: "Missing environment variables" }, { status: 500 });
-    }
-
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = getAdminSupabase();
 
     // Fetch unique_visitors_count and visitor_offset
     const { data, error } = await supabase
@@ -44,14 +37,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      return NextResponse.json({ error: "Missing environment variables" }, { status: 500 });
-    }
-
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = getAdminSupabase();
 
     let isNew = false;
     try {
