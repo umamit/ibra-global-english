@@ -4,9 +4,6 @@ import { detectPromptInjection } from "@/utils/security";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
-  supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key"
-);
 
 // Logger penggunaan AI ke dalam database
 async function logAiUsage(userId, email, role, mode, tokensUsed, status, errorMessage = null) {

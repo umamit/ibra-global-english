@@ -53,7 +53,7 @@ export const POST = withAdminAuth(async (request) => {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ data });
-}
+});
 
 // PATCH: Update / nonaktifkan pengumuman
 export const PATCH = withAdminAuth(async (request) => {
@@ -76,7 +76,7 @@ export const PATCH = withAdminAuth(async (request) => {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
-}
+});
 
 // DELETE: Hapus pengumuman
 export const DELETE = withAdminAuth(async (request) => {
@@ -87,4 +87,4 @@ export const DELETE = withAdminAuth(async (request) => {
   const { error } = await adminSupabase.from("announcements").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
-}
+});
