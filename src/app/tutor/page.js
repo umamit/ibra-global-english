@@ -8,6 +8,9 @@ import { createClient, createServiceRoleClient } from "@/utils/supabase/client";
 import AICopilotWidget from "@/components/AICopilotWidget";
 import "@/app/dashboard.css";
 import "@/app/dashboard-print.css";
+import TutorAttendance from "./components/TutorAttendance";
+import TutorReports from "./components/TutorReports";
+import TutorLMS from "./components/TutorLMS";
 
 export default function TutorPortal() {
   const router = useRouter();
@@ -17,7 +20,7 @@ export default function TutorPortal() {
   const [loading, setLoading] = useState(true);
   const [tutorName, setTutorName] = useState("Tutor Pendamping");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("attendance"); // "attendance", "reports"
+  const [activeTab, setActiveTab] = useState("attendance"); // "attendance", "reports", "lms"
 
   // Students list
   const [students, setStudents] = useState([]);
@@ -477,6 +480,47 @@ export default function TutorPortal() {
     }
   };
 
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(number);
+  };
+
+  const handlePrintReport = () => {
+    window.print();
+  };
+
+  const handleExportCSV = () => {
+    if (students.length === 0) {
+      alert("Tidak ada data untuk diekspor.");
+      return;
+    }
+
+    const headers = ["No", "Nama Siswa", "Program", "Status Kehadiran", "Catatan"];
+    const rows = students.map((s, idx) => {
+      const data = attendanceData[s.id] || { status: "hadir", notes: "" };
+      return [
+        idx + 1,
+        s.name,
+        s.program,
+        data.status,
+        data.notes || "-"
+      ];
+    });
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += headers.join(",") + "\n";
+    rows.forEach(row => {
+      csvContent += row.join(",") + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `laporan-presensi-${attendanceDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <div className="auth-wrapper">
@@ -610,614 +654,62 @@ export default function TutorPortal() {
 
         {/* TAB 1: ATTENDANCE INPUT */}
         {activeTab === "attendance" && (
-          <div className="portal-card" style={{ padding: "2rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
-              <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
-                Lembar Presensi Harian Siswa
-              </h3>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                <label style={{ fontWeight: "700", fontSize: "0.85rem" }}>Pilih Tanggal:</label>
-                <input
-                  type="date"
-                  className="form-input"
-                  style={{ width: "170px", padding: "0.45rem", fontSize: "0.85rem" }}
-                  value={attendanceDate}
-                  onChange={(e) => setAttendanceDate(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {attendanceLoading ? (
-              <div style={{ textAlign: "center", padding: "4rem 0" }}>
-                <p style={{ color: "var(--color-gray-500)", fontWeight: "600" }}>Memuat lembar absensi...</p>
-              </div>
-            ) : students.length === 0 ? (
-              <p style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-400)" }}>Belum ada siswa terdaftar.</p>
-            ) : (
-              <div>
-                <div className="table-wrapper">
-                  <table className="portal-table">
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>Nama Siswa</th>
-                        <th>Program</th>
-                        <th>Kehadiran</th>
-                        <th>Catatan / Masukan</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {students.map((s, idx) => {
-                        const data = attendanceData[s.id] || { status: "hadir", notes: "" };
-                        return (
-                          <tr key={s.id}>
-                            <td style={{ fontWeight: "700" }}>{idx + 1}</td>
-                            <td style={{ fontWeight: "700" }}>{s.name}</td>
-                            <td>
-                              <span className="user-badge" style={{ fontSize: "0.75rem" }}>{s.program}</span>
-                            </td>
-                            <td>
-                              <div style={{ display: "flex", gap: "0.75rem" }}>
-                                {[
-                                  { value: "hadir", label: "Hadir" },
-                                  { value: "sakit", label: "Sakit" },
-                                  { value: "izin", label: "Izin" },
-                                  { value: "alfa", label: "Alfa" },
-                                  { value: "tidak_ada_kelas", label: "Tidak ada Kelas" }
-                                ].map((option) => (
-                                  <label key={option.value} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>
-                                    <input
-                                      type="radio"
-                                      name={`attendance-${s.id}`}
-                                      checked={data.status === option.value}
-                                      onChange={() => handleStatusChange(s.id, option.value)}
-                                      style={{ accentColor: option.value === "tidak_ada_kelas" ? "var(--color-gray-400)" : "var(--color-primary)" }}
-                                    />
-                                    <span>{option.label}</span>
-                                  </label>
-                                ))}
-                              </div>
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                className="form-input"
-                                style={{ padding: "0.35rem", fontSize: "0.85rem" }}
-                                placeholder="Opsional..."
-                                value={data.notes}
-                                onChange={(e) => handleNotesChange(s.id, e.target.value)}
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1.5rem" }}>
-                  <button className="btn-portal-primary" onClick={handleSaveAttendance} style={{ padding: "0.75rem 2rem" }}>
-                    Simpan Presensi Hari Ini
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <TutorAttendance
+            students={students}
+            attendanceDate={attendanceDate}
+            setAttendanceDate={setAttendanceDate}
+            attendanceLoading={attendanceLoading}
+            attendanceData={attendanceData}
+            handleStatusChange={handleStatusChange}
+            handleNotesChange={handleNotesChange}
+            handleSaveAttendance={handleSaveAttendance}
+          />
         )}
 
         {/* TAB 2: REPORTS INPUT */}
         {activeTab === "reports" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "2rem", alignItems: "start" }} className="report-detail-layout">
-            
-            {/* Form Input Rapor */}
-            <div className="portal-card" style={{ padding: "2rem" }}>
-              <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
-                Input Kompetensi & Rapor Modul
-              </h3>
-
-              <form onSubmit={handleSaveReport}>
-                <div className="form-group" style={{ marginBottom: "1.25rem" }}>
-                  <label className="form-label">Pilih Siswa</label>
-                  <select
-                    className="form-input"
-                    value={selectedStudent?.id || ""}
-                    onChange={(e) => {
-                      const match = students.find(s => s.id === e.target.value);
-                      setSelectedStudent(match || null);
-                    }}
-                    required
-                  >
-                    <option value="">-- Pilih Siswa --</option>
-                    {students.map((s) => (
-                      <option key={s.id} value={s.id}>{s.name} ({s.program})</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group" style={{ marginBottom: "1.25rem" }}>
-                  <label className="form-label">Nama Modul Belajar (Wajib)</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="Contoh: Modul 1 - Alphabet & Pronunciation"
-                    value={moduleName}
-                    onChange={(e) => setModuleName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Score inputs */}
-                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1.25rem" }}>
-                  <div className="form-group">
-                    <label className="form-label">
-                      {!selectedStudent 
-                        ? "Skor Speaking / Membaca" 
-                        : selectedStudent.program?.toLowerCase()?.includes("calistung") 
-                          ? "Skor Membaca" 
-                          : "Skor Speaking"
-                      }
-                    </label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      min="0"
-                      max="100"
-                      value={speakingScore}
-                      onChange={(e) => setSpeakingScore(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">
-                      {!selectedStudent 
-                        ? "Skor Grammar / Menulis" 
-                        : selectedStudent.program?.toLowerCase()?.includes("calistung") 
-                          ? "Skor Menulis" 
-                          : "Skor Grammar"
-                      }
-                    </label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      min="0"
-                      max="100"
-                      value={grammarScore}
-                      onChange={(e) => setGrammarScore(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">
-                      {!selectedStudent 
-                        ? "Skor Vocabulary / Berhitung" 
-                        : selectedStudent.program?.toLowerCase()?.includes("calistung") 
-                          ? "Skor Berhitung" 
-                          : "Skor Vocabulary"
-                      }
-                    </label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      min="0"
-                      max="100"
-                      value={vocabularyScore}
-                      onChange={(e) => setVocabularyScore(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Keaktifan Kelas</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      min="0"
-                      max="100"
-                      value={activeScore}
-                      onChange={(e) => setActiveScore(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group" style={{ marginBottom: "1.5rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-                    <label className="form-label" style={{ marginBottom: 0 }}>Catatan Masukan Tutor</label>
-                    <button 
-                      type="button" 
-                      onClick={handleGenerateAiNotes}
-                      style={{ fontSize: "0.75rem", padding: "2px 8px", borderRadius: "4px", backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", border: "1px solid var(--color-primary-light)", cursor: "pointer", fontWeight: "bold" }}
-                      disabled={aiLoading}
-                    >
-                      {aiLoading ? "⚡ Menulis..." : "💡 Tulis otomatis dengan AI Groq"}
-                    </button>
-                  </div>
-                  <textarea
-                    className="form-input"
-                    style={{ minHeight: "80px", fontFamily: "inherit" }}
-                    placeholder="Siswa sangat antusias dan percaya diri. Rekomendasi naik ke tingkat berikutnya..."
-                    value={tutorNotes}
-                    onChange={(e) => setTutorNotes(e.target.value)}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn-portal-primary"
-                  style={{ width: "100%", padding: "0.85rem" }}
-                  disabled={reportLoading}
-                >
-                  {reportLoading ? "Menerbitkan Rapor..." : "Terbitkan Rapor Hasil Belajar"}
-                </button>
-              </form>
-            </div>
-
-            {/* List Rapor yang Baru Terbit */}
-            <div className="portal-card" style={{ padding: "2rem" }}>
-              <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
-                Aktivitas Rapor Terbaru
-              </h3>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "500px", overflowY: "auto" }}>
-                {reportsList.length === 0 ? (
-                  <p style={{ color: "var(--color-gray-400)", textAlign: "center", padding: "3rem 0" }}>Belum ada aktivitas nilai diunggah.</p>
-                ) : (
-                  reportsList.map((rep) => (
-                    <div key={rep.id} style={{ borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <strong style={{ color: "var(--color-primary-dark)" }}>{rep.students?.name}</strong>
-                        <span style={{ fontSize: "0.75rem", color: "var(--color-gray-400)" }}>
-                          {new Date(rep.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
-                        </span>
-                      </div>
-                      <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-800)" }}>{rep.module_name}</p>
-                      <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "2px" }}>
-                        Rata-rata: <strong>{Math.round((rep.speaking_score + rep.grammar_score + rep.vocabulary_score + rep.active_score) / 4)} / 100</strong>
-                      </p>
-                      {(() => {
-                        const existingCert = certificates.find(
-                          (c) => c.report_id === rep.id || (c.student_id === rep.student_id && c.module_name?.toLowerCase() === rep.module_name?.toLowerCase())
-                        );
-                        if (existingCert) {
-                          return (
-                            <div style={{ marginTop: "6px" }}>
-                              <a
-                                href={`/verify/${existingCert.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "0.25rem",
-                                  fontSize: "0.72rem",
-                                  fontWeight: "800",
-                                  color: "var(--color-accent)",
-                                  textDecoration: "none",
-                                  backgroundColor: "rgba(166, 136, 73, 0.08)",
-                                  padding: "2px 8px",
-                                  borderRadius: "4px",
-                                  border: "1px solid rgba(166, 136, 73, 0.2)"
-                                }}
-                              >
-                                <span>★ Sertifikat Terbit</span>
-                              </a>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })()}
-                    </div>
-
-                  ))
-                )}
-              </div>
-            </div>
-
-          </div>
+          <TutorReports
+            students={students}
+            attendanceData={attendanceData}
+            attendanceDate={attendanceDate}
+            formatRupiah={formatRupiah}
+            onPrintReport={handlePrintReport}
+            onExportCSV={handleExportCSV}
+          />
         )}
 
+        {/* TAB 3: LMS MANAGEMENT */}
         {activeTab === "lms" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "2rem", alignItems: "start" }} className="report-detail-layout">
-            
-            {/* Form Section */}
-            <div className="portal-card" style={{ padding: "2rem" }}>
-              <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
-                Unggah Materi & Tugas Baru
-              </h3>
-              <form onSubmit={handleSaveLmsMaterial}>
-                
-                <div className="form-group" style={{ marginBottom: "1.25rem" }}>
-                  <label className="form-label">Judul Materi / Tugas</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="Contoh: Modul 1 - Tenses dasar atau PR Grammar"
-                    value={lmsTitle}
-                    onChange={(e) => setLmsTitle(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ marginBottom: "1.25rem" }}>
-                  <label className="form-label">Deskripsi & Instruksi</label>
-                  <textarea
-                    className="form-input"
-                    style={{ minHeight: "80px", fontFamily: "inherit" }}
-                    placeholder="Tuliskan petunjuk atau detail materi/tugas di sini..."
-                    value={lmsDesc}
-                    onChange={(e) => setLmsDesc(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-grid" style={{ gap: "1rem", marginBottom: "1.25rem" }}>
-                  <div className="form-group">
-                    <label className="form-label">Program Belajar</label>
-                    <select
-                      className="form-input"
-                      value={lmsProgram}
-                      onChange={(e) => setLmsProgram(e.target.value)}
-                    >
-                      <option value="Kids Program">Kids Program</option>
-                      <option value="Teens Program">Teens Program</option>
-                      <option value="Fun Calistung">Fun Calistung</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Kategori</label>
-                    <select
-                      className="form-input"
-                      value={lmsType}
-                      onChange={(e) => setLmsType(e.target.value)}
-                    >
-                      <option value="materi">Materi Belajar</option>
-                      <option value="tugas">Tugas Rumah (PR)</option>
-                    </select>
-                  </div>
-                </div>
-
-                {lmsType === "tugas" && (
-                  <div className="form-group" style={{ marginBottom: "1.25rem" }}>
-                    <label className="form-label">Tenggat Waktu Pengumpulan (Due Date)</label>
-                    <input
-                      type="datetime-local"
-                      className="form-input"
-                      value={lmsDueDate}
-                      onChange={(e) => setLmsDueDate(e.target.value)}
-                      required={lmsType === "tugas"}
-                    />
-                  </div>
-                )}
-
-                <div className="form-group" style={{ marginBottom: "1.75rem" }}>
-                  <label className="form-label">Lampiran Berkas (PDF, Dokumen, atau Gambar)</label>
-                  <input
-                    id="lms-file-input"
-                    type="file"
-                    className="form-input"
-                    onChange={(e) => setLmsFile(e.target.files[0])}
-                    style={{ padding: "0.5rem" }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn-portal-primary"
-                  style={{ width: "100%", padding: "0.85rem" }}
-                  disabled={lmsUploading}
-                >
-                  {lmsUploading ? "Mengunggah..." : "Terbitkan ke LMS"}
-                </button>
-
-              </form>
-            </div>
-
-            {/* List & Submissions Section */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-              
-              {/* List of LMS Materials */}
-              <div className="portal-card" style={{ padding: "2rem" }}>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1rem" }}>
-                  Daftar Konten LMS Aktif
-                </h3>
-
-                {/* Ringkasan Progress Kelas */}
-                {(() => {
-                  const tasks = lmsMaterials.filter(m => m.type === "tugas");
-                  if (tasks.length === 0) return null;
-                  const totalSubmissions = lmsSubmissions.length;
-                  const totalExpected = tasks.length * Math.max(students.length, 1);
-                  const pct = totalExpected > 0 ? Math.round((totalSubmissions / totalExpected) * 100) : 0;
-                  const barColor = pct >= 75 ? "var(--color-green)" : pct >= 50 ? "#f59e0b" : "var(--color-red)";
-                  return (
-                    <div style={{ marginBottom: "1.5rem", padding: "0.9rem 1.1rem", background: "var(--color-gray-50)", borderRadius: "10px", border: "1px solid var(--color-gray-150)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                        <span style={{ fontWeight: "700", fontSize: "0.825rem", color: "var(--color-gray-700)" }}>📊 Progress Kelas Keseluruhan</span>
-                        <span style={{ fontWeight: "800", fontSize: "0.875rem", color: barColor }}>{pct}%</span>
-                      </div>
-                      <div style={{ background: "var(--color-gray-200)", borderRadius: "99px", height: "8px", overflow: "hidden", marginBottom: "0.5rem" }}>
-                        <div style={{ width: `${pct}%`, height: "100%", background: barColor, borderRadius: "99px", transition: "width 0.8s ease" }} />
-                      </div>
-                      <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)" }}>
-                        Total pengumpulan: <strong>{totalSubmissions}</strong> dari <strong>{totalExpected}</strong> yang diharapkan ({tasks.length} tugas × {students.length} siswa)
-                      </p>
-                    </div>
-                  );
-                })()}
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "400px", overflowY: "auto" }}>
-                  {lmsMaterials.length === 0 ? (
-                    <p style={{ color: "var(--color-gray-400)", textAlign: "center", padding: "2rem 0" }}>Belum ada materi atau tugas yang diunggah.</p>
-                  ) : (
-                    lmsMaterials.map((mat) => (
-                      <div key={mat.id} style={{ borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap", marginBottom: "4px" }}>
-                            <span style={{ 
-                              fontSize: "0.7rem", 
-                              fontWeight: "bold", 
-                              padding: "2px 6px", 
-                              borderRadius: "4px", 
-                              backgroundColor: mat.type === "materi" ? "rgba(74, 155, 168, 0.1)" : "rgba(166, 136, 73, 0.1)",
-                              color: mat.type === "materi" ? "var(--color-primary)" : "var(--color-accent)",
-                              textTransform: "uppercase"
-                            }}>
-                              {mat.type}
-                            </span>
-                            <span style={{ fontSize: "0.75rem", color: "var(--color-gray-400)" }}>{mat.program}</span>
-                          </div>
-                          <strong style={{ color: "var(--color-gray-900)", fontSize: "0.95rem" }}>{mat.title}</strong>
-                          {mat.due_date && (
-                            <p style={{ fontSize: "0.75rem", color: "var(--color-red)", marginTop: "2px", fontWeight: "bold" }}>
-                              Tenggat: {new Date(mat.due_date).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-                            </p>
-                          )}
-                          {mat.file_url && (
-                            <a href={mat.file_url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", fontSize: "0.75rem", color: "var(--color-primary)", marginTop: "4px" }}>
-                              📁 Buka File Lampiran
-                            </a>
-                          )}
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem", alignItems: "flex-end" }}>
-                          {mat.type === "tugas" && (
-                            <button 
-                              className="btn-portal-outline" 
-                              style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", borderColor: "var(--color-primary)", color: "var(--color-primary)", cursor: "pointer" }}
-                              onClick={() => handleViewSubmissions(mat)}
-                            >
-                              Jawaban Siswa
-                            </button>
-                          )}
-                          <button 
-                            className="btn-portal-danger" 
-                            style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", cursor: "pointer" }}
-                            onClick={() => handleDeleteLmsMaterial(mat.id)}
-                          >
-                            Hapus
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* Submissions/Grading Panel */}
-              {activeLmsGrading && (
-                <div className="portal-card animate-scale-in" style={{ padding: "2rem", borderLeft: "4px solid var(--color-primary)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
-                    <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", margin: "0" }}>
-                      Jawaban Siswa: {activeLmsGrading.title}
-                    </h3>
-                    <button 
-                      style={{ background: "none", border: "none", color: "var(--color-gray-400)", cursor: "pointer", fontSize: "1.25rem", fontWeight: "bold" }}
-                      onClick={() => setActiveLmsGrading(null)}
-                    >
-                      ✕
-                    </button>
-                  </div>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "350px", overflowY: "auto" }}>
-                    {lmsSubmissions.length === 0 ? (
-                      <p style={{ color: "var(--color-gray-400)", textAlign: "center", padding: "1.5rem 0" }}>Belum ada siswa yang mengumpulkan jawaban.</p>
-                    ) : (
-                      lmsSubmissions.map((sub) => (
-                        <div key={sub.id} style={{ borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                            <strong style={{ color: "var(--color-gray-800)" }}>{sub.students?.name}</strong>
-                            <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>
-                              {new Date(sub.submitted_at).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-                            </span>
-                          </div>
-
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px" }}>
-                            <a href={sub.file_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.75rem", color: "var(--color-primary)", fontWeight: "bold" }}>
-                              📁 Buka File Jawaban Siswa
-                            </a>
-                            
-                            {sub.grade ? (
-                              <span style={{ fontSize: "0.75rem", padding: "2px 8px", borderRadius: "4px", backgroundColor: "rgba(166,136,73,0.1)", color: "var(--color-accent)", fontWeight: "bold" }}>
-                                Nilai: {sub.grade} {sub.feedback ? "✓" : ""}
-                              </span>
-                            ) : (
-                              <span style={{ fontSize: "0.7rem", color: "var(--color-red)", fontWeight: "bold" }}>
-                                Belum Dinilai
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Grade Action form inline */}
-                          {selectedSubmission?.id === sub.id ? (
-                            <div style={{ marginTop: "1rem", backgroundColor: "var(--color-gray-50)", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-150)" }}>
-                              <div style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
-                                <input
-                                  type="text"
-                                  className="form-input"
-                                  placeholder="Nilai (0-100)"
-                                  value={studentGrade}
-                                  onChange={(e) => setStudentGrade(e.target.value)}
-                                  style={{ padding: "0.35rem 0.5rem", fontSize: "0.8rem" }}
-                                />
-                                <input
-                                  type="text"
-                                  className="form-input"
-                                  placeholder="Catatan umpan balik..."
-                                  value={studentFeedback}
-                                  onChange={(e) => setStudentFeedback(e.target.value)}
-                                  style={{ padding: "0.35rem 0.5rem", fontSize: "0.8rem" }}
-                                />
-                              </div>
-                              <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                                <button 
-                                  className="btn-portal-outline" 
-                                  style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", cursor: "pointer" }}
-                                  onClick={() => setSelectedSubmission(null)}
-                                >
-                                  Batal
-                                </button>
-                                <button 
-                                  className="btn-portal-primary" 
-                                  style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", cursor: "pointer" }}
-                                  onClick={() => handleSaveGrade(sub.id)}
-                                  disabled={gradingLoading}
-                                >
-                                  {gradingLoading ? "Menyimpan..." : "Simpan Nilai"}
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <button
-                              className="btn-portal-outline"
-                              style={{ 
-                                padding: "0.25rem 0.5rem", 
-                                fontSize: "0.75rem", 
-                                borderColor: "var(--color-accent)", 
-                                color: "var(--color-accent)", 
-                                cursor: "pointer", 
-                                marginTop: "8px", 
-                                display: "block" 
-                              }}
-                              onClick={() => {
-                                setSelectedSubmission(sub);
-                                setStudentGrade(sub.grade || "");
-                                setStudentFeedback(sub.feedback || "");
-                              }}
-                            >
-                              {sub.grade ? "Edit Penilaian" : "Beri Nilai & Masukan"}
-                            </button>
-                          )}
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-
-            </div>
-
-          </div>
+          <TutorLMS
+            students={students}
+            lmsMaterials={lmsMaterials}
+            lmsSubmissions={lmsSubmissions}
+            activeLmsGrading={activeLmsGrading}
+            selectedSubmission={selectedSubmission}
+            studentGrade={studentGrade}
+            studentFeedback={studentFeedback}
+            gradingLoading={gradingLoading}
+            lmsUploading={lmsUploading}
+            lmsTitle={lmsTitle}
+            setLmsTitle={setLmsTitle}
+            lmsDesc={lmsDesc}
+            setLmsDesc={setLmsDesc}
+            lmsProgram={lmsProgram}
+            setLmsProgram={setLmsProgram}
+            lmsType={lmsType}
+            setLmsType={setLmsType}
+            lmsDueDate={lmsDueDate}
+            setLmsDueDate={setLmsDueDate}
+            lmsFile={lmsFile}
+            setLmsFile={setLmsFile}
+            handleSaveLmsMaterial={handleSaveLmsMaterial}
+            handleViewSubmissions={handleViewSubmissions}
+            handleDeleteLmsMaterial={handleDeleteLmsMaterial}
+            handleSaveGrade={handleSaveGrade}
+            setSelectedSubmission={setSelectedSubmission}
+            setStudentGrade={setStudentGrade}
+            setStudentFeedback={setStudentFeedback}
+          />
         )}
 
       </main>
