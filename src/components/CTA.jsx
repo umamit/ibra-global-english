@@ -101,8 +101,8 @@ export default function CTA({ initialSettings }) {
             <p>{ctaDesc}</p>
           </div>
           <div className="cta-actions">
-            <a href="/placement-test" className="btn-cta-primary">Ikuti Tes Penempatan</a>
-            <a href="#contact" className="btn-cta-secondary">Daftar Bimbingan (Gratis)</a>
+            <a href="/placement-test" className="cta-btn-primary">Ikuti Tes Penempatan</a>
+            <a href="#contact" className="cta-btn-secondary">Daftar Bimbingan (Gratis)</a>
           </div>
         </div>
       </div>
