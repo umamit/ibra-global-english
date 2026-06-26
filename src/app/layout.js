@@ -5,7 +5,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { WebVitals } from "@/components/WebVitals";
 import { getLandingSettings } from "@/utils/getLandingSettings";
 import "./globals.css";
-import "./innovations.css";
 // landing.css di-import di HomeClient.jsx agar hanya aktif di halaman landing
 
 
