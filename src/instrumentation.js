@@ -1,27 +1,15 @@
+import * as Sentry from "@sentry/nextjs";
+
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { init } = await import("@sentry/nextjs");
-    init({
-      dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-      // Performance monitoring
-      tracesSampleRate: 0.2,
-      // Only send errors in production
-      enabled: process.env.NODE_ENV === "production",
-      // Environment tag
-      environment: process.env.NODE_ENV || "development",
-    });
+    await import("../sentry.server.config");
   }
 
   if (process.env.NEXT_RUNTIME === "edge") {
-    const { init } = await import("@sentry/nextjs");
-    init({
-      dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-      // Performance monitoring for edge
-      tracesSampleRate: 0.2,
-      // Only send errors in production
-      enabled: process.env.NODE_ENV === "production",
-      // Environment tag
-      environment: process.env.NODE_ENV || "development",
-    });
+    await import("../sentry.edge.config");
   }
 }
+
+// Automatically captures all unhandled server-side request errors
+// Requires @sentry/nextjs >= 8.28.0
+export const onRequestError = Sentry.captureRequestError;
