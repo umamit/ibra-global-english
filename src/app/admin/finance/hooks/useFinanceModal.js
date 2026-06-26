@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { showToast } from "../../utils";
 import { createClient } from "@/utils/supabase/client";
 
-export const useFinanceModal = (fetchData, selectedMonth, sppPrices) => {
+export const useFinanceModal = (fetchData, selectedMonth, sppPrices, showToast) => {
   const supabase = createClient();
   const fileInputRef = useRef(null);
 

@@ -31,71 +31,10 @@ export default function AdminFinance() {
     "Fun Calistung": 350000
   });
 
-  // Use custom hook for modal logic
-  const {
-    isModalOpen,
-    setIsModalOpen,
-    modalStudent,
-    modalAmount,
-    setModalAmount,
-    modalStatus,
-    setModalStatus,
-    modalMethod,
-    setModalMethod,
-    modalReceiptUrl,
-    setModalReceiptUrl,
-    savingPayment,
-    fileInputRef,
-    handleUploadReceipt,
-    handleOpenEditModal,
-    handleSavePayment,
-    handleQuickConfirmLunas
-  } = useFinanceModal(fetchData, selectedMonth, sppPrices);
-
-  // Fetch configured SPP fee amounts on mount
-  useEffect(() => {
-    async function fetchSppPrices() {
-      try {
-        const { data, error } = await supabase
-          .from("landing_settings")
-          .select("*");
-        if (data && data.length > 0) {
-          const settings = {};
-          data.forEach(item => {
-            settings[item.key] = item.value;
-          });
-          setSppPrices({
-            "Kids Program": parseInt(settings.payment_spp_kids || "300000"),
-            "Teens Program": parseInt(settings.payment_spp_teens || "300000"),
-            "Fun Calistung": parseInt(settings.payment_spp_calistung || "350000")
-          });
-        }
-      } catch (err) {
-        console.error("Gagal memuat nominal SPP program:", err);
-      }
-    }
-    fetchSppPrices();
-  }, []);
-
-  // Initialize selected month to current month (YYYY-MM)
-  useEffect(() => {
-    const d = new Date();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const yyyy = d.getFullYear();
-    setSelectedMonth(`${yyyy}-${mm}`);
-  }, []);
-
-  // Lock body scroll when modal is open to prevent page scrolling behind it
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isModalOpen]);
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type }), 3000);
+  };
 
   const fetchData = async () => {
     if (!selectedMonth) return;
@@ -143,6 +82,71 @@ export default function AdminFinance() {
       setLoading(false);
     }
   };
+
+  // Use custom hook for modal logic
+  const {
+    isModalOpen,
+    setIsModalOpen,
+    modalStudent,
+    modalAmount,
+    setModalAmount,
+    modalStatus,
+    setModalStatus,
+    modalMethod,
+    setModalMethod,
+    modalReceiptUrl,
+    setModalReceiptUrl,
+    savingPayment,
+    fileInputRef,
+    handleUploadReceipt,
+    handleOpenEditModal,
+    handleSavePayment,
+    handleQuickConfirmLunas
+  } = useFinanceModal(fetchData, selectedMonth, sppPrices, showToast);
+  // Fetch configured SPP fee amounts on mount
+  useEffect(() => {
+    async function fetchSppPrices() {
+      try {
+        const { data, error } = await supabase
+          .from("landing_settings")
+          .select("*");
+        if (data && data.length > 0) {
+          const settings = {};
+          data.forEach(item => {
+            settings[item.key] = item.value;
+          });
+          setSppPrices({
+            "Kids Program": parseInt(settings.payment_spp_kids || "300000"),
+            "Teens Program": parseInt(settings.payment_spp_teens || "300000"),
+            "Fun Calistung": parseInt(settings.payment_spp_calistung || "350000")
+          });
+        }
+      } catch (err) {
+        console.error("Gagal memuat nominal SPP program:", err);
+      }
+    }
+    fetchSppPrices();
+  }, []);
+
+  // Initialize selected month to current month (YYYY-MM)
+  useEffect(() => {
+    const d = new Date();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    setSelectedMonth(`${yyyy}-${mm}`);
+  }, []);
+
+  // Lock body scroll when modal is open to prevent page scrolling behind it
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
 
   useEffect(() => {
     fetchData();
@@ -592,6 +596,9 @@ export default function AdminFinance() {
             loading={loading}
             searchQuery={searchQuery}
             students={students}
+            payments={payments}
+            selectedMonth={selectedMonth}
+            sppPrices={sppPrices}
             onQuickConfirm={handleQuickConfirmLunas}
             onPrintReceipt={handlePrintReceipt}
             onEditPayment={handleOpenEditModal}

@@ -7,6 +7,9 @@ export default function FinanceTable({
   loading,
   searchQuery,
   students,
+  payments,
+  selectedMonth,
+  sppPrices,
   onQuickConfirm,
   onPrintReceipt,
   onEditPayment
