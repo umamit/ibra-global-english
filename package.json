@@ -5,7 +5,7 @@
   "engines": { "node": "24.x" },
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && cross-env NODE_OPTIONS=--max-old-space-size=12288 next build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=12288 next build",
     "start": "next start",
     "lint": "eslint",
     "generate-sitemap": "node scripts/generate-sitemap.js",
