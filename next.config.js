@@ -1,3 +1,5 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -74,4 +76,20 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// Wrap with Sentry
+module.exports = withSentryConfig(nextConfig, {
+  silent: true,
+  hideSourceMaps: false,
+  // Upload source maps only in production
+  sourcemaps: {
+    disable: process.env.NODE_ENV !== "production",
+  },
+  // Use webpack-level instrumentation (Turbopack compatible)
+  webpack: {
+    autoInstrumentServerFunctions: true,
+    autoInstrumentMiddleware: true,
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
+});
