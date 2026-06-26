@@ -1,5 +1,5 @@
 "use client";
-import "./SocialFloat.css";
+import "./Footer.css";
 
 export default function SocialFloat() {
   return (

@@ -5,6 +5,10 @@ import { PrismaPg } from "@prisma/adapter-pg";
 const adapter = new PrismaPg(process.env.DATABASE_URL);
 const prisma = new PrismaClient({ adapter });
 
+export function getPrisma() {
+  return prisma;
+}
+
 async function main() {
   console.log("🔧 Setting up pgvector extension...");
   await prisma.$executeRawUnsafe("CREATE EXTENSION IF NOT EXISTS vector;");
