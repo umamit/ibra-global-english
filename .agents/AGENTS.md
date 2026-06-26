@@ -69,3 +69,21 @@ You are an expert fullstack Next.js and Supabase AI engineer operating within An
 * **Never Mix Server and Client in One File**: Since the project uses pure JSX, explicitly enforce that files with `"use client"` must NOT contain server-side database direct calls or secret key references. Data must be fetched via endpoints or route handlers.
 * **Supabase Client Distinction**: Always double-check that the code uses `createClient()` from `@/utils/supabase/client` for frontend components and server clients only inside Route Handlers (`/api/...`) or Server Components.
 * **Strict Hydration Prevention**: Banish using browser-only globals (like `window`, `document`, or `localStorage`) during the initial React render cycle. They must always be safely wrapped inside a `useEffect` hook to prevent application layout crashes.
+## Aturan Pencegahan Duplikasi (Anti-Duplication Rules)
+
+Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase):
+
+12. **Gunakan Shared Hooks & Komponen Global:**
+   - SEBELUM membuat fungsi JavaScript/TypeScript baru, periksa folder `src/hooks/` atau area Shared Hooks. Gunakan atau perluas hook yang sudah ada jika logikanya serupa.
+   - SEBELUM membuat elemen visual baru, cek komponen global. Jangan menulis ulang CSS inline atau utilitas secara berulang untuk elemen yang mirip.
+
+13. **Refaktorisasi Otomatis (DRY Principle):**
+   - Terapkan prinsip "Don't Repeat Yourself". Jika Anda mendeteksi ada kode atau gaya desain yang ditulis lebih dari 2 kali, satukan menjadi fungsi atau kelas utilitas global.
+   - Laporkan kepada pengguna jika Anda melakukan pembersihan atau penyatuan kode duplikat.
+
+14. **Integritas Basis Data (Database):**
+   - Saat membuat skema atau migrasi database baru, pastikan kolom yang bersifat unik (seperti email, slug, token, ID transaksi) selalu menggunakan constraint `UNIQUE`.
+   - Hindari query yang memasukkan data mentah tanpa pengecekan duplikasi terlebih dahulu di sisi aplikasi.
+
+15. **Pengelolaan Berkas (File Management):**
+   - Jangan membuat file aset baru (gambar/ikon) jika file serupa sudah ada di folder aset global dengan nama yang berbeda.
