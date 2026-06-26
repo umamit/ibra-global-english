@@ -13,6 +13,8 @@ import ProgramManager from "./components/ProgramManager";
 import BenefitManager from "./components/BenefitManager";
 import FAQManager from "./components/FAQManager";
 import MaintenanceSettings from "./components/MaintenanceSettings";
+import ToastNotification from "./components/ToastNotification";
+import LandingTabs from "./components/LandingTabs";
 
 export default function LandingPageCMS() {
   const supabase = createClient();
@@ -655,34 +657,7 @@ export default function LandingPageCMS() {
 
   return (
     <div style={{ padding: "1.5rem 1rem", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Toast Alert */}
-      {toast.show && (
-        <div
-          style={{
-            position: "fixed",
-            top: "20px",
-            right: "20px",
-            zIndex: 1000,
-            padding: "1rem 1.5rem",
-            borderRadius: "8px",
-            backgroundColor: toast.type === "success" ? "#10b981" : "#ef4444",
-            color: "white",
-            fontWeight: "600",
-            boxShadow: "var(--shadow-lg)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            animation: "slideIn 0.3s ease",
-          }}
-        >
-          {toast.type === "success" ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          )}
-          <span>{toast.message}</span>
-        </div>
-      )}
+      <ToastNotification toast={toast} />
 
       {/* Top Header Section */}
       <div className="dashboard-topbar" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "0.25rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
@@ -692,65 +667,7 @@ export default function LandingPageCMS() {
         </p>
       </div>
 
-      {/* Tab Navigations */}
-      <div style={{ display: "flex", gap: "0.75rem", marginBottom: "2rem", overflowX: "auto", paddingBottom: "0.5rem" }}>
-        <button
-          onClick={() => setActiveTab("hero")}
-          className={`btn-portal-outline ${activeTab === "hero" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
-        >
-          Profil & Hero Utama
-        </button>
-        <button
-          onClick={() => setActiveTab("gallery")}
-          className={`btn-portal-outline ${activeTab === "gallery" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
-        >
-          Galeri Kegiatan
-        </button>
-        <button
-          onClick={() => setActiveTab("videos")}
-          className={`btn-portal-outline ${activeTab === "videos" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
-        >
-          Galeri Video
-        </button>
-        <button
-          onClick={() => setActiveTab("testimonials")}
-          className={`btn-portal-outline ${activeTab === "testimonials" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
-        >
-          Ulasan & Testimoni
-        </button>
-        <button
-          onClick={() => setActiveTab("programs")}
-          className={`btn-portal-outline ${activeTab === "programs" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
-        >
-          Program Kursus
-        </button>
-        <button
-          onClick={() => setActiveTab("benefits")}
-          className={`btn-portal-outline ${activeTab === "benefits" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
-        >
-          Keunggulan
-        </button>
-        <button
-          onClick={() => setActiveTab("faq")}
-          className={`btn-portal-outline ${activeTab === "faq" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap" }}
-        >
-          Tanya Jawab (FAQ)
-        </button>
-        <button
-          onClick={() => setActiveTab("maintenance")}
-          className={`btn-portal-outline ${activeTab === "maintenance" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.2rem", fontWeight: "600", whiteSpace: "nowrap", borderColor: maintenanceMode ? "#ef4444" : undefined, color: maintenanceMode ? "#ef4444" : undefined }}
-        >
-          {maintenanceMode ? "🔴" : "⚙️"} Sistem & Keamanan
-        </button>
-      </div>
+      <LandingTabs activeTab={activeTab} setActiveTab={setActiveTab} maintenanceMode={maintenanceMode} />
 
       {/* Tab Contents */}
       {activeTab === "hero" && (
