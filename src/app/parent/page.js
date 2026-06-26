@@ -416,6 +416,7 @@ export default function ParentPortal() {
           notifications={notifications}
           showNotificationDropdown={showNotificationDropdown}
           setShowNotificationDropdown={setShowNotificationDropdown}
+          onLogout={handleLogout}
         />
 
         {children.length === 0 ? (

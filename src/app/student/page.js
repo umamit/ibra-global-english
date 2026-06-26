@@ -343,11 +343,8 @@ export default function StudentPortal() {
           </button>
         </div>
 
-        <div className="sidebar-footer">
-          <button onClick={handleLogout} className="btn-logout">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            <span>Keluar Sesi</span>
-          </button>
+        <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Siswa Dashboard v1.0</span>
         </div>
       </aside>
 
@@ -377,6 +374,10 @@ export default function StudentPortal() {
               <span className="spinning-coin" style={{ display: "inline-block", animation: "spin 3s linear infinite" }}>🪙</span>
               <span>{totalCoins} Koin Ibra</span>
             </div>
+            <button onClick={handleLogout} className="btn-logout" style={{ width: "auto", padding: "0.4rem 0.85rem", fontSize: "0.8rem", display: "inline-flex" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              <span>Keluar</span>
+            </button>
           </div>
         </div>
 
