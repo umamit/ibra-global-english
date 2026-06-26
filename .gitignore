@@ -7,3 +7,6 @@ node_modules/
 # Mac system files
 .DS_Store
 **/.DS_Store
+
+# Prisma generated client – can be regenerated
+/generated/prisma/
