@@ -10,4 +10,5 @@
  */
 export type * from './models/User.ts'
 export type * from './models/Post.ts'
+export type * from './models/RagDocument.ts'
 export type * from './commonInputTypes.ts'

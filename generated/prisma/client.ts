@@ -51,3 +51,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Post = Prisma.PostModel
+/**
+ * Model RagDocument
+ * 
+ */
+export type RagDocument = Prisma.RagDocumentModel
