@@ -7,7 +7,7 @@
  * Uses Prisma Postgres with pgvector for similarity search.
  */
 
-import { prisma } from "../../lib/prisma.js";
+import { prisma } from "../../lib/prisma";
 
 const HF_MODEL = "sentence-transformers/all-MiniLM-L6-v2";
 const HF_API_URL = `https://api-inference.huggingface.co/pipeline/feature-extraction/${HF_MODEL}`;
