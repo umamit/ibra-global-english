@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
+import { onlineScheduleSchema, onlineScheduleUpdateSchema } from "@/lib/schemas";
 
 const adminSupabase = getAdminSupabase();
 
@@ -31,23 +32,28 @@ export async function GET(request) {
 
 export const POST = withAdminAuth(async (request) => {
   const body = await request.json();
-  const { title, program, meeting_link, meeting_platform, scheduled_at, duration_minutes, tutor_name, notes } = body;
+  const validation = onlineScheduleSchema.safeParse(body);
 
-  if (!title?.trim() || !program || !meeting_link?.trim() || !scheduled_at) {
-    return NextResponse.json({ error: "Judul, program, link meeting, dan waktu wajib diisi." }, { status: 400 });
+  if (!validation.success) {
+    const errorMessages = validation.error.issues
+      .map((issue) => issue.message)
+      .join(", ");
+    return NextResponse.json({ error: `Data tidak valid: ${errorMessages}` }, { status: 400 });
   }
+
+  const { title, program, meeting_link, meeting_platform, scheduled_at, duration_minutes, tutor_name, notes } = validation.data;
 
   const { data, error } = await adminSupabase
     .from("online_schedules")
     .insert({
-      title: title.trim(),
+      title,
       program,
-      meeting_link: meeting_link.trim(),
-      meeting_platform: meeting_platform || "Google Meet",
+      meeting_link,
+      meeting_platform,
       scheduled_at,
-      duration_minutes: duration_minutes || 60,
-      tutor_name: tutor_name?.trim() || "",
-      notes: notes?.trim() || "",
+      duration_minutes,
+      tutor_name,
+      notes,
       is_active: true,
     })
     .select().single();
@@ -58,7 +64,16 @@ export const POST = withAdminAuth(async (request) => {
 
 export const PATCH = withAdminAuth(async (request) => {
   const body = await request.json();
-  const { id, ...updates } = body;
+  const validation = onlineScheduleUpdateSchema.safeParse(body);
+
+  if (!validation.success) {
+    const errorMessages = validation.error.issues
+      .map((issue) => issue.message)
+      .join(", ");
+    return NextResponse.json({ error: `Data tidak valid: ${errorMessages}` }, { status: 400 });
+  }
+
+  const { id, ...updates } = validation.data;
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
 
   const { error } = await adminSupabase.from("online_schedules").update(updates).eq("id", id);

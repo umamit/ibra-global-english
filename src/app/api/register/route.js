@@ -1,40 +1,36 @@
 import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
+import { registrationSchema, registrationUpdateSchema } from "@/lib/schemas";
 
 const supabaseAdmin = getAdminSupabase();
 
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { student_name, student_age, parent_name, parent_email, whatsapp, program } = body;
+    const validation = registrationSchema.safeParse(body);
 
-    // Validasi minimal
-    if (!student_name || !whatsapp || !program) {
+    if (!validation.success) {
+      const errorMessages = validation.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
       return NextResponse.json(
-        { error: "Data tidak lengkap. Nama siswa, WhatsApp, dan program wajib diisi." },
+        { error: `Data tidak valid: ${errorMessages}` },
         { status: 400 }
       );
     }
 
-    // Validasi nomor WhatsApp minimal 9 digit
-    const numericWa = whatsapp.replace(/[^0-9]/g, "");
-    if (numericWa.length < 9) {
-      return NextResponse.json(
-        { error: "Nomor WhatsApp tidak valid." },
-        { status: 400 }
-      );
-    }
+    const { student_name, student_age, parent_name, parent_email, whatsapp, program } = validation.data;
 
     // Insert ke tabel registrations
     const { data, error } = await supabaseAdmin
       .from("registrations")
       .insert({
-        student_name: student_name.trim(),
-        student_age: student_age ? parseInt(student_age) : null,
-        parent_name: parent_name ? parent_name.trim() : null,
-        parent_email: parent_email ? parent_email.trim() : null,
-        whatsapp: numericWa,
-        program: program.trim(),
+        student_name,
+        student_age: student_age || null,
+        parent_name: parent_name || null,
+        parent_email: parent_email || null,
+        whatsapp,
+        program,
         status: "pending",
       })
       .select()
@@ -76,11 +72,17 @@ export const GET = withAdminAuth(async () => {
 // PATCH: Update status pendaftaran (approve/reject)
 export const PATCH = withAdminAuth(async (req) => {
   try {
-    const { id, status, notes } = await req.json();
+    const body = await req.json();
+    const patchValidation = registrationUpdateSchema.safeParse(body);
 
-    if (!id || !status) {
-      return NextResponse.json({ error: "ID dan status wajib diisi." }, { status: 400 });
+    if (!patchValidation.success) {
+      const errorMessages = patchValidation.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+      return NextResponse.json({ error: `Data tidak valid: ${errorMessages}` }, { status: 400 });
     }
+
+    const { id, status, notes } = patchValidation.data;
 
     // 1. Dapatkan data pendaftaran terlebih dahulu
     const { data: reg, error: fetchError } = await supabaseAdmin

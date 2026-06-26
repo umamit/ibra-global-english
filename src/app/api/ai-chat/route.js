@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminSupabase } from "@/app/api/_middleware";
 import { detectPromptInjection } from "@/utils/security";
 import { getRagContext } from "@/utils/rag";
+import { chatRequestSchema } from "@/lib/schemas";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
@@ -84,14 +85,20 @@ export async function POST(request) {
       );
     }
 
-    const { messages } = await request.json();
+    const body = await request.json();
+    const validation = chatRequestSchema.safeParse(body);
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    if (!validation.success) {
+      const errorMessages = validation.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
       return NextResponse.json(
-        { error: "Format pesan tidak valid." },
+        { error: `Format pesan tidak valid: ${errorMessages}` },
         { status: 400 }
       );
     }
+
+    const { messages } = validation.data;
 
     // 1. Validasi Keamanan: Cek Prompt Injection pada pesan terakhir user
     const lastUserMessage = messages[messages.length - 1]?.content;
