@@ -2,15 +2,16 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import FinanceStatsCards from "./components/FinanceStatsCards";
 import FinanceTable from "./components/FinanceTable";
 import FinanceModal from "./components/FinanceModal";
 import FinanceAnalytics from "./components/FinanceAnalytics";
-import { getMonthName, terbilang, formatRupiah, showToast } from "../utils";
+import { getMonthName, terbilang, formatRupiah, getCurrentMonth } from "../utils";
 import ToastNotification from "../landing-page/components/ToastNotification";
 import { getStudentPayment, exportPaymentsCSV } from "./financeHelpers";
+import { useFinanceModal } from "./hooks/useFinanceModal";
 
 export default function AdminFinance() {
   const supabase = createClient();
@@ -24,21 +25,32 @@ export default function AdminFinance() {
   const [searchQuery, setSearchQuery] = useState("");
   const [programFilter, setProgramFilter] = useState("All");
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
-
-  // Modal State
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalStudent, setSelectedStudent] = useState(null);
   const [sppPrices, setSppPrices] = useState({
     "Kids Program": 300000,
     "Teens Program": 300000,
     "Fun Calistung": 350000
   });
-  const [modalAmount, setModalAmount] = useState(300000);
-  const [modalStatus, setModalStatus] = useState("belum_bayar");
-  const [modalMethod, setModalMethod] = useState("Transfer Bank");
-  const [modalReceiptUrl, setModalReceiptUrl] = useState("");
-  const [savingPayment, setSavingPayment] = useState(false);
-  const fileInputRef = useRef(null);
+
+  // Use custom hook for modal logic
+  const {
+    isModalOpen,
+    setIsModalOpen,
+    modalStudent,
+    modalAmount,
+    setModalAmount,
+    modalStatus,
+    setModalStatus,
+    modalMethod,
+    setModalMethod,
+    modalReceiptUrl,
+    setModalReceiptUrl,
+    savingPayment,
+    fileInputRef,
+    handleUploadReceipt,
+    handleOpenEditModal,
+    handleSavePayment,
+    handleQuickConfirmLunas
+  } = useFinanceModal(fetchData, selectedMonth, sppPrices);
 
   // Fetch configured SPP fee amounts on mount
   useEffect(() => {
@@ -166,128 +178,6 @@ export default function AdminFinance() {
     window.print();
   };
 
-  // Upload receipt helper
-  const handleUploadReceipt = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${modalStudent.id}_${selectedMonth}_${Date.now()}.${fileExt}`;
-      const filePath = `${selectedMonth}/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("spp-receipts")
-        .upload(filePath, file, { cacheControl: "3600", upsert: true });
-
-      if (uploadError) {
-        // Auto create bucket if not found
-        if (uploadError.message.includes("bucket not found") || uploadError.message.includes("does not exist")) {
-          const { error: bucketError } = await supabase.storage.createBucket("spp-receipts", {
-            public: true,
-            fileSizeLimit: 5242880, // 5MB
-          });
-          if (bucketError) throw bucketError;
-
-          const { error: retryError } = await supabase.storage
-            .from("spp-receipts")
-            .upload(filePath, file, { cacheControl: "3600", upsert: true });
-          if (retryError) throw retryError;
-        } else {
-          throw uploadError;
-        }
-      }
-
-      const { data } = supabase.storage
-        .from("spp-receipts")
-        .getPublicUrl(filePath);
-
-      setModalReceiptUrl(data.publicUrl);
-      showToast("Bukti pembayaran berhasil diunggah.");
-    } catch (err) {
-      console.error("Upload error:", err);
-      showToast("Gagal mengunggah bukti pembayaran. Detail: " + (err.message || err), "error");
-    }
-  };
-
-  const handleOpenEditModal = (student) => {
-    const pay = getStudentPayment(student.id);
-    const program = student?.program || "Kids Program";
-    const baseAmount = sppPrices[program] || 300000;
-
-    setSelectedStudent(student);
-    setModalAmount(pay.amount || baseAmount);
-    setModalStatus(pay.status || "belum_bayar");
-    setModalMethod(pay.payment_method || "Transfer Bank");
-    setModalReceiptUrl(pay.receipt_url || "");
-    setIsModalOpen(true);
-  };
-
-  const handleSavePayment = async (e) => {
-    e.preventDefault();
-    if (!modalStudent) return;
-
-    setSavingPayment(true);
-    try {
-      const parsedAmount = parseInt(modalAmount);
-      if (isNaN(parsedAmount) || parsedAmount <= 0) {
-        showToast("Nominal pembayaran tidak valid.", "error");
-        setSavingPayment(false);
-        return;
-      }
-      const payload = {
-        student_id: modalStudent.id,
-        month: selectedMonth,
-        amount: parsedAmount,
-        status: modalStatus,
-        payment_method: modalMethod,
-        receipt_url: modalReceiptUrl || null,
-        updated_at: new Date().toISOString()
-      };
-
-      const { error } = await supabase
-        .from("tuition_payments")
-        .upsert(payload, { onConflict: "student_id,month" });
-
-      if (error) throw error;
-
-      showToast("Status pembayaran SPP berhasil disimpan!");
-      setIsModalOpen(false);
-      fetchData();
-    } catch (err) {
-      console.error("Gagal menyimpan pembayaran:", err);
-      showToast("Gagal menyimpan data pembayaran SPP.", "error");
-    } finally {
-      setSavingPayment(false);
-    }
-  };
-
-  const handleQuickConfirmLunas = async (studentId) => {
-    try {
-      const pay = getStudentPayment(studentId);
-      const payload = {
-        student_id: studentId,
-        month: selectedMonth,
-        amount: pay.amount,
-        status: "lunas",
-        payment_method: pay.payment_method || "Transfer Bank",
-        receipt_url: pay.receipt_url || null,
-        updated_at: new Date().toISOString()
-      };
-
-      const { error } = await supabase
-        .from("tuition_payments")
-        .upsert(payload, { onConflict: "student_id,month" });
-
-      if (error) throw error;
-
-      showToast("Pembayaran dikonfirmasi LUNAS!");
-      fetchData();
-    } catch (err) {
-      console.error("Gagal melakukan konfirmasi cepat:", err);
-      showToast("Gagal mengonfirmasi lunas.", "error");
-    }
-  };
 
   // Filters
   const filteredStudents = students.filter(student => {
@@ -306,7 +196,7 @@ export default function AdminFinance() {
     let paidCount = 0;
 
     students.forEach(student => {
-      const pay = getStudentPayment(student.id);
+      const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
       const baseAmount = sppPrices[student.program] || 300000;
       expected += pay.amount || baseAmount;
       if (pay.status === "lunas") {
@@ -322,9 +212,6 @@ export default function AdminFinance() {
     return { expected, collected, pendingCount, unpaidCount, paidCount };
   })();
 
-  const formatRupiah = (num) => {
-    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(num);
-  };
 
   const handlePrintReceipt = (student, pay) => {
     const formattedAmount = formatRupiah(pay.amount);
@@ -600,11 +487,11 @@ export default function AdminFinance() {
           />
           {activeTab === "list" && students.length > 0 && (
             <>
-              <button
-                className="btn-portal-outline"
-                onClick={exportPaymentsCSV}
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
-              >
+               <button
+                 className="btn-portal-primary"
+                 onClick={() => exportPaymentsCSV(students, payments, selectedMonth, sppPrices, formatRupiah)}
+                 style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
+               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span>Export CSV</span>
               </button>
