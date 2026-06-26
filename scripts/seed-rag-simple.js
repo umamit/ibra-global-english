@@ -1,9 +1,6 @@
-import "dotenv/config";
-import { PrismaClient } from "../generated/prisma/client.ts";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { getPrisma } from "./setup-pgvector.js";
 
-const adapter = new PrismaPg(process.env.DATABASE_URL);
-const prisma = new PrismaClient({ adapter });
+const prisma = getPrisma();
 
 async function main() {
   console.log("🌱 Seeding RAG documents...\n");
