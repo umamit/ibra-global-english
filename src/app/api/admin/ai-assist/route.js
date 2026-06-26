@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 import { detectPromptInjection } from "@/utils/security";
 import { getAdminOrTutorUser } from "@/utils/supabase/adminAuth";
+import { getRagContext } from "@/utils/rag";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
@@ -283,16 +284,29 @@ Jawablah dengan nada yang profesional, cerdas, supportif, dan ramah. Gunakan Bah
       return NextResponse.json({ error: "Mode tidak dikenal." }, { status: 400 });
     }
 
+    // RAG: Retrieve relevant knowledge base context for admin chat mode
+    let ragContext = "";
+    if (mode === "chat" && messages && Array.isArray(messages) && messages.length > 0) {
+      const lastAdminMsg = messages[messages.length - 1]?.content || "";
+      try {
+        ragContext = await getRagContext(lastAdminMsg, 3);
+      } catch (ragErr) {
+        console.warn("Admin RAG lookup failed (non-blocking):", ragErr.message);
+      }
+    }
+
+    const systemPromptWithRag = ragContext ? systemPrompt + "\n\n" + ragContext : systemPrompt;
+
     // Prepare messages for Groq API
     let formattedMessages = [];
     if (mode === "chat" && messages && Array.isArray(messages)) {
       formattedMessages = [
-        { role: "system", content: systemPrompt },
+        { role: "system", content: systemPromptWithRag },
         ...messages.map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.content }))
       ];
     } else {
       formattedMessages = [
-        { role: "system", content: systemPrompt },
+        { role: "system", content: systemPromptWithRag },
         { role: "user", content: userPrompt }
       ];
     }

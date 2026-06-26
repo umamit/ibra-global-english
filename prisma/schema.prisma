@@ -28,3 +28,16 @@ model Post {
   author   User   @relation(fields: [authorId], references: [id])
   authorId String
 }
+
+// RAG (Retrieval-Augmented Generation) — dokumen untuk basis pengetahuan AI
+model RagDocument {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  source    String   @default("manual") // manual, faq, course_material, website, other
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rag_documents")
+}

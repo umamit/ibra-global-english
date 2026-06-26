@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSupabase } from "@/app/api/_middleware";
 import { detectPromptInjection } from "@/utils/security";
+import { getRagContext } from "@/utils/rag";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
@@ -102,9 +103,22 @@ export async function POST(request) {
       );
     }
 
+    // 2. RAG: Retrieve relevant knowledge base context
+    let ragContext = "";
+    try {
+      ragContext = await getRagContext(lastUserMessage, 3);
+    } catch (ragErr) {
+      console.warn("RAG lookup failed (non-blocking):", ragErr.message);
+    }
+
+    // 3. Build system prompt with RAG context injected
+    const systemPromptWithRag = ragContext
+      ? SYSTEM_PROMPT + "\n\n" + ragContext
+      : SYSTEM_PROMPT;
+
     // Format messages for OpenAI / Groq compatibility
     const formattedMessages = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: systemPromptWithRag },
       ...messages.map((msg) => ({
         role: msg.role === "assistant" ? "assistant" : "user",
         content: msg.content,
