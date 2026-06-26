@@ -422,6 +422,18 @@ textarea:focus-visible {
   color: var(--color-gray-600);
 }
 
+@media (max-width: 576px) {
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+  .section-header h2 {
+    font-size: 1.75rem;
+  }
+  .section-header p {
+    font-size: 1rem;
+  }
+}
+
 /* Section base backgrounds */
 section {
   padding-block: 5rem;

@@ -161,6 +161,16 @@
   }
 }
 
+@media (max-width: 480px) {
+  .hero-content h2,
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  .hero-subtitle {
+    font-size: 1.35rem;
+  }
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -308,9 +318,11 @@
 
 @media (max-width: 768px) {
   .hero-stats-badge {
-    bottom: -1rem;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    margin-top: 1rem;
   }
 }
 

@@ -216,3 +216,12 @@
     margin-bottom: 1rem;
   }
 }
+
+@media (max-width: 576px) {
+  .contact-info-panel h2 {
+    font-size: 1.75rem;
+  }
+  .contact-info-panel > p {
+    font-size: 1rem;
+  }
+}
