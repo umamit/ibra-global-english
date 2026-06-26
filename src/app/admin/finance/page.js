@@ -8,39 +8,8 @@ import FinanceStatsCards from "./components/FinanceStatsCards";
 import FinanceTable from "./components/FinanceTable";
 import FinanceModal from "./components/FinanceModal";
 import FinanceAnalytics from "./components/FinanceAnalytics";
-
-const getMonthName = (ym) => {
-  if (!ym) return "";
-  const [y, m] = ym.split("-");
-  const date = new Date(parseInt(y), parseInt(m) - 1, 1);
-  return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
-};
-
-const terbilang = (n) => {
-  const bilangan = [
-    "", "Satu", "Dua", "Tiga", "Empat", "Lima",
-    "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"
-  ];
-  const num = parseInt(n);
-  if (num < 12) {
-    return bilangan[num];
-  } else if (num < 20) {
-    return terbilang(num - 10) + " Belas";
-  } else if (num < 100) {
-    return terbilang(Math.floor(num / 10)) + " Puluh " + terbilang(num % 10);
-  } else if (num < 200) {
-    return "Seratus " + terbilang(num - 100);
-  } else if (num < 1000) {
-    return terbilang(Math.floor(num / 100)) + " Ratus " + terbilang(num % 100);
-  } else if (num < 2000) {
-    return "Seribu " + terbilang(num - 1000);
-  } else if (num < 1000000) {
-    return terbilang(Math.floor(num / 1000)) + " Ribu " + terbilang(num % 1000);
-  } else if (num < 1000000000) {
-    return terbilang(Math.floor(num / 1000000)) + " Juta " + terbilang(num % 1000000);
-  }
-  return "";
-};
+import { getMonthName, terbilang, formatRupiah, showToast } from "../utils";
+import ToastNotification from "../landing-page/components/ToastNotification";
 
 export default function AdminFinance() {
   const supabase = createClient();
@@ -114,13 +83,6 @@ export default function AdminFinance() {
       document.body.style.overflow = "";
     };
   }, [isModalOpen]);
-
-  const showToast = (message, type = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => {
-      setToast({ show: false, message: "", type: "success" });
-    }, 4000);
-  };
 
   const fetchData = async () => {
     if (!selectedMonth) return;
@@ -660,34 +622,7 @@ export default function AdminFinance() {
 
   return (
     <div style={{ padding: "1.5rem 1rem", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Toast Alert */}
-      {toast.show && (
-        <div
-          style={{
-            position: "fixed",
-            top: "20px",
-            right: "20px",
-            zIndex: 1000,
-            padding: "1rem 1.5rem",
-            borderRadius: "8px",
-            backgroundColor: toast.type === "success" ? "#10b981" : "#ef4444",
-            color: "white",
-            fontWeight: "600",
-            boxShadow: "var(--shadow-lg)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            animation: "slideIn 0.3s ease",
-          }}
-        >
-          {toast.type === "success" ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          )}
-          <span>{toast.message}</span>
-        </div>
-      )}
+      {toast.show && <ToastNotification toast={toast} />}
 
       {/* A1: Print Header — hanya tampil saat @media print */}
       <div className="finance-print-header">
