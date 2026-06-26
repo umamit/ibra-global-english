@@ -2,8 +2,12 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useStudentData, useRegistrations, formatIndonesianDate } from "../studentsHelpers";
+import TabSwitcher from "./components/TabSwitcher";
+import RejectModal from "./components/RejectModal";
+import StudentFormModal from "./components/StudentFormModal";
 
 export default function StudentManagement() {
   const supabase = createClient();
@@ -384,25 +388,6 @@ export default function StudentManagement() {
     }
   };
 
-  // Format date to localized Indonesian style
-  const formatIndonesianDate = (dateStr) => {
-    if (!dateStr) return "-";
-    try {
-      const d = new Date(dateStr);
-      if (isNaN(d.getTime())) return "-";
-      const day = d.getDate();
-      const months = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-      ];
-      const month = months[d.getMonth()];
-      const year = d.getFullYear();
-      return `${day} ${month} ${year}`;
-    } catch (e) {
-      return dateStr;
-    }
-  };
-
   return (
     <div>
       <div className="dashboard-topbar">
@@ -422,127 +407,7 @@ export default function StudentManagement() {
         </div>
       </div>
 
-      {/* Tab Switcher */}
-      <div style={{ 
-        display: "flex", 
-        borderBottom: "2px solid var(--color-gray-100)", 
-        marginBottom: "1.75rem",
-        gap: "0.5rem",
-        overflowX: "auto",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        WebkitOverflowScrolling: "touch"
-      }}>
-        <button
-          onClick={() => setActiveTab("students")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: "0.75rem 1.25rem",
-            fontWeight: activeTab === "students" ? "800" : "500",
-            color: activeTab === "students" ? "var(--color-primary-dark)" : "var(--color-gray-500)",
-            borderBottom: activeTab === "students" ? "3px solid var(--color-primary)" : "3px solid transparent",
-            marginBottom: "-2px",
-            cursor: "pointer",
-            fontSize: "1rem",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            transition: "all 0.2s ease",
-            flexShrink: 0
-          }}
-        >
-          <span>Daftar Siswa</span>
-          <span style={{ 
-            fontSize: "0.75rem", 
-            backgroundColor: activeTab === "students" ? "var(--color-primary-light)" : "var(--color-gray-100)",
-            color: activeTab === "students" ? "var(--color-primary-dark)" : "var(--color-gray-600)",
-            padding: "0.15rem 0.5rem",
-            borderRadius: "10px",
-            fontWeight: "700"
-          }}>
-            {students.length}
-          </span>
-        </button>
-        <button
-          onClick={() => setActiveTab("parents")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: "0.75rem 1.25rem",
-            fontWeight: activeTab === "parents" ? "800" : "500",
-            color: activeTab === "parents" ? "var(--color-primary-dark)" : "var(--color-gray-500)",
-            borderBottom: activeTab === "parents" ? "3px solid var(--color-primary)" : "3px solid transparent",
-            marginBottom: "-2px",
-            cursor: "pointer",
-            fontSize: "1rem",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            transition: "all 0.2s ease",
-            flexShrink: 0
-          }}
-        >
-          <span>Kelola Peran & Pengguna</span>
-          <span style={{ 
-            fontSize: "0.75rem", 
-            backgroundColor: activeTab === "parents" ? "var(--color-primary-light)" : "var(--color-gray-100)",
-            color: activeTab === "parents" ? "var(--color-primary-dark)" : "var(--color-gray-600)",
-            padding: "0.15rem 0.5rem",
-            borderRadius: "10px",
-            fontWeight: "700"
-          }}>
-            {parents.length}
-          </span>
-        </button>
-        <button
-          onClick={() => { setActiveTab("registrations"); fetchRegistrations(); }}
-          style={{
-            background: "none",
-            border: "none",
-            padding: "0.75rem 1.25rem",
-            fontWeight: activeTab === "registrations" ? "800" : "500",
-            color: activeTab === "registrations" ? "var(--color-primary-dark)" : "var(--color-gray-500)",
-            borderBottom: activeTab === "registrations" ? "3px solid var(--color-primary)" : "3px solid transparent",
-            marginBottom: "-2px",
-            cursor: "pointer",
-            fontSize: "1rem",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            transition: "all 0.2s ease",
-            position: "relative",
-            flexShrink: 0
-          }}
-        >
-          <span>Pendaftaran Masuk</span>
-          {registrations.filter(r => r.status === "pending").length > 0 && (
-            <span style={{ 
-              fontSize: "0.75rem", 
-              backgroundColor: "var(--color-red)",
-              color: "white",
-              padding: "0.15rem 0.5rem",
-              borderRadius: "10px",
-              fontWeight: "700",
-              animation: "pulse 2s infinite"
-            }}>
-              {registrations.filter(r => r.status === "pending").length} baru
-            </span>
-          )}
-          {registrations.filter(r => r.status === "pending").length === 0 && (
-            <span style={{ 
-              fontSize: "0.75rem", 
-              backgroundColor: activeTab === "registrations" ? "var(--color-primary-light)" : "var(--color-gray-100)",
-              color: activeTab === "registrations" ? "var(--color-primary-dark)" : "var(--color-gray-600)",
-              padding: "0.15rem 0.5rem",
-              borderRadius: "10px",
-              fontWeight: "700"
-            }}>
-              {registrations.filter(r => r.status !== "approved").length}
-            </span>
-          )}
-        </button>
-      </div>
+      <TabSwitcher activeTab={activeTab} setActiveTab={setActiveTab} students={students} parents={parents} registrations={registrations} fetchRegistrations={fetchRegistrations} />
 
       {loading ? (
         <div style={{ textAlign: "center", padding: "5rem 0", color: "var(--color-gray-500)" }}>
@@ -839,133 +704,8 @@ export default function StudentManagement() {
         </div>
       )}
 
-      {/* Modal Tolak Pendaftaran */}
-      {rejectModalId && (
-        <div className="portal-modal-overlay">
-          <div className="portal-modal" style={{ maxWidth: "440px" }}>
-            <div className="portal-modal-header">
-              <h2 className="portal-modal-title">Tolak Pendaftaran</h2>
-              <button className="btn-close-modal" onClick={() => setRejectModalId(null)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
-            </div>
-            <p style={{ color: "var(--color-gray-500)", marginBottom: "1rem", fontSize: "0.9rem" }}>Tuliskan alasan penolakan (opsional). Informasi ini hanya untuk catatan internal admin.</p>
-            <textarea
-              className="form-input"
-              rows={3}
-              placeholder="Contoh: Slot penuh, usia tidak sesuai, dll."
-              value={rejectNotes}
-              onChange={(e) => setRejectNotes(e.target.value)}
-              style={{ resize: "vertical", marginBottom: "1.5rem" }}
-            />
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
-              <button className="btn-portal-outline" onClick={() => setRejectModalId(null)}>Batal</button>
-              <button className="btn-portal-danger" onClick={handleReject}>Konfirmasi Penolakan</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {modalOpen && (
-        <div className="portal-modal-overlay">
-          <div className="portal-modal">
-            <div className="portal-modal-header">
-              <h2 className="portal-modal-title">{editingStudentId ? "Edit Data Siswa" : "Tambah Siswa Baru"}</h2>
-              <button className="btn-close-modal" onClick={() => setModalOpen(false)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
-            </div>
-
-            {errorMsg && (
-              <div className="auth-error-banner" style={{ marginBottom: "1.5rem" }}>
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSaveStudent}>
-              <div className="form-group" style={{ marginBottom: "1.25rem" }}>
-                <label className="form-label">Nama Lengkap Siswa</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Masukkan nama lengkap siswa"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={submitting}
-                />
-              </div>
-
-              <div className="form-grid">
-                <div className="form-group">
-                  <label className="form-label">Usia Siswa</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    placeholder="Contoh: 8"
-                    required
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    disabled={submitting}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Program Kursus</label>
-                  <select
-                    className="form-input"
-                    value={program}
-                    onChange={(e) => setProgram(e.target.value)}
-                    disabled={submitting}
-                  >
-                    <option value="Kids Program">Kids Program</option>
-                    <option value="Teens Program">Teens Program</option>
-                    <option value="Fun Calistung">Fun Calistung</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group" style={{ marginBottom: "2rem" }}>
-                <label className="form-label">Hubungkan dengan Akun Orang Tua / Akun Siswa (Opsional)</label>
-                <select
-                  className="form-input"
-                  value={parentId}
-                  onChange={(e) => setParentId(e.target.value)}
-                  disabled={submitting}
-                >
-                  <option value="">-- Hubungkan di sini jika akun orang tua / siswa sudah terdaftar --</option>
-                  {parents.filter(p => p.role === "parent" || p.role === "student").map((parent) => (
-                    <option key={parent.id} value={parent.id}>
-                      {parent.full_name} ({parent.role === "student" ? "Siswa" : "Orang Tua"}) - {parent.email}
-                    </option>
-                  ))}
-                </select>
-                <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", marginTop: "0.5rem", fontStyle: "italic" }}>
-                  Catatan: Pasangan akun ini bertujuan agar orang tua dapat memantau rapor & absensi harian anak secara real-time dari portal mereka.
-                </p>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
-                <button
-                  type="button"
-                  className="btn-portal-outline"
-                  onClick={() => setModalOpen(false)}
-                  disabled={submitting}
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="btn-portal-primary"
-                  disabled={submitting}
-                >
-                  <span>{submitting ? "Menyimpan..." : (editingStudentId ? "Simpan Perubahan" : "Simpan Data Siswa")}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <RejectModal rejectModalId={rejectModalId} rejectNotes={rejectNotes} setRejectNotes={setRejectNotes} onClose={() => setRejectModalId(null)} onConfirm={handleReject} />
+      <StudentFormModal open={modalOpen} editing={editingStudentId} name={name} age={age} program={program} parentId={parentId} parents={parents} errorMsg={errorMsg} submitting={submitting} onNameChange={(e) => setName(e.target.value)} onAgeChange={(e) => setAge(e.target.value)} onProgramChange={(e) => setProgram(e.target.value)} onParentIdChange={(e) => setParentId(e.target.value)} onClose={() => setModalOpen(false)} onSubmit={handleSaveStudent} />
     </div>
   );
 }
