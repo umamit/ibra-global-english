@@ -5,6 +5,8 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import RadarChart from "@/components/RadarChart";
+import ReportStatusBanner from "./components/ReportStatusBanner";
+import CertificateButton from "./components/CertificateButton";
 
 export default function ReportCardManagement() {
   const supabase = createClient();
@@ -532,14 +534,7 @@ export default function ReportCardManagement() {
         )}
       </div>
 
-      {statusMsg.text && (
-        <div
-          className={statusMsg.type === "success" ? "auth-success-banner" : "auth-error-banner"}
-          style={{ marginBottom: "2rem" }}
-        >
-          <span>{statusMsg.text}</span>
-        </div>
-      )}
+      <ReportStatusBanner statusMsg={statusMsg} />
 
       {/* Formulir Input Rapor Baru */}
       <div className="portal-card" style={{ marginBottom: "3rem", padding: "2rem" }}>
@@ -767,71 +762,12 @@ export default function ReportCardManagement() {
                           Cetak
                         </button>
                         
-                        {/* Certificate Button */}
-                        {(() => {
-                          const existingCert = certificates.find(
-                            (c) => c.report_id === report.id || (c.student_id === report.student_id && c.module_name?.toLowerCase() === report.module_name?.toLowerCase())
-                          );
-                          if (existingCert) {
-                            return (
-                              <div style={{ display: "inline-flex", gap: "2px", alignItems: "center" }}>
-                                <a
-                                  href={`/verify/${existingCert.id}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn-portal-outline"
-                                  style={{ 
-                                    padding: "0.35rem 0.65rem", 
-                                    fontSize: "0.8rem", 
-                                    display: "inline-flex", 
-                                    gap: "0.25rem", 
-                                    alignItems: "center", 
-                                    borderColor: "var(--color-accent)", 
-                                    color: "var(--color-accent)",
-                                    fontWeight: "bold",
-                                    textDecoration: "none",
-                                    borderRadius: "var(--radius-sm)"
-                                  }}
-                                >
-                                  Sertifikat
-                                </a>
-                                <button
-                                  className="btn-portal-danger"
-                                  style={{ 
-                                    padding: "0.35rem 0.5rem", 
-                                    fontSize: "0.8rem", 
-                                    cursor: "pointer",
-                                    borderRadius: "var(--radius-sm)"
-                                  }}
-                                  onClick={() => handleDeleteCertificate(existingCert.id)}
-                                  title="Hapus Sertifikat"
-                                >
-                                  ✕
-                                </button>
-                              </div>
-                            );
-                          } else {
-                            return (
-                              <button
-                                className="btn-portal-outline"
-                                style={{ 
-                                  padding: "0.35rem 0.75rem", 
-                                  fontSize: "0.8rem", 
-                                  display: "inline-flex", 
-                                  gap: "0.25rem", 
-                                  alignItems: "center", 
-                                  borderColor: "var(--color-gray-400)", 
-                                  color: "var(--color-gray-600)",
-                                  cursor: "pointer",
-                                  borderRadius: "var(--radius-sm)"
-                                }}
-                                onClick={() => handleCreateCertificate(report)}
-                              >
-                                + Sertifikat
-                              </button>
-                            );
-                          }
-                        })()}
+                        <CertificateButton
+                          report={report}
+                          certificates={certificates}
+                          onCreate={handleCreateCertificate}
+                          onDelete={handleDeleteCertificate}
+                        />
 
                         <button
                           className="btn-portal-danger"
