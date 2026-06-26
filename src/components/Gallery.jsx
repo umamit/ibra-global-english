@@ -1,10 +1,11 @@
 "use client";
 import "./Gallery.css";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createClient } from "../utils/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
-const GALLERY_DATA = [
+const GALLERY_FALLBACK = [
   {
     title: "Kids Interactive Study",
     desc: "Belajar seru melalui aktivitas kelompok",
@@ -61,63 +62,55 @@ const GALLERY_DATA = [
   }
 ];
 
-export default function Gallery({ onOpenLightbox }) {
+async function fetchGallery() {
   const supabase = createClient();
-  const [galleryItems, setGalleryItems] = useState(GALLERY_DATA);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const { data, error } = await supabase
+    .from('gallery_items')
+    .select('*')
+    .eq('is_active', true)
+    .order('display_order', { ascending: true })
+    .order('created_at', { ascending: false });
 
-  // Touch swiping states
+  if (error) throw error;
+
+  if (data && data.length > 0) {
+    return data.map((item, index) => ({
+      title: item.title,
+      desc: item.description || "",
+      thumb: item.image_url,
+      full: item.image_url,
+      caption: item.caption || item.title,
+      delay: (index % 6) * 100,
+      alt: item.caption || item.title
+    }));
+  }
+
+  return null;
+}
+
+export default function Gallery({ onOpenLightbox }) {
+  const [activeIndex, setActiveIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
+  const { data: galleryItems = GALLERY_FALLBACK } = useQuery({
+    queryKey: ['gallery'],
+    queryFn: fetchGallery,
+    staleTime: 10 * 60 * 1000,
+    retry: 1,
+  });
+
   const minSwipeDistance = 50;
 
-  useEffect(() => {
-    async function fetchGallery() {
-      try {
-        const { data, error } = await supabase
-          .from('gallery_items')
-          .select('*')
-          .eq('is_active', true)
-          .order('display_order', { ascending: true })
-          .order('created_at', { ascending: false });
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const mappedData = data.map((item, index) => ({
-            title: item.title,
-            desc: item.description || "",
-            thumb: item.image_url,
-            full: item.image_url,
-            caption: item.caption || item.title,
-            delay: (index % 6) * 100,
-            alt: item.caption || item.title
-          }));
-          setGalleryItems(mappedData);
-        }
-      } catch (e) {
-        console.warn("Gagal memuat galeri dari database. Menggunakan data default (statis).", e);
-      }
-    }
-    fetchGallery();
-  }, []);
-
   const handleNext = () => {
-    setGalleryItems((items) => {
-      if (items.length <= 1) return items;
-      setActiveIndex((prev) => (prev + 1) % items.length);
-      return items;
-    });
+    if (galleryItems.length <= 1) return;
+    setActiveIndex((prev) => (prev + 1) % galleryItems.length);
   };
 
   const handlePrev = () => {
-    setGalleryItems((items) => {
-      if (items.length <= 1) return items;
-      setActiveIndex((prev) => (prev - 1 + items.length) % items.length);
-      return items;
-    });
+    if (galleryItems.length <= 1) return;
+    setActiveIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
   };
-
-
 
   const handleCardClick = (idx) => {
     if (idx === activeIndex) {
@@ -127,7 +120,6 @@ export default function Gallery({ onOpenLightbox }) {
     }
   };
 
-  // Touch gesture handlers
   const handleTouchStart = (e) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
@@ -165,13 +157,11 @@ export default function Gallery({ onOpenLightbox }) {
             onTouchEnd={handleTouchEnd}
           >
             {galleryItems.map((item, idx) => {
-              // Calculate relative offset in circular stack
               let offset = idx - activeIndex;
               if (offset < 0) offset += galleryItems.length;
 
               let cardStyle = {};
               if (offset === 0) {
-                // Top Card
                 cardStyle = {
                   transform: "translate3d(0, 0, 0) scale(1)",
                   zIndex: 10,
@@ -179,7 +169,6 @@ export default function Gallery({ onOpenLightbox }) {
                   pointerEvents: "auto",
                 };
               } else if (offset === 1) {
-                // Second Card
                 cardStyle = {
                   transform: "translate3d(0, 15px, -15px) scale(0.95)",
                   zIndex: 9,
@@ -187,7 +176,6 @@ export default function Gallery({ onOpenLightbox }) {
                   pointerEvents: "auto",
                 };
               } else if (offset === 2) {
-                // Third Card
                 cardStyle = {
                   transform: "translate3d(0, 30px, -30px) scale(0.9)",
                   zIndex: 8,
@@ -195,7 +183,6 @@ export default function Gallery({ onOpenLightbox }) {
                   pointerEvents: "auto",
                 };
               } else {
-                // Hidden Cards behind
                 cardStyle = {
                   transform: "translate3d(0, 45px, -45px) scale(0.85)",
                   zIndex: 1,

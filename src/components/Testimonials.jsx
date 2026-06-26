@@ -1,10 +1,10 @@
 "use client";
 import "./Testimonials.css";
 
-import { useState, useEffect } from "react";
 import { createClient } from "../utils/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
-const TESTIMONIALS_DATA = [
+const TESTIMONIALS_FALLBACK = [
   {
     rating: 5,
     text: "Sangat senang menyekolahkan anak saya di Ibra Global English Bobong. Metodenya seru dan interaktif, anak saya sekarang jadi rajin belajar dan berani berbicara bahasa Inggris sehari-hari!",
@@ -28,34 +28,35 @@ const TESTIMONIALS_DATA = [
   }
 ];
 
-export default function Testimonials() {
+async function fetchTestimonials() {
   const supabase = createClient();
-  const [testimonials, setTestimonials] = useState(TESTIMONIALS_DATA);
+  const { data, error } = await supabase
+    .from('testimonials')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  useEffect(() => {
-    async function fetchTestimonials() {
-      try {
-        const { data, error } = await supabase
-          .from('testimonials')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const mappedData = data.map((item, index) => ({
-            rating: item.rating || 5,
-            text: item.text,
-            author: item.author,
-            role: item.role,
-            delay: (index % 3) * 100
-          }));
-          setTestimonials(mappedData);
-        }
-      } catch (e) {
-        console.warn("Gagal memuat testimoni dari database. Menggunakan data default (statis).", e);
-      }
-    }
-    fetchTestimonials();
-  }, []);
+  if (error) throw error;
+
+  if (data && data.length > 0) {
+    return data.map((item, index) => ({
+      rating: item.rating || 5,
+      text: item.text,
+      author: item.author,
+      role: item.role,
+      delay: (index % 3) * 100
+    }));
+  }
+
+  return null;
+}
+
+export default function Testimonials() {
+  const { data: testimonials = TESTIMONIALS_FALLBACK } = useQuery({
+    queryKey: ['testimonials'],
+    queryFn: fetchTestimonials,
+    staleTime: 10 * 60 * 1000, // 10 menit
+    retry: 1,
+  });
 
   return (
     <section id="testimonials" className="testimonials-section">
