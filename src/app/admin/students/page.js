@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useStudentData, useRegistrations, formatIndonesianDate } from "../studentsHelpers";
+import { useStudentData, useRegistrations, formatIndonesianDate } from "./studentsHelpers";
 import TabSwitcher from "./components/TabSwitcher";
 import RejectModal from "./components/RejectModal";
 import StudentFormModal from "./components/StudentFormModal";
@@ -18,7 +18,7 @@ export default function StudentManagement() {
   const [loading, setLoading] = useState(true);
   const [regLoading, setRegLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("students"); // 'students' | 'parents' | 'registrations'
+  const [activeTab, setActiveTab] = useState("students");
 
   // Reject modal state
   const [rejectModalId, setRejectModalId] = useState(null);
@@ -165,7 +165,7 @@ export default function StudentManagement() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ phone: waNumber, message: msg, type: "rejection" }),
-        }).catch(console.error); // fire-and-forget
+        }).catch(console.error);
       }
 
       setRejectModalId(null);
@@ -204,7 +204,7 @@ export default function StudentManagement() {
     };
   }, []);
 
-  // Lock body scroll when modal is open to prevent page scrolling behind it
+  // Lock body scroll when modal is open
   useEffect(() => {
     if (modalOpen) {
       document.body.style.overflow = "hidden";
@@ -256,23 +256,21 @@ export default function StudentManagement() {
       };
 
       if (editingStudentId) {
-        // Edit mode (Update)
+        // Edit mode
         const { error } = await supabase
           .from("students")
           .update(studentPayload)
           .eq("id", editingStudentId);
-
         if (error) throw error;
       } else {
-        // Add mode (Insert)
+        // Add mode
         const { error } = await supabase
           .from("students")
           .insert(studentPayload);
-
         if (error) throw error;
       }
 
-      // Reset form & reload
+      // Reset form
       setName("");
       setAge("");
       setProgram("Kids Program");
@@ -290,37 +288,25 @@ export default function StudentManagement() {
   const handleDeleteStudent = async (id, sName) => {
     if (confirm(`Apakah Anda yakin ingin menghapus data siswa "${sName}"? Semua data absensi dan rapor yang terhubung juga akan dihapus secara permanen.`)) {
       try {
-        // 1. Dapatkan parent_id (ID profil yang terhubung) sebelum data siswa dihapus
         const { data: student, error: errGet } = await supabase
           .from("students")
           .select("parent_id")
           .eq("id", id)
           .single();
-
-        if (errGet && errGet.code !== "PGRST116") {
-          throw errGet;
-        }
-
+        if (errGet && errGet.code !== "PGRST116") throw errGet;
         const linkedUserId = student?.parent_id;
-
-        // 2. Hapus data siswa dari database (absen & rapor terhapus otomatis karena CASCADE)
         const { error: errDel } = await supabase
           .from("students")
           .delete()
           .eq("id", id);
-
         if (errDel) throw errDel;
-
-        // 3. Jika ada akun terhubung dan tipe perannya adalah 'student' (Siswa), hapus akun login-nya dari sistem
         if (linkedUserId) {
           const { data: profile } = await supabase
             .from("profiles")
             .select("role")
             .eq("id", linkedUserId)
             .single();
-
           if (profile?.role === "student") {
-            // Hapus akun dari auth.users Supabase via API route server-side
             const resAuth = await fetch("/api/admin/delete-user", {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -328,11 +314,10 @@ export default function StudentManagement() {
             });
             if (!resAuth.ok) {
               const errData = await resAuth.json();
-              console.warn("Gagal menghapus akun login siswa dari sistem auth:", errData.error);
+              console.warn("Gagal menghapus akun login:", errData.error);
             }
           }
         }
-
         fetchData();
       } catch (err) {
         alert("Gagal menghapus siswa: " + err.message);
@@ -343,21 +328,17 @@ export default function StudentManagement() {
   const handleDeleteParent = async (userId, userName) => {
     const connectedCount = students.filter(s => s.parent_id === userId).length;
     const extraWarning = connectedCount > 0
-      ? `\n\nPeringatan: Akun ini terhubung ke ${connectedCount} siswa. Koneksi tersebut akan diputus, tetapi data siswa tidak akan dihapus.`
+      ? `\n\nPeringatan: Akun ini terhubung ke ${connectedCount} siswa.`
       : "";
-
-    if (confirm(`Apakah Anda yakin ingin menghapus akun pengguna "${userName}" secara permanen? Tindakan ini tidak dapat dibatalkan.${extraWarning}`)) {
+    if (confirm(`Apakah Anda yakin ingin menghapus akun pengguna "${userName}" secara permanen?${extraWarning}`)) {
       try {
-        // Panggil API route server-side untuk hapus akun (auth.admin hanya bisa di server)
         const res = await fetch("/api/admin/delete-user", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId }),
         });
-
         const result = await res.json();
         if (!res.ok) throw new Error(result.error || "Gagal menghapus akun.");
-
         fetchData();
       } catch (err) {
         alert("Gagal menghapus akun pengguna: " + err.message);
@@ -373,12 +354,8 @@ export default function StudentManagement() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId, role: newRole }),
         });
-
         const result = await res.json();
-        if (!res.ok) {
-          throw new Error(result.error || "Gagal mengubah peran.");
-        }
-        
+        if (!res.ok) throw new Error(result.error || "Gagal mengubah peran.");
         alert("Peran berhasil diperbarui!");
         fetchData();
       } catch (err) {
@@ -583,7 +560,6 @@ export default function StudentManagement() {
         </div>
       )}
 
-      {/* Tab: Pendaftaran Masuk */}
       {activeTab === "registrations" && (
         <div>
           {regLoading ? (
