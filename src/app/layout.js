@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { WebVitals } from "@/components/WebVitals";
 import { getLandingSettings } from "@/utils/getLandingSettings";
 import QueryProvider from "./QueryProvider";
+import { PostHogProviderWrapper } from "./PostHogProvider";
 import "./globals.css";
 // landing.css di-import di HomeClient.jsx agar hanya aktif di halaman landing
 
@@ -205,9 +206,11 @@ export default async function RootLayout({ children }) {
       </head>
       <body>
         <WebVitals />
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+        <PostHogProviderWrapper>
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </PostHogProviderWrapper>
         <Analytics />
       </body>
     </html>
