@@ -43,7 +43,7 @@ export default function FinanceTable({
         </thead>
         <tbody>
           {filteredStudents.map((student) => {
-            const pay = getStudentPayment(student.id);
+             const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
             return (
               <tr key={student.id} style={{ borderBottom: "1px solid var(--color-gray-100)" }} className="table-row-hover">
                 <td style={{ padding: "12px", fontWeight: "700", color: "var(--color-gray-800)" }} data-label="Nama Siswa">

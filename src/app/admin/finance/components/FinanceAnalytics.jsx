@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getMonthName } from "../../../utils";
 
 export default function FinanceAnalytics({
   students,
@@ -23,13 +24,6 @@ export default function FinanceAnalytics({
       </div>
     );
   }
-
-  const getMonthName = (ym) => {
-    if (!ym) return "";
-    const [y, m] = ym.split("-");
-    const date = new Date(parseInt(y), parseInt(m) - 1, 1);
-    return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
-  };
 
   const getMonthShortName = (ym) => {
     if (!ym) return "";

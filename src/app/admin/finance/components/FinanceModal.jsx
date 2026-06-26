@@ -27,7 +27,7 @@ export default function FinanceModal({
     amount: modalAmount,
     month: selectedMonth,
     payment_method: modalMethod,
-    payment_date: getStudentPayment(modalStudent.id).payment_date
+    payment_date: getStudentPayment(modalStudent.id, [], [], selectedMonth, {}).payment_date
   };
 
   return (
