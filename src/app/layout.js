@@ -4,6 +4,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { WebVitals } from "@/components/WebVitals";
 import { getLandingSettings } from "@/utils/getLandingSettings";
+import QueryProvider from "./QueryProvider";
 import "./globals.css";
 // landing.css di-import di HomeClient.jsx agar hanya aktif di halaman landing
 
@@ -204,7 +205,9 @@ export default async function RootLayout({ children }) {
       </head>
       <body>
         <WebVitals />
-        {children}
+        <QueryProvider>
+          {children}
+        </QueryProvider>
         <Analytics />
       </body>
     </html>
