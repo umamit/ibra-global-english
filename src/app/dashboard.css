@@ -7,6 +7,7 @@
 @import "./dashboard-components.css";
 @import "./dashboard-modal.css";
 @import "./dashboard-responsive.css";
+@import "./dashboard-print.css";
 
 /* ──── Header Mobile Scaling (moved from responsive for specificity) ──── */
 @media (max-width: 768px) {
