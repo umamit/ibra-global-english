@@ -147,8 +147,9 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { mode, payload, messages } = body;
-    modeForLog = mode || "unknown";
+    const { mode: rawMode, payload, messages } = body;
+    const mode = rawMode || "chat";
+    modeForLog = mode;
 
     // 1. Validasi Keamanan: Deteksi Prompt Injection
     let isMalicious = false;
