@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getMonthName } from "../../../utils";
+import { getMonthName } from "../../utils";
 
 export default function FinanceAnalytics({
   students,
