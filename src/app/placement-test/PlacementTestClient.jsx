@@ -330,8 +330,21 @@ export default function PlacementTestClient() {
                 </div>
               </div>
 
-              <button className="btn-portal-primary" style={{ padding: "1rem 2.5rem", fontSize: "1.1rem", borderRadius: "50px", fontWeight: "800", boxShadow: "0 10px 20px rgba(33, 108, 126, 0.25)" }} onClick={handleStartTest}>
-                <span>Mulai Tes Penempatan Sekarang</span>
+              <button 
+                className="btn-portal-primary" 
+                style={{ 
+                  padding: "1rem 2.5rem", 
+                  fontSize: "1.1rem", 
+                  borderRadius: "50px", 
+                  fontWeight: "800", 
+                  boxShadow: "0 10px 20px rgba(33, 108, 126, 0.25)",
+                  opacity: loadingQuestions ? 0.75 : 1,
+                  cursor: loadingQuestions ? "wait" : "pointer"
+                }} 
+                onClick={handleStartTest}
+                disabled={loadingQuestions}
+              >
+                <span>{loadingQuestions ? "Menyiapkan Lembar Soal AI..." : "Mulai Tes Penempatan Sekarang"}</span>
               </button>
             </div>
           )}
