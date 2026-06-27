@@ -74,12 +74,28 @@ export default function StudentManagement() {
   // Fetch pendaftaran masuk
   const fetchRegistrations = async () => {
     setRegLoading(true);
+    setErrorMsg("");
     try {
       const res = await fetch("/api/register");
       const result = await res.json();
-      if (result.data) setRegistrations(result.data);
+
+      if (!res.ok) {
+        const errorText = result.error || `Gagal memuat data pendaftaran (HTTP ${res.status})`;
+        console.error("Gagal memuat data pendaftaran:", errorText, result);
+        setErrorMsg(errorText);
+        setRegistrations([]);
+        return;
+      }
+
+      if (result.data) {
+        setRegistrations(result.data);
+      } else {
+        setRegistrations([]);
+      }
     } catch (err) {
       console.error("Gagal memuat data pendaftaran:", err);
+      setErrorMsg("Terjadi kesalahan jaringan saat memuat data pendaftaran.");
+      setRegistrations([]);
     } finally {
       setRegLoading(false);
     }
@@ -204,6 +220,13 @@ export default function StudentManagement() {
         { event: "*", schema: "public", table: "profiles" },
         () => {
           fetchData();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "registrations" },
+        () => {
+          fetchRegistrations();
         }
       )
       .subscribe();
@@ -571,6 +594,18 @@ export default function StudentManagement() {
 
       {activeTab === "registrations" && (
         <div>
+          {errorMsg && activeTab === "registrations" && (
+            <div style={{
+              backgroundColor: "rgba(239,68,68,0.1)",
+              color: "var(--color-red)",
+              padding: "0.75rem 1rem",
+              borderRadius: "8px",
+              marginBottom: "1rem",
+              fontWeight: "600"
+            }}>
+              {errorMsg}
+            </div>
+          )}
           {regLoading ? (
             <div style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
               <svg style={{ animation: "spin 1s linear infinite", width: "28px", height: "28px" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
