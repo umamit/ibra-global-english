@@ -22,24 +22,8 @@ export const PATCH = withAdminAuth(async (request) => {
       );
     }
 
-    // 2. Ambil service role key
-    const { url: supabaseUrl } = getSupabaseConfig();
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!serviceRoleKey) {
-      return NextResponse.json(
-        { error: "Konfigurasi server tidak lengkap (service role key tidak ditemukan)." },
-        { status: 500 }
-      );
-    }
-
-    // 3. Buat admin client dengan service role key
-    const adminClient = createClient(supabaseUrl, serviceRoleKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-
-    // 4. Update di tabel profiles
-    const { error: profileError } = await adminClient
+    // Update di tabel profiles
+    const { error: profileError } = await adminSupabase
       .from("profiles")
       .update({ role })
       .eq("id", userId);
@@ -51,8 +35,9 @@ export const PATCH = withAdminAuth(async (request) => {
       );
     }
 
-    // 5. Update di auth.users metadata dan konfirmasi email
-    const { error: authError } = await adminClient.auth.admin.updateUserById(userId, {
+    // Update di auth.users (app_metadata untuk keamanan & user_metadata untuk keselarasan) dan konfirmasi email
+    const { error: authError } = await adminSupabase.auth.admin.updateUserById(userId, {
+      app_metadata: { role },
       user_metadata: { role },
       email_confirm: true,
     });

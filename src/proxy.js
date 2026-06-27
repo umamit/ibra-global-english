@@ -170,13 +170,11 @@ export async function proxy(request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Ambil peran dari tabel public.profiles (sumber kebenaran resmi), BUKAN dari
-  // user_metadata. user_metadata bisa diubah sendiri oleh user via
-  // supabase.auth.updateUser() sehingga rawan privilege escalation, dan juga
-  // bisa out-of-sync. profiles dilindungi RLS dan dipakai konsisten di seluruh app.
-  // Query hanya dijalankan bila ada user login (pengunjung publik tidak terkena).
-  let role = null;
-  if (user) {
+  // Dapatkan peran pengguna dari app_metadata (aman, hanya service role yang bisa ubah)
+  let role = user?.app_metadata?.role;
+
+  // Fallback ke query database profiles jika app_metadata.role belum terisi (untuk sesi lama)
+  if (user && !role) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")

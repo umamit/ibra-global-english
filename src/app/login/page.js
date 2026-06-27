@@ -93,10 +93,10 @@ export default function LoginPage() {
         if (profile?.role) {
           role = profile.role;
         } else {
-          role = user?.user_metadata?.role || "parent";
+          role = user?.app_metadata?.role || user?.user_metadata?.role || "parent";
         }
       } catch (_) {
-        role = user?.user_metadata?.role || "parent";
+        role = user?.app_metadata?.role || user?.user_metadata?.role || "parent";
       }
 
       // Jika bukan admin, cek mode maintenance sebelum melanjutkan

@@ -66,6 +66,11 @@ BEGIN
     default_role := new.raw_user_meta_data->>'role';
   END IF;
 
+  -- Mencegah pendaftaran langsung sebagai 'admin' via client-side metadata
+  IF default_role = 'admin' THEN
+    default_role := 'parent';
+  END IF;
+
   IF new.raw_user_meta_data->>'full_name' IS NOT NULL THEN
     full_name_val := new.raw_user_meta_data->>'full_name';
   ELSE
@@ -75,8 +80,15 @@ BEGIN
   INSERT INTO public.profiles (id, full_name, role, email)
   VALUES (new.id, full_name_val, default_role, new.email);
 
+  -- Set email_confirmed_at dan simpan role secara aman ke raw_app_meta_data
   UPDATE auth.users 
-  SET email_confirmed_at = COALESCE(email_confirmed_at, now()) 
+  SET 
+    email_confirmed_at = COALESCE(email_confirmed_at, now()),
+    raw_app_meta_data = jsonb_set(
+      COALESCE(raw_app_meta_data, '{}'::jsonb),
+      '{role}',
+      to_jsonb(default_role)
+    )
   WHERE id = new.id;
 
   RETURN NEW;
