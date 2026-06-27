@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePostHog } from "posthog-js/react";
+import * as Sentry from "@sentry/nextjs";
 
 export default function PostHogTestPage() {
   const [mounted, setMounted] = useState(false);
   const [status, setStatus] = useState("Idle");
+  const [sentryStatus, setSentryStatus] = useState("Idle");
   const [distinctId, setDistinctId] = useState("");
   const posthog = usePostHog();
 
@@ -76,6 +78,20 @@ export default function PostHogTestPage() {
     }
   };
 
+  const handleSentryMetric = () => {
+    try {
+      setSentryStatus("Mengirim metric...");
+      Sentry.metrics.count('test_metric', 1);
+      Sentry.captureMessage("Test metric 'test_metric' triggered", {
+        level: "info",
+        tags: { type: "metric-test" }
+      });
+      setSentryStatus("Metric 'test_metric' sukses dikirim! Periksa tab Metrics / Transactions di dashboard Sentry Anda.");
+    } catch (error) {
+      setSentryStatus(`Gagal mengirim metric: ${error.message}`);
+    }
+  };
+
   if (!mounted) {
     return null; // Mencegah kesalahan hidrasi SSR
   }
@@ -94,13 +110,13 @@ export default function PostHogTestPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
             </span>
-            <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
-              PostHog Integration Test
+            <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              PostHog & Sentry Integration Test
             </h1>
           </div>
 
           <p className="text-slate-400 text-sm mb-6 leading-relaxed">
-            Halaman ini digunakan untuk menguji integrasi event kustom PostHog. Klik tombol di bawah untuk memicu pengiriman event kustom.
+            Halaman ini digunakan untuk menguji integrasi event kustom PostHog dan metrik kustom Sentry secara real-time.
           </p>
 
           {distinctId && (
@@ -110,22 +126,40 @@ export default function PostHogTestPage() {
             </div>
           )}
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <button
               onClick={handleCaptureEvent}
-              className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-blue-500/15 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-blue-500/15 active:scale-[0.98] transition-all duration-200 cursor-pointer text-sm"
             >
               Kirim Kustom Event ke PostHog
             </button>
+
+            <button
+              onClick={handleSentryMetric}
+              className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-medium rounded-xl shadow-lg shadow-purple-500/15 active:scale-[0.98] transition-all duration-200 cursor-pointer text-sm"
+            >
+              Kirim Kustom Metric ke Sentry
+            </button>
           </div>
 
-          {status && (
-            <div className="mt-6 p-4 bg-slate-950/80 border border-slate-800 rounded-lg">
-              <p className="text-xs text-slate-500 uppercase tracking-wider mb-1 font-semibold">
-                Status Event:
+          {status && status !== "Idle" && (
+            <div className="mt-4 p-3 bg-slate-950/80 border border-slate-800 rounded-lg">
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5 font-semibold">
+                Status PostHog:
               </p>
-              <p className={`text-sm ${status.includes("sukses") ? "text-green-400" : "text-blue-400"} break-words`}>
+              <p className={`text-xs ${status.includes("sukses") ? "text-green-400" : "text-blue-400"} break-words`}>
                 {status}
+              </p>
+            </div>
+          )}
+
+          {sentryStatus && sentryStatus !== "Idle" && (
+            <div className="mt-3 p-3 bg-slate-950/80 border border-slate-800 rounded-lg">
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5 font-semibold">
+                Status Sentry:
+              </p>
+              <p className={`text-xs ${sentryStatus.includes("sukses") ? "text-green-400" : "text-purple-400"} break-words`}>
+                {sentryStatus}
               </p>
             </div>
           )}
