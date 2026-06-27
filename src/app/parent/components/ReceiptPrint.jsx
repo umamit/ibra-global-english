@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 export default function ReceiptPrint({ printReceipt, selectedChild, parentName, paymentSettings, getTerbilang, getMonthName, getIndonesianDate, onBack }) {
+  const receiptNo = useMemo(() => {
+    if (!printReceipt) return "";
+    return `IBRA-REC-${printReceipt.id ? printReceipt.id.slice(0, 8).toUpperCase() : "DRAFT"}`;
+  }, [printReceipt]);
+
   if (!printReceipt) return null;
 
   const terbilangStr = getTerbilang(printReceipt.amount);
-  const receiptNo = `IBRA-REC-${printReceipt.id ? printReceipt.id.slice(0, 8).toUpperCase() : Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
   return (
     <div style={{ padding: "2rem", backgroundColor: "white", minHeight: "100vh", color: "#333", fontFamily: "sans-serif" }}>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 export default function VerifyCertificate() {
   const params = useParams();
@@ -17,8 +18,10 @@ export default function VerifyCertificate() {
   useEffect(() => {
     // Theme sync
     const savedTheme = localStorage.getItem("theme") || "light";
-    setTheme(savedTheme);
-    document.documentElement.setAttribute("data-theme", savedTheme);
+    setTimeout(() => {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    }, 0);
 
     if (!id) return;
 
@@ -131,9 +134,9 @@ export default function VerifyCertificate() {
         {/* Navigation & Verification Banner */}
         <div className="no-print" style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
-            <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", color: "var(--color-primary)", fontWeight: "800", textDecoration: "none" }}>
+            <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", color: "var(--color-primary)", fontWeight: "800", textDecoration: "none" }}>
               ← Beranda Utama Ibra
-            </a>
+            </Link>
             <button 
               className="btn-portal-primary" 
               onClick={() => window.print()}
@@ -384,7 +387,7 @@ export default function VerifyCertificate() {
                 }}>
                   <p style={{ margin: "0 0 3px 0", fontSize: "0.75rem", fontWeight: "bold", color: "#1c3d3a", textTransform: "uppercase" }}>Catatan Guru (Tutor Review Notes)</p>
                   <p style={{ margin: "0", fontSize: "0.75rem", color: "#555", fontStyle: "italic", lineHeight: "1.4" }}>
-                    "{report?.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!"}"
+                    &ldquo;{report?.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!"}&rdquo;
                   </p>
                 </div>
 

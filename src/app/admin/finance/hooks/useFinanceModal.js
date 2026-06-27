@@ -30,21 +30,7 @@ export const useFinanceModal = (fetchData, selectedMonth, sppPrices, showToast) 
         .upload(filePath, file, { cacheControl: "3600", upsert: true });
 
       if (uploadError) {
-        // Auto create bucket if not found
-        if (uploadError.message.includes("bucket not found") || uploadError.message.includes("does not exist")) {
-          const { error: bucketError } = await supabase.storage.createBucket("spp-receipts", {
-            public: true,
-            fileSizeLimit: 5242880, // 5MB
-          });
-          if (bucketError) throw bucketError;
-
-          const { error: retryError } = await supabase.storage
-            .from("spp-receipts")
-            .upload(filePath, file, { cacheControl: "3600", upsert: true });
-          if (retryError) throw retryError;
-        } else {
-          throw uploadError;
-        }
+        throw uploadError;
       }
 
       const { data } = supabase.storage

@@ -33,7 +33,17 @@ export default function AdminOnlineSchedulePage() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchSchedules(); }, [showAll]);
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      if (cancelled) return;
+      await fetchSchedules();
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [showAll]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

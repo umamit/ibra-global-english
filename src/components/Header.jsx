@@ -2,6 +2,7 @@
 import "./Header.css";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function Header({ theme, toggleTheme, hasMarquee }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,20 +52,20 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
     <>
       <header id="header" className={`${isScrolled ? "scrolled" : ""} ${hasMarquee ? "has-marquee" : ""}`}>
         <div className="container nav-container">
-          <a href="/#home" className="logo-link" id="logo-nav">
+          <Link href="/#home" className="logo-link" id="logo-nav">
             <img src="/assets/logo.png" alt="Ibra Global English Logo" className="logo-img" />
             <div className="logo-text">
               <h1>Ibra Global English</h1>
               <p>Belajar Seru Lancar Bicara</p>
             </div>
-          </a>
+          </Link>
           
           <nav className="nav-links" aria-label="Navigasi Utama">
-            <a href="/#home" className="nav-link">Home</a>
-            <a href="/#programs" className="nav-link">Program</a>
-            <a href="/gallery" className="nav-link">Galeri</a>
-            <a href="/placement-test" className="nav-link">Tes Penempatan</a>
-            <a href="/#faq" className="nav-link">FAQ</a>
+            <Link href="/#home" className="nav-link">Home</Link>
+            <Link href="/#programs" className="nav-link">Program</Link>
+            <Link href="/gallery" className="nav-link">Galeri</Link>
+            <Link href="/placement-test" className="nav-link">Tes Penempatan</Link>
+            <Link href="/#faq" className="nav-link">FAQ</Link>
           </nav>
           
           <div className="nav-right-group">
@@ -137,8 +138,8 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
               </svg>
             </button>
             
-            <a href="/login" className="nav-btn-outline nav-btn-desktop" style={{ marginRight: "0.75rem" }}>Portal Login</a>
-            <a href="/#contact" className="nav-btn nav-btn-desktop">Daftar Sekarang</a>
+            <Link href="/login" className="nav-btn-outline nav-btn-desktop" style={{ marginRight: "0.75rem" }}>Portal Login</Link>
+            <Link href="/#contact" className="nav-btn nav-btn-desktop">Daftar Sekarang</Link>
             
             <button 
               className="menu-toggle" 
@@ -169,14 +170,14 @@ export default function Header({ theme, toggleTheme, hasMarquee }) {
       >
         <div className="mobile-nav-content">
           <nav className="mobile-nav-links" aria-label="Navigasi Seluler">
-            <a href="/#home" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Home</a>
-            <a href="/#programs" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Program</a>
-            <a href="/gallery" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Galeri</a>
-            <a href="/placement-test" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Tes Penempatan</a>
-            <a href="/#faq" className="mobile-link" onClick={() => setIsMenuOpen(false)}>FAQ</a>
-            <a href="/login" className="mobile-link" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary-dark)", fontWeight: "700" }}>Login Portal</a>
+            <Link href="/#home" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Home</Link>
+            <Link href="/#programs" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Program</Link>
+            <Link href="/gallery" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Galeri</Link>
+            <Link href="/placement-test" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Tes Penempatan</Link>
+            <Link href="/#faq" className="mobile-link" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
+            <Link href="/login" className="mobile-link" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary-dark)", fontWeight: "700" }}>Login Portal</Link>
           </nav>
-          <a href="/#contact" className="mobile-nav-btn mobile-link" onClick={() => setIsMenuOpen(false)}>Daftar Sekarang</a>
+          <Link href="/#contact" className="mobile-nav-btn mobile-link" onClick={() => setIsMenuOpen(false)}>Daftar Sekarang</Link>
         </div>
       </div>
     </>

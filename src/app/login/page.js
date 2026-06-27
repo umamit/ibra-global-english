@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 import "./login.css";
 
 export default function LoginPage() {
@@ -23,11 +24,29 @@ export default function LoginPage() {
 
   // Deteksi dan inisialisasi tema otomatis saat halaman dimuat
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
+
+    let cancelled = false;
+
+    const load = async () => {
+
+      if (cancelled) return;
+
+      const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
     setTheme(initialTheme);
     document.documentElement.setAttribute("data-theme", initialTheme);
+
+    };
+
+    load();
+
+    return () => {
+
+      cancelled = true;
+
+    };
+
   }, []);
 
 
@@ -370,10 +389,10 @@ export default function LoginPage() {
         </form>
 
         <div className="auth-back-link">
-          <a href="/">
+          <Link href="/">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="back-arrow-icon"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Kembali ke Beranda Utama
-          </a>
+          </Link>
         </div>
       </div>
     </div>

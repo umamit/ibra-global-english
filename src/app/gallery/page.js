@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import GalleryClient from "./GalleryClient";
 
 export const metadata = {

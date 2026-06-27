@@ -116,7 +116,7 @@ export default function ProgressView({
 
           <div className="report-notes-container" style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", margin: "1.5rem 0 3rem", backgroundColor: "var(--color-gray-50)", padding: "1.25rem", borderRadius: "0 8px 8px 0" }}>
             <p style={{ fontSize: "0.95rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
-              "{printReport.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus latih kemampuan bercakapnya."}"
+              &ldquo;{printReport.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus latih kemampuan bercakapnya."}&rdquo;
             </p>
           </div>
 
@@ -445,7 +445,7 @@ export default function ProgressView({
                     <div style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", marginTop: "2rem", backgroundColor: "rgba(166, 136, 73, 0.03)", padding: "1rem 1.25rem", borderRadius: "0 8px 8px 0" }}>
                       <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", textTransform: "uppercase", marginBottom: "4px" }}>Catatan Tutor Pendamping</p>
                       <p style={{ fontSize: "0.9rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
-                        "{report.tutor_notes}"
+                        &ldquo;{report.tutor_notes}&rdquo;
                       </p>
                     </div>
                   )}

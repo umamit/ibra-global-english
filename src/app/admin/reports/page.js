@@ -137,7 +137,35 @@ export default function ReportCardManagement() {
   };
 
   useEffect(() => {
-    fetchData();
+
+
+    let cancelled = false;
+
+
+    const load = async () => {
+
+
+      if (cancelled) return;
+
+
+      fetchData();
+
+
+    };
+
+
+    load();
+
+
+    return () => {
+
+
+      cancelled = true;
+
+
+    };
+
+
   }, []);
 
   // A4: Export rapor ke CSV — bisa filter per-siswa
@@ -476,7 +504,7 @@ export default function ReportCardManagement() {
 
           <div className="report-notes-container" style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", margin: "1.5rem 0 3rem", backgroundColor: "var(--color-gray-50)", padding: "1.25rem", borderRadius: "0 8px 8px 0" }}>
             <p style={{ fontSize: "0.95rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
-              "{printReport.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus latih kemampuan bercakapnya."}"
+              &ldquo;{printReport.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus latih kemampuan bercakapnya."}&rdquo;
             </p>
           </div>
 

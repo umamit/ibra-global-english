@@ -106,9 +106,17 @@ export default function AdminDashboard() {
   }, [supabase]);
 
   useEffect(() => {
-    if (!loading) {
-      fetchAiInsights();
-    }
+    let cancelled = false;
+    const load = async () => {
+      if (cancelled) return;
+      if (!loading) {
+        await fetchAiInsights();
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, [loading]);
 
   /**

@@ -21,7 +21,9 @@ export default function AdminFinance() {
   const [allPayments, setAllPayments] = useState([]);
   const [activeTab, setActiveTab] = useState("list"); // "list" or "analytics"
   const [loading, setLoading] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState("");
+  const now = new Date();
+  const defaultMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
   const [searchQuery, setSearchQuery] = useState("");
   const [programFilter, setProgramFilter] = useState("All");
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
@@ -128,14 +130,6 @@ export default function AdminFinance() {
     fetchSppPrices();
   }, []);
 
-  // Initialize selected month to current month (YYYY-MM)
-  useEffect(() => {
-    const d = new Date();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const yyyy = d.getFullYear();
-    setSelectedMonth(`${yyyy}-${mm}`);
-  }, []);
-
   // Lock body scroll when modal is open to prevent page scrolling behind it
   useEffect(() => {
     if (isModalOpen) {
@@ -149,7 +143,9 @@ export default function AdminFinance() {
   }, [isModalOpen]);
 
   useEffect(() => {
-    fetchData();
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 0);
 
     // Subscribe to real-time changes
     const channel = supabase
@@ -171,6 +167,7 @@ export default function AdminFinance() {
       .subscribe();
 
     return () => {
+      clearTimeout(timer);
       supabase.removeChannel(channel);
     };
   }, [selectedMonth]);
