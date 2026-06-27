@@ -29,6 +29,13 @@ export async function GET(request) {
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Set cookie login_time=active agar tidak terlogout oleh ParentSessionManager
+      response.cookies.set("login_time", "active", {
+        path: "/",
+        maxAge: 3600,
+        sameSite: "Lax",
+      });
+
       const { data: { user } } = await supabase.auth.getUser();
       const role = user?.app_metadata?.role;
 
