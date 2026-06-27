@@ -206,6 +206,31 @@ export async function proxy(request) {
     role = profile?.role ?? null;
   }
 
+  // --- LOGIKA ONBOARDING PERAN (GOOGLE LOGIN) ---
+  const isOnboardingPage = pathname === "/onboarding";
+  const isOnboardingApi = pathname.startsWith("/api/onboarding");
+
+  // Jika pengguna sudah masuk tetapi BELUM memiliki peran (role kosong/null)
+  if (user && !role) {
+    if (!isOnboardingPage && !isOnboardingApi && pathname !== "/api/admin/logout") {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+  }
+
+  // Jika pengguna sudah memiliki peran tetapi mencoba mengakses halaman onboarding, kembalikan ke dashboard
+  if (user && role && isOnboardingPage) {
+    if (role === "admin") {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    } else if (role === "tutor") {
+      return NextResponse.redirect(new URL("/tutor", request.url));
+    } else if (role === "student") {
+      return NextResponse.redirect(new URL("/student", request.url));
+    } else {
+      return NextResponse.redirect(new URL("/parent", request.url));
+    }
+  }
+  // ----------------------------------------------
+
   // Proteksi rute Admin (/admin*)
   if (pathname.startsWith("/admin")) {
     if (!user) {
@@ -257,7 +282,7 @@ export async function proxy(request) {
         return NextResponse.redirect(new URL("/tutor", request.url));
       } else if (role === "student") {
         return NextResponse.redirect(new URL("/student", request.url));
-      } else {
+      } else if (role) {
         return NextResponse.redirect(new URL("/parent", request.url));
       }
     }
