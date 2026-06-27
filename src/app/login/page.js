@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+import posthog from "posthog-js";
+import * as Sentry from "@sentry/nextjs";
 import "./login.css";
 
 export default function LoginPage() {
@@ -126,6 +128,21 @@ export default function LoginPage() {
         document.cookie = `login_time=active; path=/; max-age=3600; SameSite=Lax`;
       }
 
+      // Identifikasi pengguna di PostHog & Sentry untuk pelacakan yang selaras
+      posthog.identify(user.id, { 
+        email: user.email, 
+        role: role,
+        name: user.user_metadata?.full_name || user.email
+      });
+      posthog.capture("user_logged_in", { role });
+
+      Sentry.setUser({
+        id: user.id,
+        email: user.email,
+        username: user.user_metadata?.full_name || email,
+        role: role
+      });
+
       setSuccessBanner("Masuk berhasil! Mengalihkan ke halaman dashboard...");
 
       setTimeout(() => {
@@ -175,6 +192,8 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
+
+      posthog.capture("user_registered", { role });
 
       setSuccessBanner("Pendaftaran berhasil! Akun Anda telah aktif, silakan masuk.");
       setFullName("");
