@@ -2,6 +2,29 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { getSupabaseConfig } from "@/utils/supabase/config";
 
+// Cache status maintenance di level modul agar tidak query DB tiap request.
+// TTL 30 detik: perubahan toggle maintenance tetap terasa cepat, tapi
+// halaman publik tidak lagi memukul database pada setiap kunjungan.
+let maintenanceCache = { value: null, expires: 0 };
+
+async function getMaintenanceMode(supabase) {
+  const now = Date.now();
+  if (maintenanceCache.expires > now) return maintenanceCache.value;
+  try {
+    const { data } = await supabase
+      .from("landing_settings")
+      .select("value")
+      .eq("key", "maintenance_mode")
+      .single();
+    const value = data?.value === "true";
+    maintenanceCache = { value, expires: now + 30000 };
+    return value;
+  } catch (_) {
+    // Fail open: kalau query gagal, jangan blokir halaman.
+    return maintenanceCache.value;
+  }
+}
+
 export async function proxy(request) {
   // Generate a random base64 nonce using standard Web Crypto API
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
@@ -147,8 +170,20 @@ export async function proxy(request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Dapatkan peran pengguna dari metadata (efisien, tanpa query database tambahan)
-  const role = user?.user_metadata?.role;
+  // Ambil peran dari tabel public.profiles (sumber kebenaran resmi), BUKAN dari
+  // user_metadata. user_metadata bisa diubah sendiri oleh user via
+  // supabase.auth.updateUser() sehingga rawan privilege escalation, dan juga
+  // bisa out-of-sync. profiles dilindungi RLS dan dipakai konsisten di seluruh app.
+  // Query hanya dijalankan bila ada user login (pengunjung publik tidak terkena).
+  let role = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    role = profile?.role ?? null;
+  }
 
   // Proteksi rute Admin (/admin*)
   if (pathname.startsWith("/admin")) {
@@ -218,13 +253,7 @@ export async function proxy(request) {
   // Hanya cek maintenance untuk halaman publik (bukan admin, bukan API, bukan halaman maintenance itu sendiri)
   if (!isMaintenancePage && !isAdminPath && !isApiPath) {
     try {
-      const { data: maintenanceData } = await supabase
-        .from("landing_settings")
-        .select("value")
-        .eq("key", "maintenance_mode")
-        .single();
-
-      const isMaintenance = maintenanceData?.value === "true";
+      const isMaintenance = await getMaintenanceMode(supabase);
 
       if (isMaintenance) {
         // Admin tetap bisa mengakses login page
@@ -245,13 +274,7 @@ export async function proxy(request) {
   // Jika maintenance page diakses tapi mode maintenance OFF → redirect ke beranda
   if (isMaintenancePage) {
     try {
-      const { data: maintenanceData } = await supabase
-        .from("landing_settings")
-        .select("value")
-        .eq("key", "maintenance_mode")
-        .single();
-
-      const isMaintenance = maintenanceData?.value === "true";
+      const isMaintenance = await getMaintenanceMode(supabase);
       if (!isMaintenance) {
         return NextResponse.redirect(new URL("/", request.url));
       }

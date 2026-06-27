@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "../dashboard-components.css";
@@ -702,10 +703,10 @@ export default function PlacementTestClient() {
                   Ulangi Tes
                 </button>
 
-                <a href="/" className="btn-portal-outline" style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700", backgroundColor: "white", color: "var(--color-gray-700)" }}>
+                <Link href="/" className="btn-portal-outline" style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700", backgroundColor: "white", color: "var(--color-gray-700)" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                   <span>Keluar Tes</span>
-                </a>
+                </Link>
               </div>
             </div>
           )}
