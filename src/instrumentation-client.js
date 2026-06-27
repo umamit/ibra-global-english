@@ -22,8 +22,11 @@ Sentry.init({
 
   integrations: [
     Sentry.replayIntegration(),
-    // User feedback widget
-    Sentry.feedbackIntegration({ colorScheme: "light" }),
+    // User feedback widget (disabled on Sanity Studio to avoid overlapping the Publish button)
+    Sentry.feedbackIntegration({ 
+      colorScheme: "light",
+      autoInject: typeof window !== "undefined" ? !window.location.pathname.startsWith("/studio") : true
+    }),
   ],
 });
 
