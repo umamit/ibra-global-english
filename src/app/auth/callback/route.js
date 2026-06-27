@@ -12,7 +12,7 @@ export async function GET(request) {
   if (code) {
     const { url, anonKey } = getSupabaseConfig();
 
-    // Buat klien Supabase yang menulis cookies langsung ke response redirect ini
+    // Buat klien Supabase yang menulis cookies langsung ke response redirect
     const supabase = createServerClient(url, anonKey, {
       cookies: {
         getAll() {
@@ -32,29 +32,17 @@ export async function GET(request) {
       const { data: { user } } = await supabase.auth.getUser();
       const role = user?.app_metadata?.role;
 
-      // Jika sudah memiliki peran, arahkan ke dashboard yang sesuai
+      // Jika sudah memiliki peran, ubah lokasi redirect langsung pada header response yang sama
+      // Ini menjaga seluruh cookie (termasuk path "/" dan httpOnly) tetap utuh tanpa terbuang!
       if (role) {
         let dashboardUrl = `${origin}/parent`;
         if (role === "admin") dashboardUrl = `${origin}/admin`;
         else if (role === "tutor") dashboardUrl = `${origin}/tutor`;
         else if (role === "student") dashboardUrl = `${origin}/student`;
 
-        // Buat response redirect baru ke dashboard dan salin cookies yang sudah terekam
-        const successResponse = NextResponse.redirect(dashboardUrl);
-        response.cookies.getAll().forEach((cookie) => {
-          successResponse.cookies.set(cookie.name, cookie.value, {
-            path: cookie.path,
-            domain: cookie.domain,
-            expires: cookie.expires,
-            secure: cookie.secure,
-            httpOnly: cookie.httpOnly,
-            sameSite: cookie.sameSite,
-          });
-        });
-        return successResponse;
+        response.headers.set("Location", dashboardUrl);
       }
 
-      // Jika belum memiliki peran, gunakan response default ke onboarding (cookies sudah terpasang)
       return response;
     }
   }
