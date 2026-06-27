@@ -3,8 +3,8 @@
 export default function CalendarView({ parentSchedules, detailsLoading, selectedChild }) {
   if (detailsLoading) {
     return (
-      <div className="portal-card" style={{ padding: "2rem" }}>
-        <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
+      <div className="portal-card">
+        <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
           Jadwal & Agenda Belajar Siswa
         </h3>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -31,11 +31,11 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
 
   if (parentSchedules.length === 0) {
     return (
-      <div className="portal-card" style={{ padding: "2rem", textAlign: "center" }}>
-        <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
+      <div className="portal-card text-center" style={{ padding: "3rem" }}>
+        <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
           Jadwal & Agenda Belajar Siswa
         </h3>
-        <p style={{ color: "var(--color-gray-500)", fontSize: "0.9rem", marginBottom: "2rem" }}>
+        <p style={{ color: "var(--color-gray-500)", fontSize: "0.875rem", marginBottom: "2rem" }}>
           Berikut adalah agenda belajar, kelas rutin, kegiatan bimbingan belajar, serta hari libur sekolah yang dikhususkan untuk program pendaftaran anak Anda (**{selectedChild?.program}**).
         </p>
         <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--color-gray-400)" }}>
@@ -46,11 +46,11 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
   }
 
   return (
-    <div className="portal-card" style={{ padding: "2rem" }}>
-      <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
+    <div className="portal-card">
+      <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
         Jadwal & Agenda Belajar Siswa
       </h3>
-      <p style={{ color: "var(--color-gray-500)", fontSize: "0.9rem", marginBottom: "2rem" }}>
+      <p style={{ color: "var(--color-gray-500)", fontSize: "0.875rem", marginBottom: "2rem" }}>
         Berikut adalah agenda belajar, kelas rutin, kegiatan bimbingan belajar, serta hari libur sekolah yang dikhususkan untuk program pendaftaran anak Anda (**{selectedChild?.program}**).
       </p>
 
@@ -80,22 +80,22 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
             <div key={sched.id} className="portal-card" style={{ ...typeStyle, padding: "1.5rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
               <div style={{ flex: "1 1 300px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <span style={{ fontSize: "0.7rem", fontWeight: "800", color: "white", backgroundColor: typeColor, padding: "0.2rem 0.6rem", borderRadius: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  <span style={{ fontSize: "0.7rem", fontWeight: "800", color: "white", backgroundColor: typeColor, padding: "0.2rem 0.6rem", borderRadius: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
                     {typeLabel}
                   </span>
                   <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
                     Sasaran: {sched.program}
                   </span>
                 </div>
-                <h4 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{sched.title}</h4>
+                <h4 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{sched.title}</h4>
                 {sched.description && (
                   <p style={{ fontSize: "0.85rem", color: "var(--color-gray-600)", marginTop: "4px", lineHeight: "1.5" }}>{sched.description}</p>
                 )}
               </div>
 
-              <div style={{ textAlign: "right", minWidth: "200px" }}>
-                <p style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--color-gray-800)" }}>📅 {formattedDate}</p>
-                <p style={{ fontSize: "0.95rem", fontWeight: "900", color: "var(--color-primary-dark)", marginTop: "4px" }}>⏱ {timeRange}</p>
+              <div style={{ textAlign: "right", minWidth: "200px" }} className="text-left-mobile">
+                <p style={{ fontSize: "0.875rem", fontWeight: "800", color: "var(--color-gray-800)" }}>📅 {formattedDate}</p>
+                <p style={{ fontSize: "0.9rem", fontWeight: "900", color: "var(--color-primary-dark)", marginTop: "4px" }}>⏱ {timeRange}</p>
                 {sched.instructor && (
                   <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "6px" }}>Tutor: <strong>{sched.instructor}</strong></p>
                 )}

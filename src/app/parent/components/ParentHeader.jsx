@@ -1,16 +1,29 @@
 "use client";
 
 export default function ParentHeader({ parentName, notifications, showNotificationDropdown, setShowNotificationDropdown, onLogout }) {
+  // Ambil inisial nama untuk avatar
+  const getInitials = (name) => {
+    if (!name) return "OT";
+    return name
+      .split(" ")
+      .slice(0, 2)
+      .map(part => part[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
     <div className="dashboard-topbar">
       <div className="topbar-title">
-        <h1>Selamat Datang, Bapak/Ibu</h1>
-        <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-          Silakan pantau absensi harian, agenda jadwal, dan hasil evaluasi belajar anak secara real-time.
+        <h1 style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
+          Selamat Datang, Bapak/Ibu
+        </h1>
+        <p style={{ color: "var(--color-gray-500)", fontSize: "0.875rem", marginTop: "4px" }}>
+          Pantau absensi harian, agenda jadwal, dan hasil belajar anak Anda secara real-time.
         </p>
       </div>
-      <div className="topbar-user" style={{ gap: "1rem", position: "relative", display: "flex", alignItems: "center" }}>
-        
+
+      <div className="topbar-user" style={{ position: "relative" }}>
         {/* Lonceng Notifikasi */}
         <div style={{ position: "relative" }}>
           <button
@@ -21,7 +34,7 @@ export default function ParentHeader({ parentName, notifications, showNotificati
               cursor: "pointer",
               color: "var(--color-gray-600)",
               position: "relative",
-              padding: "6px",
+              padding: "8px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -29,33 +42,32 @@ export default function ParentHeader({ parentName, notifications, showNotificati
               backgroundColor: showNotificationDropdown ? "var(--color-gray-100)" : "transparent",
               transition: "background-color 0.2s"
             }}
+            type="button"
+            aria-label="Notifikasi"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
             {notifications.length > 0 && (
               <span style={{
                 position: "absolute",
-                top: "2px",
-                right: "2px",
-                width: "8px",
-                height: "8px",
+                top: "4px",
+                right: "4px",
+                width: "9px",
+                height: "9px",
                 backgroundColor: "#ef4444",
                 borderRadius: "50%",
-                border: "1.5px solid white"
+                border: "2px solid white"
               }} />
             )}
           </button>
 
           {/* Dropdown Notifikasi */}
           {showNotificationDropdown && (
-            <div style={{
+            <div className="notification-dropdown" style={{
               position: "absolute",
               right: "0",
-              top: "35px",
+              top: "45px",
               width: "320px",
               backgroundColor: "white",
-              borderRadius: "12px",
-              boxShadow: "var(--shadow-xl)",
-              border: "1px solid var(--color-gray-200)",
               zIndex: 100,
               overflow: "hidden"
             }}>
@@ -104,9 +116,28 @@ export default function ParentHeader({ parentName, notifications, showNotificati
           )}
         </div>
 
-        <span className="user-badge">{parentName}</span>
+        {/* User Info & Profile Avatar */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginLeft: "0.5rem" }}>
+          <div style={{
+            width: "36px",
+            height: "36px",
+            borderRadius: "50%",
+            backgroundColor: "var(--color-primary-light)",
+            color: "var(--color-primary)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "700",
+            fontSize: "0.85rem",
+            border: "1.5px solid var(--color-primary)"
+          }}>
+            {getInitials(parentName)}
+          </div>
+          <span className="user-badge" style={{ margin: 0 }}>{parentName}</span>
+        </div>
+
         {onLogout && (
-          <button onClick={onLogout} className="btn-logout" style={{ width: "auto", padding: "0.4rem 0.85rem", fontSize: "0.8rem", display: "inline-flex", marginLeft: "0.5rem" }}>
+          <button onClick={onLogout} className="btn-logout" style={{ width: "auto", padding: "0.5rem 1rem", fontSize: "0.8rem", display: "inline-flex", alignItems: "center", gap: "0.35rem", marginLeft: "0.5rem" }} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span>Keluar</span>
           </button>

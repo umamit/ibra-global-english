@@ -11,6 +11,7 @@ import CalendarView from "./components/CalendarView";
 import FinanceView from "./components/FinanceView";
 import LMSView from "./components/LMSView";
 import ReceiptPrint from "./components/ReceiptPrint";
+import "./parent.css";
 
 export default function ParentPortal() {
   const supabase = createClient();
@@ -451,8 +452,8 @@ export default function ParentPortal() {
         />
 
         {children.length === 0 ? (
-          <div className="portal-card" style={{ padding: "3rem", textAlign: "center", borderLeft: "5px solid var(--color-accent)" }}>
-            <svg style={{ color: "var(--color-accent)", width: "48px", height: "48px", marginBottom: "1rem" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <div className="portal-card text-center" style={{ padding: "3rem 2rem", borderTop: "4px solid var(--color-accent)" }}>
+            <svg style={{ color: "var(--color-accent)", width: "48px", height: "48px", marginBottom: "1rem", display: "inline-block" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>Siswa Belum Dipasangkan</h3>
@@ -464,81 +465,88 @@ export default function ParentPortal() {
           <>
             {/* Multiple children tab navigation if applicable */}
             {children.length > 1 && (
-              <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem" }}>
+              <div className="child-nav-tabs">
                 {children.map((child) => (
                   <button
                     key={child.id}
-                    className={`btn-portal-outline ${selectedChild?.id === child.id ? "active" : ""}`}
+                    className={`child-tab-btn ${selectedChild?.id === child.id ? "active" : ""}`}
                     onClick={() => setSelectedChild(child)}
-                    style={{
-                      backgroundColor: selectedChild?.id === child.id ? "var(--color-primary-light)" : "transparent",
-                      color: selectedChild?.id === child.id ? "var(--color-primary-dark)" : "var(--color-gray-600)",
-                    }}
                   >
-                    {child.name} ({child.program})
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>{child.name} ({child.program})</span>
                   </button>
                 ))}
               </div>
             )}
 
             {/* Currently Monitored Student Card */}
-            <div className="portal-card" style={{ marginBottom: "2.5rem", padding: "1.5rem 2rem", display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(135deg, var(--color-primary-light) 0%, rgba(255,255,255,0) 100%)", borderLeft: "5px solid var(--color-primary)" }}>
+            <div className="monitored-student-banner">
               <div>
-                <p style={{ fontSize: "0.8rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase" }}>Siswa yang Dipantau</p>
-                <h2 style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-gray-900)" }}>{selectedChild?.name}</h2>
-                <p style={{ fontSize: "0.9rem", color: "var(--color-gray-600)", fontWeight: "600" }}>{selectedChild?.program} (Usia {selectedChild?.age} tahun)</p>
+                <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Siswa yang Dipantau</p>
+                <h2>{selectedChild?.name}</h2>
+                <p style={{ fontSize: "0.9rem", color: "var(--color-gray-600)", fontWeight: "600", marginTop: "2px" }}>
+                  Program: <strong>{selectedChild?.program}</strong> · Usia {selectedChild?.age} tahun
+                </p>
               </div>
-              <div className="user-badge" style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
+              <div className="user-badge">
                 Siswa Aktif
               </div>
             </div>
 
             {/* Tab Views */}
             {activeView === "progress" && (
-              <ProgressView
-                selectedChild={selectedChild}
-                announcements={announcements}
-                onlineSchedules={onlineSchedules}
-                attendance={attendance}
-                attendanceStats={attendanceStats}
-                reports={reports}
-                certificates={certificates}
-                detailsLoading={detailsLoading}
-                getIndonesianDay={getIndonesianDay}
-                getIndonesianDate={getIndonesianDate}
-                triggerPrint={triggerPrint}
-              />
+              <div className="view-fade-in">
+                <ProgressView
+                  selectedChild={selectedChild}
+                  announcements={announcements}
+                  onlineSchedules={onlineSchedules}
+                  attendance={attendance}
+                  attendanceStats={attendanceStats}
+                  reports={reports}
+                  certificates={certificates}
+                  detailsLoading={detailsLoading}
+                  getIndonesianDay={getIndonesianDay}
+                  getIndonesianDate={getIndonesianDate}
+                  triggerPrint={triggerPrint}
+                />
+              </div>
             )}
 
             {activeView === "calendar" && (
-              <CalendarView
-                parentSchedules={onlineSchedules}
-                detailsLoading={detailsLoading}
-                selectedChild={selectedChild}
-              />
+              <div className="view-fade-in">
+                <CalendarView
+                  parentSchedules={onlineSchedules}
+                  detailsLoading={detailsLoading}
+                  selectedChild={selectedChild}
+                />
+              </div>
             )}
 
             {activeView === "finance" && (
-              <FinanceView
-                selectedChild={selectedChild}
-                paymentSettings={paymentSettings}
-                parentPayments={parentPayments}
-                uploadingReceipt={uploadingReceipt}
-                getChildProgramPrice={getChildProgramPrice}
-                getMonthName={getMonthName}
-                handleUploadReceipt={handleUploadReceipt}
-                triggerPrintReceipt={triggerPrintReceipt}
-                detailsLoading={detailsLoading}
-              />
+              <div className="view-fade-in">
+                <FinanceView
+                  selectedChild={selectedChild}
+                  paymentSettings={paymentSettings}
+                  parentPayments={parentPayments}
+                  uploadingReceipt={uploadingReceipt}
+                  getChildProgramPrice={getChildProgramPrice}
+                  getMonthName={getMonthName}
+                  handleUploadReceipt={handleUploadReceipt}
+                  triggerPrintReceipt={triggerPrintReceipt}
+                  detailsLoading={detailsLoading}
+                />
+              </div>
             )}
 
             {activeView === "lms" && (
-              <LMSView
-                selectedChild={selectedChild}
-                lmsMaterials={lmsMaterials}
-                lmsSubmissions={lmsSubmissions}
-                detailsLoading={detailsLoading}
-              />
+              <div className="view-fade-in">
+                <LMSView
+                  selectedChild={selectedChild}
+                  lmsMaterials={lmsMaterials}
+                  lmsSubmissions={lmsSubmissions}
+                  detailsLoading={detailsLoading}
+                />
+              </div>
             )}
           </>
         )}

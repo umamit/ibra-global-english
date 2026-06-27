@@ -217,17 +217,17 @@ export default function ProgressView({
       )}
 
       {/* Riwayat Kehadiran */}
-      <div className="portal-card" style={{ padding: "2rem" }}>
-        <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
+      <div className="portal-card">
+        <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
           Riwayat Kehadiran Siswa
         </h3>
         
         {detailsLoading ? (
           <>
             {/* Attendance Stats Cards Skeleton */}
-            <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "2rem" }}>
+            <div className="stats-grid">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} style={{ textAlign: "center", padding: "1.25rem 1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
+                <div key={i} className="stat-card">
                   <div className="skeleton-pulse skeleton-title" style={{ width: "30px", marginBottom: "0.5rem", display: "block", marginInline: "auto" }} />
                   <div className="skeleton-pulse skeleton-text" style={{ width: "50px", display: "block", marginInline: "auto" }} />
                 </div>
@@ -235,8 +235,8 @@ export default function ProgressView({
             </div>
             
             {/* Attendance Table Skeleton */}
-            <div className="table-wrapper">
-              <table className="portal-table">
+            <div className="table-container">
+              <table className="custom-table">
                 <thead>
                   <tr>
                     <th>No</th>
@@ -263,28 +263,28 @@ export default function ProgressView({
         ) : (
           <>
             {/* Attendance Stats Cards */}
-            <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "2rem" }}>
-              <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-green)" }}>{attendanceStats.hadir}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Hadir</p>
+            <div className="stats-grid">
+              <div className="stat-card" style={{ borderTop: "3px solid var(--color-green)" }}>
+                <p className="stat-value" style={{ color: "var(--color-green)" }}>{attendanceStats.hadir}</p>
+                <p className="stat-label">Hadir</p>
               </div>
-              <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-yellow)" }}>{attendanceStats.sakit}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Sakit</p>
+              <div className="stat-card" style={{ borderTop: "3px solid var(--color-yellow)" }}>
+                <p className="stat-value" style={{ color: "var(--color-yellow)" }}>{attendanceStats.sakit}</p>
+                <p className="stat-label">Sakit</p>
               </div>
-              <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary)" }}>{attendanceStats.izin}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Izin</p>
+              <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}>
+                <p className="stat-value" style={{ color: "var(--color-primary)" }}>{attendanceStats.izin}</p>
+                <p className="stat-label">Izin</p>
               </div>
-              <div style={{ textAlign: "center", padding: "1rem", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}>
-                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "#ef4444" }}>{attendanceStats.alfa}</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>Alfa</p>
+              <div className="stat-card" style={{ borderTop: "3px solid var(--color-red)" }}>
+                <p className="stat-value" style={{ color: "var(--color-red)" }}>{attendanceStats.alfa}</p>
+                <p className="stat-label">Alfa</p>
               </div>
             </div>
 
             {/* Attendance log table */}
-            <div className="table-wrapper" style={{ maxHeight: "350px", overflowY: "auto" }}>
-              <table className="portal-table">
+            <div className="table-container" style={{ maxHeight: "350px", overflowY: "auto" }}>
+              <table className="custom-table">
                 <thead>
                   <tr>
                     <th>No</th>
@@ -308,7 +308,9 @@ export default function ProgressView({
                         <td style={{ fontWeight: "600", color: "var(--color-primary-dark)" }}>{getIndonesianDay(log.date)}</td>
                         <td>{getIndonesianDate(log.date)}</td>
                         <td>
-                          <span className={`badge-${log.status}`}>{log.status}</span>
+                          <span className={`status-badge ${log.status === "hadir" ? "submitted" : log.status === "sakit" || log.status === "izin" ? "pending" : "unpaid"}`} style={{ textTransform: "capitalize" }}>
+                            {log.status}
+                          </span>
                         </td>
                         <td style={{ fontSize: "0.85rem", fontStyle: log.notes ? "normal" : "italic", color: log.notes ? "var(--color-gray-800)" : "var(--color-gray-400)" }}>
                           {log.notes || "-"}
@@ -325,12 +327,12 @@ export default function ProgressView({
 
       {/* Rapor Belajar Digital (Report Cards list) */}
       <div>
-        <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.25rem" }}>
+        <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.25rem" }}>
           Rapor Belajar Digital & Grafik Pencapaian
         </h3>
         
         {reports.length > 0 && !detailsLoading && (
-          <div style={{ marginBottom: "2rem" }}>
+          <div style={{ marginBottom: "2.5rem" }}>
             <LineChart reports={reports} isCalistung={selectedChild?.program?.toLowerCase()?.includes("calistung")} />
           </div>
         )}
@@ -338,15 +340,15 @@ export default function ProgressView({
         {detailsLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
             {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="portal-card" style={{ padding: "2rem" }}>
+              <div key={i} className="portal-card">
                 <div style={{ borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
                   <div className="skeleton-pulse skeleton-title" style={{ width: "200px", marginBottom: "0.5rem" }} />
                   <div className="skeleton-pulse skeleton-text" style={{ width: "150px" }} />
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
-                  <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
+                  <div className="stats-grid" style={{ marginBottom: 0 }}>
                     {Array.from({ length: 4 }).map((_, j) => (
-                      <div key={j} style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
+                      <div key={j} className="stat-card">
                         <div className="skeleton-pulse skeleton-title" style={{ width: "45px", margin: "0 auto 0.5rem" }} />
                         <div className="skeleton-pulse skeleton-text" style={{ width: "65px", margin: "0 auto" }} />
                       </div>
@@ -360,7 +362,7 @@ export default function ProgressView({
             ))}
           </div>
         ) : reports.length === 0 ? (
-          <div className="portal-card" style={{ padding: "3rem", textAlign: "center" }}>
+          <div className="portal-card text-center" style={{ padding: "3rem" }}>
             <p style={{ color: "var(--color-gray-500)" }}>Belum ada rapor digital yang diterbitkan untuk saat ini.</p>
           </div>
         ) : (
@@ -368,19 +370,19 @@ export default function ProgressView({
             {reports.map((report) => {
               const isCalistung = selectedChild?.program?.toLowerCase()?.includes("calistung");
               return (
-                <div key={report.id} className="portal-card" style={{ padding: "2rem" }}>
+                <div key={report.id} className="portal-card">
                   
                   {/* Card Header */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem", borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "1rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem", borderBottom: "1px solid var(--color-gray-150)", paddingBottom: "1rem" }} className="flex-wrap gap-2">
                     <div>
-                      <h4 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{report.module_name}</h4>
-                      <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
+                      <h4 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{report.module_name}</h4>
+                      <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "2px" }}>
                         Diterbitkan pada {new Date(report.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                     </div>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
                       <button className="btn-portal-outline" style={{ padding: "0.5rem 1.15rem", fontSize: "0.8rem", display: "flex", gap: "0.5rem", alignItems: "center" }} onClick={() => triggerPrint(report)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                         <span>Cetak Rapor PDF</span>
                       </button>
                       {(() => {
@@ -421,35 +423,35 @@ export default function ProgressView({
                   <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
                     
                     {/* Score Metrics Grid */}
-                    <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
-                      <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                        <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.speaking_score}</p>
-                        <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                    <div className="stats-grid" style={{ marginBottom: 0 }}>
+                      <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}>
+                        <p className="stat-value" style={{ color: "var(--color-primary-dark)" }}>{report.speaking_score}</p>
+                        <p className="stat-label">
                           {isCalistung ? "Membaca" : "Speaking"}
                         </p>
                       </div>
-                      <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                        <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.grammar_score}</p>
-                        <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                      <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}>
+                        <p className="stat-value" style={{ color: "var(--color-primary-dark)" }}>{report.grammar_score}</p>
+                        <p className="stat-label">
                           {isCalistung ? "Menulis" : "Grammar"}
                         </p>
                       </div>
-                      <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                        <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.vocabulary_score}</p>
-                        <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                      <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}>
+                        <p className="stat-value" style={{ color: "var(--color-primary-dark)" }}>{report.vocabulary_score}</p>
+                        <p className="stat-label">
                           {isCalistung ? "Berhitung" : "Vocabulary"}
                         </p>
                       </div>
-                      <div style={{ textAlign: "center", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-100)" }}>
-                        <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{report.active_score}</p>
-                        <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+                      <div className="stat-card" style={{ borderTop: "3px solid var(--color-accent)" }}>
+                        <p className="stat-value" style={{ color: "var(--color-accent)" }}>{report.active_score}</p>
+                        <p className="stat-label">
                           {isCalistung ? "Keaktifan" : "Active"}
                         </p>
                       </div>
                     </div>
 
                     {/* SVG Chart visualization */}
-                    <div>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
                       <RadarChart
                         speaking={report.speaking_score}
                         grammar={report.grammar_score}
@@ -463,8 +465,8 @@ export default function ProgressView({
 
                   {/* Tutor Notes review block */}
                   {report.tutor_notes && (
-                    <div style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", marginTop: "2rem", backgroundColor: "rgba(166, 136, 73, 0.03)", padding: "1rem 1.25rem", borderRadius: "0 8px 8px 0" }}>
-                      <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", textTransform: "uppercase", marginBottom: "4px" }}>Catatan Tutor Pendamping</p>
+                    <div style={{ borderLeft: "4px solid var(--color-accent)", paddingLeft: "1.25rem", marginTop: "2rem", backgroundColor: "rgba(166, 136, 73, 0.03)", padding: "1.25rem", borderRadius: "0 8px 8px 0" }}>
+                      <p style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-accent)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Catatan Tutor Pendamping</p>
                       <p style={{ fontSize: "0.9rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
                         &ldquo;{report.tutor_notes}&rdquo;
                       </p>
