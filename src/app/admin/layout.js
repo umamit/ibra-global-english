@@ -30,12 +30,17 @@ export default function AdminLayout({ children }) {
   useEffect(() => {
     const fetchPendingCount = async () => {
       try {
-        const res = await fetch("/api/register");
-        const result = await res.json();
-        if (result.data) {
-          setPendingCount(result.data.filter(r => r.status === "pending").length);
+        const res = await fetch("/api/register", {
+          credentials: "include",
+          cache: "no-store",
+        });
+        const result = await res.json().catch(() => null);
+        if (result && result.data) {
+          setPendingCount(result.data.filter((r) => r.status === "pending").length);
         }
-      } catch {}
+      } catch {
+        // Silent fail untuk badge notifikasi agar tidak mengganggu UI
+      }
     };
     fetchPendingCount();
     const interval = setInterval(fetchPendingCount, 60000);
