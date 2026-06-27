@@ -33,7 +33,40 @@ const api = buildCRUDApi("announcements", {
   },
 });
 
-export const GET = api.GET;
+export const GET = async (request) => {
+  const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+  const isSanityConfigured = sanityProjectId && sanityProjectId !== "placeholder" && sanityProjectId !== "project_id_anda";
+
+  if (isSanityConfigured) {
+    try {
+      const { client } = await import("@/lib/sanity/client");
+      const url = new URL(request.url);
+      const role = url.searchParams.get("role") || "all";
+
+      // Kueri GROQ untuk mengambil pengumuman yang relevan
+      const groqQuery = `*[_type == "announcement" && (targetRole == "all" || targetRole == $role)] | order(date desc)`;
+      const announcements = await client.fetch(groqQuery, { role });
+
+      const formattedAnnouncements = announcements.map((ann) => ({
+        id: ann._id,
+        title: ann.title,
+        content: ann.content, // Menyimpan Portable Text
+        published_at: ann.date || ann._createdAt,
+        image_url: ann.image || null,
+        priority: "normal",
+        is_sanity: true,
+      }));
+
+      return Response.json({ data: formattedAnnouncements });
+    } catch (err) {
+      console.error("Gagal mengambil pengumuman dari Sanity CMS, fallback ke Supabase:", err);
+    }
+  }
+
+  // Fallback ke kueri Supabase
+  return api.GET(request);
+};
+
 export const POST = api.POST;
 export const PATCH = api.PATCH;
 export const DELETE = api.DELETE;
