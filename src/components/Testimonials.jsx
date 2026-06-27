@@ -3,6 +3,7 @@ import "./Testimonials.css";
 
 import { createClient } from "../utils/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { client } from "@/lib/sanity/client";
 
 const TESTIMONIALS_FALLBACK = [
   {
@@ -29,6 +30,27 @@ const TESTIMONIALS_FALLBACK = [
 ];
 
 async function fetchTestimonials() {
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+  const useSanity = projectId && projectId !== "placeholder" && projectId !== "";
+
+  if (useSanity) {
+    try {
+      const data = await client.fetch(`*[_type == "testimonial"] | order(_createdAt desc)`);
+      if (data && data.length > 0) {
+        return data.map((item, index) => ({
+          rating: 5,
+          text: item.content,
+          author: item.name,
+          role: item.program || "Siswa",
+          delay: (index % 3) * 100
+        }));
+      }
+    } catch (err) {
+      console.warn("Failed to fetch testimonials from Sanity, falling back to Supabase:", err);
+    }
+  }
+
+  // Fallback to Supabase
   const supabase = createClient();
   const { data, error } = await supabase
     .from('testimonials')
