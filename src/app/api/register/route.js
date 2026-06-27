@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 import { registrationSchema, registrationUpdateSchema } from "@/lib/schemas";
 
+export const dynamic = "force-dynamic";
+
 const supabaseAdmin = getAdminSupabase();
 
 export async function POST(req) {
