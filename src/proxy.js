@@ -51,6 +51,35 @@ export async function proxy(request) {
   const { pathname } = request.nextUrl;
   const acceptHeader = request.headers.get("accept") || "";
 
+  const addSecurityHeaders = (res) => {
+    res.headers.set("Content-Security-Policy", cspHeader);
+    res.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
+    
+    // Kelola X-Frame-Options dan Cross-Origin-Resource-Policy secara dinamis
+    const hasSanityContext = request.nextUrl.searchParams.has("_context");
+    const isStudioPath = pathname.startsWith("/studio");
+
+    if (hasSanityContext || isStudioPath) {
+      // Izinkan frame dan resource sharing untuk alur autentikasi Sanity
+      res.headers.delete("X-Frame-Options");
+      res.headers.set("Cross-Origin-Resource-Policy", "cross-origin");
+    } else {
+      // Kebijakan keamanan default untuk halaman reguler
+      res.headers.set("X-Frame-Options", "DENY");
+      res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
+    }
+
+    if (
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/parent") ||
+      pathname.startsWith("/tutor") ||
+      pathname.startsWith("/student") ||
+      pathname.startsWith("/api")
+    ) {
+      res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    }
+  };
+
   // =====================================================================
   // 1. NEGOSIASI KONTEN MARKDOWN UNTUK AGEN AI (Accept: text/markdown)
   // =====================================================================
@@ -110,6 +139,13 @@ export async function proxy(request) {
   // 3. AUTENTIKASI SUPABASE & PROTEKSI RUTE BERBASIS PERAN (ROLE-BASED RBAC)
   // =====================================================================
   
+  // Lewati pemeriksaan untuk endpoint PostHog ingest proxy agar tidak membebani database
+  if (pathname.startsWith("/ingest")) {
+    const resIngest = NextResponse.next();
+    addSecurityHeaders(resIngest);
+    return resIngest;
+  }
+
   // Lewati pemeriksaan sesi cookie Supabase untuk aset-aset statis biasa
   const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt)$/);
   if (isStaticAsset) {
@@ -121,35 +157,6 @@ export async function proxy(request) {
       headers: requestHeaders,
     },
   });
-
-  const addSecurityHeaders = (res) => {
-    res.headers.set("Content-Security-Policy", cspHeader);
-    res.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
-    
-    // Kelola X-Frame-Options dan Cross-Origin-Resource-Policy secara dinamis
-    const hasSanityContext = request.nextUrl.searchParams.has("_context");
-    const isStudioPath = pathname.startsWith("/studio");
-
-    if (hasSanityContext || isStudioPath) {
-      // Izinkan frame dan resource sharing untuk alur autentikasi Sanity
-      res.headers.delete("X-Frame-Options");
-      res.headers.set("Cross-Origin-Resource-Policy", "cross-origin");
-    } else {
-      // Kebijakan keamanan default untuk halaman reguler
-      res.headers.set("X-Frame-Options", "DENY");
-      res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
-    }
-
-    if (
-      pathname.startsWith("/admin") ||
-      pathname.startsWith("/parent") ||
-      pathname.startsWith("/tutor") ||
-      pathname.startsWith("/student") ||
-      pathname.startsWith("/api")
-    ) {
-      res.headers.set("X-Robots-Tag", "noindex, nofollow");
-    }
-  };
 
   addSecurityHeaders(response);
 

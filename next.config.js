@@ -3,6 +3,8 @@ const { withSentryConfig } = require("@sentry/nextjs");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  // Required to support PostHog trailing slash API requests
+  skipTrailingSlashRedirect: true,
 
   // Next.js 16 memakai Turbopack secara default untuk `next dev` dan `next build`.
   turbopack: {},
@@ -23,6 +25,23 @@ const nextConfig = {
     }
 
     return config;
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://us-assets.i.posthog.com/static/:path*",
+      },
+      {
+        source: "/ingest/array/:path*",
+        destination: "https://us-assets.i.posthog.com/array/:path*",
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://us.i.posthog.com/:path*",
+      },
+    ];
   },
 
   // Headers configuration for security and CSP against XSS

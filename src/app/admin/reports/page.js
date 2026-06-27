@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/client";
 import RadarChart from "@/components/RadarChart";
 import ReportStatusBanner from "./components/ReportStatusBanner";
 import CertificateButton from "./components/CertificateButton";
+import posthog from "posthog-js";
 
 export default function ReportCardManagement() {
   const supabase = createClient();
@@ -64,6 +65,7 @@ export default function ReportCardManagement() {
       const data = await res.json();
       if (res.ok && data.reply) {
         setTutorNotes(data.reply);
+        posthog.capture("admin_ai_notes_generated", { program: studentProgram });
       } else {
         alert(`Gagal menulis catatan: ${data.error || "Error tidak diketahui"}`);
       }
@@ -278,8 +280,9 @@ export default function ReportCardManagement() {
         console.error("Gagal mengirim notifikasi WhatsApp simulasi:", waErr);
       }
 
+      posthog.capture("admin_certificate_issued", { module_name: report.module_name, grade });
       alert("Sertifikat berhasil diterbitkan!");
-      
+
       // Reload certificates
       const { data: certData } = await supabase
         .from("certificates")
@@ -370,6 +373,11 @@ export default function ReportCardManagement() {
 
       if (error) throw error;
 
+      posthog.capture("admin_report_created", {
+        program: selectedStudentProgram,
+        module_name: moduleName.trim(),
+        avg_score: Math.round((speak + gram + vocab + active) / 4),
+      });
       setStatusMsg({ type: "success", text: "Rapor digital berhasil diterbitkan!" });
 
       // Reset form

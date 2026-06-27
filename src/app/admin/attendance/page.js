@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import posthog from "posthog-js";
 
 export default function DailyAttendance() {
   const supabase = createClient();
@@ -236,6 +237,10 @@ export default function DailyAttendance() {
 
       if (error) throw error;
 
+      posthog.capture("admin_attendance_submitted", {
+        date: selectedDate,
+        student_count: students.length,
+      });
       setStatusMsg({
         type: "success",
         text: `Absensi untuk tanggal ${selectedDate} berhasil disimpan!`,

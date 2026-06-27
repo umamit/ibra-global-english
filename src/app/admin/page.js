@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import posthog from "posthog-js";
 
 export default function AdminDashboard() {
   const supabase = createClient();
@@ -13,6 +14,8 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     if (window.confirm("Apakah Anda yakin ingin keluar dari portal Admin?")) {
+      posthog.capture("admin_logged_out");
+      posthog.reset();
       await supabase.auth.signOut();
       router.push("/login");
       router.refresh();

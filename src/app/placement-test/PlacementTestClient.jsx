@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import "../dashboard-components.css";
 import FormInput from "@/components/FormInput";
 import { createClient } from "@/utils/supabase/client";
+import posthog from "posthog-js";
 
 export default function PlacementTestClient() {
   const supabase = createClient();
@@ -150,6 +151,7 @@ export default function PlacementTestClient() {
 
   const handleStartTest = () => {
     if (loadingQuestions) return;
+    posthog.capture("placement_test_started");
     setStep(1);
   };
 
@@ -159,6 +161,7 @@ export default function PlacementTestClient() {
       alert("Mohon lengkapi semua isian.");
       return;
     }
+    posthog.capture("placement_test_registered");
     setStep(2);
   };
 
@@ -263,6 +266,11 @@ export default function PlacementTestClient() {
 
       const { data } = await response.json();
 
+      posthog.capture("placement_test_completed", {
+        score: totalScore,
+        level: determinedLevel,
+        total_questions: QUESTIONS.length,
+      });
       setFinalResult({
         score: totalScore,
         level: determinedLevel,
@@ -272,6 +280,11 @@ export default function PlacementTestClient() {
       setStep(3);
     } catch (err) {
       console.error("Gagal menyimpan hasil tes penempatan:", err);
+      posthog.capture("placement_test_completed", {
+        score: totalScore,
+        level: determinedLevel,
+        total_questions: QUESTIONS.length,
+      });
       // Fallback local display even if DB insert fails
       setFinalResult({
         score: totalScore,

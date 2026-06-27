@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 import { onlineScheduleSchema, onlineScheduleUpdateSchema } from "@/lib/schemas";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 const adminSupabase = getAdminSupabase();
 
@@ -59,6 +60,14 @@ export const POST = withAdminAuth(async (request) => {
     .select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: "admin",
+    event: "online_schedule_created",
+    properties: { program, meeting_platform, tutor_name },
+  });
+
   return NextResponse.json({ data });
 });
 

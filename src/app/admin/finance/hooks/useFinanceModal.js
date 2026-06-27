@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
+import posthog from "posthog-js";
 
 export const useFinanceModal = (fetchData, selectedMonth, sppPrices, showToast) => {
   const supabase = createClient();
@@ -86,6 +87,12 @@ export const useFinanceModal = (fetchData, selectedMonth, sppPrices, showToast) 
 
       if (error) throw error;
 
+      posthog.capture("admin_payment_recorded", {
+        status: modalStatus,
+        payment_method: modalMethod,
+        month: selectedMonth,
+        program: modalStudent?.program,
+      });
       showToast("Status pembayaran SPP berhasil disimpan!");
       setIsModalOpen(false);
       fetchData();
@@ -116,6 +123,10 @@ export const useFinanceModal = (fetchData, selectedMonth, sppPrices, showToast) 
 
       if (error) throw error;
 
+      posthog.capture("admin_payment_quick_confirmed", {
+        month: selectedMonth,
+        payment_method: payload.payment_method,
+      });
       showToast("Pembayaran dikonfirmasi LUNAS!");
       fetchData();
     } catch (err) {

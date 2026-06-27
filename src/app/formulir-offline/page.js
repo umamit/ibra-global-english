@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 export default function OfflineFormPage() {
   const [theme, setTheme] = useState("light");
@@ -40,6 +41,7 @@ export default function OfflineFormPage() {
   }, []);
 
   const handlePrint = () => {
+    posthog.capture("offline_form_printed");
     window.print();
   };
 

@@ -3,6 +3,7 @@ import { getAdminSupabase } from "@/app/api/_middleware";
 import { detectPromptInjection } from "@/utils/security";
 import { getRagContext } from "@/utils/rag";
 import { chatRequestSchema } from "@/lib/schemas";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
@@ -184,6 +185,13 @@ export async function POST(request) {
 
     // Log sukses pemakaian AI
     await logAiUsage(tokensUsed, "success");
+
+    const posthog = getPostHogClient();
+    posthog.capture({
+      distinctId: "anonymous",
+      event: "ai_chat_message_sent",
+      properties: { tokens_used: tokensUsed, message_count: messages.length },
+    });
 
     return NextResponse.json({ reply: aiText });
   } catch (err) {

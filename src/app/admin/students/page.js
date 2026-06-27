@@ -8,6 +8,7 @@ import { useStudentData, useRegistrations, formatIndonesianDate } from "./studen
 import TabSwitcher from "./components/TabSwitcher";
 import RejectModal from "./components/RejectModal";
 import StudentFormModal from "./components/StudentFormModal";
+import posthog from "posthog-js";
 
 export default function StudentManagement() {
   const supabase = createClient();
@@ -142,6 +143,7 @@ export default function StudentManagement() {
 
       fetchRegistrations();
       fetchData();
+      posthog.capture("student_registration_approved", { program: reg.program });
 
       // 2. Kirim notifikasi WA otomatis via Fonnte API
       const waNumber = reg.whatsapp.replace(/[^0-9]/g, "");
@@ -193,6 +195,7 @@ export default function StudentManagement() {
         }).catch(console.error);
       }
 
+      posthog.capture("student_registration_rejected", { program: reg?.program });
       setRejectModalId(null);
       setRejectNotes("");
       fetchRegistrations();
@@ -309,6 +312,7 @@ export default function StudentManagement() {
           .from("students")
           .insert(studentPayload);
         if (error) throw error;
+        posthog.capture("admin_student_enrolled", { program });
       }
 
       // Reset form

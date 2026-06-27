@@ -4,6 +4,7 @@ import "./Hero.css";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import CountUp from "./CountUp";
+import posthog from "posthog-js";
 
 export default function Hero({ initialSettings }) {
   const [heroTitle, setHeroTitle] = useState(initialSettings?.hero_title || "Kursus di Bobong | Ibra Global English");
@@ -59,7 +60,7 @@ export default function Hero({ initialSettings }) {
           <p className="hero-desc">{heroDesc}</p>
           <div className="hero-actions">
             <a href="#contact" className="btn-primary">Daftar Gratis</a>
-            <a href="/placement-test" className="btn-secondary">Ikuti Tes Penempatan</a>
+            <a href="/placement-test" className="btn-secondary" onClick={() => posthog.capture("hero_placement_test_clicked")}>Ikuti Tes Penempatan</a>
           </div>
 
           <div className="hero-trilogy">
