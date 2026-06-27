@@ -327,6 +327,23 @@ CREATE TABLE IF NOT EXISTS public.placement_test_regenerate_logs (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- registrations (pendaftaran online siswa baru)
+CREATE TABLE IF NOT EXISTS public.registrations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  student_name TEXT NOT NULL,
+  student_age INT,
+  parent_name TEXT,
+  parent_email TEXT,
+  whatsapp TEXT NOT NULL,
+  program TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_registrations_status ON public.registrations (status);
+CREATE INDEX IF NOT EXISTS idx_registrations_created_at ON public.registrations (created_at DESC);
+
 -- academic_schedules
 CREATE TABLE IF NOT EXISTS public.academic_schedules (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -374,6 +391,15 @@ ON public.placement_test_questions FOR ALL TO authenticated USING (public.is_adm
 -- placement_test_regenerate_logs RLS
 CREATE POLICY "Admins have full access to placement_test_regenerate_logs"
 ON public.placement_test_regenerate_logs FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- registrations RLS (pendaftaran online)
+ALTER TABLE public.registrations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can insert registrations"
+ON public.registrations FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Admins have full access to registrations"
+ON public.registrations FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- academic_schedules RLS
 CREATE POLICY "Admins have full access to academic_schedules"
