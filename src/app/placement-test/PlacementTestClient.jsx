@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "../dashboard-components.css";
+import FormInput from "@/components/FormInput";
 import { createClient } from "@/utils/supabase/client";
 import { QUESTIONS } from "./placementQuestions";
 
@@ -317,47 +318,36 @@ export default function PlacementTestClient() {
               </p>
 
               <form onSubmit={handleRegister}>
-                <div className="form-group" style={{ marginBottom: "1.5rem" }}>
-                  <label className="form-label">Nama Lengkap Anda</label>
-                  <input
-                    type="text"
-                    name="fullName"
-                    className="form-input"
-                    placeholder="Contoh: Husni Tausman"
-                    value={userData.fullName}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                <FormInput
+                  label="Nama Lengkap Anda"
+                  type="text"
+                  name="fullName"
+                  placeholder="Contoh: Husni Tausman"
+                  value={userData.fullName}
+                  onChange={handleInputChange}
+                  required
+                />
 
-                <div className="form-group" style={{ marginBottom: "1.5rem" }}>
-                  <label className="form-label">Alamat Email Aktif</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-input"
-                    placeholder="Contoh: nama@domain.com"
-                    value={userData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                <FormInput
+                  label="Alamat Email Aktif"
+                  type="email"
+                  name="email"
+                  placeholder="Contoh: nama@domain.com"
+                  value={userData.email}
+                  onChange={handleInputChange}
+                  required
+                />
 
-                <div className="form-group" style={{ marginBottom: "2rem" }}>
-                  <label className="form-label">Nomor WhatsApp Aktif (Untuk Pengiriman Hasil Kelas)</label>
-                  <input
-                    type="tel"
-                    name="whatsapp"
-                    className="form-input"
-                    placeholder="Contoh: 08123456789"
-                    value={userData.whatsapp}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "6px" }}>
-                    * Pastikan nomor WhatsApp diisi dengan benar agar tutor kami dapat mengirimkan ulasan khusus.
-                  </p>
-                </div>
+                <FormInput
+                  label="Nomor WhatsApp Aktif (Untuk Pengiriman Hasil Kelas)"
+                  type="tel"
+                  name="whatsapp"
+                  placeholder="Contoh: 08123456789"
+                  value={userData.whatsapp}
+                  onChange={handleInputChange}
+                  required
+                  helperText="* Pastikan nomor WhatsApp diisi dengan benar agar tutor kami dapat mengirimkan ulasan khusus."
+                />
 
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
                   <button type="button" className="btn-portal-outline" onClick={() => setStep(0)}>
