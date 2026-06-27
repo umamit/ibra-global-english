@@ -62,10 +62,26 @@ export const GET = withAdminAuth(async () => {
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Gagal mengambil data pendaftaran:", error);
+      return NextResponse.json(
+        {
+          error: "Gagal memuat data pendaftaran dari database.",
+          details: error.message,
+        },
+        { status: 500 }
+      );
+    }
     return NextResponse.json({ data }, { status: 200 });
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error("Server error saat mengambil pendaftaran:", err);
+    return NextResponse.json(
+      {
+        error: "Terjadi kesalahan server saat memuat pendaftaran.",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 });
 

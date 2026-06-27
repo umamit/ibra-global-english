@@ -401,6 +401,9 @@ ON public.registrations FOR INSERT WITH CHECK (true);
 CREATE POLICY "Admins have full access to registrations"
 ON public.registrations FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
+CREATE POLICY "Service role full access to registrations"
+ON public.registrations FOR ALL TO service_role USING (true) WITH CHECK (true);
+
 -- academic_schedules RLS
 CREATE POLICY "Admins have full access to academic_schedules"
 ON public.academic_schedules FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
