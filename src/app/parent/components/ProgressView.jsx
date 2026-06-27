@@ -3,6 +3,8 @@
 import { useState } from "react";
 import RadarChart from "@/components/RadarChart";
 import LineChart from "@/components/LineChart";
+import { PortableText } from "next-sanity";
+import { urlFor } from "@/lib/sanity/image";
 
 export default function ProgressView({
   selectedChild,
@@ -153,7 +155,26 @@ export default function ProgressView({
               return (
                 <div key={ann.id} style={{ borderRadius: "12px", border: `1.5px solid ${priColor}22`, background: `${priColor}07`, padding: "0.9rem 1.1rem", borderLeft: `4px solid ${priColor}` }}>
                   <p style={{ fontWeight: "800", fontSize: "0.9rem", color: "var(--color-gray-900)", marginBottom: "0.2rem" }}>{ann.title}</p>
-                  <p style={{ fontSize: "0.82rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}>{ann.content}</p>
+                  
+                  {ann.is_sanity ? (
+                    <div style={{ fontSize: "0.82rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}>
+                      <PortableText value={ann.content} />
+                    </div>
+                  ) : (
+                    <p style={{ fontSize: "0.82rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}>{ann.content}</p>
+                  )}
+
+                  {ann.image_url && (
+                    <div style={{ marginTop: "0.6rem" }}>
+                      <img
+                        src={ann.is_sanity ? urlFor(ann.image_url).width(500).url() : ann.image_url}
+                        alt={ann.title}
+                        style={{ maxWidth: "100%", height: "auto", borderRadius: "8px", border: "1px solid var(--color-gray-200)" }}
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+
                   <p style={{ fontSize: "0.72rem", color: "var(--color-gray-400)", marginTop: "0.35rem" }}>
                     {new Date(ann.published_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })} · {ann.program}
                   </p>
