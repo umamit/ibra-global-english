@@ -33,7 +33,8 @@ Setiap soal harus menyertakan properti:
 Aturan ketat:
 - Format jawaban WAJIB berupa JSON array murni berisi 15 objek soal tersebut tanpa ada teks pendahuluan, penjelasan, atau blok kode markdown (jangan pakai \`\`\`json).
 - Pastikan hanya ada tepat satu opsi jawaban benar dengan score: 1 untuk setiap soal.
-- Semua opsi teks harus ditulis dengan rapi dan bebas dari kesalahan tik.`;
+- Semua opsi teks harus ditulis dengan rapi dan bebas dari kesalahan tik.
+- Untuk soal kategori membaca (Reading / Reading Comprehension), teks bacaan pendek atau artikel pengantar WAJIB ditulis lengkap di bagian awal properti "question" sebelum kalimat pertanyaannya dimulai (misalnya: "Read the following text:\n[Teks pendek/artikel]\n\nQuestion: [Kalimat pertanyaan]"). Jangan membuat soal membaca tanpa ada artikel/teks bacaan pengantarnya!`;
 
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
