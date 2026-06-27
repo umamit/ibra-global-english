@@ -193,6 +193,13 @@ export default function LoginPage() {
         return;
       }
 
+      if (data?.user) {
+        posthog.identify(data.user.id, {
+          email: data.user.email,
+          role,
+          name: fullName.trim(),
+        });
+      }
       posthog.capture("user_registered", { role });
 
       setSuccessBanner("Pendaftaran berhasil! Akun Anda telah aktif, silakan masuk.");
