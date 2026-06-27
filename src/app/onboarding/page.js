@@ -59,13 +59,13 @@ export default function OnboardingPage() {
       // Force session refresh so the new app_metadata.role is loaded by the client SDK & middleware
       await supabase.auth.refreshSession();
 
-      // Redirect user to their corresponding dashboard
+      // Redirect user to their corresponding dashboard using window.location for a clean cookie sync
       if (selectedRole === "student") {
-        router.push("/student");
+        window.location.href = "/student";
       } else if (selectedRole === "tutor") {
-        router.push("/tutor");
+        window.location.href = "/tutor";
       } else {
-        router.push("/parent");
+        window.location.href = "/parent";
       }
     } catch (err) {
       setErrorMsg(err.message || "Terjadi kesalahan sistem. Silakan coba lagi.");
