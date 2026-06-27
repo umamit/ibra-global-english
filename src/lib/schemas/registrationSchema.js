@@ -11,21 +11,14 @@ export const registrationSchema = z.object({
     .max(100, "Nama siswa maksimal 100 karakter")
     .trim(),
   student_age: z
-    .union([z.coerce.number().int().positive("Usia harus positif").max(100), z.null()])
+    .preprocess((val) => (val === "" ? null : val), z.union([z.coerce.number().int().positive("Usia harus positif").max(100), z.null()]))
     .optional(),
   parent_name: z
-    .string()
-    .max(100, "Nama orang tua maksimal 100 karakter")
-    .trim()
-    .optional()
-    .nullable(),
+    .preprocess((val) => (val === "" ? null : val), z.string().max(100, "Nama orang tua maksimal 100 karakter").trim().nullable())
+    .optional(),
   parent_email: z
-    .string()
-    .email("Format email tidak valid")
-    .max(200)
-    .trim()
-    .optional()
-    .nullable(),
+    .preprocess((val) => (val === "" ? null : val), z.string().email("Format email tidak valid").max(200).trim().nullable())
+    .optional(),
   whatsapp: z
     .string()
     .min(9, "Nomor WhatsApp minimal 9 digit")
