@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import "../dashboard-components.css";
 import { createClient } from "@/utils/supabase/client";
 import { QUESTIONS } from "./placementQuestions";
 
@@ -216,30 +217,20 @@ export default function PlacementTestClient() {
         created_at: new Date().toISOString()
       };
 
-      const { data, error } = await supabase
-        .from("placement_test_submissions")
-        .insert(payload)
-        .select()
-        .single();
+      const response = await fetch("/api/placement-test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-      if (error) throw error;
-
-      // Send simulated WhatsApp notification
-      try {
-        await fetch("/api/whatsapp-simulator", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            phone: userData.whatsapp.trim(),
-            message: `Halo *${userData.fullName}*! Hasil Tes Penempatan Bahasa Inggris Anda di Ibra Global English Bobong telah terbit. *Skor Anda:* ${totalScore} / ${QUESTIONS.length}. *Rekomendasi Level:* ${determinedLevel}. Terima kasih telah mengikuti tes penempatan!`,
-            type: "Hasil Placement Test"
-          })
-        });
-      } catch (waErr) {
-        console.error("Gagal mengirim notifikasi WhatsApp simulasi:", waErr);
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Gagal menyimpan hasil tes");
       }
+
+      const { data } = await response.json();
 
       setFinalResult({
         score: totalScore,
