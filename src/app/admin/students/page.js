@@ -83,11 +83,13 @@ export default function StudentManagement() {
       const result = await res.json().catch(() => null);
 
       if (!res.ok) {
-        const errorText =
+        const serverError =
           (result && result.error) ||
           `Gagal memuat data pendaftaran (HTTP ${res.status})`;
-        console.error("Gagal memuat data pendaftaran:", errorText, result);
-        setErrorMsg(errorText);
+        const serverDetails = result && result.details ? `\n\nDetail: ${result.details}` : "";
+        const fullError = `${serverError}${serverDetails}`;
+        console.error("Gagal memuat data pendaftaran:", fullError, result);
+        setErrorMsg(fullError);
         setRegistrations([]);
         return;
       }
