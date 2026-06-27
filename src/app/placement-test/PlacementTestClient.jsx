@@ -297,9 +297,7 @@ export default function PlacementTestClient() {
 
   return (
     <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
-      
-      <main style={{ minHeight: "100vh", backgroundColor: "var(--color-gray-50)", padding: "5rem 1rem 8rem" }} className="placement-test-page">
+      <main style={{ minHeight: "100vh", backgroundColor: "var(--color-gray-50)", padding: "3.5rem 1rem 6rem" }} className="placement-test-page">
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           
           {/* STEP 0: INTRO */}
@@ -703,6 +701,11 @@ export default function PlacementTestClient() {
                 <button onClick={() => { setStep(0); setAnswers({}); setCurrentQuestionIndex(0); }} className="btn-portal-outline" style={{ padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700", backgroundColor: "white" }}>
                   Ulangi Tes
                 </button>
+
+                <a href="/" className="btn-portal-outline" style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700", backgroundColor: "white", color: "var(--color-gray-700)" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                  <span>Keluar Tes</span>
+                </a>
               </div>
             </div>
           )}
