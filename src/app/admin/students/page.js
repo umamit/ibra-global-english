@@ -76,25 +76,32 @@ export default function StudentManagement() {
     setRegLoading(true);
     setErrorMsg("");
     try {
-      const res = await fetch("/api/register");
-      const result = await res.json();
+      const res = await fetch("/api/register", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const result = await res.json().catch(() => null);
 
       if (!res.ok) {
-        const errorText = result.error || `Gagal memuat data pendaftaran (HTTP ${res.status})`;
+        const errorText =
+          (result && result.error) ||
+          `Gagal memuat data pendaftaran (HTTP ${res.status})`;
         console.error("Gagal memuat data pendaftaran:", errorText, result);
         setErrorMsg(errorText);
         setRegistrations([]);
         return;
       }
 
-      if (result.data) {
+      if (result && result.data) {
         setRegistrations(result.data);
       } else {
         setRegistrations([]);
       }
     } catch (err) {
       console.error("Gagal memuat data pendaftaran:", err);
-      setErrorMsg("Terjadi kesalahan jaringan saat memuat data pendaftaran.");
+      setErrorMsg(
+        "Terjadi kesalahan jaringan saat memuat data pendaftaran. Pastikan Anda terhubung ke internet."
+      );
       setRegistrations([]);
     } finally {
       setRegLoading(false);
