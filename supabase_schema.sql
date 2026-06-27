@@ -288,6 +288,45 @@ CREATE TABLE IF NOT EXISTS public.placement_test_submissions (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- placement_test_questions
+CREATE TABLE IF NOT EXISTS public.placement_test_questions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  category TEXT NOT NULL,
+  question TEXT NOT NULL,
+  options JSONB NOT NULL,
+  is_audio BOOLEAN DEFAULT false,
+  audio_text TEXT,
+  is_speaking BOOLEAN DEFAULT false,
+  target_sentence TEXT,
+  order_index INTEGER NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Dummy seed if empty (for initial production run)
+INSERT INTO public.placement_test_questions (category, question, options, is_audio, audio_text, is_speaking, target_sentence, order_index)
+SELECT
+  'Grammar (A1 Easy)',
+  'She ________ her breakfast at 7 AM every day.',
+  '[{"text":"eat","score":0},{"text":"eats","score":1},{"text":"eating","score":0},{"text":"eaten","score":0}]',
+  false, null, false, null, 1
+WHERE NOT EXISTS (SELECT 1 FROM public.placement_test_questions LIMIT 1);
+
+-- placement_test_regenerate_logs (history logging)
+CREATE TABLE IF NOT EXISTS public.placement_test_regenerate_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  admin_email TEXT,
+  category TEXT,
+  target_id UUID,
+  action TEXT NOT NULL,
+  status TEXT NOT NULL,
+  old_question TEXT,
+  new_question TEXT,
+  ai_raw_response TEXT,
+  error_message TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- academic_schedules
 CREATE TABLE IF NOT EXISTS public.academic_schedules (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -303,6 +342,7 @@ CREATE TABLE IF NOT EXISTS public.academic_schedules (
 
 ALTER TABLE public.tuition_payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.placement_test_submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.placement_test_questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.academic_schedules ENABLE ROW LEVEL SECURITY;
 
 -- tuition_payments RLS
@@ -323,6 +363,17 @@ ON public.placement_test_submissions FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Admins have full access to placement_test_submissions"
 ON public.placement_test_submissions FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- placement_test_questions RLS
+CREATE POLICY "Anyone can view active placement test questions"
+ON public.placement_test_questions FOR SELECT USING (true);
+
+CREATE POLICY "Admins have full access to placement_test_questions"
+ON public.placement_test_questions FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- placement_test_regenerate_logs RLS
+CREATE POLICY "Admins have full access to placement_test_regenerate_logs"
+ON public.placement_test_regenerate_logs FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- academic_schedules RLS
 CREATE POLICY "Admins have full access to academic_schedules"

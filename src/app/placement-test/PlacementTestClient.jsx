@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import "../dashboard-components.css";
 import FormInput from "@/components/FormInput";
 import { createClient } from "@/utils/supabase/client";
-import { QUESTIONS } from "./placementQuestions";
 
 export default function PlacementTestClient() {
   const supabase = createClient();
@@ -19,11 +18,19 @@ export default function PlacementTestClient() {
   const [submitting, setSubmitting] = useState(false);
   const [finalResult, setFinalResult] = useState(null);
 
+  const [questions, setQuestions] = useState([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(true);
+
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [transcribedText, setTranscribedText] = useState("");
   const [speakingScore, setSpeakingScore] = useState(null);
   const [recognitionError, setRecognitionError] = useState("");
+
+  const QUESTIONS = questions.length ? questions : [
+    { id: "fallback-1", category: "Grammar (A1)", question: "She ________ her breakfast at 7 AM every day.", options: [{ text: "eat", score: 0 }, { text: "eats", score: 1 }, { text: "eating", score: 0 }, { text: "eaten", score: 0 }], is_audio: false, is_speaking: false, order_index: 1 },
+    { id: "fallback-2", category: "Vocabulary (A1)", question: "My father's sister is my ________.", options: [{ text: "Aunt", score: 1 }, { text: "Uncle", score: 0 }, { text: "Grandmother", score: 0 }, { text: "Cousin", score: 0 }], is_audio: false, is_speaking: false, order_index: 2 },
+  ];
 
   const playListeningAudio = (text) => {
     if (typeof window === "undefined" || !window.speechSynthesis) {
@@ -60,7 +67,7 @@ export default function PlacementTestClient() {
     recognition.onresult = (event) => {
       const resultText = event.results[0][0].transcript;
       setTranscribedText(resultText);
-      const target = QUESTIONS[currentQuestionIndex].targetSentence;
+      const target = QUESTIONS[currentQuestionIndex].target_sentence;
       const score = calculateSpeechAccuracy(resultText, target);
       setSpeakingScore(score);
       const point = score >= 70 ? 1 : 0;
@@ -107,6 +114,27 @@ export default function PlacementTestClient() {
     }, 0);
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    const loadQuestions = async () => {
+      try {
+        const res = await fetch("/api/placement-test/questions");
+        if (res.ok) {
+          const data = await res.json();
+          if (!cancelled && Array.isArray(data) && data.length) {
+            setQuestions(data);
+          }
+        }
+      } catch (e) {
+        console.warn("Gagal memuat soal dinamis, gunakan fallback.", e);
+      } finally {
+        if (!cancelled) setLoadingQuestions(false);
+      }
+    };
+    loadQuestions();
+    return () => { cancelled = true; };
+  }, []);
+
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
     setTheme(nextTheme);
@@ -120,6 +148,7 @@ export default function PlacementTestClient() {
   };
 
   const handleStartTest = () => {
+    if (loadingQuestions) return;
     setStep(1);
   };
 
@@ -141,7 +170,7 @@ export default function PlacementTestClient() {
 
   const handleNextQuestion = () => {
     const currentQuestion = QUESTIONS[currentQuestionIndex];
-    if (currentQuestion.isSpeaking) {
+    if (currentQuestion.is_speaking) {
       if (answers[currentQuestion.id] === undefined) {
         const confirmSkip = confirm("Anda belum menyelesaikan rekaman suara dengan sukses. Yakin ingin melanjutkan?");
         if (!confirmSkip) return;
@@ -184,7 +213,7 @@ export default function PlacementTestClient() {
 
     // Calculate score
     QUESTIONS.forEach((q) => {
-      if (q.isSpeaking) {
+      if (q.is_speaking) {
         const speakingVal = answers[q.id] || 0;
         totalScore += speakingVal;
       } else {
@@ -385,11 +414,11 @@ export default function PlacementTestClient() {
                   {QUESTIONS[currentQuestionIndex].question}
                 </h3>
 
-                {QUESTIONS[currentQuestionIndex].isAudio && (
+                {QUESTIONS[currentQuestionIndex].is_audio && (
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", padding: "1.5rem", backgroundColor: "var(--color-primary-light)", borderRadius: "12px", marginBottom: "2rem" }}>
                     <button
                       type="button"
-                      onClick={() => playListeningAudio(QUESTIONS[currentQuestionIndex].audioText)}
+                      onClick={() => playListeningAudio(QUESTIONS[currentQuestionIndex].audio_text)}
                       aria-label={isAudioPlaying ? "Hentikan Suara Soal" : "Putar Suara Soal"}
                       style={{
                         width: "60px",
@@ -419,7 +448,7 @@ export default function PlacementTestClient() {
                   </div>
                 )}
 
-                {QUESTIONS[currentQuestionIndex].isSpeaking ? (
+                {QUESTIONS[currentQuestionIndex].is_speaking ? (
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
                     <div style={{
                       fontSize: "1.35rem",
@@ -433,7 +462,7 @@ export default function PlacementTestClient() {
                       width: "100%",
                       fontFamily: "Georgia, serif"
                     }}>
-                      &ldquo;{QUESTIONS[currentQuestionIndex].targetSentence}&rdquo;
+                      &ldquo;{QUESTIONS[currentQuestionIndex].target_sentence}&rdquo;
                     </div>
 
                     <button
