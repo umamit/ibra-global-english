@@ -194,18 +194,32 @@ export const PATCH = withAdminAuth(async (req) => {
       }
     }
 
-    // 3. Update status di database registrations setelah proses di atas sukses
-    const { error: updateError } = await supabaseAdmin
-      .from("registrations")
-      .update({ status, notes: notes || null })
-      .eq("id", id);
+    // 3. Update status di database registrations atau HAPUS jika ditolak (reject)
+    if (status === "rejected") {
+      const { error: deleteError } = await supabaseAdmin
+        .from("registrations")
+        .delete()
+        .eq("id", id);
 
-    if (updateError) throw updateError;
+      if (deleteError) throw deleteError;
 
-    return NextResponse.json({ 
-      success: true, 
-      message: status === "approved" ? "Pendaftaran disetujui dan siswa berhasil ditambahkan ke database." : "Status pendaftaran berhasil diperbarui."
-    }, { status: 200 });
+      return NextResponse.json({ 
+        success: true, 
+        message: "Pendaftaran berhasil ditolak dan dihapus dari database."
+      }, { status: 200 });
+    } else {
+      const { error: updateError } = await supabaseAdmin
+        .from("registrations")
+        .update({ status, notes: notes || null })
+        .eq("id", id);
+
+      if (updateError) throw updateError;
+
+      return NextResponse.json({ 
+        success: true, 
+        message: "Pendaftaran disetujui dan siswa berhasil ditambahkan ke database."
+      }, { status: 200 });
+    }
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
