@@ -76,7 +76,7 @@ export default function Testimonials() {
                   </svg>
                 ))}
               </div>
-              <p className="testimonial-text">"{t.text}"</p>
+              <p className="testimonial-text">&ldquo;{t.text}&rdquo;</p>
               <div className="testimonial-author">
                 <p className="author-name">{t.author}</p>
                 <p className="author-role">{t.role}</p>

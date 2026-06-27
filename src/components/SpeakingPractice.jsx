@@ -21,11 +21,50 @@ export default function SpeakingPractice({ student }) {
 
   const recognitionRef = useRef(null);
 
+  const targetSentence = PRACTICE_SENTENCES[activeIdx].text.replace("student", student?.name || "Alex");
+
+  // Clean strings helper
+  function cleanString(str) {
+    return str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+  }
+
+  // Grade student pronunciation based on word match
+  function evaluateSpeech(spokenText) {
+    const targetClean = cleanString(targetSentence);
+    const spokenClean = cleanString(spokenText);
+
+    const targetWords = targetClean.split(/\s+/).filter(Boolean);
+    const spokenWords = spokenClean.split(/\s+/).filter(Boolean);
+
+    if (targetWords.length === 0) return;
+
+    let matches = 0;
+    targetWords.forEach(word => {
+      if (spokenWords.includes(word)) {
+        matches++;
+      }
+    });
+
+    const accuracyScore = Math.round((matches / targetWords.length) * 100);
+    setScore(accuracyScore);
+
+    // Provide feedback
+    if (accuracyScore >= 90) {
+      setFeedback("🤩 Sempurna! Pengucapan Anda sangat jelas dan fasih!");
+    } else if (accuracyScore >= 75) {
+      setFeedback("😊 Sangat Bagus! Pengucapan sudah baik, terus berlatih beberapa kata lagi.");
+    } else if (accuracyScore >= 50) {
+      setFeedback("👍 Cukup Baik! Cobalah dengarkan pelafalan tutor (tombol dengar) lalu rekam ulang.");
+    } else {
+      setFeedback("💪 Semangat! Coba rekam ulang secara perlahan dan dekatkan mikrofon.");
+    }
+  }
+
   // Initialize Speech Recognition
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      setRecognitionSupported(false);
+      setTimeout(() => setRecognitionSupported(false), 0);
       return;
     }
 
@@ -64,8 +103,6 @@ export default function SpeakingPractice({ student }) {
     recognitionRef.current = rec;
   }, [activeIdx]);
 
-  const targetSentence = PRACTICE_SENTENCES[activeIdx].text.replace("student", student?.name || "Alex");
-
   // Speak the target sentence (Text-to-Speech)
   const handleListenTTS = () => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -101,43 +138,6 @@ export default function SpeakingPractice({ student }) {
       } catch (e) {
         console.error(e);
       }
-    }
-  };
-
-  // Clean strings helper
-  const cleanString = (str) => {
-    return str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
-  };
-
-  // Grade student pronunciation based on word match
-  const evaluateSpeech = (spokenText) => {
-    const targetClean = cleanString(targetSentence);
-    const spokenClean = cleanString(spokenText);
-
-    const targetWords = targetClean.split(/\s+/).filter(Boolean);
-    const spokenWords = spokenClean.split(/\s+/).filter(Boolean);
-
-    if (targetWords.length === 0) return;
-
-    let matches = 0;
-    targetWords.forEach(word => {
-      if (spokenWords.includes(word)) {
-        matches++;
-      }
-    });
-
-    const accuracyScore = Math.round((matches / targetWords.length) * 100);
-    setScore(accuracyScore);
-
-    // Provide feedback
-    if (accuracyScore >= 90) {
-      setFeedback("🤩 Sempurna! Pengucapan Anda sangat jelas dan fasih!");
-    } else if (accuracyScore >= 75) {
-      setFeedback("😊 Sangat Bagus! Pengucapan sudah baik, terus berlatih beberapa kata lagi.");
-    } else if (accuracyScore >= 50) {
-      setFeedback("👍 Cukup Baik! Cobalah dengarkan pelafalan tutor (tombol dengar) lalu rekam ulang.");
-    } else {
-      setFeedback("💪 Semangat! Coba rekam ulang secara perlahan dan dekatkan mikrofon.");
     }
   };
 
@@ -197,7 +197,7 @@ export default function SpeakingPractice({ student }) {
         </span>
         
         <p style={{ fontSize: "1.35rem", fontWeight: "800", color: "var(--color-gray-900)", lineHeight: "1.5", margin: "0.5rem 0" }}>
-          "{targetSentence}"
+          &ldquo;{targetSentence}&rdquo;
         </p>
         <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", fontStyle: "italic", margin: 0 }}>
           {PRACTICE_SENTENCES[activeIdx].translate}
@@ -293,7 +293,7 @@ export default function SpeakingPractice({ student }) {
           }}>
             <p style={{ fontSize: "0.7rem", fontWeight: "800", color: "var(--color-gray-400)", textTransform: "uppercase", marginBottom: "4px" }}>Hasil Transkrip Suara Anda</p>
             <p style={{ fontSize: "1.05rem", fontWeight: "700", color: "var(--color-gray-800)", margin: 0, fontStyle: "italic" }}>
-              "{transcript}"
+              &ldquo;{transcript}&rdquo;
             </p>
           </div>
         )}

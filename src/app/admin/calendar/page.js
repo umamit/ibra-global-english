@@ -64,7 +64,15 @@ export default function AdminCalendar() {
   };
 
   useEffect(() => {
-    fetchData();
+    let cancelled = false;
+    const load = async () => {
+      if (cancelled) return;
+      await fetchData();
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Lock body scroll when modal is open to prevent page scrolling behind it

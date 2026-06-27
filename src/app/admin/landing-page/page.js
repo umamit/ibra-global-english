@@ -296,9 +296,12 @@ export default function LandingPageCMS() {
   };
 
   useEffect(() => {
-    fetchHeroSettings();
-    fetchGallery();
-    fetchTestimonials();
+    const timer = setTimeout(() => {
+      fetchHeroSettings();
+      fetchGallery();
+      fetchTestimonials();
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSavePrograms = async (newPrograms) => {
@@ -382,22 +385,7 @@ export default function LandingPageCMS() {
         .upload(filePath, file);
 
       if (uploadError) {
-        // Jika bucket tidak ditemukan, coba membuat bucket secara otomatis
-        if (uploadError.message.includes("bucket not found") || uploadError.message.includes("does not exist")) {
-          const { error: bucketError } = await supabase.storage.createBucket("gallery-uploads", {
-            public: true,
-            fileSizeLimit: 5242880, // 5MB
-          });
-          if (bucketError) throw bucketError;
-
-          // Coba unggah kembali setelah bucket dibuat
-          const { error: retryError } = await supabase.storage
-            .from("gallery-uploads")
-            .upload(filePath, file);
-          if (retryError) throw retryError;
-        } else {
-          throw uploadError;
-        }
+        throw uploadError;
       }
 
       const { data } = supabase.storage

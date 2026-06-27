@@ -138,7 +138,7 @@ export default function TestimonialManager({
                       <div style={{ fontSize: "0.85rem", color: "var(--color-gray-500)" }}>{t.role}</div>
                     </td>
                     <td style={{ padding: "10px", fontSize: "0.9rem", color: "var(--color-gray-600)" }}>
-                      "{t.text}"
+                      &ldquo;{t.text}&rdquo;
                     </td>
                     <td style={{ padding: "10px", textAlign: "right" }}>
                       <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>

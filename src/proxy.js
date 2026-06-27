@@ -23,11 +23,7 @@ export async function proxy(request) {
     media-src 'self' blob: data:;
   `.replace(/\s{2,}/g, ' ').trim();
 
-  // Create mutable headers copy with nonce and CSP
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-nonce', nonce);
-  requestHeaders.set('Content-Security-Policy', cspHeader);
-
   const { pathname } = request.nextUrl;
   const acceptHeader = request.headers.get("accept") || "";
 
@@ -173,6 +169,26 @@ export async function proxy(request) {
     if (role !== "parent") {
       // Jika bukan orang tua, redirect ke login dengan parameter error
       return NextResponse.redirect(new URL("/login?error=unauthorized_parent", request.url));
+    }
+  }
+
+  // Proteksi rute Tutor (/tutor*)
+  if (pathname.startsWith("/tutor")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "tutor") {
+      return NextResponse.redirect(new URL("/login?error=unauthorized_tutor", request.url));
+    }
+  }
+
+  // Proteksi rute Student (/student*)
+  if (pathname.startsWith("/student")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "student") {
+      return NextResponse.redirect(new URL("/login?error=unauthorized_student", request.url));
     }
   }
 

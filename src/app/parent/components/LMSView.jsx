@@ -189,7 +189,7 @@ export default function LMSView({
                         </div>
                         {submission.feedback ? (
                           <p style={{ color: "#a68849", fontStyle: "italic", fontSize: "0.9rem", margin: 0, paddingLeft: "1.75rem", borderLeft: "2px solid var(--color-accent)" }}>
-                            "{submission.feedback}"
+                            &ldquo;{submission.feedback}&rdquo;
                           </p>
                         ) : (
                           <p style={{ color: "var(--color-gray-500)", fontStyle: "italic", fontSize: "0.9rem", margin: 0, paddingLeft: "1.75rem" }}>

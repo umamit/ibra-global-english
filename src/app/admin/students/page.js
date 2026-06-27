@@ -177,10 +177,19 @@ export default function StudentManagement() {
   };
 
   useEffect(() => {
-    fetchData();
-    fetchRegistrations();
+    let cancelled = false;
+    const load = async () => {
+      if (cancelled) return;
+      await fetchData();
+      await fetchRegistrations();
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-    // Subscribe to real-time changes
+  useEffect(() => {
     const channel = supabase
       .channel("realtime-students-mgmt")
       .on(
@@ -202,7 +211,7 @@ export default function StudentManagement() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [supabase]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -411,7 +420,7 @@ export default function StudentManagement() {
               {students.length === 0 ? (
                 <tr>
                   <td colSpan="6" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
-                    Belum ada data siswa terdaftar. Klik "Tambah Siswa" untuk memulai!
+                    Belum ada data siswa terdaftar. Klik &ldquo;Tambah Siswa&rdquo; untuk memulai!
                   </td>
                 </tr>
               ) : (

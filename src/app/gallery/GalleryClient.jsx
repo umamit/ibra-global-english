@@ -145,14 +145,15 @@ export default function GalleryClient() {
     fetchVideos();
   }, []);
 
-  // Handle theme initialization
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
     
-    setTheme(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
+    setTimeout(() => {
+      setTheme(initialTheme);
+      document.documentElement.setAttribute("data-theme", initialTheme);
+    }, 0);
   }, []);
 
   // Handle theme toggle

@@ -9,7 +9,12 @@ export default function DailyAttendance() {
   const supabase = createClient();
 
   const [students, setStudents] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    const offset = today.getTimezoneOffset();
+    const localToday = new Date(today.getTime() - offset * 60 * 1000);
+    return localToday.toISOString().split("T")[0];
+  });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
@@ -74,9 +79,16 @@ export default function DailyAttendance() {
   };
 
   useEffect(() => {
-    if (activeTab === "rekap") {
-      loadRecapData();
-    }
+    let cancelled = false;
+    const load = async () => {
+      if (!cancelled && activeTab === "rekap") {
+        await loadRecapData();
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, [activeTab]);
 
   const filteredRecap = recapData.filter((row) => {
@@ -129,13 +141,7 @@ export default function DailyAttendance() {
     return date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
   };
 
-  useEffect(() => {
-    // Set default date ke hari ini (zona waktu lokal)
-    const today = new Date();
-    const offset = today.getTimezoneOffset();
-    const localToday = new Date(today.getTime() - offset * 60 * 1000);
-    setSelectedDate(localToday.toISOString().split("T")[0]);
-  }, []);
+
 
   const loadAttendanceAndStudents = async () => {
     if (!selectedDate) return;
@@ -182,7 +188,10 @@ export default function DailyAttendance() {
   };
 
   useEffect(() => {
-    loadAttendanceAndStudents();
+    const timer = setTimeout(() => {
+      loadAttendanceAndStudents();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [selectedDate]);
 
   const handleStatusChange = (studentId, status) => {
@@ -412,7 +421,7 @@ export default function DailyAttendance() {
                   {students.length === 0 ? (
                     <tr>
                       <td colSpan="5" style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
-                        Belum ada siswa terdaftar di bimbingan belajar. Daftarkan siswa terlebih dahulu di menu "Kelola Siswa".
+                        Belum ada siswa terdaftar di bimbingan belajar. Daftarkan siswa terlebih dahulu di menu &ldquo;Kelola Siswa&rdquo;.
                       </td>
                     </tr>
                   ) : (

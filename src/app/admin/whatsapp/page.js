@@ -64,11 +64,39 @@ export default function WhatsAppDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchDeviceStatus();
+
+
+    let cancelled = false;
+
+
+    const load = async () => {
+
+
+      if (cancelled) return;
+
+
+      fetchDeviceStatus();
     fetchLogs();
     fetchContacts();
     const stored = JSON.parse(localStorage.getItem("recent_manual_wa_numbers") || "[]");
     setRecentContacts(stored);
+
+
+    };
+
+
+    load();
+
+
+    return () => {
+
+
+      cancelled = true;
+
+
+    };
+
+
   }, [fetchDeviceStatus, fetchLogs, fetchContacts]);
 
   const handleSelectContact = (num) => {

@@ -261,7 +261,7 @@ export default function HeroSettings({
               <input type="text" className="form-input" style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }} placeholder="Contoh: Promo Terbatas!" value={ctaTag} onChange={(e) => setCtaTag(e.target.value)} required />
             </div>
             <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Judul Banner CTA (Gunakan '&' untuk teks highlight kuning)</label>
+              <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Judul Banner CTA (Gunakan &apos;&amp;&apos; untuk teks highlight kuning)</label>
               <input type="text" className="form-input" style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }} placeholder="Contoh: Belajar Cepat & Jadi Percaya Diri!" value={ctaTitle} onChange={(e) => setCtaTitle(e.target.value)} required />
             </div>
             <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>

@@ -55,9 +55,18 @@ export default function AdminPlacementTest() {
   };
 
   useEffect(() => {
-    fetchData();
+    let cancelled = false;
+    const load = async () => {
+      if (cancelled) return;
+      await fetchData();
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-    // Subscribe to real-time changes
+  useEffect(() => {
     const channel = supabase
       .channel("realtime-submissions")
       .on(
@@ -72,7 +81,7 @@ export default function AdminPlacementTest() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [supabase]);
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {

@@ -28,7 +28,17 @@ export default function AdminGalleryPage() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      if (cancelled) return;
+      await fetchItems();
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleFileChange = (e) => {
     const f = e.target.files[0];

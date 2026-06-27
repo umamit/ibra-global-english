@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function LegalLayout({ title, subtitle, children, lastUpdated = "13 Juni 2026", publisher = "PT Ibra Global English" }) {
   return (
     <div style={{ backgroundColor: "var(--color-gray-50)", minHeight: "100vh", padding: "3rem 1.5rem", color: "var(--color-gray-800)", fontFamily: "var(--font-sans), sans-serif" }}>
@@ -5,9 +7,9 @@ export default function LegalLayout({ title, subtitle, children, lastUpdated = "
         
         {/* Navigation Back */}
         <div style={{ marginBottom: "2rem" }}>
-          <a href="/" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
+          <Link href="/" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
             ← Kembali ke Beranda
-          </a>
+          </Link>
         </div>
 
         {/* Legal Card */}

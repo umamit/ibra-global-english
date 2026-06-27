@@ -11,7 +11,35 @@ export default function PostHogTestPage() {
   const posthog = usePostHog();
 
   useEffect(() => {
-    setMounted(true);
+
+
+    let cancelled = false;
+
+
+    const load = async () => {
+
+
+      if (cancelled) return;
+
+
+      setMounted(true);
+
+
+    };
+
+
+    load();
+
+
+    return () => {
+
+
+      cancelled = true;
+
+
+    };
+
+
   }, []);
 
   // Memeriksa dan menampilkan Distinct ID pengguna dari PostHog setelah terhubung

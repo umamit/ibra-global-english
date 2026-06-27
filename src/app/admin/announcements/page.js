@@ -68,14 +68,27 @@ export default function AdminAnnouncementsPage() {
   };
 
   const fetchAnnouncements = async () => {
-    setLoading(true);
-    const res = await fetch("/api/announcements?all=true");
-    const { data } = await res.json();
-    setAnnouncements(data || []);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const res = await fetch("/api/announcements?all=true");
+      const { data } = await res.json();
+      setAnnouncements(data || []);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { fetchAnnouncements(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      if (cancelled) return;
+      await fetchAnnouncements();
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

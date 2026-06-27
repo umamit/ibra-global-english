@@ -1,13 +1,42 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function OfflineFormPage() {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    // Force light theme color settings for printable form view
+
+
+    let cancelled = false;
+
+
+    const load = async () => {
+
+
+      if (cancelled) return;
+
+
+      // Force light theme color settings for printable form view
     document.documentElement.setAttribute("data-theme", "light");
+
+
+    };
+
+
+    load();
+
+
+    return () => {
+
+
+      cancelled = true;
+
+
+    };
+
+
   }, []);
 
   const handlePrint = () => {
@@ -30,7 +59,7 @@ export default function OfflineFormPage() {
         border: "1px solid #e5e7eb"
       }}>
         <div>
-          <a href="/" style={{
+          <Link href="/" style={{
             fontSize: "0.9rem",
             fontWeight: "700",
             color: "var(--color-primary-dark, #216c7e)",
@@ -40,7 +69,7 @@ export default function OfflineFormPage() {
             gap: "0.5rem"
           }}>
             ← Kembali ke Beranda
-          </a>
+          </Link>
         </div>
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <button 

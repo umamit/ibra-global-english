@@ -18,7 +18,7 @@ export default function PrivacyPage() {
           1. Pengantar
         </h2>
         <p>
-          Selamat datang di website resmi **Ibra Global English Bobong** yang dikelola di bawah naungan **PT Ibra Global English** ("Kami"). Kami berkomitmen penuh untuk melindungi privasi data pribadi Anda, baik sebagai wali murid (orang tua), siswa, tutor, maupun pengunjung website kami. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda.
+          Selamat datang di website resmi **Ibra Global English Bobong** yang dikelola di bawah naungan **PT Ibra Global English** (&ldquo;Kami&rdquo;). Kami berkomitmen penuh untuk melindungi privasi data pribadi Anda, baik sebagai wali murid (orang tua), siswa, tutor, maupun pengunjung website kami. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda.
         </p>
       </section>
 

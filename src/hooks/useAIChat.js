@@ -4,22 +4,18 @@ import { useMutation } from "@tanstack/react-query";
 
 export function useAIChat(apiEndpoint, welcomeMessage) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => [
+    {
+      id: "welcome",
+      role: "assistant",
+      content: welcomeMessage,
+      timestamp: new Date(),
+    }
+  ]);
   const [input, setInput] = useState("");
   const [hasOpened, setHasOpened] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-
-  useEffect(() => {
-    setMessages([
-      {
-        id: "welcome",
-        role: "assistant",
-        content: welcomeMessage,
-        timestamp: new Date(),
-      }
-    ]);
-  }, [welcomeMessage]);
 
   useEffect(() => {
     if (isOpen) {

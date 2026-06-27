@@ -100,7 +100,9 @@ export default function PlacementTestClient() {
     const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
-    setTheme(initialTheme);
+    setTimeout(() => {
+      setTheme(initialTheme);
+    }, 0);
   }, []);
 
   const toggleTheme = () => {
@@ -450,7 +452,7 @@ export default function PlacementTestClient() {
                       width: "100%",
                       fontFamily: "Georgia, serif"
                     }}>
-                      "{QUESTIONS[currentQuestionIndex].targetSentence}"
+                      &ldquo;{QUESTIONS[currentQuestionIndex].targetSentence}&rdquo;
                     </div>
 
                     <button
@@ -486,7 +488,7 @@ export default function PlacementTestClient() {
                     {transcribedText && (
                       <div style={{ width: "100%", padding: "1.25rem", border: "1px solid var(--color-gray-200)", borderRadius: "8px", backgroundColor: "var(--color-gray-50)" }}>
                         <p style={{ fontSize: "0.8rem", fontWeight: "700", color: "var(--color-gray-400)", textTransform: "uppercase", marginBottom: "4px" }}>Hasil Transkripsi Anda:</p>
-                        <p style={{ fontWeight: "600", color: "var(--color-gray-800)" }}>"{transcribedText}"</p>
+                        <p style={{ fontWeight: "600", color: "var(--color-gray-800)" }}>&ldquo;{transcribedText}&rdquo;</p>
                       </div>
                     )}
 
@@ -642,7 +644,7 @@ export default function PlacementTestClient() {
 
                 <div style={{ maxWidth: "550px", margin: "0 auto 3rem", padding: "0 1.5rem" }}>
                   <p style={{ fontSize: "0.95rem", color: "var(--color-gray-700)", lineHeight: "1.6", fontWeight: "600" }}>
-                    "{finalResult.description}"
+                    &ldquo;{finalResult.description}&rdquo;
                   </p>
                 </div>
 
@@ -710,7 +712,7 @@ export default function PlacementTestClient() {
                 <p style={{ fontSize: "1.8rem", fontWeight: "bold", margin: "0" }}>{finalResult.level}</p>
               </div>
             </div>
-            <p style={{ fontStyle: "italic", margin: "2rem 0", lineHeight: "1.6" }}>"{finalResult.description}"</p>
+            <p style={{ fontStyle: "italic", margin: "2rem 0", lineHeight: "1.6" }}>&ldquo;{finalResult.description}&rdquo;</p>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4cm" }}>
               <div style={{ textAlign: "left" }}>
                 <p style={{ fontSize: "0.8rem", margin: "0" }}>Tanggal Terbit:</p>

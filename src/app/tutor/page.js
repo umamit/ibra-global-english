@@ -108,7 +108,9 @@ export default function TutorPortal() {
 
   useEffect(() => {
     // Set today's date
-    setAttendanceDate(new Date().toISOString().split("T")[0]);
+    setTimeout(() => {
+      setAttendanceDate(new Date().toISOString().split("T")[0]);
+    }, 0);
 
     async function checkAuthAndLoad() {
       try {

@@ -257,12 +257,43 @@ export default function ParentPortal() {
   };
 
   useEffect(() => {
-    fetchParentData();
+
+
+    let cancelled = false;
+
+
+    const load = async () => {
+
+
+      if (cancelled) return;
+
+
+      fetchParentData();
+
+
+    };
+
+
+    load();
+
+
+    return () => {
+
+
+      cancelled = true;
+
+
+    };
+
+
   }, []);
 
   useEffect(() => {
     if (selectedChild) {
-      fetchChildDetails(selectedChild);
+      const timer = setTimeout(() => {
+        fetchChildDetails(selectedChild);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [selectedChild]);
 
