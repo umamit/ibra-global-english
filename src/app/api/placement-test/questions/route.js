@@ -58,8 +58,34 @@ Aturan ketat:
 
     const data = await response.json();
     const text = data?.choices?.[0]?.message?.content || "";
-    const cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
-    const parsed = JSON.parse(cleaned);
+    let cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
+
+    // Helper untuk me-escape newline nyata di dalam string JSON agar tidak memicu JSON parse error
+    const escapeRawNewlines = (str) => {
+      let inString = false;
+      let escaped = false;
+      let result = "";
+      for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        if (char === '"' && !escaped) {
+          inString = !inString;
+        }
+        if (inString && (char === '\n' || char === '\r')) {
+          result += '\\n';
+        } else {
+          result += char;
+        }
+        if (char === '\\' && !escaped) {
+          escaped = true;
+        } else {
+          escaped = false;
+        }
+      }
+      return result;
+    };
+
+    const escapedText = escapeRawNewlines(cleaned);
+    const parsed = JSON.parse(escapedText);
 
     if (Array.isArray(parsed) && parsed.length === 15) {
       // Validate all questions
