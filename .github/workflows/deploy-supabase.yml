@@ -1,0 +1,41 @@
+name: Deploy & Migrate Supabase
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Supabase migration (registrations)
+        run: |
+          set -e
+          SQL=$(cat scripts/migrate-registrations.sql)
+          curl -s -X POST "$SUPABASE_URL/rest/v1/rpc/exec_sql" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"sql\": \"$(echo $SQL | sed 's/\\/\\\\/g; s/\"/\\\"/g' | tr '\n' ' ')\"}" || true
+
+  deploy-vercel:
+    needs: migrate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
