@@ -28,7 +28,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
   const [regSuccess, setRegSuccess] = useState(false);
   const [regError, setRegError] = useState("");
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     if (honeypot) {
@@ -48,10 +48,25 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
       return;
     }
 
+    // Simpan pendaftaran ke database agar muncul di dashboard admin
+    try {
+      await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_name: form.name,
+          whatsapp: numericWhatsapp,
+          program: form.program,
+        }),
+      });
+    } catch (err) {
+      console.error("Gagal menyimpan pendaftaran:", err);
+    }
+
     const targetPhone = rawPhone;
     const message = `Halo Ibra Global English, saya ingin mendaftar kursus.\n\n*Nama Lengkap:* ${form.name}\n*Nomor WhatsApp:* ${form.whatsapp}\n*Program yang Diminati:* ${form.program}`;
     const encodedMessage = encodeURIComponent(message);
-    
+
     window.location.href = `https://wa.me/${targetPhone}?text=${encodedMessage}`;
     setForm({ name: "", whatsapp: "", program: "Kids Program (5-12 tahun)" });
   };
