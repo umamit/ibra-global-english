@@ -17,6 +17,25 @@ export default function TestimonialManager({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       
+      {/* Notifikasi Sanity Studio */}
+      <div style={{ 
+        padding: "1rem 1.25rem", 
+        background: "var(--color-primary-light, #e0f2fe)", 
+        borderRadius: "8px", 
+        borderLeft: "4px solid var(--color-primary, #0284c7)", 
+        color: "var(--color-primary-dark, #0369a1)",
+        fontSize: "0.85rem",
+        lineHeight: 1.5,
+        display: "flex",
+        alignItems: "center",
+        gap: "0.75rem"
+      }}>
+        <span>💡</span>
+        <div>
+          <strong>Info Integrasi CMS:</strong> Anda sekarang juga dapat mengelola testimoni menggunakan <strong><a href="/studio" style={{ textDecoration: "underline", color: "inherit", fontWeight: "bold" }}>Sanity Studio di sini</a></strong> untuk pemuatan data yang lebih cepat dan manajemen aset yang terpusat. Website utama akan otomatis mengutamakan data dari Sanity.
+        </div>
+      </div>
+
       {/* Form Testimoni */}
       <div className="portal-card" style={{ padding: "2rem" }}>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>
