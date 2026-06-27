@@ -4,15 +4,15 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const nextConfig = {
   reactStrictMode: false,
 
-  // Disable Turbopack warning and use Webpack for build
+  // Next.js 16 memakai Turbopack secara default untuk `next dev` dan `next build`.
   turbopack: {},
-  experimental: {
-    cpus: 1,
-  },
-  
+
   outputFileTracingRoot: __dirname,
 
-  // Optimize Webpack build
+  // Catatan: blok webpack() di bawah HANYA dipakai bila build dijalankan dengan
+  // bundler Webpack (mis. `next build --webpack`). Pada build Turbopack default,
+  // konfigurasi ini diabaikan. Pengaturan memori build sebenarnya dikendalikan
+  // lewat NODE_OPTIONS=--max-old-space-size pada script "build" di package.json.
   webpack: (config, { isServer }) => {
     config.optimization.minimize = true;
 
