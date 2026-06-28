@@ -78,6 +78,7 @@ html {
   background-color: var(--color-white);
   transition: background-color var(--transition-normal);
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 body {
@@ -89,6 +90,7 @@ body {
   width: 100%;
   position: relative;
   transition: background-color var(--transition-normal), color var(--transition-normal);
+  overscroll-behavior: none;
 }
 
 main {

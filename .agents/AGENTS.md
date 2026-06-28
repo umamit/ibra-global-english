@@ -87,3 +87,7 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 
 15. **Pengelolaan Berkas (File Management):**
    - Jangan membuat file aset baru (gambar/ikon) jika file serupa sudah ada di folder aset global dengan nama yang berbeda.
+
+16. **Jangan Sok Tahu (No Speculative Assumptions):**
+   - Agen dilarang membuat asumsi spekulatif mengenai elemen visual, antarmuka browser, atau kondisi sistem pengguna tanpa melakukan investigasi mendalam terlebih dahulu. Jika terdapat ambiguitas, agen wajib melakukan verifikasi atau bertanya langsung kepada pengguna alih-alih membuat kesimpulan yang salah.
+
