@@ -367,3 +367,15 @@ section {
   overflow: hidden;
   max-width: 100%;
 }
+
+/* Sentry User Feedback mobile responsive position adjustment */
+#sentry-feedback {
+  --bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  #sentry-feedback {
+    --bottom: 95px !important;
+    bottom: 95px !important;
+  }
+}
