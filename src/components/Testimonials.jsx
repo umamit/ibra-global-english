@@ -32,18 +32,32 @@ const TESTIMONIALS_FALLBACK = [
 async function fetchTestimonials() {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   const useSanity = projectId && projectId !== "placeholder" && projectId !== "";
+  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
 
   let sanityData = [];
   if (useSanity) {
     try {
       const data = await client.fetch(`*[_type == "testimonial"] | order(_createdAt desc)`);
       if (data && data.length > 0) {
-        sanityData = data.map((item) => ({
-          rating: 5,
-          text: item.content,
-          author: item.name,
-          role: item.program || "Siswa",
-        }));
+        sanityData = data.map((item) => {
+          let avatarUrl = null;
+          if (item.avatar?.asset?._ref) {
+            const parts = item.avatar.asset._ref.split('-');
+            if (parts.length >= 4) {
+              const assetId = parts[1];
+              const dimensions = parts[2];
+              const extension = parts[3];
+              avatarUrl = `https://cdn.sanity.io/images/${projectId}/${dataset}/${assetId}-${dimensions}.${extension}`;
+            }
+          }
+          return {
+            rating: 5,
+            text: item.content,
+            author: item.name,
+            role: item.program || "Siswa",
+            avatar: avatarUrl,
+          };
+        });
       }
     } catch (err) {
       console.warn("Failed to fetch testimonials from Sanity:", err);
@@ -66,6 +80,7 @@ async function fetchTestimonials() {
         text: item.text,
         author: item.author,
         role: item.role,
+        avatar: null,
       }));
     }
   } catch (err) {
@@ -115,8 +130,26 @@ export default function Testimonials() {
               </div>
               <p className="testimonial-text">&ldquo;{t.text}&rdquo;</p>
               <div className="testimonial-author">
-                <p className="author-name">{t.author}</p>
-                <p className="author-role">{t.role}</p>
+                <div className="author-avatar-wrapper">
+                  {t.avatar ? (
+                    <img 
+                      src={t.avatar} 
+                      alt={t.author} 
+                      className="author-avatar-img" 
+                      width="48"
+                      height="48"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="author-avatar-placeholder">
+                      {t.author.substring(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <div className="author-info">
+                  <p className="author-name">{t.author}</p>
+                  <p className="author-role">{t.role}</p>
+                </div>
               </div>
             </div>
           ))}
