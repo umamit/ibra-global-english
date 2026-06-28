@@ -12,15 +12,7 @@ export default function AdminDashboard() {
   const supabase = createClient();
   const router = useRouter();
 
-  const handleLogout = async () => {
-    if (window.confirm("Apakah Anda yakin ingin keluar dari portal Admin?")) {
-      posthog.capture("admin_logged_out");
-      posthog.reset();
-      await supabase.auth.signOut();
-      router.push("/login");
-      router.refresh();
-    }
-  };
+
 
   const [adminName, setAdminName] = useState("Admin");
   const [loading, setLoading] = useState(true);
@@ -149,15 +141,8 @@ export default function AdminDashboard() {
         <div className="topbar-title">
           <h1>Ringkasan</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-            Selamat datang kembali, <strong style={{ color: "var(--color-primary-dark)" }}>{adminName}</strong>!
+            Statistik dan ringkasan data operasional Ibra Global English
           </p>
-        </div>
-        <div className="topbar-user">
-          <span className="user-badge">Administrator</span>
-          <button onClick={handleLogout} className="btn-logout" style={{ width: "auto", padding: "0.4rem 0.85rem", fontSize: "0.8rem", display: "inline-flex", marginLeft: "0.5rem" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            <span>Keluar</span>
-          </button>
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import AICopilotWidget from "@/components/AICopilotWidget";
+import posthog from "posthog-js";
 import "@/app/dashboard.css";
 import "@/app/dashboard-print.css";
 
@@ -84,8 +85,26 @@ export default function AdminLayout({ children }) {
     };
   }, [supabase]);
 
+  const [adminName, setAdminName] = useState("Admin");
+
+  useEffect(() => {
+    async function fetchAdminName() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setAdminName(user.user_metadata?.full_name || user.email.split("@")[0]);
+        }
+      } catch (err) {
+        console.warn("Gagal mengambil nama admin:", err);
+      }
+    }
+    fetchAdminName();
+  }, [supabase]);
+
   const handleLogout = async () => {
     if (window.confirm("Apakah Anda yakin ingin keluar dari portal Admin?")) {
+      posthog.capture("admin_logged_out");
+      posthog.reset();
       await supabase.auth.signOut();
       router.push("/login");
       router.refresh();
@@ -294,6 +313,59 @@ export default function AdminLayout({ children }) {
       </aside>
 
       <main className="dashboard-main">
+        {/* Global Topbar */}
+        <div className="global-topbar" style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "2rem",
+          paddingBottom: "1.25rem",
+          borderBottom: "1px solid var(--color-gray-200)",
+          flexWrap: "wrap",
+          gap: "1rem"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ 
+              backgroundColor: "var(--color-primary-light)", 
+              color: "var(--color-primary-dark)", 
+              fontWeight: "800", 
+              fontSize: "0.75rem", 
+              padding: "0.3rem 0.75rem", 
+              borderRadius: "20px",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em"
+            }}>
+              Portal Admin
+            </span>
+            <span style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", fontWeight: "500" }}>
+              • Ibra Global English
+            </span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <span style={{ fontSize: "0.9rem", color: "var(--color-gray-700)" }}>
+              Halo, <strong style={{ color: "var(--color-primary-dark)" }}>{adminName}</strong>
+            </span>
+            <span className="user-badge" style={{ margin: 0 }}>Administrator</span>
+            <button 
+              onClick={handleLogout} 
+              className="btn-logout" 
+              style={{ 
+                width: "auto", 
+                padding: "0.4rem 0.85rem", 
+                fontSize: "0.8rem", 
+                display: "inline-flex", 
+                alignItems: "center", 
+                gap: "0.25rem",
+                marginLeft: "0.5rem" 
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              <span>Keluar</span>
+            </button>
+          </div>
+        </div>
+
         {children}
       </main>
       <AICopilotWidget />
