@@ -13,3 +13,5 @@ dist/
 # Prisma generated client – can be regenerated
 /generated/prisma/
 .env.local
+.vercel
+.env*
