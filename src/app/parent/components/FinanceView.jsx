@@ -89,7 +89,7 @@ export default function FinanceView({
               };
 
               return (
-                <div key={month} className="receipt-row">
+                <div key={month} className="payment-tracker-row">
                   <div>
                     <p style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
                       {getMonthName(month)}
