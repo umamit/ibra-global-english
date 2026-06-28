@@ -385,7 +385,12 @@ section {
 /* Sembunyikan Vercel Preview Toolbar secara paksa */
 vercel-devtools,
 [data-vercel-toolbar],
-vercel-live-feedback {
+vercel-live-feedback,
+#vercel-preview-feedback-root,
+#vercel-live-feedback-root,
+.vercel-preview-feedback-iframe,
+.vercel-live-feedback-iframe,
+iframe[src^="https://vercel.live"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
