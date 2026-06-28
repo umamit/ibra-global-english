@@ -1,90 +1,435 @@
-/* ============================================
-   IBRA GLOBAL ENGLISH - SANITY STUDIO BRANDING
-   ============================================ */
+/* ==========================================================================
+   SANITY STUDIO BRANDING & PREMIUM DARK NEON THEME
+   ========================================================================== */
 
-/* Hide the default text title in the sidebar structure header
-   so the logo can take its place */
-[data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child,
-[data-ui="structure"] .studio-header__title {
-  font-size: 0;
-  position: relative;
+/* ──── GLOBAL SANITY STUDIO OVERRIDES ──── */
+
+/* Root and layout background */
+[data-ui="Portal"] > div,
+[data-testid="studio-layout"],
+.studio-layout,
+.sanity-studio {
+  background-color: #080712 !important;
+  color: #d1d5db !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
-/* Insert logo as background on the structure list root item */
-[data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child::before,
-[data-ui="structure"] .studio-header__title::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  background: url('/assets/logo.png') no-repeat center;
-  background-size: contain;
-  z-index: 1;
+/* Translucent Top Navbar */
+[data-ui="navbar"],
+[data-testid="navbar"],
+header[data-ui="navbar"] {
+  background-color: rgba(9, 8, 18, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.25) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Give the structure list item extra padding so content doesn't overlap the logo */
-[data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child,
-[data-ui="structure"] .studio-header__title {
-  padding-left: 56px !important;
-  min-height: 52px !important;
+/* Sidebar Structure Pane */
+[data-ui="structure"],
+[data-ui="pane"] {
+  background-color: #0a0914 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Style the root sidebar list item to look branded */
-[data-ui="structure"] [data-ui="list"] > div:first-child,
-[data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child {
-  border-radius: 6px;
-  margin: 4px 8px;
-  transition: all 0.2s ease;
+/* Document List Panes and Edit Panes */
+[data-ui="pane"] > div,
+[data-ui="pane-content"] {
+  background-color: #080712 !important;
 }
 
-[data-ui="structure"] [data-ui="list"] > div:first-child:hover > div:first-child {
-  background: rgba(3, 119, 130, 0.06);
+/* Selected list items with glowing borders */
+[data-ui="structure"] [data-selected="true"] {
+  background-color: rgba(139, 92, 246, 0.12) !important;
 }
 
-/* Also target the StudioLayout header area (if logo is rendered there) */
-[data-ui="navbar"] [data-ui="brand"],
-[data-ui="topbar"] [data-ui="brand"],
-.studio-header [data-ui="brand"],
-[data-testid="studio-brand"] {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 8px;
+[data-ui="structure"] [data-selected="true"] > div:first-child {
+  border-left: 3px solid #7c3aed !important;
 }
 
+/* Inputs, Textareas, and Forms */
+input, textarea, select, [data-ui="TextInput"], [data-ui="TextArea"] {
+  background-color: #12101f !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+  color: #f3f4f6 !important;
+  border-radius: 6px !important;
+}
+
+input:focus, textarea:focus {
+  border-color: #00d2ff !important;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.25) !important;
+}
+
+/* Logo placement styling */
 [data-ui="navbar"] [data-ui="brand"] img,
-[data-ui="topbar"] [data-ui="brand"] img,
-.studio-header [data-ui="brand"] img,
 [data-testid="studio-brand"] img {
   height: 32px;
   width: auto;
   object-fit: contain;
 }
 
-/* Fallback: if there's a .studio-logo class, use it */
-.studio-logo,
-.studio-brand {
-  background: url('/assets/logo.png') no-repeat left center;
-  background-size: 32px 32px;
-  padding-left: 40px;
-  min-height: 36px;
-  line-height: 32px;
-}
-
-/* Hide any default "IG" SVG logo that might be present */
-[data-ui="brand"] svg[data-sanity-icon="logo"],
-.studio-brand svg {
+/* Hide default icons in branding */
+[data-ui="brand"] svg[data-sanity-icon="logo"] {
   display: none !important;
 }
 
-/* Custom accent for active items */
-[data-ui="structure"] [data-selected="true"] {
-  background: rgba(3, 119, 130, 0.08) !important;
+
+/* ──── CUSTOM DASHBOARD TOOL STYLES ──── */
+
+.sanity-dashboard-tool {
+  background-color: #080712;
+  min-height: 100vh;
+  color: #e2e8f0;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
-[data-ui="structure"] [data-selected="true"] > div:first-child {
-  border-left: 3px solid #037782 !important;
+/* Header & Controls */
+.sd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.sd-btn-dropdown {
+  background-color: #12101f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sd-btn-dropdown:hover {
+  background-color: #1a182c;
+  color: #fff;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.sd-btn-export {
+  background-color: #12101f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.sd-btn-export:hover {
+  background-color: #1a182c;
+  border-color: rgba(0, 210, 255, 0.3);
+}
+
+/* Layout Grid */
+.sd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .sd-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .sd-card-ai {
+    grid-column: span 2;
+  }
+}
+
+/* Cards */
+.sd-card {
+  background-color: #0f0e1a;
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sd-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 35px rgba(139, 92, 246, 0.08);
+}
+
+.sd-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.025em;
+}
+
+/* Donut Chart and Legend */
+.sd-donut-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sd-donut-chart {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-donut-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-donut-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.sd-donut-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+
+.sd-donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sd-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.sd-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sd-legend-name {
+  color: #94a3b8;
+}
+
+.sd-legend-val {
+  color: #fff;
+  font-weight: 600;
+  margin-left: auto;
+  padding-left: 1rem;
+}
+
+/* Activity Levels (Horizontal Bars) */
+.sd-activity-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sd-act-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sd-act-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.sd-act-label span:last-child {
+  color: #fff;
+}
+
+.sd-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: #1c1930;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sd-progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+}
+
+/* Bar Chart (Vertical Bars) */
+.sd-chart-container {
+  padding-top: 1rem;
+}
+
+.sd-bar-chart {
+  display: flex;
+  height: 160px;
+  position: relative;
+  align-items: flex-end;
+}
+
+.sd-chart-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-right: 1rem;
+  font-size: 0.7rem;
+  color: #475569;
+  text-align: right;
+  min-width: 20px;
+  box-sizing: border-box;
+}
+
+.sd-chart-bars {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+  align-items: flex-end;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sd-chart-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  width: 32px;
+}
+
+.sd-bar-track {
+  width: 10px;
+  height: 80%;
+  background-color: #121020;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.sd-bar-value {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 -2px 10px rgba(0, 210, 255, 0.3);
+}
+
+.sd-bar-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+
+/* AI Insights Glow Card */
+.sd-card-ai {
+  background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.15) 0%, #0f0e1a 60%) !important;
+  border-color: rgba(0, 210, 255, 0.2) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+}
+
+/* Technical grid backdrop simulation */
+.sd-card-ai-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.07;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 15px 15px;
+  pointer-events: none;
+}
+
+.sd-card-ai-content {
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-ai-tag {
+  background-color: rgba(0, 210, 255, 0.1);
+  color: #00d2ff;
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.sd-ai-dots {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.sd-ai-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #334155;
+}
+
+.sd-ai-dot.active {
+  background-color: #00d2ff;
+  box-shadow: 0 0 6px #00d2ff;
+}
+
+.sd-ai-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #94a3b8;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.sd-ai-arrow {
+  margin-left: auto;
+  margin-top: auto;
+  font-size: 1.25rem;
+  color: #00d2ff;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sd-ai-arrow:hover {
+  transform: translate(2px, -2px);
 }

@@ -3,6 +3,7 @@ import { structureTool } from "sanity/structure";
 import { schema } from "./src/sanity/schemaTypes";
 import { customStructure } from "./src/sanity/structure";
 import { brandingPlugin } from "./src/sanity/branding";
+import DashboardTool from "./src/sanity/components/DashboardTool";
 
 export default defineConfig({
   name: "default",
@@ -18,6 +19,16 @@ export default defineConfig({
     "--brand-primary": "#037782",
     "--font-family-sans": 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   }),
+
+  tools: (prev) => [
+    {
+      name: "dashboard",
+      title: "Dashboard",
+      icon: () => "📊",
+      component: DashboardTool,
+    },
+    ...prev
+  ],
 
   plugins: [
     structureTool({
