@@ -10,8 +10,10 @@
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=12288 next build",
     "start": "next start",
     "lint": "eslint",
-    "generate-sitemap": "node scripts/generate-sitemap.js",
-    "postbuild": "node scripts/generate-sitemap.js"
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "prisma:migrate": "prisma migrate dev",
+    "postbuild": "prisma generate && node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",

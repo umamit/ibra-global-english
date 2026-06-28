@@ -1,0 +1,21 @@
+{
+  "createdAt": "2026-06-27T16:23:32.304Z",
+  "studioVersion": "6.2.0",
+  "version": 3,
+  "workspaces": [
+    {
+      "basePath": "/studio",
+      "dataset": "production",
+      "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 32 32\"><rect width=\"32\" height=\"32\" rx=\"2\" fill=\"#037782\"></rect><text x=\"50%\" y=\"50%\" text-anchor=\"middle\" alignment-baseline=\"middle\" fill=\"hsla(185, 95%, 0%, 1)\" style=\"font-family:Inter, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, &quot;Liberation Sans&quot;, Helvetica, Arial, system-ui, sans-serif;font-weight:500;font-size:13px;transform:translateY(1px)\">IG</text></svg>",
+      "mediaLibrary": {
+        "enabled": false,
+        "__internal": {}
+      },
+      "name": "default",
+      "projectId": "fyq0xcf8",
+      "schema": "854f6c55.create-schema.json",
+      "title": "Ibra Global English CMS",
+      "tools": "a1fd46b5.create-tools.json"
+    }
+  ]
+}
