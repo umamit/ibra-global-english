@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { withAdminAuth } from "@/app/api/_middleware";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../../../../../lib/prisma";
 import { upsertRagDocument } from "@/utils/rag";
 
 // GET: List all RAG documents
