@@ -1,5 +1,3 @@
-import { S } from 'sanity/structure';
-
 /**
  * Struktur sidebar kustom untuk Sanity Studio.
  * Menata item konten secara hierarkis agar lebih mudah dikelola.
@@ -18,15 +16,27 @@ export const customStructure = (S) => {
           S.list()
             .title('Konten Website')
             .items([
-              S.documentTypeList('announcement')
-                .title('📢 Pengumuman')
-                .icon(() => '📢'),
-              S.documentTypeList('testimonial')
-                .title('💬 Testimoni')
-                .icon(() => '💬'),
-              S.documentTypeList('faqItem')
-                .title('❓ FAQ')
-                .icon(() => '❓'),
+              S.listItem()
+                .title('Pengumuman')
+                .icon(() => '📢')
+                .child(
+                  S.documentTypeList('announcement')
+                    .title('Pengumuman')
+                ),
+              S.listItem()
+                .title('Testimoni')
+                .icon(() => '💬')
+                .child(
+                  S.documentTypeList('testimonial')
+                    .title('Testimoni')
+                ),
+              S.listItem()
+                .title('FAQ')
+                .icon(() => '❓')
+                .child(
+                  S.documentTypeList('faqItem')
+                    .title('FAQ')
+                ),
             ])
         ),
 
@@ -40,9 +50,13 @@ export const customStructure = (S) => {
           S.list()
             .title('Akademik')
             .items([
-              S.documentTypeList('programItem')
+              S.listItem()
                 .title('Program Kelas')
-                .icon(() => '🎓'),
+                .icon(() => '🎓')
+                .child(
+                  S.documentTypeList('programItem')
+                    .title('Program Kelas')
+                ),
             ])
         ),
 
@@ -56,9 +70,13 @@ export const customStructure = (S) => {
           S.list()
             .title('Media & Assets')
             .items([
-              S.documentTypeList('galleryItem')
+              S.listItem()
                 .title('Galeri Foto')
-                .icon(() => '🖼️'),
+                .icon(() => '🖼️')
+                .child(
+                  S.documentTypeList('galleryItem')
+                    .title('Galeri Foto')
+                ),
             ])
         ),
     ]);

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function TestimonialManager({
   editingTestimonialId, setEditingTestimonialId,
   author, setAuthor,
@@ -32,7 +34,7 @@ export default function TestimonialManager({
       }}>
         <span>💡</span>
         <div>
-          <strong>Info Integrasi CMS:</strong> Anda sekarang juga dapat mengelola testimoni menggunakan <strong><a href="/studio" style={{ textDecoration: "underline", color: "inherit", fontWeight: "bold" }}>Sanity Studio di sini</a></strong> untuk pemuatan data yang lebih cepat dan manajemen aset yang terpusat. Website utama akan otomatis mengutamakan data dari Sanity.
+          <strong>Info Integrasi CMS:</strong> Anda sekarang juga dapat mengelola testimoni menggunakan <strong><Link href="/studio" style={{ textDecoration: "underline", color: "inherit", fontWeight: "bold" }}>Sanity Studio di sini</Link></strong> untuk pemuatan data yang lebih cepat dan manajemen aset yang terpusat. Website utama akan otomatis mengutamakan data dari Sanity.
         </div>
       </div>
 
