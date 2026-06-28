@@ -129,9 +129,13 @@ export const GET = withAdminAuth(async (request) => {
           headers: { Authorization: fonnteToken },
         });
         const data = await res.json();
+        const isConnected = data.status === true && data.device_status === "connect";
         return jsonResponse({
-          connected: data.status === true,
+          connected: isConnected,
           device: data,
+          reason: data.status === true && data.device_status !== "connect"
+            ? `Status perangkat: ${data.device_status || "disconnect"}. Pastikan WhatsApp di HP Anda tetap aktif.`
+            : undefined
         });
       } catch (err) {
         return jsonResponse({
