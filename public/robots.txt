@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /studio/
 Disallow: /student/
 Disallow: /parent/
 Disallow: /tutor/
