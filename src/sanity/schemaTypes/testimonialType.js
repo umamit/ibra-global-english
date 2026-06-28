@@ -37,5 +37,11 @@ export const testimonialType = defineType({
         ],
       },
     }),
+    defineField({
+      name: "role",
+      title: "Peran / Identitas",
+      type: "string",
+      description: "Contoh: Orang Tua Siswa, Siswa, Alumni, dll.",
+    }),
   ],
 });

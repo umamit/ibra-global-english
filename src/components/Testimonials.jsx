@@ -54,7 +54,7 @@ async function fetchTestimonials() {
             rating: 5,
             text: item.content,
             author: item.name,
-            role: item.program || "Siswa",
+            role: item.role || item.program || "Siswa",
             avatar: avatarUrl,
           };
         });
