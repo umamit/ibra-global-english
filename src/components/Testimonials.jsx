@@ -33,44 +33,59 @@ async function fetchTestimonials() {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   const useSanity = projectId && projectId !== "placeholder" && projectId !== "";
 
+  let sanityData = [];
   if (useSanity) {
     try {
       const data = await client.fetch(`*[_type == "testimonial"] | order(_createdAt desc)`);
       if (data && data.length > 0) {
-        return data.map((item, index) => ({
+        sanityData = data.map((item) => ({
           rating: 5,
           text: item.content,
           author: item.name,
           role: item.program || "Siswa",
-          delay: (index % 3) * 100
         }));
       }
     } catch (err) {
-      console.warn("Failed to fetch testimonials from Sanity, falling back to Supabase:", err);
+      console.warn("Failed to fetch testimonials from Sanity:", err);
     }
   }
 
-  // Fallback to Supabase
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from('testimonials')
-    .select('*')
-    .order('created_at', { ascending: false });
+  let supabaseData = [];
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) throw error;
+    if (error) throw error;
 
-  if (data && data.length > 0) {
-    return data.map((item, index) => ({
-      rating: item.rating || 5,
-      text: item.text,
-      author: item.author,
-      role: item.role,
-      delay: (index % 3) * 100
-    }));
+    if (data && data.length > 0) {
+      supabaseData = data.map((item) => ({
+        rating: item.rating || 5,
+        text: item.text,
+        author: item.author,
+        role: item.role,
+      }));
+    }
+  } catch (err) {
+    console.warn("Failed to fetch testimonials from Supabase:", err);
   }
 
-  return null;
+  // Combine testimonials from both sources
+  const combined = [...sanityData, ...supabaseData];
+
+  if (combined.length === 0) {
+    return null;
+  }
+
+  // Map to add delay animation property
+  return combined.map((item, index) => ({
+    ...item,
+    delay: (index % 3) * 100
+  }));
 }
+
 
 export default function Testimonials() {
   const { data: testimonials = TESTIMONIALS_FALLBACK } = useQuery({
