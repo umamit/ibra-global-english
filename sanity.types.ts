@@ -21,7 +21,7 @@ import type {
   SanityImageDimensions,
   SanityImagePalette,
   SanityImagePaletteSwatch,
-} from "sanity-codegen";
+} from "sanity";
 
 export type {
   SanityReference,

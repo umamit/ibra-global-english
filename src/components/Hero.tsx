@@ -2,10 +2,11 @@
 import "./Hero.css";
 
 import { z } from "zod";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import CountUp from "./CountUp";
 import posthog from "posthog-js";
+import { useQuery } from "@tanstack/react-query";
 
 const heroPropsSchema = z.object({
   initialSettings: z.object({
@@ -18,30 +19,34 @@ const heroPropsSchema = z.object({
 
 type HeroProps = z.infer<typeof heroPropsSchema>;
 
+/**
+ * Fungsi untuk mengambil jumlah siswa dari API.
+ */
+const fetchStudentCount = async (): Promise<{ count: number }> => {
+  const res = await fetch("/api/student-count");
+  if (!res.ok) {
+    throw new Error("Gagal mengambil data jumlah siswa.");
+  }
+  const data = await res.json();
+  if (typeof data.count !== 'number') {
+    throw new Error("Format respons jumlah siswa tidak valid.");
+  }
+  return data;
+};
+
 export default function Hero({ initialSettings }: HeroProps) {
   const [heroTitle, setHeroTitle] = useState(initialSettings?.hero_title || "Kursus di Bobong | Ibra Global English");
   const [heroSubtitle, setHeroSubtitle] = useState(initialSettings?.hero_subtitle || "Belajar Seru | Lancar Bicara");
   const [heroDesc, setHeroDesc] = useState(initialSettings?.hero_desc || "Kursus di Bobong terbaik di Ibra Global English. Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!");
   const [heroImage, setHeroImage] = useState(initialSettings?.hero_image || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='100%' height='100%' fill='%23f3f4f6'/><g transform='translate(400, 300)'><rect x='-60' y='-80' width='120' height='90' rx='10' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='0' cy='-35' r='20' fill='none' stroke='%239ca3af' stroke-width='6'/><circle cx='40' cy='-65' r='6' fill='%239ca3af'/><text x='0' y='70' font-family='system-ui, sans-serif' font-size='28' font-weight='800' fill='%236b7280' text-anchor='middle'>Belum Ada Foto</text><text x='0' y='110' font-family='system-ui, sans-serif' font-size='18' fill='%239ca3af' text-anchor='middle'>Foto utama akan diperbarui oleh Admin</text></g></svg>");
-  const [studentCount, setStudentCount] = useState(100);
-
-  useEffect(() => {
-    async function fetchStudentCount() {
-      try {
-        const res = await fetch("/api/student-count");
-        if (res.ok) {
-          const data = await res.json();
-          if (typeof data.count === "number") {
-            setStudentCount(data.count);
-          }
-        }
-      } catch (e) {
-        console.warn("Gagal mengambil jumlah siswa dari API. Menggunakan data default.", e);
-      }
-    }
-
-    fetchStudentCount();
-  }, []);
+  
+  // Menggunakan useQuery untuk mengambil data jumlah siswa
+  const { data: studentData } = useQuery({
+    queryKey: ["studentCount"],
+    queryFn: fetchStudentCount,
+    staleTime: 5 * 60 * 1000, // Data dianggap segar selama 5 menit
+    placeholderData: { count: 100 }, // Data default saat loading
+  });
 
   const renderSubtitle = (text) => {
     if (text.includes('|')) {
@@ -116,7 +121,7 @@ export default function Hero({ initialSettings }: HeroProps) {
               </svg>
             </div>
             <div className="badge-text">
-              <p className="stat-num"><CountUp target={studentCount} />+</p>
+              <p className="stat-num"><CountUp target={studentData?.count ?? 100} />+</p>
               <p className="stat-desc">Jumlah Siswa</p>
             </div>
           </div>
