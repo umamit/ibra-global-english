@@ -4,6 +4,23 @@ export const announcementType = defineType({
   name: "announcement",
   title: "Pengumuman",
   type: "document",
+  icon: () => '📢',
+  preview: {
+    select: {
+      title: 'title',
+      date: 'date',
+      targetRole: 'targetRole',
+    },
+    prepare({ title, date, targetRole }) {
+      return {
+        title: title || 'Tanpa Judul',
+        subtitle: [
+          date ? new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : null,
+          targetRole && targetRole !== 'all' ? `Target: ${targetRole}` : null,
+        ].filter(Boolean).join(' • ') || 'Pengumuman',
+      };
+    },
+  },
   fields: [
     defineField({
       name: "title",

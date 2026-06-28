@@ -1,0 +1,108 @@
+/**
+ * Branding plugin for Sanity Studio.
+ * Injects custom CSS to display the Ibra Global English logo in the studio header/sidebar.
+ */
+export function brandingPlugin() {
+  return {
+    name: 'ibra-global-english-branding',
+    styles: () => [
+      {
+        styleElement: {
+          id: 'ibra-studio-branding-styles',
+          css: `
+            /* ============================================
+               IBRA GLOBAL ENGLISH - SANITY STUDIO BRANDING
+               ============================================ */
+
+            /* Hide the default text title in the sidebar structure header
+               so the logo can take its place */
+            [data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child,
+            [data-ui="structure"] .studio-header__title {
+              font-size: 0;
+              position: relative;
+            }
+
+            /* Insert logo as background on the structure list root item */
+            [data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child::before,
+            [data-ui="structure"] .studio-header__title::before {
+              content: '';
+              position: absolute;
+              left: 12px;
+              top: 50%;
+              transform: translateY(-50%);
+              width: 36px;
+              height: 36px;
+              background: url('/assets/logo.png') no-repeat center;
+              background-size: contain;
+              z-index: 1;
+            }
+
+            /* Give the structure list item extra padding so content doesn't overlap the logo */
+            [data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child,
+            [data-ui="structure"] .studio-header__title {
+              padding-left: 56px !important;
+              min-height: 52px !important;
+            }
+
+            /* Style the root sidebar list item to look branded */
+            [data-ui="structure"] [data-ui="list"] > div:first-child,
+            [data-ui="structure"] [data-ui="list"] > div:first-child > div:first-child {
+              border-radius: 6px;
+              margin: 4px 8px;
+              transition: all 0.2s ease;
+            }
+
+            [data-ui="structure"] [data-ui="list"] > div:first-child:hover > div:first-child {
+              background: rgba(3, 119, 130, 0.06);
+            }
+
+            /* Also target the StudioLayout header area (if logo is rendered there) */
+            [data-ui="navbar"] [data-ui="brand"],
+            [data-ui="topbar"] [data-ui="brand"],
+            .studio-header [data-ui="brand"],
+            [data-testid="studio-brand"] {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              padding: 4px 8px;
+            }
+
+            [data-ui="navbar"] [data-ui="brand"] img,
+            [data-ui="topbar"] [data-ui="brand"] img,
+            .studio-header [data-ui="brand"] img,
+            [data-testid="studio-brand"] img {
+              height: 32px;
+              width: auto;
+              object-fit: contain;
+            }
+
+            /* Fallback: if there's a .studio-logo class, use it */
+            .studio-logo,
+            .studio-brand {
+              background: url('/assets/logo.png') no-repeat left center;
+              background-size: 32px 32px;
+              padding-left: 40px;
+              min-height: 36px;
+              line-height: 32px;
+            }
+
+            /* Hide any default "IG" SVG logo that might be present */
+            [data-ui="brand"] svg[data-sanity-icon="logo"],
+            .studio-brand svg {
+              display: none !important;
+            }
+
+            /* Custom accent for active items */
+            [data-ui="structure"] [data-selected="true"] {
+              background: rgba(3, 119, 130, 0.08) !important;
+            }
+
+            [data-ui="structure"] [data-selected="true"] > div:first-child {
+              border-left: 3px solid #037782 !important;
+            }
+          `,
+        },
+      },
+    ],
+  };
+}

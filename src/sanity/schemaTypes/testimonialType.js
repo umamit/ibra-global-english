@@ -4,6 +4,21 @@ export const testimonialType = defineType({
   name: "testimonial",
   title: "Testimoni Siswa",
   type: "document",
+  icon: () => '💬',
+  preview: {
+    select: {
+      title: 'name',
+      program: 'program',
+      media: 'avatar',
+    },
+    prepare({ title, program, media }) {
+      return {
+        title: title || 'Anonim',
+        subtitle: program || 'Testimoni',
+        media,
+      };
+    },
+  },
   fields: [
     defineField({
       name: "name",

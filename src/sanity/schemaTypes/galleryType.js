@@ -4,6 +4,21 @@ export const galleryType = defineType({
   name: "galleryItem",
   title: "Galeri Foto",
   type: "document",
+  icon: () => '🖼️',
+  preview: {
+    select: {
+      title: 'title',
+      category: 'category',
+      media: 'image',
+    },
+    prepare({ title, category, media }) {
+      return {
+        title: title || 'Foto Tanpa Judul',
+        subtitle: category || 'Galeri',
+        media,
+      };
+    },
+  },
   fields: [
     defineField({
       name: "title",

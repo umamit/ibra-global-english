@@ -4,6 +4,23 @@ export const programType = defineType({
   name: "programItem",
   title: "Program Kelas",
   type: "document",
+  icon: () => '🎓',
+  preview: {
+    select: {
+      title: 'title',
+      ageGroup: 'ageGroup',
+      sppPrice: 'sppPrice',
+    },
+    prepare({ title, ageGroup, sppPrice }) {
+      return {
+        title: title || 'Program Tanpa Nama',
+        subtitle: [
+          ageGroup,
+          sppPrice,
+        ].filter(Boolean).join(' • ') || 'Program Kelas',
+      };
+    },
+  },
   fields: [
     defineField({
       name: "title",
