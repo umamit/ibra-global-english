@@ -37,7 +37,7 @@ export async function proxy(request) {
     script-src 'self' 'unsafe-inline' 'report-sample' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.cloudflareinsights.com;
     style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     font-src 'self' https://cdn.jsdelivr.net;
-    img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com https://cdn.sanity.io;
+    img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com https://cdn.sanity.io https://api.qrserver.com;
     connect-src 'self' https://uszukipvrvjrgrikxfwh.supabase.co wss://uszukipvrvjrgrikxfwh.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://analytics.google.com https://stats.g.doubleclick.net https://*.api.sanity.io wss://*.api.sanity.io https://*.apicdn.sanity.io wss://*.apicdn.sanity.io;
     frame-src 'self' https://*.canva.com https://www.canva.com https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://youtube-nocookie.com https://*.sanity.io;
     frame-ancestors 'self' https://*.sanity.io https://sanity.io https://*.sanity.work;

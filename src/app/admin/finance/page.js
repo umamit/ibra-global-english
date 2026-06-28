@@ -229,9 +229,8 @@ export default function AdminFinance() {
         <head>
           <title>Kuitansi Pembayaran SPP - ${student.name}</title>
           <style>
-            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
             body {
-              font-family: 'Outfit', sans-serif;
+              font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
               color: #1e293b;
               background-color: #fff;
               margin: 0;
