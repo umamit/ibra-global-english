@@ -10,6 +10,18 @@ import MarqueeBanner from "@/components/MarqueeBanner";
 import { createClient } from "@/utils/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { DEFAULT_VIDEOS } from "@/utils/fallbackData";
+import { client as sanityClient } from "@/lib/sanity/client";
+
+function getSanityImageUrl(ref, projectId, dataset = "production") {
+  if (!ref) return null;
+  const parts = ref.split('-');
+  if (parts.length < 4) return null;
+  const assetId = parts[1];
+  const dimensions = parts[2];
+  const extension = parts[3];
+  return `https://cdn.sanity.io/images/${projectId}/${dataset}/${assetId}-${dimensions}.${extension}`;
+}
+
 
 export default function GalleryClient() {
   const supabase = createClient();
@@ -164,11 +176,40 @@ export default function GalleryClient() {
     localStorage.setItem("theme", nextTheme);
   };
 
-  // Fetch dynamic gallery from gallery_items (B3: admin-managed)
+  // Fetch dynamic gallery from gallery_items (B3: admin-managed) and Sanity
   useEffect(() => {
     async function fetchGallery() {
+      let sanityItems = [];
+      const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+      const useSanity = projectId && projectId !== "placeholder" && projectId !== "";
+      const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
+
+      if (useSanity) {
+        try {
+          const data = await sanityClient.fetch(`*[_type == "galleryItem"] | order(_createdAt desc)`);
+          if (data && data.length > 0) {
+            sanityItems = data.map((item) => {
+              let imageUrl = null;
+              if (item.image?.asset?._ref) {
+                imageUrl = getSanityImageUrl(item.image.asset._ref, projectId, dataset);
+              }
+              return {
+                title: item.title,
+                desc: item.caption || "",
+                thumb: imageUrl,
+                full: imageUrl,
+                caption: item.title,
+                category: item.category || "Kegiatan"
+              };
+            }).filter(item => item.full !== null);
+          }
+        } catch (e) {
+          console.warn("Gagal memuat galeri dari Sanity:", e);
+        }
+      }
+
+      let supabaseItems = [];
       try {
-        // Coba ambil dari gallery_items (tabel baru yang dikelola admin)
         const res = await fetch(`/api/gallery?t=${Date.now()}`, {
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -179,7 +220,7 @@ export default function GalleryClient() {
         if (res.ok) {
           const { data } = await res.json();
           if (data && data.length > 0) {
-            const mappedData = data
+            supabaseItems = data
               .filter((item) => item.image_url && item.image_url !== "")
               .map((item) => ({
                 title: item.title,
@@ -189,14 +230,18 @@ export default function GalleryClient() {
                 caption: item.title,
                 category: item.category || "Kegiatan"
               }));
-            setGalleryItems(mappedData);
-            return;
           }
         }
-        // Jika API gagal atau tidak ada data, gunakan data fallback statis
-        console.warn("Gagal memuat galeri dari API. Menggunakan data default (statis).");
       } catch (e) {
-        console.warn("Gagal memuat galeri dari database.", e);
+        console.warn("Gagal memuat galeri dari Supabase:", e);
+      }
+
+      // Combine both sources
+      const combined = [...sanityItems, ...supabaseItems];
+      if (combined.length > 0) {
+        setGalleryItems(combined);
+      } else {
+        console.warn("Gagal memuat galeri dari kedua sumber. Menggunakan data default (statis).");
       }
     }
     fetchGallery();
