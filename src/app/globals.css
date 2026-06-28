@@ -381,3 +381,13 @@ section {
     bottom: 95px !important;
   }
 }
+
+/* Sembunyikan Vercel Preview Toolbar secara paksa */
+vercel-devtools,
+[data-vercel-toolbar],
+vercel-live-feedback {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

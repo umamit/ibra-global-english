@@ -508,7 +508,7 @@ export default function StudentManagement() {
             </tbody>
           </table>
         </div>
-      ) : (
+      ) : activeTab === "parents" ? (
         <div className="table-wrapper">
           <table className="portal-table parent-table">
             <thead>
@@ -603,7 +603,7 @@ export default function StudentManagement() {
             </tbody>
           </table>
         </div>
-      )}
+      ) : null}
 
       {activeTab === "registrations" && (
         <div>
