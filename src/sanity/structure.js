@@ -7,6 +7,21 @@ export const customStructure = (S) => {
     .title('Ibra Global English CMS')
     .items([
       // ========================
+      // SETTINGS (SINGLETON)
+      // ========================
+      S.listItem()
+        .title('Pengaturan Global')
+        .icon(() => '⚙️')
+        .child(
+          S.document()
+            .schemaType('siteSettings')
+            .documentId('siteSettings')
+            .title('Pengaturan Global')
+        ),
+
+      S.divider(),
+
+      // ========================
       // WEBSITE CONTENT
       // ========================
       S.listItem()
@@ -22,6 +37,13 @@ export const customStructure = (S) => {
                 .child(
                   S.documentTypeList('announcement')
                     .title('Pengumuman')
+                ),
+              S.listItem()
+                .title('Keunggulan Kursus')
+                .icon(() => '🌟')
+                .child(
+                  S.documentTypeList('benefit')
+                    .title('Keunggulan Kursus')
                 ),
               S.listItem()
                 .title('Testimoni')
@@ -44,11 +66,11 @@ export const customStructure = (S) => {
       // AKADEMIK
       // ========================
       S.listItem()
-        .title('Akademik')
+        .title('Akademik & Kelas')
         .icon(() => '🎓')
         .child(
           S.list()
-            .title('Akademik')
+            .title('Akademik & Kelas')
             .items([
               S.listItem()
                 .title('Program Kelas')
@@ -57,7 +79,36 @@ export const customStructure = (S) => {
                   S.documentTypeList('programItem')
                     .title('Program Kelas')
                 ),
+              S.listItem()
+                .title('Kurikulum & Silabus')
+                .icon(() => '📖')
+                .child(
+                  S.documentTypeList('curriculum')
+                    .title('Kurikulum & Silabus')
+                ),
             ])
+        ),
+
+      // ========================
+      // STAFF & TIM
+      // ========================
+      S.listItem()
+        .title('Tim Pengajar')
+        .icon(() => '👨‍🏫')
+        .child(
+          S.documentTypeList('tutorProfile')
+            .title('Profil Pengajar')
+        ),
+
+      // ========================
+      // AI & CHATBOT
+      // ========================
+      S.listItem()
+        .title('Basis Pengetahuan AI')
+        .icon(() => '🤖')
+        .child(
+          S.documentTypeList('ragDocument')
+            .title('Basis Pengetahuan AI Chatbot')
         ),
 
       // ========================
@@ -81,3 +132,4 @@ export const customStructure = (S) => {
         ),
     ]);
 };
+

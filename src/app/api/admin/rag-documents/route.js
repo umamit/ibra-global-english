@@ -1,29 +1,64 @@
 import { NextResponse } from "next/server";
-import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
-import { upsertRagDocument, listRagDocuments, deleteRagDocument, generateEmbedding } from "@/utils/rag";
+import { withAdminAuth } from "@/app/api/_middleware";
+import { prisma } from "@/lib/prisma";
+import { upsertRagDocument } from "@/utils/rag";
 
-const adminSupabase = getAdminSupabase();
-
-// GET - List all RAG documents
-export const GET = withAdminAuth(async () => {
+// GET: List all RAG documents
+export async function GET(request) {
   try {
-    const docs = await listRagDocuments();
-    return NextResponse.json({ documents: docs });
-  } catch (err) {
-    console.error("Error listing RAG documents:", err);
-    return NextResponse.json({ error: "Gagal memuat dokumen RAG." }, { status: 500 });
+    const docs = await prisma.ragDocument.findMany({
+      orderBy: { updatedAt: "desc" },
+    });
+    return NextResponse.json({ data: docs });
+  } catch (error) {
+    console.error("Gagal mengambil dokumen RAG:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// POST: Create a new RAG document
+export const POST = withAdminAuth(async (request) => {
+  try {
+    const body = await request.json();
+    const { title, content, source, metadata } = body;
+
+    if (!title || !content) {
+      return NextResponse.json(
+        { error: "Judul dan isi dokumen wajib diisi." },
+        { status: 400 }
+      );
+    }
+
+    const doc = await upsertRagDocument({
+      title,
+      content,
+      source: source || "manual",
+      metadata: metadata || {},
+    });
+
+    return NextResponse.json({ data: doc });
+  } catch (error) {
+    console.error("Gagal menambah dokumen RAG:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });
 
-// POST - Create or update RAG document
-export const POST = withAdminAuth(async (request) => {
+// PATCH: Update a RAG document
+export const PATCH = withAdminAuth(async (request) => {
   try {
     const body = await request.json();
     const { id, title, content, source, metadata } = body;
 
+    if (!id) {
+      return NextResponse.json(
+        { error: "ID dokumen diperlukan." },
+        { status: 400 }
+      );
+    }
+
     if (!title || !content) {
       return NextResponse.json(
-        { error: "Judul dan konten dokumen wajib diisi." },
+        { error: "Judul dan isi dokumen wajib diisi." },
         { status: 400 }
       );
     }
@@ -36,30 +71,33 @@ export const POST = withAdminAuth(async (request) => {
       metadata: metadata || {},
     });
 
-    return NextResponse.json({ document: doc });
-  } catch (err) {
-    console.error("Error upserting RAG document:", err);
-    return NextResponse.json(
-      { error: "Gagal menyimpan dokumen RAG.", details: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ data: doc });
+  } catch (error) {
+    console.error("Gagal mengupdate dokumen RAG:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });
 
-// DELETE - Delete RAG document
+// DELETE: Delete a RAG document
 export const DELETE = withAdminAuth(async (request) => {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ error: "ID dokumen diperlukan." }, { status: 400 });
+      return NextResponse.json(
+        { error: "ID dokumen diperlukan." },
+        { status: 400 }
+      );
     }
 
-    await deleteRagDocument(id);
+    await prisma.ragDocument.delete({
+      where: { id },
+    });
+
     return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("Error deleting RAG document:", err);
-    return NextResponse.json({ error: "Gagal menghapus dokumen RAG." }, { status: 500 });
+  } catch (error) {
+    console.error("Gagal menghapus dokumen RAG:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });
