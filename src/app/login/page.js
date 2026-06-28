@@ -51,6 +51,64 @@ export default function LoginPage() {
 
   }, []);
 
+  const statusChangeCallback = async (response) => {
+    console.log("Facebook status:", response);
+    if (response.status === "connected") {
+      setLoading(true);
+      try {
+        await supabase.auth.signInWithOAuth({
+          provider: "facebook",
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+      } catch (err) {
+        console.error("Auto-login via Facebook failed:", err);
+        setLoading(false);
+      }
+    }
+  };
+
+  const checkLoginState = () => {
+    if (window.FB) {
+      window.FB.getLoginStatus((response) => {
+        statusChangeCallback(response);
+      });
+    }
+  };
+
+  // Memeriksa status login Facebook secara asinkron saat SDK siap
+  useEffect(() => {
+    window.checkLoginState = checkLoginState;
+
+    const checkFB = () => {
+      if (window.FB) {
+        window.FB.getLoginStatus((response) => {
+          statusChangeCallback(response);
+        });
+      }
+    };
+
+    if (window.FB) {
+      checkFB();
+    } else {
+      const interval = setInterval(() => {
+        if (window.FB) {
+          checkFB();
+          clearInterval(interval);
+        }
+      }, 500);
+      return () => {
+        clearInterval(interval);
+        delete window.checkLoginState;
+      };
+    }
+
+    return () => {
+      delete window.checkLoginState;
+    };
+  }, []);
+
 
   // Fungsi toggle tema mandiri
   const toggleTheme = () => {
@@ -235,6 +293,29 @@ export default function LoginPage() {
       }
     } catch (err) {
       setErrorBanner("Gagal menghubungkan ke Google. Silakan coba lagi.");
+      setLoading(false);
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    setLoading(true);
+    setErrorBanner("");
+    setSuccessBanner("");
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "facebook",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        setErrorBanner(error.message);
+        setLoading(false);
+      }
+    } catch (err) {
+      setErrorBanner("Gagal menghubungkan ke Facebook. Silakan coba lagi.");
       setLoading(false);
     }
   };
@@ -454,6 +535,18 @@ export default function LoginPage() {
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
           </svg>
           <span>Masuk / Daftar dengan Google</span>
+        </button>
+
+        <button 
+          type="button" 
+          onClick={handleFacebookLogin} 
+          className="facebook-login-btn"
+          disabled={loading}
+        >
+          <svg className="facebook-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          <span>Masuk / Daftar dengan Facebook</span>
         </button>
 
         <div className="auth-back-link">

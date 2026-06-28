@@ -546,3 +546,50 @@
 .google-icon {
   flex-shrink: 0;
 }
+
+/* Facebook Login Button Styles */
+.facebook-login-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background-color: #1877f2;
+  border: 1px solid #1877f2;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  margin-top: 0.75rem;
+}
+
+[data-theme="dark"] .facebook-login-btn {
+  background-color: rgba(24, 119, 242, 0.9);
+  border-color: rgba(24, 119, 242, 0.9);
+  color: #ffffff;
+}
+
+.facebook-login-btn:hover:not(:disabled) {
+  background-color: #166fe5;
+  border-color: #166fe5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .facebook-login-btn:hover:not(:disabled) {
+  background-color: #1877f2;
+  border-color: #1877f2;
+}
+
+.facebook-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.facebook-icon {
+  flex-shrink: 0;
+}

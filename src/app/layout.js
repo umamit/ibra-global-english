@@ -192,6 +192,31 @@ export default async function RootLayout({ children }) {
           nonce={nonce}
         />
 
+        {/* Facebook SDK */}
+        {process.env.NEXT_PUBLIC_FACEBOOK_APP_ID && (
+          <>
+            <Script id="facebook-init" strategy="afterInteractive" nonce={nonce}>
+              {`
+                window.fbAsyncInit = function() {
+                  FB.init({
+                    appId      : '${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}',
+                    cookie     : true,
+                    xfbml      : true,
+                    version    : '${process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION || "v18.0"}'
+                  });
+                  FB.AppEvents.logPageView();
+                };
+              `}
+            </Script>
+            <Script
+              id="facebook-jssdk"
+              src="https://connect.facebook.net/en_US/sdk.js"
+              strategy="afterInteractive"
+              nonce={nonce}
+            />
+          </>
+        )}
+
         {/* Structured Data */}
         <script
           type="application/ld+json"
