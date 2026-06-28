@@ -384,8 +384,8 @@
   color: var(--color-primary-light);
 }
 
-/* Premium Receipt Tracker Rows */
-.receipt-row {
+/* Premium Payment Tracker Rows */
+.payment-tracker-row {
   border: 1px solid var(--color-gray-100, #f1f5f9);
   border-radius: 0.75rem;
   padding: 1.25rem;
@@ -398,12 +398,12 @@
   background: var(--color-white, #ffffff);
 }
 
-[data-theme="dark"] .receipt-row {
+[data-theme="dark"] .payment-tracker-row {
   border-color: rgba(255, 255, 255, 0.04);
   background: transparent;
 }
 
-.receipt-row:hover {
+.payment-tracker-row:hover {
   transform: translateX(3px);
   border-color: var(--color-primary, #216c7e);
   box-shadow: 0 4px 12px rgba(33, 108, 126, 0.04);

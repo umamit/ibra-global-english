@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
@@ -11,6 +13,8 @@ import CalendarView from "./components/CalendarView";
 import FinanceView from "./components/FinanceView";
 import LMSView from "./components/LMSView";
 import ReceiptPrint from "./components/ReceiptPrint";
+import "@/app/dashboard.css";
+import "@/app/dashboard-print.css";
 import "./parent.css";
 
 export default function ParentPortal() {
