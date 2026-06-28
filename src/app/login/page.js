@@ -51,9 +51,9 @@ export default function LoginPage() {
 
   }, []);
 
-  const statusChangeCallback = async (response) => {
+  const statusChangeCallback = async (response, isUserInitiated = false) => {
     console.log("Facebook status:", response);
-    if (response.status === "connected") {
+    if (response.status === "connected" && isUserInitiated) {
       setLoading(true);
       try {
         await supabase.auth.signInWithOAuth({
@@ -63,7 +63,7 @@ export default function LoginPage() {
           },
         });
       } catch (err) {
-        console.error("Auto-login via Facebook failed:", err);
+        console.error("Login via Facebook failed:", err);
         setLoading(false);
       }
     }
@@ -72,7 +72,7 @@ export default function LoginPage() {
   const checkLoginState = () => {
     if (window.FB) {
       window.FB.getLoginStatus((response) => {
-        statusChangeCallback(response);
+        statusChangeCallback(response, true);
       });
     }
   };
