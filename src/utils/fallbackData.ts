@@ -49,14 +49,14 @@ export const DEFAULT_PROGRAMS: Program[] = [
   {
     title: "Kids Program",
     age: "5-12 tahun",
-    desc: "Program khusus anak dengan metode belajar yang fun dan interaktif",
+    desc: "Program khusus anak dengan metode belajar yang menyenangkan (fun), interaktif, dan penuh lagu/permainan",
     iconKey: "book",
     features: ["Materi Visual", "Games & Activities", "Story Telling"]
   },
   {
     title: "Teens Program",
     age: "13-17 tahun",
-    desc: "Program remaja fokus conversation dan grammar",
+    desc: "Program remaja yang berfokus pada kelancaran berbicara (conversation) dan penguasaan tata bahasa (grammar)",
     iconKey: "graduation",
     features: ["Speaking Practice", "Grammar", "Writing Skills"]
   },
@@ -77,7 +77,7 @@ export const DEFAULT_BENEFITS: Benefit[] = [
   },
   {
     title: "Experienced Teacher",
-    desc: "Pengajar berpengalaman yang interaktif dan profesional.",
+    desc: "Pengajar berpengalaman yang ramah, interaktif, dan profesional.",
     iconKey: "award"
   },
   {
