@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
+import type { ReactNode } from "react";
 import { useEffect, Suspense } from "react";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
@@ -43,7 +44,7 @@ function PostHogPageView() {
 }
 
 // Wrapper Provider utama
-export function PostHogProviderWrapper({ children }) {
+export function PostHogProviderWrapper({ children }: { children: ReactNode }) {
   return (
     <PHProvider client={posthog}>
       <Suspense fallback={null}>

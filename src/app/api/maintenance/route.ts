@@ -19,13 +19,13 @@ export async function GET() {
     if (error) throw error;
 
     return NextResponse.json({ maintenance: data?.value === "true" });
-  } catch (err) {
+  } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 
 // POST: ubah status maintenance (hanya admin)
-export const POST = withAdminAuth(async (request) => {
+export const POST = withAdminAuth(async (request: any) => {
   try {
     // Parse body
     const { enabled } = await request.json();
@@ -59,7 +59,7 @@ export const POST = withAdminAuth(async (request) => {
     if (error) throw error;
 
     return NextResponse.json({ success: true, maintenance: enabled });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Maintenance mode toggle error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

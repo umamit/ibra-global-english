@@ -15,7 +15,7 @@ export async function createAuthClient() {
   });
 }
 
-async function getCurrentUser() {
+export async function getCurrentUser() {
   try {
     const supabaseAuth = await createAuthClient();
     const { data: { user } } = await supabaseAuth.auth.getUser();

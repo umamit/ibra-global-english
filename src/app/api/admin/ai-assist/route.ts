@@ -8,7 +8,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
 
 // Logger penggunaan AI ke dalam database
-async function logAiUsage(userId, email, role, mode, tokensUsed, status, errorMessage = null) {
+async function logAiUsage(userId: any, email: any, role: any, mode: any, tokensUsed: any, status: any, errorMessage: any = null) {
   try {
     const { error } = await adminSupabase.from("ai_usage_logs").insert({
       user_id: userId || null,
@@ -22,13 +22,13 @@ async function logAiUsage(userId, email, role, mode, tokensUsed, status, errorMe
     if (error) {
       console.warn("Failed to write to ai_usage_logs table (make sure migrations are run):", error.message);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.warn("Error inserting AI log:", e.message);
   }
 }
 
 // Pemetaan silabus modular lembaga
-function getSyllabusTopic(program, moduleName) {
+function getSyllabusTopic(program: any, moduleName: any) {
   if (!moduleName) return "";
   const nameLower = moduleName.toLowerCase();
   
@@ -131,9 +131,9 @@ ${studentNames}
   }
 }
 
-export async function POST(request) {
+export async function POST(request: any) {
   let modeForLog = "unknown";
-  let authUser = { id: null, email: null, role: null };
+  let authUser: any = { id: null, email: null, role: null };
   
   try {
     const currentUser = await getAdminOrTutorUser();
@@ -291,7 +291,7 @@ Jawablah dengan nada yang profesional, cerdas, supportif, dan ramah. Gunakan Bah
       const lastAdminMsg = messages[messages.length - 1]?.content || "";
       try {
         ragContext = await getRagContext(lastAdminMsg, 3);
-      } catch (ragErr) {
+      } catch (ragErr: any) {
         console.warn("Admin RAG lookup failed (non-blocking):", ragErr.message);
       }
     }
@@ -359,7 +359,7 @@ Jawablah dengan nada yang profesional, cerdas, supportif, dan ramah. Gunakan Bah
     }
 
     return NextResponse.json({ reply });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Admin Assist API error:", err);
     await logAiUsage(authUser.id, authUser.email, authUser.role, modeForLog, 0, "failed", err.message);
     return NextResponse.json({ error: "Terjadi kesalahan internal pada server AI." }, { status: 500 });

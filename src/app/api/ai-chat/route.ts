@@ -9,7 +9,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
 
 // Logger penggunaan AI ke dalam database (untuk publik)
-async function logAiUsage(tokensUsed, status, errorMessage = null) {
+async function logAiUsage(tokensUsed: any, status: any, errorMessage: any = null) {
   try {
     const { error } = await adminSupabase.from("ai_usage_logs").insert({
       user_id: null,
@@ -23,7 +23,7 @@ async function logAiUsage(tokensUsed, status, errorMessage = null) {
     if (error) {
       console.warn("Failed to write to ai_usage_logs table (make sure migrations are run):", error.message);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.warn("Error inserting public AI log:", e.message);
   }
 }
@@ -77,7 +77,7 @@ const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Glob
 - Format koreksi grammar: ✅ Kalimat Benar: [kalimat] | 💡 Penjelasan: [penjelasan]
 - Jaga respons ringkas (max 3-4 paragraf) kecuali diminta lebih detail`;
 
-export async function POST(request) {
+export async function POST(request: any) {
   try {
     if (!GROQ_API_KEY) {
       return NextResponse.json(
@@ -115,7 +115,7 @@ export async function POST(request) {
     let ragContext = "";
     try {
       ragContext = await getRagContext(lastUserMessage, 3);
-    } catch (ragErr) {
+    } catch (ragErr: any) {
       console.warn("RAG lookup failed (non-blocking):", ragErr.message);
     }
 
@@ -194,7 +194,7 @@ export async function POST(request) {
     });
 
     return NextResponse.json({ reply: aiText });
-  } catch (err) {
+  } catch (err: any) {
     console.error("AI Chat error:", err);
     await logAiUsage(0, "failed", err.message);
     return NextResponse.json(

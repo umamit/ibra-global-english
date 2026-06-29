@@ -6,7 +6,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const adminSupabase = getAdminSupabase();
 export const dynamic = "force-dynamic";
 
-function buildPrompt(category, mode, existingQuestion) {
+function buildPrompt(category: any, mode: any, existingQuestion: any) {
   const levelLabel = category.includes("Easy") || category.includes("A1") ? "A1" : category.includes("Medium") || category.includes("B1") ? "B1" : category.includes("Hard") || category.includes("B2") ? "B2" : category.includes("Advanced") || category.includes("C1") ? "C1" : "A2";
 
   if (mode === "all") {
@@ -44,7 +44,7 @@ Aturan ketat:
 - Jangan tambahkan penjelasan di luar JSON.`;
 }
 
-async function generateQuestionFromAI(prompt) {
+async function generateQuestionFromAI(prompt: any) {
   if (!GROQ_API_KEY) return null;
   let response;
   try {
@@ -63,15 +63,15 @@ async function generateQuestionFromAI(prompt) {
   try { return JSON.parse(cleaned); } catch { return null; }
 }
 
-function isValidQuestion(q) {
+function isValidQuestion(q: any) {
   if (!q || typeof q.question !== "string" || !Array.isArray(q.options) || q.options.length < 2) return false;
-  const scores = q.options.map(o => Number(o.score)).filter(n => Number.isInteger(n));
+  const scores = q.options.map((o: any) => Number(o.score)).filter((n: any) => Number.isInteger(n));
   if (scores.length !== q.options.length) return false;
-  if (scores.reduce((a, b) => a + b, 0) !== 1) return false;
+  if (scores.reduce((a: any, b: any) => a + b, 0) !== 1) return false;
   return true;
 }
 
-async function getAuthEmail(request) {
+async function getAuthEmail(request: any) {
   try {
     const mod = await import("@/utils/supabase/adminAuth");
     const user = await mod.getCurrentUser?.();
@@ -81,7 +81,7 @@ async function getAuthEmail(request) {
   }
 }
 
-export const POST = withAdminAuth(async (request) => {
+export const POST = withAdminAuth(async (request: any) => {
   const body = await request.json().catch(() => ({}));
   const { replaceAll = false, id, category, mode = "apply" } = body;
 

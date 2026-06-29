@@ -1,7 +1,7 @@
 import { buildCRUDApi } from "@/app/api/_table-crud";
 
 const { GET, POST, PATCH, DELETE } = buildCRUDApi("tutors", {
-  listQuery: (q, searchParams) => {
+  listQuery: (q: any, searchParams: any) => {
     const showAll = searchParams.get("all") === "true";
     let query = q.select("*").order("display_order", { ascending: true });
     if (!showAll) {
@@ -9,7 +9,7 @@ const { GET, POST, PATCH, DELETE } = buildCRUDApi("tutors", {
     }
     return query;
   },
-  insertBody: (body) => ({
+  insertBody: (body: any) => ({
     name: body.name,
     role: body.role,
     bio: body.bio || "",
@@ -17,7 +17,7 @@ const { GET, POST, PATCH, DELETE } = buildCRUDApi("tutors", {
     display_order: Number(body.display_order) || 0,
     is_active: body.is_active !== false,
   }),
-  updateBody: (body) => ({
+  updateBody: (body: any) => ({
     name: body.name,
     role: body.role,
     bio: body.bio,

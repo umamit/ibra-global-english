@@ -14,16 +14,20 @@ export const POST = withAdminAuth(async () => {
     const statements = sql.split(";").map(s => s.trim()).filter(Boolean);
 
     for (const stmt of statements) {
-      const { error } = await adminSupabase.rpc("exec_sql", { sql: stmt }).catch(() => ({
-        error: { message: "RPC tidak tersedia, jalankan manual." }
-      }));
+      let rpcResult;
+      try {
+        rpcResult = await adminSupabase.rpc("exec_sql", { sql: stmt });
+      } catch {
+        rpcResult = { error: { message: "RPC tidak tersedia, jalankan manual." } };
+      }
+      const { error } = rpcResult;
       if (error) {
         console.warn("Migration skipped via RPC:", stmt.slice(0, 80));
       }
     }
 
     return NextResponse.json({ success: true, message: "Migration executed." });
-  } catch (err) {
+  } catch (err: any) {
     return NextResponse.json({ error: "Gagal menjalankan migration: " + err.message }, { status: 500 });
   }
 });

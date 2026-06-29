@@ -9,28 +9,25 @@ const adminSupabase = getAdminSupabase();
  * But since each route has its own default export/GET, we use a builder pattern.
  */
 
-export function buildCRUDApi(tableName, options = {}) {
+export function buildCRUDApi(tableName: string, options: Record<string, any> = {}) {
   const {
-    listQuery = (q) => q.select("*").order("created_at", { ascending: false }),
-    insertBody = (body) => body,
-    updateBody = (body) => {
+    listQuery = (q: any) => q.select("*").order("created_at", { ascending: false }),
+    insertBody = (body: any) => body,
+    updateBody = (body: any) => {
       const { id, ...rest } = body;
       return rest;
     },
   } = options;
 
   return {
-    // GET: List records
-    async GET(request) {
-      let searchParams;
+    async GET(request: any) {
+      let searchParams: URLSearchParams;
       try {
         ({ searchParams } = new URL(request.url));
       } catch {
         return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
       }
-      let query = adminSupabase.from(tableName);
-
-      // Apply custom list query
+      let query: any = adminSupabase.from(tableName);
       query = listQuery(query, searchParams);
 
       const { data, error } = await query;
@@ -38,8 +35,7 @@ export function buildCRUDApi(tableName, options = {}) {
       return NextResponse.json({ data });
     },
 
-    // POST: Create record (admin)
-    POST: withAdminAuth(async (request) => {
+    POST: withAdminAuth(async (request: any) => {
       const body = await request.json();
       const dataToInsert = insertBody(body);
 
@@ -57,8 +53,7 @@ export function buildCRUDApi(tableName, options = {}) {
       return NextResponse.json({ data });
     }),
 
-    // PATCH: Update record
-    PATCH: withAdminAuth(async (request) => {
+    PATCH: withAdminAuth(async (request: any) => {
       const body = await request.json();
       const { id } = body;
       if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
@@ -74,9 +69,8 @@ export function buildCRUDApi(tableName, options = {}) {
       return NextResponse.json({ success: true });
     }),
 
-    // DELETE: Delete record
-    DELETE: withAdminAuth(async (request) => {
-      let searchParams;
+    DELETE: withAdminAuth(async (request: any) => {
+      let searchParams: URLSearchParams;
       try {
         ({ searchParams } = new URL(request.url));
       } catch {

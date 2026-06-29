@@ -4,20 +4,20 @@ import { prisma } from "../../../../../lib/prisma";
 import { upsertRagDocument } from "@/utils/rag";
 
 // GET: List all RAG documents
-export async function GET(request) {
+export async function GET(request: any) {
   try {
     const docs = await prisma.ragDocument.findMany({
       orderBy: { updatedAt: "desc" },
     });
     return NextResponse.json({ data: docs });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gagal mengambil dokumen RAG:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 // POST: Create a new RAG document
-export const POST = withAdminAuth(async (request) => {
+export const POST = withAdminAuth(async (request: any) => {
   try {
     const body = await request.json();
     const { title, content, source, metadata } = body;
@@ -37,14 +37,14 @@ export const POST = withAdminAuth(async (request) => {
     });
 
     return NextResponse.json({ data: doc });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gagal menambah dokumen RAG:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });
 
 // PATCH: Update a RAG document
-export const PATCH = withAdminAuth(async (request) => {
+export const PATCH = withAdminAuth(async (request: any) => {
   try {
     const body = await request.json();
     const { id, title, content, source, metadata } = body;
@@ -72,14 +72,14 @@ export const PATCH = withAdminAuth(async (request) => {
     });
 
     return NextResponse.json({ data: doc });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gagal mengupdate dokumen RAG:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });
 
 // DELETE: Delete a RAG document
-export const DELETE = withAdminAuth(async (request) => {
+export const DELETE = withAdminAuth(async (request: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
@@ -96,7 +96,7 @@ export const DELETE = withAdminAuth(async (request) => {
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gagal menghapus dokumen RAG:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

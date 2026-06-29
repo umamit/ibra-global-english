@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { getSupabaseConfig } from "@/utils/supabase/config";
 
-export async function GET(request) {
-  let searchParams, origin;
+export async function GET(request: any) {
+  let searchParams: URLSearchParams, origin: string;
   try {
     ({ searchParams, origin } = new URL(request.url));
   } catch {
@@ -38,7 +38,7 @@ export async function GET(request) {
       response.cookies.set("login_time", "active", {
         path: "/",
         maxAge: 3600,
-        sameSite: "Lax",
+        sameSite: "lax",
       });
 
       const { data: { user } } = await supabase.auth.getUser();

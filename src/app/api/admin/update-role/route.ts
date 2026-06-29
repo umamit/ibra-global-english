@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 
-export const PATCH = withAdminAuth(async (request) => {
+export const PATCH = withAdminAuth(async (request: any) => {
   try {
     const adminSupabase = getAdminSupabase();
     
@@ -50,7 +50,7 @@ export const PATCH = withAdminAuth(async (request) => {
     }
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Gagal memperbarui peran pengguna:", err);
     return NextResponse.json(
       { error: err.message || "Terjadi kesalahan server." },

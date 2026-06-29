@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import { buildCRUDApi } from "@/app/api/_table-crud";
 
 const api = buildCRUDApi("announcements", {
-  listQuery: (query, searchParams) => {
+  listQuery: (query: any, searchParams: any) => {
     const program = searchParams?.get("program");
     const all = searchParams?.get("all") === "true";
 
@@ -14,7 +14,7 @@ const api = buildCRUDApi("announcements", {
     }
     return q;
   },
-  insertBody: (body) => ({
+  insertBody: (body: any) => ({
     title: body.title?.trim(),
     content: body.content?.trim(),
     program: body.program || "Semua Program",
@@ -22,8 +22,8 @@ const api = buildCRUDApi("announcements", {
     expires_at: body.expires_at || null,
     is_active: true,
   }),
-  updateBody: (body) => {
-    const updates = {};
+  updateBody: (body: any) => {
+    const updates: any = {};
     if (typeof body.is_active === "boolean") updates.is_active = body.is_active;
     if (body.title) updates.title = body.title.trim();
     if (body.content) updates.content = body.content.trim();
@@ -33,7 +33,7 @@ const api = buildCRUDApi("announcements", {
   },
 });
 
-export const GET = async (request) => {
+export const GET = async (request: any) => {
   const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   const isSanityConfigured = sanityProjectId && sanityProjectId !== "placeholder" && sanityProjectId !== "project_id_anda";
 
@@ -47,7 +47,7 @@ export const GET = async (request) => {
       const groqQuery = `*[_type == "announcement" && (targetRole == "all" || targetRole == $role)] | order(date desc)`;
       const announcements = await client.fetch(groqQuery, { role });
 
-      const formattedAnnouncements = announcements.map((ann) => ({
+      const formattedAnnouncements = announcements.map((ann: any) => ({
         id: ann._id,
         title: ann.title,
         content: ann.content, // Menyimpan Portable Text
@@ -58,7 +58,7 @@ export const GET = async (request) => {
       }));
 
       return Response.json({ data: formattedAnnouncements });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gagal mengambil pengumuman dari Sanity CMS, fallback ke Supabase:", err);
     }
   }

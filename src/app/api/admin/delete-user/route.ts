@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 import { getAdminOrTutorUser } from "@/utils/supabase/adminAuth";
 
-export const DELETE = withAdminAuth(async (request) => {
+export const DELETE = withAdminAuth(async (request: any) => {
   try {
     const { userId } = await request.json();
 
@@ -42,7 +42,7 @@ export const DELETE = withAdminAuth(async (request) => {
     }
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Gagal menghapus pengguna:", err);
     return NextResponse.json({ error: err.message || "Terjadi kesalahan server." }, { status: 500 });
   }

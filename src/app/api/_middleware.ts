@@ -13,8 +13,8 @@ export function getAdminSupabase() {
   );
 }
 
-export function withAdminAuth(handler) {
-  return async (request) => {
+export function withAdminAuth(handler: any) {
+  return async (request: any) => {
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) {
       return NextResponse.json(

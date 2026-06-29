@@ -1,7 +1,7 @@
 import { buildCRUDApi } from "@/app/api/_table-crud";
 
 const { GET, POST, PATCH, DELETE } = buildCRUDApi("curriculums", {
-  listQuery: (q, searchParams) => {
+  listQuery: (q: any, searchParams: any) => {
     const program = searchParams.get("program");
     const showAll = searchParams.get("all") === "true";
     let query = q.select("*").order("created_at", { ascending: false });
@@ -14,7 +14,7 @@ const { GET, POST, PATCH, DELETE } = buildCRUDApi("curriculums", {
     }
     return query;
   },
-  insertBody: (body) => ({
+  insertBody: (body: any) => ({
     program: body.program,
     level_name: body.level_name,
     duration: body.duration || "",
@@ -22,7 +22,7 @@ const { GET, POST, PATCH, DELETE } = buildCRUDApi("curriculums", {
     syllabus_pdf_url: body.syllabus_pdf_url || "",
     is_active: body.is_active !== false,
   }),
-  updateBody: (body) => ({
+  updateBody: (body: any) => ({
     program: body.program,
     level_name: body.level_name,
     duration: body.duration,
