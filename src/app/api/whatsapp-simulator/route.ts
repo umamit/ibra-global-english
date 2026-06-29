@@ -17,7 +17,7 @@ function jsonResponse(data, init = {}) {
 }
 
 // POST: Kirim pesan WhatsApp via Fonnte (Mendukung pengiriman ke banyak nomor sekaligus)
-export const POST = withAdminAuth(async (request) => {
+export const POST = withAdminAuth(async (request: Request) => {
 
   try {
     const { phone, message, type } = await request.json();
@@ -106,7 +106,7 @@ export const POST = withAdminAuth(async (request) => {
 });
 
 // GET: Ambil log pengiriman, status perangkat Fonnte, atau daftar kontak
-export const GET = withAdminAuth(async (request) => {
+export const GET = withAdminAuth(async (request: Request) => {
 
   try {
     const { searchParams } = new URL(request.url);

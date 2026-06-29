@@ -77,7 +77,7 @@ const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Glob
 - Format koreksi grammar: ✅ Kalimat Benar: [kalimat] | 💡 Penjelasan: [penjelasan]
 - Jaga respons ringkas (max 3-4 paragraf) kecuali diminta lebih detail`;
 
-export async function POST(request: any) {
+export async function POST(request: Request) {
   try {
     if (!GROQ_API_KEY) {
       return NextResponse.json(

@@ -81,7 +81,7 @@ async function getAuthEmail(request: any) {
   }
 }
 
-export const POST = withAdminAuth(async (request: any) => {
+export const POST = withAdminAuth(async (request: Request) => {
   const body = await request.json().catch(() => ({}));
   const { replaceAll = false, id, category, mode = "apply" } = body;
 

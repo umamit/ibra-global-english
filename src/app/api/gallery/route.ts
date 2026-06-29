@@ -7,7 +7,7 @@ const adminSupabase = getAdminSupabase();
 
 const BUCKET = "gallery-photos";
 
-export async function GET(request) {
+export async function GET(request: Request) {
   let searchParams;
   try {
     ({ searchParams } = new URL(request.url));

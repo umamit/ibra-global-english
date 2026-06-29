@@ -25,7 +25,7 @@ export async function GET() {
 }
 
 // POST: ubah status maintenance (hanya admin)
-export const POST = withAdminAuth(async (request: any) => {
+export const POST = withAdminAuth(async (request: Request) => {
   try {
     // Parse body
     const { enabled } = await request.json();

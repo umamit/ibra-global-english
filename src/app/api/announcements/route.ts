@@ -33,7 +33,7 @@ const api = buildCRUDApi("announcements", {
   },
 });
 
-export const GET = async (request: any) => {
+export const GET = async (request: Request) => {
   const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   const isSanityConfigured = sanityProjectId && sanityProjectId !== "placeholder" && sanityProjectId !== "project_id_anda";
 

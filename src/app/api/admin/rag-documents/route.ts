@@ -4,7 +4,7 @@ import { prisma } from "../../../../../lib/prisma";
 import { upsertRagDocument } from "@/utils/rag";
 
 // GET: List all RAG documents
-export async function GET(request: any) {
+export async function GET(request: Request) {
   try {
     const docs = await prisma.ragDocument.findMany({
       orderBy: { updatedAt: "desc" },
@@ -44,10 +44,10 @@ export const POST = withAdminAuth(async (request: any) => {
 });
 
 // PATCH: Update a RAG document
-export const PATCH = withAdminAuth(async (request: any) => {
+export const PATCH = withAdminAuth(async (request: Request) => {
   try {
     const body = await request.json();
-    const { id, title, content, source, metadata } = body;
+    const { id, title, content, source, metadata } = body as { id: string; title: string; content: string; source?: string; metadata?: any };
 
     if (!id) {
       return NextResponse.json(
@@ -79,7 +79,7 @@ export const PATCH = withAdminAuth(async (request: any) => {
 });
 
 // DELETE: Delete a RAG document
-export const DELETE = withAdminAuth(async (request: any) => {
+export const DELETE = withAdminAuth(async (request: Request) => {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
