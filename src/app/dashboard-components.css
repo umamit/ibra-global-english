@@ -58,31 +58,29 @@
   line-height: 1;
 }
 
-/* Buttons */
 .btn-portal-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
-  background-color: var(--color-primary);
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: var(--color-white);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 6px rgba(33, 108, 126, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transition: all var(--transition-fast);
 }
 
 .btn-portal-primary:hover {
-  background-color: var(--color-primary-dark);
-  box-shadow: 0 4px 12px rgba(33, 108, 126, 0.25);
-  transform: translateY(-1px);
+  background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary-dark) 100%);
+  box-shadow: 0 4px 12px rgba(33, 108, 126, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .btn-portal-primary:active {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 .btn-portal-outline {
@@ -180,9 +178,9 @@
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-gray-200);
-  background-color: var(--color-white);
+  background-color: var(--color-gray-100);
   color: var(--color-gray-900);
   font-weight: 500;
   font-size: 0.95rem;
@@ -195,7 +193,8 @@
 
 .form-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(33, 108, 126, 0.15);
+  box-shadow: 0 0 0 4px rgba(33, 108, 126, 0.08);
+  background-color: var(--color-white);
 }
 
 .form-input:disabled {
