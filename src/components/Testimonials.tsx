@@ -1,11 +1,12 @@
 "use client";
 import "./Testimonials.css";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSanityQuery } from "@/hooks/useSanityQuery";
 import type { Testimonial as SanityTestimonial } from "../../sanity.types";
 import { createImageUrlBuilder } from "@sanity/image-url";
 import { client as sanityClient } from "@/lib/sanity/client";
+import { createClient } from "@/utils/supabase/client";
 
 // Data fallback jika API gagal atau tidak ada data
 const TESTIMONIALS_FALLBACK = [
@@ -48,6 +49,30 @@ interface Testimonial {
 }
 
 export default function Testimonials() {
+  const [supabaseData, setSupabaseData] = useState<any[]>([]);
+  const [supabaseLoading, setSupabaseLoading] = useState<boolean>(true);
+
+  // Mengambil data ulasan dari Supabase
+  useEffect(() => {
+    async function fetchSupabaseTestimonials() {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (!error && data) {
+          setSupabaseData(data);
+        }
+      } catch (err) {
+        console.error("Gagal memuat testimoni dari Supabase:", err);
+      } finally {
+        setSupabaseLoading(false);
+      }
+    }
+    fetchSupabaseTestimonials();
+  }, []);
+
   // Menggunakan hook useSanityQuery yang sudah type-safe
   const { data: sanityData, isLoading } = useSanityQuery<SanityTestimonial[]>({
     query: `*[_type == "testimonial"] | order(_createdAt desc)`,
@@ -57,33 +82,63 @@ export default function Testimonials() {
     }
   });
 
-  // Menggabungkan data dari Sanity dengan data fallback menggunakan useMemo
+  const combinedLoading = isLoading && supabaseLoading;
+
+  // Menggabungkan data dari Sanity dan Supabase dengan fallback data statis
   const testimonials: Testimonial[] = useMemo(() => {
+    const combined: Testimonial[] = [];
+
+    // 1. Tambah data dari Sanity jika ada
     if (sanityData && sanityData.length > 0) {
-      return sanityData.map((item, index) => ({
-        rating: 5, // Asumsi rating 5 untuk data dari Sanity
-        text: item.content,
-        author: item.name,
-        role: item.role || "Siswa",
-        avatar: item.avatar ? urlFor(item.avatar).width(96).height(96).quality(80).url() : null,
+      sanityData.forEach((item) => {
+        combined.push({
+          rating: 5, // Asumsi default rating 5 untuk Sanity
+          text: item.content,
+          author: item.name,
+          role: item.role || "Siswa",
+          avatar: item.avatar ? urlFor(item.avatar).width(96).height(96).quality(80).url() : null,
+          delay: 0,
+        });
+      });
+    }
+
+    // 2. Tambah data dari Supabase jika ada
+    if (supabaseData && supabaseData.length > 0) {
+      supabaseData.forEach((item) => {
+        combined.push({
+          rating: item.rating || 5,
+          text: item.text,
+          author: item.author,
+          role: item.role || "Siswa/Orang Tua",
+          avatar: null, // Testimoni dari DB admin Supabase tidak memiliki foto profil saat ini
+          delay: 0,
+        });
+      });
+    }
+
+    // 3. Jika ada ulasan gabungan, beri efek delay AOS berurutan
+    if (combined.length > 0) {
+      return combined.map((item, index) => ({
+        ...item,
         delay: (index % 3) * 100,
       }));
     }
-    // Jika tidak ada data dari Sanity atau sedang loading, gunakan fallback
+
+    // Fallback jika sama sekali tidak ada data dari kedua API
     return TESTIMONIALS_FALLBACK;
-  }, [sanityData]);
+  }, [sanityData, supabaseData]);
 
   return (
     <section id="testimonials" className="testimonials-section">
       <div className="container">
         <div className="section-header" data-aos="fade-up">
-          <h2>Testimoni Siswa di Bobong</h2>
+          <h2>Testimoni Siswa dan Orang Tua di Bobong</h2>
           <p>Apa kata mereka tentang kami</p>
         </div>
         
-        {isLoading && <p style={{ textAlign: 'center' }}>Memuat testimoni...</p>}
-
-        {!isLoading && (
+        {combinedLoading && <p style={{ textAlign: 'center' }}>Memuat testimoni...</p>}
+ 
+        {!combinedLoading && (
           <div className={`testimonials-grid ${testimonials.length < 3 ? 'justify-center-flex' : ''}`}>
           {testimonials.map((t, idx) => (
             <div key={idx} className="testimonial-card" data-aos="fade-up" data-aos-delay={t.delay}>
