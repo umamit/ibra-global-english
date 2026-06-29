@@ -50,7 +50,24 @@ Aturan ketat:
 - Soal Reading WAJIB diawali dengan teks artikel/paragraf pendek sebelum pertanyaan dimulai.
 - Soal Listening: audio_text berisi percakapan atau narasi pendek (3-5 kalimat).
 - Soal Speaking: target_sentence berisi satu kalimat yang harus diucapkan peserta.
-- Tingkat kesulitan soal harus benar-benar sesuai level CEFR masing-masing.`;
+- Tingkat kesulitan soal harus benar-benar sesuai level CEFR masing-masing.
+
+DIREKTIF ANTI-GAGAL (WAJIB DIPATUHI):
+- DILARANG KERAS membuat pertanyaan yang jawabannya sudah tertulis di dalam kalimat tanya itu sendiri (Contoh PROHIBITED: Text: "My name is John" -> Question: "What is John's name?").
+- Jika melanggar aturan ini, seluruh output JSON akan dianggap gagal dan ditolak oleh sistem.
+- Pertanyaan harus selalu menggunakan kata ganti pihak ketiga (the writer, the speaker, the man, the woman) jika menanyakan subjek dalam teks.
+
+[CONTOH LOGIKA SOAL YANG SALAH (JANGAN DITIRU)]
+{
+  "question": "Read the text: 'My name is John.' What is John's name?",
+  "reason_of_failure": "Membocorkan jawaban di dalam pertanyaan."
+}
+
+[CONTOH LOGIKA SOAL YANG BENAR (WAJIB DITIRU)]
+{
+  "question": "Read the text: 'My name is John.' What is the speaker's name?",
+  "reason_of_success": "Benar, menggunakan kata 'the speaker'."
+}`;
 
   try {
     const response = await fetch(
