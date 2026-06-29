@@ -46,7 +46,8 @@
     "eslint-config-next": "^16.2.7",
     "prisma": "^7.8.0",
     "tailwindcss": "^4",
-    "tsx": "^4.22.4"
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3"
   },
   "overrides": {
     "postcss": "^8.5.10"
