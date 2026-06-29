@@ -1,6 +1,6 @@
 "use client";
 
-export function formatIndonesianDate(dateStr) {
+export function formatIndonesianDate(dateStr: string): string {
   if (!dateStr) return "-";
   try {
     const d = new Date(dateStr);
@@ -12,7 +12,7 @@ export function formatIndonesianDate(dateStr) {
   }
 }
 
-export function buildWhatsappLink(num) {
+export function buildWhatsappLink(num: string | number): string {
   const d = String(num||"").replace(/[^0-9]/g,"");
   return d ? `https://wa.me/${d}` : "#";
 }

@@ -10,9 +10,8 @@ export function useScrollReveal() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const el = entry.target;
+          const el = entry.target as HTMLElement;
           
-          // Apply delay if specified
           const delay = el.getAttribute("data-aos-delay");
           if (delay) {
             el.style.transitionDelay = `${delay}ms`;

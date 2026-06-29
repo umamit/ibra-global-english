@@ -1,16 +1,16 @@
-export const getMonthName = (ym) => {
+export const getMonthName = (ym: string): string => {
   if (!ym) return "";
   const [y, m] = ym.split("-");
   const date = new Date(parseInt(y), parseInt(m) - 1, 1);
   return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
 };
 
-export const terbilang = (n) => {
+export const terbilang = (n: string | number): string => {
   const bilangan = [
     "", "Satu", "Dua", "Tiga", "Empat", "Lima",
     "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"
   ];
-  const num = parseInt(n);
+  const num = parseInt(String(n));
   if (num < 12) {
     return bilangan[num];
   } else if (num < 20) {
@@ -31,7 +31,7 @@ export const terbilang = (n) => {
   return "";
 };
 
-export const formatRupiah = (amount) => {
+export const formatRupiah = (amount: number): string => {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -40,18 +40,19 @@ export const formatRupiah = (amount) => {
   }).format(amount);
 };
 
-export const getCurrentMonth = () => {
+export const getCurrentMonth = (): string => {
   const d = new Date();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   return `${d.getFullYear()}-${mm}`;
 };
 
-export const handleApiError = (error, defaultMessage = "Terjadi kesalahan.") => {
+export const handleApiError = (error: unknown, defaultMessage = "Terjadi kesalahan.") => {
   console.error(defaultMessage, error);
-  alert(`${defaultMessage}\n\nDetail: ${error.message || error}`);
+  const msg = error instanceof Error ? error.message : String(error);
+  alert(`${defaultMessage}\n\nDetail: ${msg}`);
 };
 
-export const showToast = (setToast, message, type = "success") => {
+export const showToast = (setToast: (toast: { show: boolean; message: string; type: string }) => void, message: string, type = "success") => {
   setToast({ show: true, message, type });
   setTimeout(() => setToast({ show: false, message: "", type }), 3000);
 };

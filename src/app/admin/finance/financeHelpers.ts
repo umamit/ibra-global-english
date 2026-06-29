@@ -7,8 +7,8 @@
  * @param {Object} sppPrices - SPP price configuration by program
  * @returns {Object} Payment information object
  */
-export const getStudentPayment = (studentId, students, payments, selectedMonth, sppPrices) => {
-  const student = students.find(s => s.id === studentId);
+export const getStudentPayment = (studentId: string, students: Record<string, any>[], payments: Record<string, any>[], selectedMonth: string, sppPrices: Record<string, number>) => {
+  const student = students.find((s: Record<string, any>) => s.id === studentId);
   if (!student) {
     return {
       student_id: studentId,
@@ -23,7 +23,7 @@ export const getStudentPayment = (studentId, students, payments, selectedMonth, 
   const program = student.program || "Kids Program";
   const baseAmount = sppPrices[program] || 300000;
 
-  const pay = payments.find(p => p.student_id === studentId);
+  const pay = payments.find((p: Record<string, any>) => p.student_id === studentId);
   if (pay) {
     return { ...pay, amount: pay.status === "belum_bayar" ? baseAmount : pay.amount };
   }
@@ -43,19 +43,19 @@ export const getStudentPayment = (studentId, students, payments, selectedMonth, 
  * @param {string} studentId - The ID of the student
  * @returns {Object} Payment information object
  */
-export const getStudentPaymentWithContext = (studentId) => {
+export const getStudentPaymentWithContext = (studentId: string) => {
   // This function should be used within a context where students, payments, selectedMonth, and sppPrices are available
   // For now, we'll keep the original function and address this in the next refactoring step
   console.warn("getStudentPaymentWithContext should be used within a proper context");
   return getStudentPayment(studentId, [], [], "", {});
 };
 
-export const exportPaymentsCSV = (students, payments, selectedMonth, sppPrices, formatRupiah) => {
-  const statusLabel = (s) => s === "lunas" ? "Lunas" : s === "menunggu_konfirmasi" ? "Menunggu Konfirmasi" : "Belum Bayar";
+export const exportPaymentsCSV = (students: Record<string, any>[], payments: Record<string, any>[], selectedMonth: string, sppPrices: Record<string, number>, formatRupiah: (n: number) => string) => {
+  const statusLabel = (s: string) => s === "lunas" ? "Lunas" : s === "menunggu_konfirmasi" ? "Menunggu Konfirmasi" : "Belum Bayar";
 
   const headers = ["No", "Nama Siswa", "Program", "Bulan", "Nominal SPP", "Status", "Metode Bayar", "Tanggal Bayar"];
-  const rows = students.map((student, idx) => {
-    const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
+  const rows = students.map((student: Record<string, any>, idx: number) => {
+    const pay: Record<string, any> = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
     return [
       idx + 1,
       student.name,
@@ -68,7 +68,7 @@ export const exportPaymentsCSV = (students, payments, selectedMonth, sppPrices, 
     ];
   });
 
-  const csvContent = [headers, ...rows].map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
+  const csvContent = [headers, ...rows].map((r: any[]) => r.map((v: any) => `"${v}"`).join(",")).join("\n");
   const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
