@@ -4,7 +4,7 @@ import "./Testimonials.css";
 import { useMemo } from "react";
 import { useSanityQuery } from "@/hooks/useSanityQuery";
 import type { Testimonial as SanityTestimonial } from "../../sanity.types";
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import { client as sanityClient } from "@/lib/sanity/client";
 
 // Data fallback jika API gagal atau tidak ada data
@@ -33,7 +33,7 @@ const TESTIMONIALS_FALLBACK = [
 ];
 
 // Helper untuk membangun URL gambar dari Sanity
-const builder = imageUrlBuilder(sanityClient);
+const builder = createImageUrlBuilder(sanityClient);
 function urlFor(source: any) {
   return builder.image(source);
 }
