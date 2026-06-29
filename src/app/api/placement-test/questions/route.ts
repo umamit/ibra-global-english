@@ -14,29 +14,43 @@ async function generateFromGroq() {
     return null;
   }
 
-  const prompt = `Kamu adalah pakar pedagogi Bahasa Inggris yang ahli merancang soal placement test standar CEFR untuk lembaga kursus Ibra Global English.
-Tugas: Rancang 15 soal pilihan ganda bahasa Inggris berjenjang untuk tes penempatan.
-Pembagian level CEFR soal:
-- Soal 1 s/d 5: Tingkat A1-A2 (Dasar / Easy)
-- Soal 6 s/d 10: Tingkat B1-B2 (Menengah / Medium)
-- Soal 11 s/d 15: Tingkat Mahir (C1/Advanced / Hard)
+  const prompt = `Kamu adalah pakar pedagogi Bahasa Inggris bersertifikat CEFR yang merancang soal placement test untuk lembaga kursus Ibra Global English.
+Tugas: Rancang tepat 15 soal pilihan ganda bahasa Inggris yang mencakup 5 level CEFR dan 6 tipe soal berbeda.
 
-Setiap soal harus menyertakan properti:
-- "id": UUID atau string acak unik
-- "category": Kategori soal (misal: "Grammar (A1 Easy)", "Reading (B1 Medium)", "Listening (B2 Hard)")
-- "question": Pertanyaan bahasa Inggris
-- "options": Array berisi 4 opsi [{ "text": "opsi", "score": 0 atau 1 }] di mana hanya ada TEPAT 1 opsi dengan score 1, dan 3 opsi lainnya dengan score 0.
-- "is_audio": boolean (set true jika kategori mendengarkan/listening)
-- "audio_text": string naskah audio jika is_audio true, selain itu null
-- "is_speaking": boolean (set true jika soal speaking)
-- "target_sentence": string kalimat target pengucapan jika is_speaking true, selain itu null
-- "order_index": number (1 sampai 15)
+Pembagian soal berdasarkan level CEFR (masing-masing 3 soal):
+- Soal 1, 2, 3:  Level A1 (Pemula Mutlak)
+- Soal 4, 5, 6:  Level A2 (Pemula Dasar)
+- Soal 7, 8, 9:  Level B1 (Menengah Awal)
+- Soal 10, 11, 12: Level B2 (Menengah Atas)
+- Soal 13, 14, 15: Level C1 (Mahir)
+
+Distribusi tipe soal yang WAJIB ada dalam 15 soal tersebut:
+- 3 soal Grammar (struktur kalimat, tenses, agreement)
+- 3 soal Vocabulary (kosakata kontekstual)
+- 3 soal Reading Comprehension (WAJIB ada teks bacaan pendek sebelum pertanyaan)
+- 2 soal Listening (is_audio: true, sertakan audio_text naskah percakapan atau monolog pendek)
+- 2 soal Speaking (is_speaking: true, sertakan target_sentence kalimat yang harus diucapkan)
+- 2 soal Writing/Translation (memilih terjemahan atau melengkapi kalimat tertulis)
+
+Setiap soal WAJIB memiliki properti berikut:
+- "id": string unik acak (8 karakter alfanumerik)
+- "category": string deskriptif misal "Grammar (A1)", "Reading (B2)", "Listening (B1)", "Speaking (C1)"
+- "question": teks pertanyaan lengkap dalam bahasa Inggris
+- "options": array 4 objek [{ "text": "string", "score": 0 atau 1 }] — tepat 1 score bernilai 1
+- "is_audio": boolean — true hanya untuk soal Listening
+- "audio_text": string naskah audio (wajib diisi jika is_audio true, selain itu null)
+- "is_speaking": boolean — true hanya untuk soal Speaking
+- "target_sentence": string kalimat target pengucapan (wajib diisi jika is_speaking true, selain itu null)
+- "order_index": integer 1 sampai 15
+- "cefr_level": string salah satu dari "A1", "A2", "B1", "B2", "C1"
 
 Aturan ketat:
-- Format jawaban WAJIB berupa JSON array murni berisi 15 objek soal tersebut tanpa ada teks pendahuluan, penjelasan, atau blok kode markdown (jangan pakai \`\`\`json).
-- Pastikan hanya ada tepat satu opsi jawaban benar dengan score: 1 untuk setiap soal.
-- Semua opsi teks harus ditulis dengan rapi dan bebas dari kesalahan tik.
-- Untuk soal kategori membaca (Reading / Reading Comprehension), teks bacaan pendek atau artikel pengantar WAJIB ditulis lengkap di bagian awal properti "question" sebelum kalimat pertanyaannya dimulai (misalnya: "Read the following text:\n[Teks pendek/artikel]\n\nQuestion: [Kalimat pertanyaan]"). Jangan membuat soal membaca tanpa ada artikel/teks bacaan pengantarnya!`;
+- Output HARUS berupa JSON array murni 15 objek, tanpa teks pendahuluan, penjelasan, atau markdown code fence.
+- Tepat 1 opsi jawaban benar (score: 1) di setiap soal.
+- Soal Reading WAJIB diawali dengan teks artikel/paragraf pendek sebelum pertanyaan dimulai.
+- Soal Listening: audio_text berisi percakapan atau narasi pendek (3-5 kalimat).
+- Soal Speaking: target_sentence berisi satu kalimat yang harus diucapkan peserta.
+- Tingkat kesulitan soal harus benar-benar sesuai level CEFR masing-masing.`;
 
   try {
     const response = await fetch(
@@ -49,8 +63,8 @@ Aturan ketat:
         },
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile",
-          temperature: 0.6,
-          max_tokens: 4000,
+          temperature: 0.65,
+          max_tokens: 6000,
           messages: [{ role: "user", content: prompt }],
         }),
       },

@@ -30,6 +30,8 @@ interface PlacementResult {
   score: number;
   level: string;
   description: string;
+  programRecommendation: string;
+  studyTimeAdvice: string;
   id: string;
 }
 
@@ -260,16 +262,33 @@ export default function PlacementTestClient() {
       }
     });
 
-    // Determine level (Max 19)
-    let determinedLevel = "Beginner";
-    let levelDescription = "Dapat memahami kosakata dasar dan frasa sehari-hari secara sederhana. Direkomendasikan untuk Kids Program atau Basic Teens.";
-    
-    if (totalScore >= 15) {
-      determinedLevel = "Advanced";
-      levelDescription = "Mampu berkomunikasi secara lancar, memahami materi membaca tingkat tinggi, dan menguasai struktur gramatikal yang kompleks. Direkomendasikan untuk Teens Program (Advanced Kelas).";
-    } else if (totalScore >= 8) {
-      determinedLevel = "Intermediate";
-      levelDescription = "Mampu bercakap-cakap secara fungsional, memahami gagasan utama dalam paragraf umum, dan menyusun kalimat dengan tenses bervariasi. Direkomendasikan untuk Teens Program (Intermediate Kelas).";
+    // Determine CEFR level based on block-based thresholds (out of 15)
+    // A1=0-2, A2=3-5, B1=6-9, B2=10-12, C1=13-15
+    let determinedLevel = "A1";
+    let levelDescription = "Dapat memahami dan menggunakan ungkapan yang sudah dikenal, kosakata sangat dasar, dan frasa pendek. Direkomendasikan untuk memulai dari program Kids Program atau Basic Calistung.";
+    let programRecommendation = "Kids Program (Kelas Dasar) atau Fun Calistung";
+    let studyTimeAdvice = "Belajar rutin 3-4 kali seminggu selama 3-6 bulan untuk mencapai level A2.";
+
+    if (totalScore >= 13) {
+      determinedLevel = "C1";
+      levelDescription = "Mampu memahami berbagai teks panjang dan kompleks, mengekspresikan diri secara lancar dan spontan tanpa memerlukan upaya keras untuk menemukan ungkapan yang tepat.";
+      programRecommendation = "Teens Program (Advanced Class) — Persiapan IELTS/TOEFL";
+      studyTimeAdvice = "Pertahankan level dengan latihan berbicara dan menulis secara aktif 5 kali seminggu.";
+    } else if (totalScore >= 10) {
+      determinedLevel = "B2";
+      levelDescription = "Dapat memahami gagasan utama teks kompleks, berinteraksi dengan penutur asli dengan cukup lancar, dan menulis teks rinci tentang berbagai topik.";
+      programRecommendation = "Teens Program (Upper-Intermediate Class)";
+      studyTimeAdvice = "Belajar intensif 4-5 kali seminggu selama 4-6 bulan untuk mencapai level C1.";
+    } else if (totalScore >= 6) {
+      determinedLevel = "B1";
+      levelDescription = "Dapat memahami poin utama input yang jelas tentang topik yang sudah dikenal, berhadapan dengan situasi yang mungkin timbul saat bepergian di area berbahasa Inggris.";
+      programRecommendation = "Teens Program (Intermediate Class)";
+      studyTimeAdvice = "Belajar rutin 4 kali seminggu selama 4-6 bulan untuk mencapai level B2.";
+    } else if (totalScore >= 3) {
+      determinedLevel = "A2";
+      levelDescription = "Dapat memahami kalimat dan ungkapan yang sering digunakan terkait bidang yang paling relevan, berkomunikasi dalam tugas sederhana dan rutin.";
+      programRecommendation = "Kids Program (Elementary Class) atau Teens Program (Beginner Class)";
+      studyTimeAdvice = "Belajar rutin 3-4 kali seminggu selama 4-5 bulan untuk mencapai level B1.";
     }
 
     try {
@@ -307,6 +326,8 @@ export default function PlacementTestClient() {
         score: totalScore,
         level: determinedLevel,
         description: levelDescription,
+        programRecommendation,
+        studyTimeAdvice,
         id: data?.id || "N/A"
       });
       setStep(3);
@@ -322,6 +343,8 @@ export default function PlacementTestClient() {
         score: totalScore,
         level: determinedLevel,
         description: levelDescription,
+        programRecommendation,
+        studyTimeAdvice,
         id: "offline-mode"
       });
       setStep(3);
@@ -709,10 +732,22 @@ export default function PlacementTestClient() {
                   </div>
                 </div>
 
-                <div style={{ maxWidth: "550px", margin: "0 auto 3rem", padding: "0 1.5rem" }}>
+                <div style={{ maxWidth: "550px", margin: "0 auto 2rem", padding: "0 1.5rem" }}>
                   <p style={{ fontSize: "0.95rem", color: "var(--color-gray-700)", lineHeight: "1.6", fontWeight: "600" }}>
                     &ldquo;{finalResult.description}&rdquo;
                   </p>
+                </div>
+
+                {/* Program & Study Time Recommendations */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", maxWidth: "550px", margin: "0 auto 2.5rem", padding: "0 1.5rem" }}>
+                  <div style={{ padding: "1rem 1.25rem", background: "linear-gradient(135deg, var(--color-primary-light), #e0f2f7)", borderRadius: "10px", border: "1px solid rgba(3, 119, 130, 0.2)", textAlign: "left" }}>
+                    <p style={{ fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-primary-dark)", marginBottom: "6px", letterSpacing: "0.5px" }}>🎓 Program yang Direkomendasikan</p>
+                    <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>{finalResult.programRecommendation}</p>
+                  </div>
+                  <div style={{ padding: "1rem 1.25rem", background: "linear-gradient(135deg, rgba(166, 136, 73, 0.08), rgba(166, 136, 73, 0.15))", borderRadius: "10px", border: "1px solid rgba(166, 136, 73, 0.25)", textAlign: "left" }}>
+                    <p style={{ fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-accent)", marginBottom: "6px", letterSpacing: "0.5px" }}>⏱️ Saran Waktu Belajar</p>
+                    <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "#6b5523", lineHeight: "1.4" }}>{finalResult.studyTimeAdvice}</p>
+                  </div>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", padding: "0 1.5rem" }}>

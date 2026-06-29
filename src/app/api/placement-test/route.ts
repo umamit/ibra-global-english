@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     try {
       const cleanPhone = whatsapp_number.replace(/[^0-9]/g, "");
       const fonnteToken = process.env.FONNTE_API_TOKEN;
-      const message = `Halo *${full_name}*! Hasil Tes Penempatan Bahasa Inggris Anda di Ibra Global English Bobong telah terbit. *Skor Anda:* ${score} / 17. *Rekomendasi Level:* ${level}. Terima kasih telah mengikuti tes penempatan!`;
+      const message = `Halo *${full_name}*! Hasil Tes Penempatan Bahasa Inggris Anda di Ibra Global English Bobong telah terbit. *Skor Anda:* ${score} / 15. *Level CEFR:* ${level}. Terima kasih telah mengikuti tes penempatan!`;
 
       let sentReal = false;
       if (
