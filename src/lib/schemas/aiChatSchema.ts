@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-/**
- * Schema untuk pesan AI Chat
- * Digunakan untuk validasi request body di API route ai-chat
- */
 export const chatMessageSchema = z.object({
   role: z.enum(["user", "assistant", "system"]),
   content: z.string().min(1, "Pesan tidak boleh kosong"),

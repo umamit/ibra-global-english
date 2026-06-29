@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-/**
- * Schema untuk hasil tes penempatan (placement test submissions)
- * Validasi request body di API route placement-test
- */
 export const placementSchema = z.object({
   full_name: z
     .string()

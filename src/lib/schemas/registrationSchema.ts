@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-/**
- * Schema untuk pendaftaran siswa
- * Validasi request body di API route register
- */
 export const registrationSchema = z.object({
   student_name: z
     .string()

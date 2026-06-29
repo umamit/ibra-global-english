@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-/**
- * Schema untuk jadwal online
- * Validasi request body di API route online-schedule
- */
 export const onlineScheduleSchema = z.object({
   title: z.string().min(1, "Judul wajib diisi").max(200).trim(),
   program: z.string().min(1, "Program wajib diisi").max(100).trim(),
