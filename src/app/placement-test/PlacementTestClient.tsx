@@ -154,7 +154,7 @@ export default function PlacementTestClient() {
     let cancelled = false;
     const loadQuestions = async () => {
       try {
-        const res = await fetch("/api/placement-test/questions");
+        const res = await fetch(`/api/placement-test/questions?t=${Date.now()}`);
         if (res.ok) {
           const data = await res.json();
           if (!cancelled && Array.isArray(data) && data.length) {

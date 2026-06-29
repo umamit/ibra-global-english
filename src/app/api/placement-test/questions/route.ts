@@ -173,7 +173,13 @@ export async function GET() {
       console.log(
         "Successfully served dynamically generated placement test questions.",
       );
-      return NextResponse.json(dynamicQuestions);
+      return NextResponse.json(dynamicQuestions, {
+        headers: {
+          "Cache-Control": "no-store, max-age=0, must-revalidate",
+          "CDN-Cache-Control": "no-store",
+          "Vercel-CDN-Cache-Control": "no-store",
+        },
+      });
     }
 
     // 2. Jika gagal atau API Key tidak ada, gunakan database sebagai fallback
@@ -189,7 +195,13 @@ export async function GET() {
       .order("created_at", { ascending: true });
 
     if (error) throw error;
-    return NextResponse.json(data || []);
+    return NextResponse.json(data || [], {
+      headers: {
+        "Cache-Control": "no-store, max-age=0, must-revalidate",
+        "CDN-Cache-Control": "no-store",
+        "Vercel-CDN-Cache-Control": "no-store",
+      },
+    });
   } catch (err) {
     console.error("Failed to load questions:", err);
     return NextResponse.json({ error: "Gagal memuat soal." }, { status: 500 });
