@@ -1,0 +1,90 @@
+src/app/admin/attendance/page.tsx(96,16): error TS2352: Conversion of type 'RecapRow' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Index signature for type 'string' is missing in type 'RecapRow'.
+src/app/admin/attendance/page.tsx(97,14): error TS2352: Conversion of type 'RecapRow' to type 'Record<string, number>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Index signature for type 'string' is missing in type 'RecapRow'.
+src/app/admin/finance/page.tsx(104,19): error TS2345: Argument of type '{ id: any; name: any; program: any; parent_id: any; profiles: { full_name: any; }[]; }[]' is not assignable to parameter of type 'SetStateAction<Student[]>'.
+  Type '{ id: any; name: any; program: any; parent_id: any; profiles: { full_name: any; }[]; }[]' is not assignable to type 'Student[]'.
+    Type '{ id: any; name: any; program: any; parent_id: any; profiles: { full_name: any; }[]; }' is not assignable to type 'Student'.
+      Types of property 'profiles' are incompatible.
+        Property 'full_name' is missing in type '{ full_name: any; }[]' but required in type '{ full_name: string; }'.
+src/app/admin/finance/page.tsx(491,41): error TS2322: Type 'ToastState' is not assignable to type 'Toast'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type '"error" | "success"'.
+src/app/admin/finance/page.tsx(619,13): error TS2322: Type '(studentId: string, students: Record<string, any>[], payments: Record<string, any>[], selectedMonth: string, sppPrices: Record<string, number>) => { student_id: string; ... 4 more ...; receipt_url: string; } | { ...; }' is not assignable to type '(studentId: string | number, students: Student[], payments: Payment[], month: string, sppPrices: Record<string, number>) => PaymentResult'.
+  Types of parameters 'studentId' and 'studentId' are incompatible.
+    Type 'string | number' is not assignable to type 'string'.
+      Type 'number' is not assignable to type 'string'.
+src/app/admin/finance/page.tsx(627,13): error TS2322: Type '(studentId: string) => Promise<void>' is not assignable to type '(studentId: string | number) => void'.
+  Types of parameters 'studentId' and 'studentId' are incompatible.
+    Type 'string | number' is not assignable to type 'string'.
+      Type 'number' is not assignable to type 'string'.
+src/app/admin/finance/page.tsx(628,13): error TS2322: Type '(student: Student, pay: Payment) => void' is not assignable to type '(student: Student, pay: PaymentResult) => void'.
+  Types of parameters 'student' and 'student' are incompatible.
+    Type 'Student' is not assignable to type 'Student'. Two different types with this name exist, but they are unrelated.
+      Types of property 'id' are incompatible.
+        Type 'string | number' is not assignable to type 'string'.
+          Type 'number' is not assignable to type 'string'.
+src/app/admin/finance/page.tsx(629,13): error TS2322: Type '(student: ModalStudent) => void' is not assignable to type '(student: Student) => void'.
+  Types of parameters 'student' and 'student' are incompatible.
+    Type 'Student' is not assignable to type 'ModalStudent'.
+      Types of property 'id' are incompatible.
+        Type 'string | number' is not assignable to type 'string'.
+          Type 'number' is not assignable to type 'string'.
+src/app/admin/finance/page.tsx(648,7): error TS2719: Type 'ModalStudent | null' is not assignable to type 'ModalStudent | null'. Two different types with this name exist, but they are unrelated.
+  Type 'ModalStudent' is not assignable to type 'ModalStudent'. Two different types with this name exist, but they are unrelated.
+    Types of property 'name' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+src/app/admin/finance/page.tsx(660,7): error TS2322: Type '(studentId: string, students: Record<string, any>[], payments: Record<string, any>[], selectedMonth: string, sppPrices: Record<string, number>) => { student_id: string; ... 4 more ...; receipt_url: string; } | { ...; }' is not assignable to type '(studentId: string | number, students: unknown[], payments: unknown[], month: string, sppPrices: Record<string, unknown>) => GetStudentPaymentResult'.
+  Types of parameters 'studentId' and 'studentId' are incompatible.
+    Type 'string | number' is not assignable to type 'string'.
+      Type 'number' is not assignable to type 'string'.
+src/app/admin/finance/page.tsx(661,7): error TS2322: Type 'RefObject<HTMLInputElement | null>' is not assignable to type 'RefObject<HTMLInputElement>'.
+  Type 'HTMLInputElement | null' is not assignable to type 'HTMLInputElement'.
+    Type 'null' is not assignable to type 'HTMLInputElement'.
+src/app/admin/finance/page.tsx(664,7): error TS2322: Type '(student: Student, pay: Payment) => void' is not assignable to type '(student: ModalStudent, payObj: PayObject) => void'.
+  Types of parameters 'student' and 'student' are incompatible.
+    Type 'ModalStudent' is not assignable to type 'Student'.
+      Types of property 'id' are incompatible.
+        Type 'string | number' is not assignable to type 'string'.
+          Type 'number' is not assignable to type 'string'.
+src/app/admin/tax/page.tsx(590,11): error TS2322: Type 'number' is not assignable to type 'string'.
+src/app/admin/tax/page.tsx(591,11): error TS2322: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(v: string) => void'.
+  Types of parameters 'value' and 'v' are incompatible.
+    Type 'string' is not assignable to type 'SetStateAction<number>'.
+src/app/admin/tax/page.tsx(596,11): error TS2322: Type 'string | number' is not assignable to type 'string'.
+  Type 'number' is not assignable to type 'string'.
+src/app/admin/tax/page.tsx(598,11): error TS2322: Type 'string | number' is not assignable to type 'string'.
+  Type 'number' is not assignable to type 'string'.
+src/app/HomeClient.tsx(181,15): error TS2322: Type 'string' is not assignable to type '"light" | "dark"'.
+src/app/HomeClient.tsx(183,15): error TS2559: Type 'InitialSettings' has no properties in common with type '{ hero_title?: string | undefined; hero_subtitle?: string | undefined; hero_desc?: string | undefined; hero_image?: string | undefined; }'.
+src/app/HomeClient.tsx(187,14): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { initialSettings?: { landing_faq?: string | any[] | undefined; } | undefined; }, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type 'InitialSettings' has no properties in common with type '{ landing_faq?: string | any[] | undefined; }'.
+  Overload 2 of 2, '(props: { initialSettings?: { landing_faq?: string | any[] | undefined; } | undefined; }): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type 'InitialSettings' has no properties in common with type '{ landing_faq?: string | any[] | undefined; }'.
+src/app/HomeClient.tsx(197,15): error TS2559: Type 'InitialSettings' has no properties in common with type '{ hero_subtitle?: string | undefined; }'.
+src/app/page.tsx(52,22): error TS2322: Type 'LandingSettings' is not assignable to type 'InitialSettings'.
+  'string' index signatures are incompatible.
+    Type 'unknown' is not assignable to type 'string | undefined'.
+src/app/parent/page.tsx(415,9): error TS2739: Type 'Record<string, unknown>' is missing the following properties from type 'PaymentRecord': amount, month
+src/app/parent/page.tsx(419,9): error TS2322: Type '(num: number) => string' is not assignable to type '(amount: string | number) => string'.
+  Types of parameters 'num' and 'amount' are incompatible.
+    Type 'string | number' is not assignable to type 'number'.
+      Type 'string' is not assignable to type 'number'.
+src/app/parent/page.tsx(473,11): error TS2322: Type 'Record<string, unknown>[]' is not assignable to type 'Notification[]'.
+  Type 'Record<string, unknown>' is missing the following properties from type 'Notification': title, message, action
+src/app/parent/page.tsx(543,19): error TS2322: Type 'Record<string, unknown>[]' is not assignable to type 'Schedule[]'.
+  Type 'Record<string, unknown>' is missing the following properties from type 'Schedule': id, type, program, start_time, and 2 more.
+src/app/parent/page.tsx(555,19): error TS2322: Type 'Record<string, unknown>[]' is not assignable to type 'Payment[]'.
+  Type 'Record<string, unknown>' is missing the following properties from type 'Payment': month, amount, status
+src/app/parent/page.tsx(560,19): error TS2322: Type '(pay: Record<string, unknown>) => void' is not assignable to type '(pay: Payment) => void'.
+  Types of parameters 'pay' and 'pay' are incompatible.
+    Type 'Payment' is not assignable to type 'Record<string, unknown>'.
+      Index signature for type 'string' is missing in type 'Payment'.
+src/app/parent/page.tsx(570,19): error TS2322: Type 'Record<string, unknown>[]' is not assignable to type 'LmsMaterial[]'.
+  Type 'Record<string, unknown>' is missing the following properties from type 'LmsMaterial': id, type, title, created_at
+src/app/parent/page.tsx(571,19): error TS2322: Type 'Record<string, unknown>[]' is not assignable to type 'LmsSubmission[]'.
+  Type 'Record<string, unknown>' is missing the following properties from type 'LmsSubmission': material_id, submitted_at
+src/app/student/page.tsx(422,13): error TS2322: Type 'Record<string, unknown>[]' is not assignable to type 'Reward[]'.
+  Type 'Record<string, unknown>' is missing the following properties from type 'Reward': id, reason, coins, created_at

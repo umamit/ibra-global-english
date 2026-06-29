@@ -1,3 +1,5 @@
+import { Student, Payment, PaymentResult } from "@/types";
+
 /**
  * Get payment information for a specific student
  * @param {string} studentId - The ID of the student
@@ -5,14 +7,18 @@
  * @param {Array} payments - List of all payments
  * @param {string} selectedMonth - The selected month in YYYY-MM format
  * @param {Object} sppPrices - SPP price configuration by program
- * @returns {Object} Payment information object
+ * @returns {PaymentResult} Payment information object
  */
-export const getStudentPayment = (studentId: string, students: Record<string, any>[], payments: Record<string, any>[], selectedMonth: string, sppPrices: Record<string, number>) => {
-  const student = students.find((s: Record<string, any>) => s.id === studentId);
+export const getStudentPayment = (
+  studentId: string,
+  students: Student[],
+  payments: Payment[],
+  selectedMonth: string,
+  sppPrices: Record<string, number>
+): PaymentResult => {
+  const student = students.find((s: Student) => s.id === studentId);
   if (!student) {
     return {
-      student_id: studentId,
-      month: selectedMonth,
       amount: 300000,
       status: "belum_bayar",
       payment_method: "Transfer Bank",
@@ -23,14 +29,18 @@ export const getStudentPayment = (studentId: string, students: Record<string, an
   const program = student.program || "Kids Program";
   const baseAmount = sppPrices[program] || 300000;
 
-  const pay = payments.find((p: Record<string, any>) => p.student_id === studentId);
+  const pay = payments.find((p: Payment) => p.student_id === studentId);
   if (pay) {
-    return { ...pay, amount: pay.status === "belum_bayar" ? baseAmount : pay.amount };
+    return {
+      amount: pay.status === "belum_bayar" ? baseAmount : pay.amount,
+      status: pay.status,
+      payment_method: pay.payment_method,
+      receipt_url: pay.receipt_url,
+      payment_date: pay.payment_date
+    };
   }
 
   return {
-    student_id: studentId,
-    month: selectedMonth,
     amount: baseAmount,
     status: "belum_bayar",
     payment_method: "Transfer Bank",
@@ -41,21 +51,26 @@ export const getStudentPayment = (studentId: string, students: Record<string, an
 /**
  * Get payment information for a student with context (simplified version)
  * @param {string} studentId - The ID of the student
- * @returns {Object} Payment information object
+ * @returns {PaymentResult} Payment information object
  */
-export const getStudentPaymentWithContext = (studentId: string) => {
-  // This function should be used within a context where students, payments, selectedMonth, and sppPrices are available
-  // For now, we'll keep the original function and address this in the next refactoring step
+export const getStudentPaymentWithContext = (studentId: string): PaymentResult => {
   console.warn("getStudentPaymentWithContext should be used within a proper context");
   return getStudentPayment(studentId, [], [], "", {});
 };
 
-export const exportPaymentsCSV = (students: Record<string, any>[], payments: Record<string, any>[], selectedMonth: string, sppPrices: Record<string, number>, formatRupiah: (n: number) => string) => {
-  const statusLabel = (s: string) => s === "lunas" ? "Lunas" : s === "menunggu_konfirmasi" ? "Menunggu Konfirmasi" : "Belum Bayar";
+export const exportPaymentsCSV = (
+  students: Student[],
+  payments: Payment[],
+  selectedMonth: string,
+  sppPrices: Record<string, number>,
+  formatRupiah: (n: number) => string
+): void => {
+  const statusLabel = (s: string) =>
+    s === "lunas" ? "Lunas" : s === "menunggu_konfirmasi" ? "Menunggu Konfirmasi" : "Belum Bayar";
 
   const headers = ["No", "Nama Siswa", "Program", "Bulan", "Nominal SPP", "Status", "Metode Bayar", "Tanggal Bayar"];
-  const rows = students.map((student: Record<string, any>, idx: number) => {
-    const pay: Record<string, any> = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
+  const rows = students.map((student: Student, idx: number) => {
+    const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
     return [
       idx + 1,
       student.name,
@@ -64,7 +79,7 @@ export const exportPaymentsCSV = (students: Record<string, any>[], payments: Rec
       formatRupiah(pay.amount),
       statusLabel(pay.status),
       pay.payment_method || "-",
-      pay.paid_at ? new Date(pay.paid_at).toLocaleDateString("id-ID") : "-"
+      pay.payment_date ? new Date(pay.payment_date).toLocaleDateString("id-ID") : "-"
     ];
   });
 
