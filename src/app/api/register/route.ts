@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const supabaseAdmin = getAdminSupabase();
 
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
     const validation = registrationSchema.safeParse(body);
@@ -17,11 +17,18 @@ export async function POST(req) {
         .join(", ");
       return NextResponse.json(
         { error: `Data tidak valid: ${errorMessages}` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const { student_name, student_age, parent_name, parent_email, whatsapp, program } = validation.data;
+    const {
+      student_name,
+      student_age,
+      parent_name,
+      parent_email,
+      whatsapp,
+      program,
+    } = validation.data;
 
     // Insert ke tabel registrations
     const { data, error } = await supabaseAdmin
@@ -42,7 +49,7 @@ export async function POST(req) {
       console.error("Gagal menyimpan pendaftaran:", error);
       return NextResponse.json(
         { error: "Gagal menyimpan pendaftaran. Silakan coba lagi." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -51,7 +58,7 @@ export async function POST(req) {
     console.error("Server error saat pendaftaran:", err);
     return NextResponse.json(
       { error: "Terjadi kesalahan server." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -71,7 +78,7 @@ export const GET = withAdminAuth(async () => {
           error: "Gagal memuat data pendaftaran dari database.",
           details: error.message,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
     return NextResponse.json({ data }, { status: 200 });
@@ -80,9 +87,9 @@ export const GET = withAdminAuth(async () => {
     return NextResponse.json(
       {
         error: "Terjadi kesalahan server saat memuat pendaftaran.",
-        details: err.message,
+        details: err instanceof Error ? err.message : String(err),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 });
@@ -97,7 +104,10 @@ export const PATCH = withAdminAuth(async (req) => {
       const errorMessages = patchValidation.error.issues
         .map((issue) => issue.message)
         .join(", ");
-      return NextResponse.json({ error: `Data tidak valid: ${errorMessages}` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Data tidak valid: ${errorMessages}` },
+        { status: 400 },
+      );
     }
 
     const { id, status, notes } = patchValidation.data;
@@ -112,12 +122,13 @@ export const PATCH = withAdminAuth(async (req) => {
     if (fetchError) {
       console.error("Gagal mengambil data pendaftaran:", fetchError);
       return NextResponse.json(
-        { 
-          success: false, 
-          error: "Gagal mengambil data pendaftaran untuk memproses persetujuan.",
-          details: fetchError.message 
+        {
+          success: false,
+          error:
+            "Gagal mengambil data pendaftaran untuk memproses persetujuan.",
+          details: fetchError.message,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -125,11 +136,12 @@ export const PATCH = withAdminAuth(async (req) => {
     if (status === "approved") {
       if (!reg.student_name || !reg.program) {
         return NextResponse.json(
-          { 
-            success: false, 
-            error: "Data pendaftaran tidak lengkap. Nama siswa dan program harus diisi." 
+          {
+            success: false,
+            error:
+              "Data pendaftaran tidak lengkap. Nama siswa dan program harus diisi.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -144,26 +156,28 @@ export const PATCH = withAdminAuth(async (req) => {
       }
 
       // Validasi program sesuai constraint database
-      const validPrograms = ['Kids Program', 'Teens Program', 'Fun Calistung'];
+      const validPrograms = ["Kids Program", "Teens Program", "Fun Calistung"];
       if (!validPrograms.includes(normalizedProgram)) {
         return NextResponse.json(
-          { 
-            success: false, 
-            error: `Program "${reg.program}" tidak valid. Program harus mengandung salah satu dari: ${validPrograms.join(', ')}.` 
+          {
+            success: false,
+            error: `Program "${reg.program}" tidak valid. Program harus mengandung salah satu dari: ${validPrograms.join(", ")}.`,
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
-      const validAge = reg.student_age && reg.student_age > 0 ? reg.student_age : 5;
+      const validAge =
+        reg.student_age && reg.student_age > 0 ? reg.student_age : 5;
 
       // Cek duplikasi siswa sebelum memasukkan data baru
-      const { data: existingStudent, error: checkExistError } = await supabaseAdmin
-        .from("students")
-        .select("id")
-        .eq("name", reg.student_name.trim())
-        .eq("program", normalizedProgram)
-        .maybeSingle();
+      const { data: existingStudent, error: checkExistError } =
+        await supabaseAdmin
+          .from("students")
+          .select("id")
+          .eq("name", reg.student_name.trim())
+          .eq("program", normalizedProgram)
+          .maybeSingle();
 
       if (checkExistError) {
         console.error("Gagal memeriksa duplikasi siswa:", checkExistError);
@@ -182,13 +196,13 @@ export const PATCH = withAdminAuth(async (req) => {
         if (insertError) {
           console.error("Gagal insert ke tabel students:", insertError);
           return NextResponse.json(
-            { 
-              success: false, 
+            {
+              success: false,
               error: "Gagal menambahkan siswa ke database.",
               details: insertError.message,
-              hint: "Pastikan program yang dipilih sesuai: Kids Program, Teens Program, atau Fun Calistung"
+              hint: "Pastikan program yang dipilih sesuai: Kids Program, Teens Program, atau Fun Calistung",
             },
-            { status: 500 }
+            { status: 500 },
           );
         }
       }
@@ -203,10 +217,13 @@ export const PATCH = withAdminAuth(async (req) => {
 
       if (deleteError) throw deleteError;
 
-      return NextResponse.json({ 
-        success: true, 
-        message: "Pendaftaran berhasil ditolak dan dihapus dari database."
-      }, { status: 200 });
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Pendaftaran berhasil ditolak dan dihapus dari database.",
+        },
+        { status: 200 },
+      );
     } else {
       const { error: updateError } = await supabaseAdmin
         .from("registrations")
@@ -215,12 +232,21 @@ export const PATCH = withAdminAuth(async (req) => {
 
       if (updateError) throw updateError;
 
-      return NextResponse.json({ 
-        success: true, 
-        message: "Pendaftaran disetujui dan siswa berhasil ditambahkan ke database."
-      }, { status: 200 });
+      return NextResponse.json(
+        {
+          success: true,
+          message:
+            "Pendaftaran disetujui dan siswa berhasil ditambahkan ke database.",
+        },
+        { status: 200 },
+      );
     }
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: err instanceof Error ? err.message : "Terjadi kesalahan server.",
+      },
+      { status: 500 },
+    );
   }
 });

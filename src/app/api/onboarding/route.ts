@@ -1,17 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/utils/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
       return NextResponse.json(
         { error: "Sesi tidak valid. Silakan login kembali." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -20,7 +22,7 @@ export async function POST(request) {
     if (!role) {
       return NextResponse.json(
         { error: "Peran (role) harus ditentukan." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,32 +31,31 @@ export async function POST(request) {
     if (!allowedRoles.includes(role)) {
       return NextResponse.json(
         { error: "Peran tidak valid untuk proses onboarding." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const adminSupabase = createAdminClient();
 
     // 1. Update/Upsert di tabel profiles
-    const fullName = user.user_metadata?.full_name || user.email.split("@")[0];
-    const { error: profileError } = await adminSupabase
-      .from("profiles")
-      .upsert(
-        {
-          id: user.id,
-          role: role,
-          full_name: fullName,
-          email: user.email,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      );
+    const fullName =
+      user.user_metadata?.full_name || (user.email ?? "").split("@")[0];
+    const { error: profileError } = await adminSupabase.from("profiles").upsert(
+      {
+        id: user.id,
+        role: role,
+        full_name: fullName,
+        email: user.email,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
 
     if (profileError) {
       console.error("Error upserting profile:", profileError);
       return NextResponse.json(
         { error: "Gagal menyimpan data profil: " + profileError.message },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -64,23 +65,25 @@ export async function POST(request) {
       {
         app_metadata: { role },
         user_metadata: { role },
-      }
+      },
     );
 
     if (authError) {
       console.error("Error updating auth metadata:", authError);
       return NextResponse.json(
-        { error: "Gagal menyelaraskan kredensial pengguna: " + authError.message },
-        { status: 500 }
+        {
+          error:
+            "Gagal menyelaraskan kredensial pengguna: " + authError.message,
+        },
+        { status: 500 },
       );
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     console.error("Error in onboarding route:", err);
-    return NextResponse.json(
-      { error: err.message || "Terjadi kesalahan server." },
-      { status: 500 }
-    );
+    const message =
+      err instanceof Error ? err.message : "Terjadi kesalahan server.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

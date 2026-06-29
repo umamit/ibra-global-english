@@ -8,10 +8,10 @@ import os from "os";
 const supabaseAdmin = getAdminSupabase();
 const logPath = path.join(os.tmpdir(), "whatsapp_logs.txt");
 
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    
+
     // Validasi input
     const validation = placementSchema.safeParse(body);
     if (!validation.success) {
@@ -20,11 +20,19 @@ export async function POST(req) {
         .join(", ");
       return NextResponse.json(
         { error: `Data tidak valid: ${errorMessages}` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const { full_name, email, whatsapp_number, score, level, status, created_at } = validation.data;
+    const {
+      full_name,
+      email,
+      whatsapp_number,
+      score,
+      level,
+      status,
+      created_at,
+    } = validation.data;
 
     // Simpan ke database menggunakan admin client (bypass RLS)
     const { data, error } = await supabaseAdmin
@@ -36,7 +44,7 @@ export async function POST(req) {
         score,
         level,
         status,
-        created_at: created_at || new Date().toISOString()
+        created_at: created_at || new Date().toISOString(),
       })
       .select()
       .single();
@@ -45,7 +53,7 @@ export async function POST(req) {
       console.error("Gagal menyimpan hasil tes penempatan:", error);
       return NextResponse.json(
         { error: "Gagal menyimpan hasil tes. Silakan coba lagi." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -54,9 +62,13 @@ export async function POST(req) {
       const cleanPhone = whatsapp_number.replace(/[^0-9]/g, "");
       const fonnteToken = process.env.FONNTE_API_TOKEN;
       const message = `Halo *${full_name}*! Hasil Tes Penempatan Bahasa Inggris Anda di Ibra Global English Bobong telah terbit. *Skor Anda:* ${score} / 17. *Rekomendasi Level:* ${level}. Terima kasih telah mengikuti tes penempatan!`;
-      
+
       let sentReal = false;
-      if (fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA" && cleanPhone.length >= 9) {
+      if (
+        fonnteToken &&
+        fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA" &&
+        cleanPhone.length >= 9
+      ) {
         try {
           const formData = new FormData();
           formData.append("target", cleanPhone);
@@ -74,15 +86,21 @@ export async function POST(req) {
           const fonnteResult = await waRes.json();
           sentReal = fonnteResult.status === true;
         } catch (waErr) {
-          console.error(`Gagal mengirim WhatsApp via Fonnte ke ${cleanPhone}:`, waErr);
+          console.error(
+            `Gagal mengirim WhatsApp via Fonnte ke ${cleanPhone}:`,
+            waErr,
+          );
         }
       }
 
       // Tulis log pengiriman WhatsApp
-      const waStatus = sentReal ? "SENT" : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA" ? "FAILED" : "SIMULATED";
+      const waStatus = sentReal
+        ? "SENT"
+        : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA"
+          ? "FAILED"
+          : "SIMULATED";
       const logEntry = `[${new Date().toISOString()}] TYPE: Hasil Placement Test | TO: ${cleanPhone} | STATUS: ${waStatus} | MSG: ${message}\n`;
       fs.appendFileSync(logPath, logEntry, "utf8");
-
     } catch (waErr) {
       console.error("Gagal memproses notifikasi WhatsApp:", waErr);
     }
@@ -92,7 +110,7 @@ export async function POST(req) {
     console.error("Server error saat menyimpan hasil kuis:", err);
     return NextResponse.json(
       { error: "Terjadi kesalahan server." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

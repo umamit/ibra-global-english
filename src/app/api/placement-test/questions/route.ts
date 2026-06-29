@@ -8,7 +8,9 @@ export const dynamic = "force-dynamic";
 async function generateFromGroq() {
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) {
-    console.warn("GROQ_API_KEY is not defined. Falling back to database questions.");
+    console.warn(
+      "GROQ_API_KEY is not defined. Falling back to database questions.",
+    );
     return null;
   }
 
@@ -37,19 +39,22 @@ Aturan ketat:
 - Untuk soal kategori membaca (Reading / Reading Comprehension), teks bacaan pendek atau artikel pengantar WAJIB ditulis lengkap di bagian awal properti "question" sebelum kalimat pertanyaannya dimulai (misalnya: "Read the following text:\n[Teks pendek/artikel]\n\nQuestion: [Kalimat pertanyaan]"). Jangan membuat soal membaca tanpa ada artikel/teks bacaan pengantarnya!`;
 
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json", 
-        "Authorization": `Bearer ${GROQ_API_KEY}` 
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          temperature: 0.6,
+          max_tokens: 4000,
+          messages: [{ role: "user", content: prompt }],
+        }),
       },
-      body: JSON.stringify({ 
-        model: "llama-3.3-70b-versatile", 
-        temperature: 0.6, 
-        max_tokens: 4000, 
-        messages: [{ role: "user", content: prompt }] 
-      })
-    });
+    );
 
     if (!response.ok) {
       console.error(`Groq API returned status ${response.status}`);
@@ -58,10 +63,13 @@ Aturan ketat:
 
     const data = await response.json();
     const text = data?.choices?.[0]?.message?.content || "";
-    let cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    let cleaned = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
     // Helper untuk me-escape newline nyata di dalam string JSON agar tidak memicu JSON parse error
-    const escapeRawNewlines = (str) => {
+    const escapeRawNewlines = (str: string): string => {
       let inString = false;
       let escaped = false;
       let result = "";
@@ -70,12 +78,12 @@ Aturan ketat:
         if (char === '"' && !escaped) {
           inString = !inString;
         }
-        if (inString && (char === '\n' || char === '\r')) {
-          result += '\\n';
+        if (inString && (char === "\n" || char === "\r")) {
+          result += "\\n";
         } else {
           result += char;
         }
-        if (char === '\\' && !escaped) {
+        if (char === "\\" && !escaped) {
           escaped = true;
         } else {
           escaped = false;
@@ -89,11 +97,28 @@ Aturan ketat:
 
     if (Array.isArray(parsed) && parsed.length === 15) {
       // Validate all questions
-      const isValid = parsed.every(q => {
-        if (!q.id || !q.category || !q.question || !Array.isArray(q.options) || q.options.length < 2) return false;
-        const scores = q.options.map(o => Number(o.score)).filter(n => Number.isInteger(n));
+      type PlacementOption = { text: string; score: number };
+      type PlacementQuestion = {
+        id: string;
+        category: string;
+        question: string;
+        options: PlacementOption[];
+      };
+      const isValid = (parsed as PlacementQuestion[]).every((q) => {
+        if (
+          !q.id ||
+          !q.category ||
+          !q.question ||
+          !Array.isArray(q.options) ||
+          q.options.length < 2
+        )
+          return false;
+        const scores = q.options
+          .map((o: PlacementOption) => Number(o.score))
+          .filter((n: number) => Number.isInteger(n));
         if (scores.length !== q.options.length) return false;
-        if (scores.reduce((a, b) => a + b, 0) !== 1) return false;
+        if (scores.reduce((a: number, b: number) => a + b, 0) !== 1)
+          return false;
         return true;
       });
 
@@ -114,13 +139,18 @@ export async function GET() {
     // 1. Coba generate dengan Groq AI secara langsung
     const dynamicQuestions = await generateFromGroq();
     if (dynamicQuestions) {
-      console.log("Successfully served dynamically generated placement test questions.");
+      console.log(
+        "Successfully served dynamically generated placement test questions.",
+      );
       return NextResponse.json(dynamicQuestions);
     }
 
     // 2. Jika gagal atau API Key tidak ada, gunakan database sebagai fallback
     console.log("Using database fallback for placement test questions.");
-    const supabase = createClient(supabaseUrl, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon");
+    const supabase = createClient(
+      supabaseUrl,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon",
+    );
     const { data, error } = await supabase
       .from("placement_test_questions")
       .select("*")
@@ -136,5 +166,8 @@ export async function GET() {
 }
 
 export async function POST() {
-  return NextResponse.json({ error: "Endpoint publik ini hanya mendukung GET." }, { status: 405 });
+  return NextResponse.json(
+    { error: "Endpoint publik ini hanya mendukung GET." },
+    { status: 405 },
+  );
 }

@@ -8,8 +8,9 @@ import { withAdminAuth, getAdminSupabase } from "@/app/api/_middleware";
 const logPath = path.join(os.tmpdir(), "whatsapp_logs.txt");
 
 // Helper untuk respons JSON dengan Cache-Control private (sesuai aturan keamanan admin)
-function jsonResponse(data, init = {}) {
-  const headers = {
+type JsonResponseInit = { status?: number; headers?: Record<string, string> };
+function jsonResponse(data: unknown, init: JsonResponseInit = {}) {
+  const headers: Record<string, string> = {
     "Cache-Control": "private, no-cache, no-store, must-revalidate",
     ...(init.headers || {}),
   };
@@ -18,14 +19,17 @@ function jsonResponse(data, init = {}) {
 
 // POST: Kirim pesan WhatsApp via Fonnte (Mendukung pengiriman ke banyak nomor sekaligus)
 export const POST = withAdminAuth(async (request: Request) => {
-
   try {
-    const { phone, message, type } = await request.json();
+    const { phone, message, type } = (await request.json()) as {
+      phone: string;
+      message: string;
+      type?: string;
+    };
 
     if (!phone || !message) {
       return jsonResponse(
         { error: "Nomor telepon dan pesan wajib diisi." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -38,7 +42,7 @@ export const POST = withAdminAuth(async (request: Request) => {
     if (numbers.length === 0) {
       return jsonResponse(
         { error: "Tidak ada nomor telepon yang valid." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -73,16 +77,22 @@ export const POST = withAdminAuth(async (request: Request) => {
         }
 
         // Tulis log untuk masing-masing nomor
-        const status = sentReal ? "SENT" : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA" ? "FAILED" : "SIMULATED";
+        const status = sentReal
+          ? "SENT"
+          : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA"
+            ? "FAILED"
+            : "SIMULATED";
         const logEntry = `[${new Date().toISOString()}] TYPE: ${type || "manual"} | TO: ${cleanPhone} | STATUS: ${status} | MSG: ${message}\n`;
         fs.appendFileSync(logPath, logEntry, "utf8");
 
         return { phone: cleanPhone, sentReal, status, fonnteResult };
-      })
+      }),
     );
 
     const sentCount = results.filter((r) => r.sentReal).length;
-    const simulatedCount = results.filter((r) => r.status === "SIMULATED").length;
+    const simulatedCount = results.filter(
+      (r) => r.status === "SIMULATED",
+    ).length;
     const failedCount = results.filter((r) => r.status === "FAILED").length;
 
     return jsonResponse({
@@ -99,15 +109,17 @@ export const POST = withAdminAuth(async (request: Request) => {
   } catch (error) {
     console.error("WA Gateway error:", error);
     return jsonResponse(
-      { success: false, error: error.message },
-      { status: 500 }
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 });
 
 // GET: Ambil log pengiriman, status perangkat Fonnte, atau daftar kontak
 export const GET = withAdminAuth(async (request: Request) => {
-
   try {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get("action");
@@ -129,18 +141,22 @@ export const GET = withAdminAuth(async (request: Request) => {
           headers: { Authorization: fonnteToken },
         });
         const data = await res.json();
-        const isConnected = data.status === true && data.device_status === "connect";
+        const isConnected =
+          data.status === true && data.device_status === "connect";
         return jsonResponse({
           connected: isConnected,
           device: data,
-          reason: data.status === true && data.device_status !== "connect"
-            ? `Status perangkat: ${data.device_status || "disconnect"}. Pastikan WhatsApp di HP Anda tetap aktif.`
-            : undefined
+          reason:
+            data.status === true && data.device_status !== "connect"
+              ? `Status perangkat: ${data.device_status || "disconnect"}. Pastikan WhatsApp di HP Anda tetap aktif.`
+              : undefined,
         });
       } catch (err) {
         return jsonResponse({
           connected: false,
-          reason: "Gagal terhubung ke Fonnte: " + err.message,
+          reason:
+            "Gagal terhubung ke Fonnte: " +
+            (err instanceof Error ? err.message : String(err)),
         });
       }
     }
@@ -162,7 +178,8 @@ export const GET = withAdminAuth(async (request: Request) => {
           .select("full_name, whatsapp_number")
           .order("created_at", { ascending: false });
 
-        const contacts = [];
+        type Contact = { name: string; phone: string; source: string };
+        const contacts: Contact[] = [];
         const seen = new Set();
 
         if (regData) {
@@ -171,7 +188,9 @@ export const GET = withAdminAuth(async (request: Request) => {
             if (clean && !seen.has(clean)) {
               seen.add(clean);
               contacts.push({
-                name: r.parent_name ? `${r.parent_name} (Ortu ${r.student_name})` : r.student_name,
+                name: r.parent_name
+                  ? `${r.parent_name} (Ortu ${r.student_name})`
+                  : r.student_name,
                 phone: clean,
                 source: "Pendaftaran",
               });
@@ -196,13 +215,19 @@ export const GET = withAdminAuth(async (request: Request) => {
         return jsonResponse({ contacts });
       } catch (dbErr) {
         console.error("Gagal memuat kontak dari DB:", dbErr);
-        return jsonResponse({ contacts: [], error: dbErr.message });
+        return jsonResponse({
+          contacts: [],
+          error: dbErr instanceof Error ? dbErr.message : "DB error",
+        });
       }
     }
 
     // Default: ambil log pengiriman
     if (!fs.existsSync(logPath)) {
-      return jsonResponse({ logs: [], stats: { total: 0, today: 0, sent: 0, simulated: 0, failed: 0 } });
+      return jsonResponse({
+        logs: [],
+        stats: { total: 0, today: 0, sent: 0, simulated: 0, failed: 0 },
+      });
     }
 
     const content = fs.readFileSync(logPath, "utf8");
@@ -213,11 +238,11 @@ export const GET = withAdminAuth(async (request: Request) => {
     const logs = rawLines
       .map((line) => {
         const match = line.match(
-          /^\[(.*?)\] TYPE: (.*?) \| TO: (.*?) \| STATUS: (.*?) \| MSG: (.*?)$/
+          /^\[(.*?)\] TYPE: (.*?) \| TO: (.*?) \| STATUS: (.*?) \| MSG: (.*?)$/,
         );
         // Support format lama (tanpa STATUS field)
         const legacyMatch = line.match(
-          /^\[(.*?)\] TYPE: (.*?) \| TO: (.*?) \| MSG: (.*?)$/
+          /^\[(.*?)\] TYPE: (.*?) \| TO: (.*?) \| MSG: (.*?)$/,
         );
         if (match) {
           return {
@@ -252,8 +277,11 @@ export const GET = withAdminAuth(async (request: Request) => {
     return jsonResponse({ logs, stats });
   } catch (error) {
     return jsonResponse(
-      { success: false, error: error.message },
-      { status: 500 }
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 });

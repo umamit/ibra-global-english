@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAdminSupabase } from "@/app/api/_middleware";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -19,7 +19,7 @@ export async function GET() {
     let offset = 0;
 
     if (data && data.length > 0) {
-      data.forEach(item => {
+      data.forEach((item) => {
         if (item.key === "unique_visitors_count") {
           uniqueCount = parseInt(item.value, 10) || 0;
         } else if (item.key === "visitor_offset") {
@@ -31,11 +31,13 @@ export async function GET() {
     return NextResponse.json({ count: uniqueCount + offset });
   } catch (error) {
     console.error("Failed to get visitor count:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message =
+      error instanceof Error ? error.message : "Failed to get visitor count";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const supabase = getAdminSupabase();
 
@@ -59,7 +61,7 @@ export async function POST(request) {
     let offset = 0;
 
     if (data && data.length > 0) {
-      data.forEach(item => {
+      data.forEach((item) => {
         if (item.key === "unique_visitors_count") {
           uniqueCount = parseInt(item.value, 10) || 0;
         } else if (item.key === "visitor_offset") {
@@ -73,13 +75,15 @@ export async function POST(request) {
       const { error: upsertError } = await supabase
         .from("landing_settings")
         .upsert({ key: "unique_visitors_count", value: String(uniqueCount) });
-      
+
       if (upsertError) throw upsertError;
     }
 
     return NextResponse.json({ count: uniqueCount + offset });
   } catch (error) {
     console.error("Failed to update visitor count:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message =
+      error instanceof Error ? error.message : "Failed to update visitor count";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
