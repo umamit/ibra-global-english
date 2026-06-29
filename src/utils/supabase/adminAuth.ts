@@ -1,17 +1,10 @@
-/**
- * Shared admin/tutor authentication utilities for API routes.
- * Queries the profiles table directly (not user_metadata) to ensure
- * role changes are reflected immediately without requiring re-login.
- */
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import type { User } from "@supabase/supabase-js";
 import { getSupabaseConfig } from "./config";
 
 const { url: supabaseUrl, anonKey: supabaseAnonKey } = getSupabaseConfig();
 
-/**
- * Shared supabase auth client creation to avoid code duplication.
- */
 async function createAuthClient() {
   const cookieStore = await cookies();
   return createServerClient(supabaseUrl, supabaseAnonKey, {
@@ -22,9 +15,6 @@ async function createAuthClient() {
   });
 }
 
-/**
- * Get the current user from the session, or null if not authenticated.
- */
 async function getCurrentUser() {
   try {
     const supabaseAuth = await createAuthClient();
@@ -35,10 +25,7 @@ async function getCurrentUser() {
   }
 }
 
-/**
- * Get the profile role for a given user ID.
- */
-async function getUserRole(userId) {
+async function getUserRole(userId: string) {
   try {
     const supabaseAuth = await createAuthClient();
     const { data: profile } = await supabaseAuth
@@ -52,10 +39,6 @@ async function getUserRole(userId) {
   }
 }
 
-/**
- * Check if the current user is an admin by querying the profiles table.
- * More reliable than user_metadata which can become stale.
- */
 export async function checkAdminAuth() {
   const user = await getCurrentUser();
   if (!user) return false;
@@ -63,20 +46,18 @@ export async function checkAdminAuth() {
   return role === "admin";
 }
 
-/**
- * Check if the current user is an admin OR tutor by querying the profiles table.
- */
 export async function checkAdminOrTutorAuth() {
   const user = await getAdminOrTutorUser();
   return user !== null;
 }
 
-/**
- * Resolve the currently authenticated admin/tutor user.
- * Returns { id, email, role } when the caller is an admin or tutor, otherwise null.
- * Use this when the route needs to attribute actions to the user (e.g. usage logs).
- */
-export async function getAdminOrTutorUser() {
+export interface AdminOrTutorUser {
+  id: string;
+  email: string | undefined;
+  role: string;
+}
+
+export async function getAdminOrTutorUser(): Promise<AdminOrTutorUser | null> {
   const user = await getCurrentUser();
   if (!user) return null;
   const role = await getUserRole(user.id);
