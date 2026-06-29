@@ -5,11 +5,17 @@
  * Struktur dasar pembungkus tabel admin dengan penanganan state kosong otomatis
  */
 export default function PortalTable({
-  headers = [], // Bisa berupa array string ['No', 'Nama'] atau array object [{ label: 'Nama', style: {} }]
+  headers = [],
   rows = [],
-  renderRow, // Fungsi kustom rendering (row, index) => <tr>...</tr>
+  renderRow,
   emptyMessage = "Tidak ada data yang sesuai dengan kriteria filter.",
-  style = {}
+  style = {} as React.CSSProperties,
+}: {
+  headers?: (string | { label: string; style?: React.CSSProperties })[];
+  rows?: any[];
+  renderRow?: (row: any, index: number) => React.ReactNode;
+  emptyMessage?: string;
+  style?: React.CSSProperties;
 }) {
   return (
     <div className="table-wrapper" style={style}>

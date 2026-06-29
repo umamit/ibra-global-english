@@ -22,7 +22,12 @@ export function buildCRUDApi(tableName, options = {}) {
   return {
     // GET: List records
     async GET(request) {
-      const { searchParams } = new URL(request.url);
+      let searchParams;
+      try {
+        ({ searchParams } = new URL(request.url));
+      } catch {
+        return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+      }
       let query = adminSupabase.from(tableName);
 
       // Apply custom list query
@@ -71,7 +76,12 @@ export function buildCRUDApi(tableName, options = {}) {
 
     // DELETE: Delete record
     DELETE: withAdminAuth(async (request) => {
-      const { searchParams } = new URL(request.url);
+      let searchParams;
+      try {
+        ({ searchParams } = new URL(request.url));
+      } catch {
+        return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+      }
       const id = searchParams.get("id");
       if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
 

@@ -28,6 +28,7 @@ export default function PlacementTestClient() {
   const [transcribedText, setTranscribedText] = useState("");
   const [speakingScore, setSpeakingScore] = useState(null);
   const [recognitionError, setRecognitionError] = useState("");
+  const [issueDateStr, setIssueDateStr] = useState("");
 
   const QUESTIONS = questions.length ? questions : [
     { id: "fallback-1", category: "Grammar (A1)", question: "She ________ her breakfast at 7 AM every day.", options: [{ text: "eat", score: 0 }, { text: "eats", score: 1 }, { text: "eating", score: 0 }, { text: "eaten", score: 0 }], is_audio: false, is_speaking: false, order_index: 1 },
@@ -114,6 +115,11 @@ export default function PlacementTestClient() {
     setTimeout(() => {
       setTheme(initialTheme);
     }, 0);
+  }, []);
+
+  // Set issue date once on mount (prevents hydration mismatch)
+  useEffect(() => {
+    setIssueDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
   }, []);
 
   useEffect(() => {
@@ -686,7 +692,7 @@ export default function PlacementTestClient() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", padding: "0 1.5rem" }}>
                   <div style={{ textAlign: "left" }}>
                     <p style={{ fontSize: "0.8rem", color: "var(--color-gray-400)", margin: "0" }}>Tanggal Terbit:</p>
-                    <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-700)" }}>{new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</p>
+                    <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-700)" }}>{issueDateStr}</p>
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <p style={{ fontSize: "0.8rem", color: "var(--color-gray-400)", margin: "0" }}>Nomor Verifikasi:</p>
@@ -756,7 +762,7 @@ export default function PlacementTestClient() {
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4cm" }}>
               <div style={{ textAlign: "left" }}>
                 <p style={{ fontSize: "0.8rem", margin: "0" }}>Tanggal Terbit:</p>
-                <p style={{ fontSize: "0.9rem", fontWeight: "bold" }}>{new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</p>
+                <p style={{ fontSize: "0.9rem", fontWeight: "bold" }}>{issueDateStr}</p>
               </div>
               <div style={{ textAlign: "right" }}>
                 <p style={{ fontSize: "0.8rem", margin: "0" }}>Nomor Verifikasi:</p>

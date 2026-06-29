@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { getSupabaseConfig } from "@/utils/supabase/config";
 
 // Cache status maintenance di level modul agar tidak query DB tiap request.
 // TTL 30 detik: perubahan toggle maintenance tetap terasa cepat, tapi
 // halaman publik tidak lagi memukul database pada setiap kunjungan.
-let maintenanceCache = { value: null, expires: 0 };
+let maintenanceCache: { value: boolean | null; expires: number } = { value: null, expires: 0 };
 
-async function getMaintenanceMode(supabase) {
+async function getMaintenanceMode(supabase: any) {
   const now = Date.now();
   if (maintenanceCache.expires > now) return maintenanceCache.value;
   try {
@@ -25,7 +25,7 @@ async function getMaintenanceMode(supabase) {
   }
 }
 
-export async function proxy(request) {
+export async function proxy(request: NextRequest) {
   // Generate a random base64 nonce using standard Web Crypto API
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
   
@@ -51,7 +51,7 @@ export async function proxy(request) {
   const { pathname } = request.nextUrl;
   const acceptHeader = request.headers.get("accept") || "";
 
-  const addSecurityHeaders = (res) => {
+  const addSecurityHeaders = (res: NextResponse) => {
     res.headers.set("Content-Security-Policy", cspHeader);
     res.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
     

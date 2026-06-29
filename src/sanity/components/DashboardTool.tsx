@@ -27,9 +27,9 @@ export default function DashboardTool() {
           programItem: 0,
           galleryItem: 0,
         };
-        data.forEach((doc) => {
-          if (counts[doc._type] !== undefined) {
-            counts[doc._type]++;
+        data.forEach((doc: any) => {
+          if (counts[doc._type as keyof typeof counts] !== undefined) {
+            counts[doc._type as keyof typeof counts]++;
           }
         });
         setStats(counts);

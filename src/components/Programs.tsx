@@ -10,7 +10,7 @@ const ICON_MAP = {
   users: <i className="fi fi-rr-users"></i>
 };
 
-export default function Programs({ initialSettings }) {
+export default function Programs({ initialSettings }: any) {
   const [programs] = useState(() => {
     if (initialSettings && initialSettings.landing_programs) {
       try {
@@ -47,13 +47,13 @@ export default function Programs({ initialSettings }) {
               }}
             >
               <div className="program-icon-box">
-                {ICON_MAP[prog.iconKey] || ICON_MAP.book}
+                {ICON_MAP[prog.iconKey as keyof typeof ICON_MAP] || ICON_MAP.book}
               </div>
               <h3>{prog.title}</h3>
               <p className="program-age">{prog.age}</p>
               <p className="program-desc">{prog.desc}</p>
               <ul className="program-features">
-                {(prog.features || []).map((feature, fIdx) => (
+                {(prog.features || []).map((feature: any, fIdx: number) => (
                   <li key={fIdx}>
                     <i className="fi fi-rr-check-circle" style={{ color: "var(--color-green)", fontSize: "1.25rem", flexShrink: 0 }}></i>
                     <span>{feature}</span>

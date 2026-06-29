@@ -4,13 +4,13 @@ import "./CTA.css";
 import { useState } from "react";
 import posthog from "posthog-js";
 
-export default function CTA({ initialSettings }) {
+export default function CTA({ initialSettings }: { initialSettings: any }) {
   const [ctaTag] = useState(initialSettings?.cta_tag || "Promo Terbatas!");
   const [ctaTitle] = useState(initialSettings?.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
   const [ctaDesc] = useState(initialSettings?.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
   const [ctaBrochureImage] = useState(initialSettings?.cta_brochure_image || "/assets/brochure.png");
 
-  const getCanvaEmbedUrl = (url) => {
+  const getCanvaEmbedUrl = (url: string) => {
     if (!url) return null;
     
     // Jika berupa embed code/iframe penuh, ekstrak src-nya
@@ -31,7 +31,7 @@ export default function CTA({ initialSettings }) {
     return null;
   };
 
-  const renderTitle = (text) => {
+  const renderTitle = (text: string) => {
     if (text.includes('&')) {
       const [part1, part2] = text.split('&');
       return (

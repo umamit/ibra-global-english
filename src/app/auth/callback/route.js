@@ -3,7 +3,12 @@ import { createServerClient } from "@supabase/ssr";
 import { getSupabaseConfig } from "@/utils/supabase/config";
 
 export async function GET(request) {
-  const { searchParams, origin } = new URL(request.url);
+  let searchParams, origin;
+  try {
+    ({ searchParams, origin } = new URL(request.url));
+  } catch {
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/login?error=invalid_url`);
+  }
   const code = searchParams.get("code");
 
   // Siapkan response redirect default ke onboarding

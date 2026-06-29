@@ -85,13 +85,13 @@ async function fetchGallery() {
     }));
   }
 
-  return null;
+  return [];
 }
 
-export default function Gallery({ onOpenLightbox }) {
+export default function Gallery({ onOpenLightbox }: { onOpenLightbox: (src: string, caption: string) => void }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const { data: galleryItems = GALLERY_FALLBACK } = useQuery({
     queryKey: ['gallery'],
@@ -112,7 +112,7 @@ export default function Gallery({ onOpenLightbox }) {
     setActiveIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
   };
 
-  const handleCardClick = (idx) => {
+  const handleCardClick = (idx: number) => {
     if (idx === activeIndex) {
       onOpenLightbox(galleryItems[idx].full, galleryItems[idx].caption);
     } else {
@@ -120,12 +120,12 @@ export default function Gallery({ onOpenLightbox }) {
     }
   };
 
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
   };
 

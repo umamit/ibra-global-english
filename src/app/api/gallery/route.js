@@ -8,7 +8,12 @@ const adminSupabase = getAdminSupabase();
 const BUCKET = "gallery-photos";
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
+  let searchParams;
+  try {
+    ({ searchParams } = new URL(request.url));
+  } catch {
+    return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+  }
   const all = searchParams.get("all") === "true";
   const category = searchParams.get("category");
 
@@ -71,7 +76,12 @@ export const PATCH = withAdminAuth(async (request) => {
 });
 
 export const DELETE = withAdminAuth(async (request) => {
-  const { searchParams } = new URL(request.url);
+  let searchParams;
+  try {
+    ({ searchParams } = new URL(request.url));
+  } catch {
+    return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+  }
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
 

@@ -2,7 +2,7 @@
  * Struktur sidebar kustom untuk Sanity Studio.
  * Menata item konten secara hierarkis agar lebih mudah dikelola.
  */
-export const customStructure = (S) => {
+export const customStructure = (S: any) => {
   return S.list()
     .title('Ibra Global English CMS')
     .items([

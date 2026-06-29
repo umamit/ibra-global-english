@@ -27,6 +27,7 @@ export default function AdminFinance() {
   const [searchQuery, setSearchQuery] = useState("");
   const [programFilter, setProgramFilter] = useState("All");
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+  const [printDateStr, setPrintDateStr] = useState("");
   const [sppPrices, setSppPrices] = useState({
     "Kids Program": 300000,
     "Teens Program": 300000,
@@ -141,6 +142,11 @@ export default function AdminFinance() {
       document.body.style.overflow = "";
     };
   }, [isModalOpen]);
+
+  // Set print date once on mount (prevents hydration mismatch)
+  useEffect(() => {
+    setPrintDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -464,7 +470,7 @@ export default function AdminFinance() {
       {/* A1: Print Header — hanya tampil saat @media print */}
       <div className="finance-print-header">
         <h2>Ibra Global English — Laporan SPP Bulanan</h2>
-        <p>Bulan Tagihan: <strong>{selectedMonth || "-"}</strong> &nbsp;|&nbsp; Dicetak: {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</p>
+        <p>Bulan Tagihan: <strong>{selectedMonth || "-"}</strong> &nbsp;|&nbsp; Dicetak: {printDateStr}</p>
         <p style={{ marginTop: "4px" }}>Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Pulau Taliabu</p>
       </div>
 

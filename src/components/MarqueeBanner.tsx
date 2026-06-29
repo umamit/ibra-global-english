@@ -3,7 +3,7 @@ import "./MarqueeBanner.css";
 
 import { useState } from "react";
 
-export default function MarqueeBanner({ initialSettings }) {
+export default function MarqueeBanner({ initialSettings }: any) {
   const [text1, setText1] = useState(initialSettings?.marquee_text_1 || "Pendaftaran Siswa Baru Ibra Global English Bobong Telah Dibuka! Segera Daftarkan Putra-Putri Anda!");
   const [text2, setText2] = useState(initialSettings?.marquee_text_2 || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
   const [text3, setText3] = useState(initialSettings?.marquee_text_3 || "Ikuti Placement Test Online Secara Gratis di Website Kami dan Cari Tahu Tingkat Kemampuan Anda!");

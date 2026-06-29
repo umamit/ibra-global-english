@@ -19,7 +19,7 @@ const RobotIcon = ({ size = 20 }) => (
 
 export default function AIChatWidget() {
   const [unreadCount, setUnreadCount] = useState(1);
-  const [activeSpeechId, setActiveSpeechId] = useState(null);
+  const [activeSpeechId, setActiveSpeechId] = useState<string | null>(null);
 
   const {
     isOpen, setIsOpen,
@@ -60,7 +60,7 @@ export default function AIChatWidget() {
     setActiveSpeechId(null);
   };
 
-  const handleToggleSpeech = (msgId, text) => {
+  const handleToggleSpeech = (msgId: string, text: string) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
 
     if (activeSpeechId === msgId) {
@@ -180,7 +180,7 @@ export default function AIChatWidget() {
 
         <div className="ai-chat-input-area">
           <textarea
-            ref={inputRef}
+            ref={inputRef as any}
             className="ai-chat-input"
             placeholder="Ketik pesan... (Enter untuk kirim)"
             value={input}

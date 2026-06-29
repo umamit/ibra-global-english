@@ -10,26 +10,26 @@ const PRACTICE_SENTENCES = [
   { id: 5, topic: "Ungkapan (Expressions)", text: "Learning English is very easy, fun and exciting!", translate: "Belajar bahasa Inggris itu sangat mudah, menyenangkan dan seru!" }
 ];
 
-export default function SpeakingPractice({ student }) {
+export default function SpeakingPractice({ student }: any) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
-  const [score, setScore] = useState(null);
+  const [score, setScore] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
   const [isListeningTTS, setIsListeningTTS] = useState(false);
   const [recognitionSupported, setRecognitionSupported] = useState(true);
 
-  const recognitionRef = useRef(null);
+  const recognitionRef = useRef<any>(null);
 
   const targetSentence = PRACTICE_SENTENCES[activeIdx].text.replace("student", student?.name || "Alex");
 
   // Clean strings helper
-  function cleanString(str) {
+  function cleanString(str: string) {
     return str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
   }
 
   // Grade student pronunciation based on word match
-  function evaluateSpeech(spokenText) {
+  function evaluateSpeech(spokenText: string) {
     const targetClean = cleanString(targetSentence);
     const spokenClean = cleanString(spokenText);
 
@@ -39,7 +39,7 @@ export default function SpeakingPractice({ student }) {
     if (targetWords.length === 0) return;
 
     let matches = 0;
-    targetWords.forEach(word => {
+    targetWords.forEach((word: string) => {
       if (spokenWords.includes(word)) {
         matches++;
       }
@@ -62,7 +62,7 @@ export default function SpeakingPractice({ student }) {
 
   // Initialize Speech Recognition
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setTimeout(() => setRecognitionSupported(false), 0);
       return;
@@ -80,13 +80,13 @@ export default function SpeakingPractice({ student }) {
       setFeedback("");
     };
 
-    rec.onresult = (event) => {
+    rec.onresult = (event: any) => {
       const resultText = event.results[0][0].transcript;
       setTranscript(resultText);
       evaluateSpeech(resultText);
     };
 
-    rec.onerror = (event) => {
+    rec.onerror = (event: any) => {
       console.error("Speech recognition error:", event.error);
       setIsRecording(false);
       if (event.error === "not-allowed") {
@@ -315,7 +315,7 @@ export default function SpeakingPractice({ student }) {
                   style={{ transition: "stroke-dashoffset 0.8s ease" }}
                 />
               </svg>
-              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyCenter: "center", flexDirection: "column", justifyContent: "center" }}>
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", flexDirection: "column", justifyContent: "center" }}>
                 <span style={{ fontSize: "1.05rem", fontWeight: "900", color: score >= 75 ? "#10b981" : score >= 50 ? "#d97706" : "#dc2626" }}>{score}%</span>
               </div>
             </div>

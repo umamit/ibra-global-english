@@ -1,6 +1,11 @@
 "use client";
 
-export default function LightboxModal({ isOpen, src, caption, onClose }) {
+export default function LightboxModal({ isOpen, src, caption, onClose }: {
+  isOpen: boolean;
+  src: string;
+  caption: string;
+  onClose: () => void;
+}) {
   if (!isOpen) return null;
 
   return (
@@ -10,7 +15,7 @@ export default function LightboxModal({ isOpen, src, caption, onClose }) {
       aria-hidden={!isOpen} 
       role="dialog"
       onClick={(e) => {
-        if (e.target.id === "lightbox-modal") {
+        if ((e.target as HTMLElement).id === "lightbox-modal") {
           onClose();
         }
       }}

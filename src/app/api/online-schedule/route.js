@@ -8,7 +8,12 @@ import { getPostHogClient } from "@/lib/posthog-server";
 const adminSupabase = getAdminSupabase();
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
+  let searchParams;
+  try {
+    ({ searchParams } = new URL(request.url));
+  } catch {
+    return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+  }
   const program = searchParams.get("program");
   const upcoming = searchParams.get("upcoming") !== "false";
 
@@ -91,7 +96,12 @@ export const PATCH = withAdminAuth(async (request) => {
 });
 
 export const DELETE = withAdminAuth(async (request) => {
-  const { searchParams } = new URL(request.url);
+  let searchParams;
+  try {
+    ({ searchParams } = new URL(request.url));
+  } catch {
+    return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+  }
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID diperlukan." }, { status: 400 });
 

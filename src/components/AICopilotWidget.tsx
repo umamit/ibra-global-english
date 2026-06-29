@@ -39,7 +39,7 @@ export default function AICopilotWidget() {
 
 
 
-  const sendWithMode = (text) => {
+  const sendWithMode = (text: string) => {
     sendMessage(text);
   };
 
@@ -106,7 +106,7 @@ export default function AICopilotWidget() {
 
         <div className="ai-chat-input-area" style={{ borderTop: "1px solid var(--color-gray-150)" }}>
           <textarea
-            ref={inputRef}
+            ref={inputRef as any}
             className="ai-chat-input"
             placeholder="Tanyakan ide, tips mengajar, dll..."
             value={input}

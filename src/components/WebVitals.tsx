@@ -10,8 +10,8 @@ export function WebVitals() {
     }
 
     // 2. Send data to Google Analytics (if loaded and available)
-    if (typeof window !== "undefined" && typeof window.gtag === "function") {
-      window.gtag("event", metric.name, {
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", metric.name, {
         value: Math.round(metric.name === "CLS" ? metric.value * 1000 : metric.value), // CLS is multiplied by 1000 as it's a decimal ratio
         event_label: metric.id,
         event_category: "Web Vitals",

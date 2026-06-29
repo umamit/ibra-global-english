@@ -6,8 +6,12 @@
  */
 export default function AlertBanner({
   message,
-  type = "success", // success, error
+  type = "success",
   style = {}
+}: {
+  message: string;
+  type?: string;
+  style?: React.CSSProperties;
 }) {
   if (!message) return null;
 

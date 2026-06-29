@@ -1,12 +1,22 @@
 export async function onRequest(context) {
   const { request, next } = context;
-  const url = new URL(request.url);
+  let url;
+  try {
+    url = new URL(request.url);
+  } catch {
+    return next();
+  }
   
   // Intercept the home page requests for markdown content negotiation
   if (url.pathname === '/' || url.pathname === '/index.html') {
     const acceptHeader = request.headers.get('Accept') || '';
     if (acceptHeader.includes('text/markdown')) {
-      const mdUrl = new URL('/index.md', request.url);
+      let mdUrl;
+      try {
+        mdUrl = new URL('/index.md', request.url);
+      } catch {
+        return next();
+      }
       const response = await fetch(mdUrl.toString());
       if (response.ok) {
         const mdText = await response.text();
@@ -23,6 +33,6 @@ export async function onRequest(context) {
     }
   }
   
-  // Continue to serve static assets for all other cases
+  // Continue to serve static assets for all all other cases
   return next();
 }

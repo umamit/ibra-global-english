@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }) {
+export default function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }: any) {
   // Center (120, 120), Radius 80
   const cx = 120;
   const cy = 120;
@@ -22,7 +22,7 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
 
   const polygonPoints = `${pSpeaking.x},${pSpeaking.y} ${pGrammar.x},${pGrammar.y} ${pVocabulary.x},${pVocabulary.y} ${pActive.x},${pActive.y}`;
 
-  const handleMouseEnter = (x, y, label, score) => {
+  const handleMouseEnter = (x: number, y: number, label: string, score: number) => {
     setTooltip({ show: true, x, y: y - 12, label, score });
   };
 

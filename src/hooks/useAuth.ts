@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  createAuthClient,
-  getCurrentUser,
-  getUserRole,
-} from "@/utils/supabase/adminAuth";
+import { createAuthClient } from "@/utils/supabase/adminAuth";
 
 async function fetchUser() {
   const client = await createAuthClient();
@@ -18,7 +14,7 @@ async function fetchUser() {
 }
 
 export function useCurrentUser() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   useEffect(() => {
     if (typeof window === "undefined") return;
     fetchUser().then(setUser);

@@ -46,11 +46,16 @@ Aturan ketat:
 
 async function generateQuestionFromAI(prompt) {
   if (!GROQ_API_KEY) return null;
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
-    body: JSON.stringify({ model: "llama-3.3-70b-versatile", temperature: 0.6, max_tokens: 800, messages: [{ role: "user", content: prompt }] })
-  });
+  let response;
+  try {
+    response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
+      body: JSON.stringify({ model: "llama-3.3-70b-versatile", temperature: 0.6, max_tokens: 800, messages: [{ role: "user", content: prompt }] })
+    });
+  } catch {
+    return null;
+  }
   if (!response.ok) return null;
   const data = await response.json();
   const text = data?.choices?.[0]?.message?.content || "";

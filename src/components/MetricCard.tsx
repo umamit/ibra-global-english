@@ -8,8 +8,14 @@ export default function MetricCard({
   title,
   value,
   description,
-  color = "primary", // primary, yellow, green, red, accent
-  style = {}
+  color = "primary" as const,
+  style = {} as React.CSSProperties,
+}: {
+  title?: string;
+  value?: string | number;
+  description?: string;
+  color?: "primary" | "yellow" | "green" | "red" | "accent";
+  style?: React.CSSProperties;
 }) {
   // Pemetaan warna border dan teks berdasarkan tema Ibra Global English
   const colorMap = {

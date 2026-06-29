@@ -20,7 +20,7 @@ const HF_API_URL = `https://api-inference.huggingface.co/pipeline/feature-extrac
  * @param {string} text - The text to embed
  * @returns {Promise<number[]>} - 384-dim embedding vector
  */
-export async function generateEmbedding(text) {
+export async function generateEmbedding(text: string) {
   if (!text || text.trim().length === 0) {
     throw new Error("Text cannot be empty for embedding");
   }
@@ -28,16 +28,21 @@ export async function generateEmbedding(text) {
   // Truncate very long text to avoid API limits (max ~512 tokens ≈ ~2000 chars)
   const truncatedText = text.slice(0, 2000);
 
-  const response = await fetch(HF_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      inputs: truncatedText,
-      options: { wait_for_model: true },
-    }),
-  });
+  let response;
+  try {
+    response = await fetch(HF_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inputs: truncatedText,
+        options: { wait_for_model: true },
+      }),
+    });
+  } catch {
+    throw new Error("Embedding API request failed");
+  }
 
   if (!response.ok) {
     const errText = await response.text();
@@ -85,7 +90,7 @@ export async function generateEmbedding(text) {
  * @param {number[]} embedding 
  * @returns {string}
  */
-function embeddingToPgVector(embedding) {
+function embeddingToPgVector(embedding: number[]) {
   return `[${embedding.join(",")}]`;
 }
 
@@ -101,7 +106,7 @@ function embeddingToPgVector(embedding) {
  * @param {string} [params.id] - Optional ID for update
  * @returns {Promise<Object>} - The created/updated document
  */
-export async function upsertRagDocument({ title, content, source = "manual", metadata = {}, id }) {
+export async function upsertRagDocument({ title, content, source = "manual", metadata = {}, id }: { title: string; content: string; source?: string; metadata?: any; id?: string }) {
   console.log(`🔄 Generating embedding for: "${title}"`);
   const embedding = await generateEmbedding(`${title}. ${content}`);
   const vectorStr = embeddingToPgVector(embedding);
@@ -138,10 +143,10 @@ export async function upsertRagDocument({ title, content, source = "manual", met
  * @param {number} [threshold=0.5] - Similarity threshold (0-1)
  * @returns {Promise<Array>} - Array of matching documents with similarity scores
  */
-export async function searchSimilarDocuments(query, topK = 5, threshold = 0.5) {
+export async function searchSimilarDocuments(query: string, topK = 5, threshold = 0.5) {
   try {
     // 1. Ambil data dari database Supabase (Vector Similarity Search)
-    let pgResults = [];
+    let pgResults: any[] = [];
     try {
       const embedding = await generateEmbedding(query);
       const vectorStr = embeddingToPgVector(embedding);
@@ -161,7 +166,7 @@ export async function searchSimilarDocuments(query, topK = 5, threshold = 0.5) {
           similarity: r.similarity
         }));
       }
-    } catch (dbErr) {
+    } catch (dbErr: any) {
       console.warn("Gagal melakukan pencarian vector di database:", dbErr.message);
     }
 
@@ -174,12 +179,12 @@ export async function searchSimilarDocuments(query, topK = 5, threshold = 0.5) {
       try {
         const sanityDocs = await sanityClient.fetch(`*[_type == "ragDocument"]`);
         if (sanityDocs && sanityDocs.length > 0) {
-          const queryTerms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
-          sanityResults = sanityDocs.map(doc => {
+          const queryTerms = query.toLowerCase().split(/\s+/).filter((t: string) => t.length > 2);
+          sanityResults = sanityDocs.map((doc: any) => {
             let score = 0.5; // default score
             const titleMatch = doc.title ? doc.title.toLowerCase() : "";
             const contentMatch = doc.content ? doc.content.toLowerCase() : "";
-            queryTerms.forEach(term => {
+            queryTerms.forEach((term: string) => {
               if (titleMatch.includes(term)) score += 0.2;
               if (contentMatch.includes(term)) score += 0.05;
             });
@@ -194,9 +199,9 @@ export async function searchSimilarDocuments(query, topK = 5, threshold = 0.5) {
               },
               similarity: Math.min(score, 1.0)
             };
-          }).filter(doc => doc.similarity > threshold);
+          }).filter((doc: any) => doc.similarity > threshold);
         }
-      } catch (sanityErr) {
+      } catch (sanityErr: any) {
         console.warn("Gagal melakukan pencarian di Sanity:", sanityErr.message);
       }
     }
@@ -207,7 +212,7 @@ export async function searchSimilarDocuments(query, topK = 5, threshold = 0.5) {
       .slice(0, topK);
 
     return combined;
-  } catch (error) {
+  } catch (error: any) {
     console.error("RAG search error:", error.message);
     return [];
   }
@@ -221,7 +226,7 @@ export async function searchSimilarDocuments(query, topK = 5, threshold = 0.5) {
  * @param {number} [topK=3] - Number of context documents
  * @returns {Promise<string>} - Formatted context string for LLM
  */
-export async function getRagContext(query, topK = 3) {
+export async function getRagContext(query: string, topK = 3) {
   const docs = await searchSimilarDocuments(query, topK, 0.5);
 
   if (!docs || docs.length === 0) {
@@ -261,6 +266,6 @@ export async function listRagDocuments() {
  * @param {string} id 
  * @returns {Promise<void>}
  */
-export async function deleteRagDocument(id) {
+export async function deleteRagDocument(id: string) {
   await prisma.ragDocument.delete({ where: { id } });
 }

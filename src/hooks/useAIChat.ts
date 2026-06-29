@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 
-export function useAIChat(apiEndpoint, welcomeMessage) {
+export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState(() => [
     {
@@ -14,8 +14,8 @@ export function useAIChat(apiEndpoint, welcomeMessage) {
   ]);
   const [input, setInput] = useState("");
   const [hasOpened, setHasOpened] = useState(false);
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -43,7 +43,7 @@ export function useAIChat(apiEndpoint, welcomeMessage) {
    * Menggunakan TanStack Query useMutation untuk menangani loading, error, dan retry otomatis.
    */
   const chatMutation = useMutation({
-    mutationFn: async (text) => {
+    mutationFn: async (text: string) => {
       const apiMessages = messages
         .filter((m) => m.id !== "welcome")
         .map((m) => ({ role: m.role, content: m.content }));
@@ -84,7 +84,7 @@ export function useAIChat(apiEndpoint, welcomeMessage) {
     },
   });
 
-  const sendMessage = useCallback((text) => {
+  const sendMessage = useCallback((text: string) => {
     if (!text || chatMutation.isPending) return;
 
     const userMessage = {
@@ -104,14 +104,14 @@ export function useAIChat(apiEndpoint, welcomeMessage) {
     sendMessage(text);
   }, [input, sendMessage]);
 
-  const handleKeyDown = useCallback((e) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   }, [handleSend]);
 
-  const formatTime = (date) =>
+  const formatTime = (date: Date | string | number) =>
     new Date(date).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
 
   return {

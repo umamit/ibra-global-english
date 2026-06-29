@@ -5,7 +5,7 @@ import { getSupabaseConfig } from "./config";
 
 const { url: supabaseUrl, anonKey: supabaseAnonKey } = getSupabaseConfig();
 
-async function createAuthClient() {
+export async function createAuthClient() {
   const cookieStore = await cookies();
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {

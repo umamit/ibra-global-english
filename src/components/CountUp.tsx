@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 
-export default function CountUp({ target }) {
+export default function CountUp({ target }: { target: number }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
 
   useEffect(() => {
-    let observer;
-    let frameId;
+    let observer: IntersectionObserver | null = null;
+    let frameId: number;
 
     if (ref.current) {
       observer = new IntersectionObserver((entries) => {
@@ -17,7 +17,7 @@ export default function CountUp({ target }) {
             const duration = 2000; // 2 seconds
             const startTime = performance.now();
 
-            const updateCount = (currentTime) => {
+            const updateCount = (currentTime: number) => {
               const elapsed = currentTime - startTime;
               const progress = Math.min(elapsed / duration, 1);
               const easeProgress = progress * (2 - progress); // Ease Out Quad
@@ -33,7 +33,7 @@ export default function CountUp({ target }) {
             };
 
             frameId = requestAnimationFrame(updateCount);
-            observer.unobserve(entry.target);
+            observer!.unobserve(entry.target);
           }
         });
       }, { threshold: 0.2 });

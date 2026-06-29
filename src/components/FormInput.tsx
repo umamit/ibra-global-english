@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type InputHTMLAttributes } from "react";
 
 /**
  * Komponen FormInput Reusable
@@ -13,7 +13,13 @@ export default function FormInput({
   required,
   error,
   ...props
-}) {
+}: {
+  label?: string;
+  id?: string;
+  helperText?: string;
+  required?: boolean;
+  error?: string;
+} & InputHTMLAttributes<HTMLInputElement>) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (

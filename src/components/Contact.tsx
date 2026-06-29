@@ -3,7 +3,7 @@ import "./Contact.css";
 
 import { useState } from "react";
 
-export default function Contact({ form, setForm, honeypot, setHoneypot, initialSettings }) {
+export default function Contact({ form, setForm, honeypot, setHoneypot, initialSettings }: any) {
   const [address] = useState(initialSettings?.contact_address || "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
   const [phone] = useState(initialSettings?.contact_phone || "+62 813-5700-1357");
   const [rawPhone] = useState(() => {
@@ -28,7 +28,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
   const [regSuccess, setRegSuccess] = useState(false);
   const [regError, setRegError] = useState("");
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (honeypot) {
@@ -71,7 +71,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
     setForm({ name: "", whatsapp: "", program: "Kids Program (5-12 tahun)" });
   };
 
-  const handleRegSubmit = async (e) => {
+  const handleRegSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRegError("");
     setRegSubmitting(true);
@@ -244,7 +244,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                     type="text" 
                     id="honeypot-input" 
                     name="honeypot" 
-                    tabIndex="-1" 
+                    tabIndex={-1} 
                     autoComplete="off"
                     value={honeypot}
                     onChange={(e) => setHoneypot(e.target.value)}

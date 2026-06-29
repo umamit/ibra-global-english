@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 
-export default function LineChart({ reports, isCalistung }) {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+export default function LineChart({ reports, isCalistung }: any) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   // 1. Sort reports chronologically (oldest to newest)
   const chronological = [...reports]
-    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    .sort((a: any, b: any) => +new Date(a.created_at) - +new Date(b.created_at))
     .slice(-6); // Only show last 6 modules
 
   const N = chronological.length;
@@ -25,13 +25,13 @@ export default function LineChart({ reports, isCalistung }) {
   const chartHeight = svgHeight - paddingTop - paddingBottom;
 
   // Helper to calculate X coordinate
-  const getX = (index) => {
+  const getX = (index: number) => {
     if (N <= 1) return paddingLeft + chartWidth / 2;
     return paddingLeft + index * (chartWidth / (N - 1));
   };
 
   // Helper to calculate Y coordinate (scores range 0 to 100)
-  const getY = (score) => {
+  const getY = (score: number) => {
     const clamped = Math.max(0, Math.min(100, score || 0));
     return paddingTop + chartHeight * (1 - clamped / 100);
   };
@@ -45,7 +45,7 @@ export default function LineChart({ reports, isCalistung }) {
   ];
 
   // Helper to construct polyline points
-  const getPointsString = (key) => {
+  const getPointsString = (key: string) => {
     return chronological.map((rep, idx) => `${getX(idx)},${getY(rep[key])}`).join(" ");
   };
 

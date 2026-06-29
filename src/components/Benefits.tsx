@@ -14,7 +14,7 @@ const ICON_MAP = {
   check: <i className="fi fi-rr-check"></i>
 };
 
-export default function Benefits({ initialSettings }) {
+export default function Benefits({ initialSettings }: { initialSettings: any }) {
   const [benefits, setBenefits] = useState(DEFAULT_BENEFITS);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function Benefits({ initialSettings }) {
           if (Array.isArray(parsed) && parsed.length > 0) {
             baseBenefits = parsed;
           }
-        } catch (e) {}
+        } catch (e: any) {}
       }
 
       // 2. Fetch Sanity benefits
@@ -41,7 +41,7 @@ export default function Benefits({ initialSettings }) {
         try {
           const data = await sanityClient.fetch(`*[_type == "benefit"] | order(order asc)`);
           if (data && data.length > 0) {
-            sanityBenefits = data.map((item) => ({
+            sanityBenefits = data.map((item: any) => ({
               title: item.title,
               desc: item.desc,
               iconKey: item.iconKey || "check"
@@ -75,7 +75,7 @@ export default function Benefits({ initialSettings }) {
           {benefits.map((b, idx) => (
             <div key={idx} className="benefit-card glowing-card" data-aos="fade-up" data-aos-delay={idx * 100}>
               <div className="benefit-icon-box">
-                {ICON_MAP[b.iconKey] || ICON_MAP.check}
+                {ICON_MAP[b.iconKey as keyof typeof ICON_MAP] || ICON_MAP.check}
               </div>
               <h3>{b.title}</h3>
               <p>{b.desc}</p>
