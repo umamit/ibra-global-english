@@ -1,4 +1,51 @@
-export const DEFAULT_PROGRAMS = [
+export interface Program {
+  title: string;
+  age: string;
+  desc: string;
+  iconKey: string;
+  features: string[];
+}
+
+export interface Benefit {
+  title: string;
+  desc: string;
+  iconKey: string;
+}
+
+export interface FAQ {
+  id: number;
+  question: string;
+  answer: string;
+}
+
+export interface Video {
+  title: string;
+  desc: string;
+  url: string;
+}
+
+export interface TaxRecord {
+  id: string;
+  tax_year: number;
+  tax_period: string;
+  tax_type: string;
+  gross_revenue: number;
+  tax_due: number;
+  status: string;
+  payment_date: string;
+  ntpn_code: string;
+  bpe_code: string;
+}
+
+export interface TaxAsset {
+  id: string;
+  name: string;
+  group: string;
+  purchase_date: string;
+  purchase_price: number;
+}
+
+export const DEFAULT_PROGRAMS: Program[] = [
   {
     title: "Kids Program",
     age: "5-12 tahun",
@@ -22,7 +69,7 @@ export const DEFAULT_PROGRAMS = [
   }
 ];
 
-export const DEFAULT_BENEFITS = [
+export const DEFAULT_BENEFITS: Benefit[] = [
   {
     title: "Kelas Kecil",
     desc: "Maksimal 10 siswa per kelas untuk interaksi yang lebih personal.",
@@ -55,7 +102,7 @@ export const DEFAULT_BENEFITS = [
   }
 ];
 
-export const DEFAULT_FAQS = [
+export const DEFAULT_FAQS: FAQ[] = [
   {
     id: 1,
     question: "Bagaimana jika saya atau anak saya benar-benar pemula (belum bisa bahasa Inggris)?",
@@ -88,7 +135,7 @@ export const DEFAULT_FAQS = [
   }
 ];
 
-export const DEFAULT_VIDEOS = [
+export const DEFAULT_VIDEOS: Video[] = [
   {
     title: "Keseruan Belajar Bahasa Inggris Kids Program",
     desc: "Dokumentasi kelas interaktif yang menyenangkan dan penuh warna di Bobong, Pulau Taliabu.",
@@ -101,7 +148,7 @@ export const DEFAULT_VIDEOS = [
   }
 ];
 
-export const DEFAULT_TAX_RECORDS = [
+export const DEFAULT_TAX_RECORDS: TaxRecord[] = [
   {
     id: "1",
     tax_year: 2025,
@@ -128,20 +175,19 @@ export const DEFAULT_TAX_RECORDS = [
   }
 ];
 
-export const DEFAULT_TAX_ASSETS = [
+export const DEFAULT_TAX_ASSETS: TaxAsset[] = [
   {
     id: "a1",
     name: "Laptop Asus Zenbook (Admin & Tutor)",
-    group: "Kelompok 1", // 4 tahun (25% per tahun)
+    group: "Kelompok 1",
     purchase_date: "2024-01-15",
     purchase_price: 12000000
   },
   {
     id: "a2",
     name: "Air Conditioner (AC) Daikin 1 PK",
-    group: "Kelompok 2", // 8 tahun (12.5% per tahun)
+    group: "Kelompok 2",
     purchase_date: "2025-07-20",
     purchase_price: 6000000
   }
 ];
-

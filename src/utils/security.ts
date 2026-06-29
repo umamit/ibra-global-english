@@ -1,13 +1,4 @@
-/**
- * Security and sanitization utilities for the AI features.
- */
-
-/**
- * Escapes HTML special characters to prevent XSS attacks.
- * @param {string} text 
- * @returns {string}
- */
-export function escapeHtml(text) {
+export function escapeHtml(text: string): string {
   if (!text) return "";
   return text
     .replace(/&/g, "&amp;")
@@ -17,12 +8,7 @@ export function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-/**
- * Parses inline markdown elements (bold, italic, inline code) securely.
- * @param {string} text 
- * @returns {string}
- */
-export function parseInlineMarkdown(text) {
+export function parseInlineMarkdown(text: string): string {
   if (!text) return "";
   return text
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
@@ -30,25 +16,17 @@ export function parseInlineMarkdown(text) {
     .replace(/`(.+?)`/g, "<code class=\"bg-gray-200 dark:bg-gray-800 px-1 py-0.5 rounded text-xs font-mono\">$1</code>");
 }
 
-/**
- * Converts markdown text to HTML securely by first escaping HTML tags
- * and then parsing markdown structures (tables, lists, headers, blockquotes, codeblocks).
- * @param {string} text 
- * @returns {string}
- */
-export function parseMarkdownSecure(text) {
+export function parseMarkdownSecure(text: string): string {
   if (!text) return "";
 
-  // 1. Escape HTML first to neutralize all XSS vectors (e.g. <script>, onload=, onerror=)
   let escaped = escapeHtml(text);
 
-  // 2. Extract and format multi-line code blocks: ```lang ... ```
-  escaped = escaped.replace(/```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (match, code) => {
+  escaped = escaped.replace(/```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (_match, code: string) => {
     return `<pre class="bg-gray-900 text-gray-100 p-3 rounded-lg text-xs font-mono my-3 overflow-x-auto"><code>${code}</code></pre>`;
   });
 
   const lines = escaped.split("\n");
-  const result = [];
+  const result: string[] = [];
   let inList = false;
   let inOrderedList = false;
   let inTable = false;
@@ -58,10 +36,8 @@ export function parseMarkdownSecure(text) {
     const line = lines[i];
     const trimmed = line.trim();
 
-    // Handle Tables (| Header | Header |)
     if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
       if (!inTable) {
-        // Close other block structures
         if (inList) { result.push("</ul>"); inList = false; }
         if (inOrderedList) { result.push("</ol>"); inOrderedList = false; }
         if (inBlockquote) { result.push("</blockquote>"); inBlockquote = false; }
@@ -69,7 +45,6 @@ export function parseMarkdownSecure(text) {
         inTable = true;
         result.push('<div class="overflow-x-auto my-3"><table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg text-left text-xs">');
 
-        // Parse Table Header
         const cells = trimmed.split("|").slice(1, -1).map(c => c.trim());
         result.push('<thead class="bg-gray-100 dark:bg-gray-800 font-bold text-gray-700 dark:text-gray-200"><tr>');
         cells.forEach(cell => {
@@ -78,11 +53,9 @@ export function parseMarkdownSecure(text) {
         result.push('</tr></thead><tbody class="divide-y divide-gray-150 bg-white dark:bg-gray-900">');
         continue;
       } else {
-        // Skip separator line: |---|---|
         if (trimmed.replace(/[\s\-|:|]/g, "") === "") {
           continue;
         }
-        // Parse Table Body Row
         const cells = trimmed.split("|").slice(1, -1).map(c => c.trim());
         result.push('<tr class="hover:bg-gray-50 dark:hover:bg-gray-850">');
         cells.forEach(cell => {
@@ -96,8 +69,7 @@ export function parseMarkdownSecure(text) {
       inTable = false;
     }
 
-    // Handle Blockquotes (> text)
-    if (trimmed.startsWith("&gt;")) { // HTML escaped '>' is &gt;
+    if (trimmed.startsWith("&gt;")) {
       const quoteText = trimmed.substring(4).trim();
       if (!inBlockquote) {
         if (inList) { result.push("</ul>"); inList = false; }
@@ -112,7 +84,6 @@ export function parseMarkdownSecure(text) {
       inBlockquote = false;
     }
 
-    // Handle Unordered Lists (- item or * item)
     if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
       const itemText = trimmed.substring(2).trim();
       if (!inList) {
@@ -127,7 +98,6 @@ export function parseMarkdownSecure(text) {
       inList = false;
     }
 
-    // Handle Ordered Lists (1. item)
     const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
     if (olMatch) {
       const itemText = olMatch[2].trim();
@@ -142,7 +112,6 @@ export function parseMarkdownSecure(text) {
       inOrderedList = false;
     }
 
-    // Handle Headings (### heading)
     if (trimmed.startsWith("### ")) {
       const headingText = trimmed.substring(4).trim();
       result.push(`<h3 class="text-sm font-extrabold text-gray-900 dark:text-white mt-4 mb-2">${parseInlineMarkdown(headingText)}</h3>`);
@@ -159,7 +128,6 @@ export function parseMarkdownSecure(text) {
       continue;
     }
 
-    // Handle normal text lines
     if (trimmed === "") {
       result.push("<br/>");
     } else {
@@ -167,7 +135,6 @@ export function parseMarkdownSecure(text) {
     }
   }
 
-  // Close any open tags
   if (inTable) result.push('</tbody></table></div>');
   if (inBlockquote) result.push('</blockquote>');
   if (inList) result.push('</ul>');
@@ -176,18 +143,11 @@ export function parseMarkdownSecure(text) {
   return result.join("\n");
 }
 
-/**
- * Detects prompt injection patterns in the user input.
- * Returns true if a potential prompt injection is detected.
- * @param {string} text 
- * @returns {boolean}
- */
-export function detectPromptInjection(text) {
+export function detectPromptInjection(text: string): boolean {
   if (!text) return false;
-  
+
   const textLower = text.toLowerCase();
-  
-  // List of common prompt injection patterns
+
   const injectionPatterns = [
     "ignore previous",
     "ignore the above",
