@@ -78,7 +78,7 @@ export default function FAQ({ initialSettings }: FAQProps) {
 
           <div className="faq-list">
             {faqs.map((faq, idx) => {
-              const faqId = faq.id || idx + 1;
+              const faqId: string = String(faq.id ?? idx + 1);
               return (
                 <div key={faqId} className={`faq-item ${activeFaq === faqId ? "active" : ""}`} data-aos="fade-up">
                   <button 

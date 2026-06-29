@@ -28,7 +28,6 @@ export default function AdminCurriculumPage() {
   };
 
   const fetchCurriculums = async () => {
-    setLoading(true);
     try {
       const res = await fetch("/api/admin/curriculums?all=true");
       const result = await res.json();
@@ -45,7 +44,23 @@ export default function AdminCurriculumPage() {
   };
 
   useEffect(() => {
-    fetchCurriculums();
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/curriculums?all=true");
+        const result = await res.json();
+        if (res.ok) {
+          setCurriculums(result.data || []);
+        } else {
+          setToast(`Gagal memuat: ${result.error}`);
+          setTimeout(() => setToast(""), 3500);
+        }
+      } catch {
+        setToast("Gagal mengambil data silabus.");
+        setTimeout(() => setToast(""), 3500);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   const handleSubmit = async (e) => {

@@ -48,7 +48,7 @@ export default function Hero({ initialSettings }: HeroProps) {
     placeholderData: { count: 100 }, // Data default saat loading
   });
 
-  const renderSubtitle = (text) => {
+  const renderSubtitle = (text: string) => {
     if (text.includes('|')) {
       const [part1, part2] = text.split('|');
       return (

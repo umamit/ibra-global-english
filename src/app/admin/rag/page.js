@@ -31,7 +31,6 @@ export default function AdminRAGPage() {
   };
 
   const fetchDocuments = async () => {
-    setLoading(true);
     try {
       const res = await fetch("/api/admin/rag-documents");
       const result = await res.json();
@@ -48,7 +47,23 @@ export default function AdminRAGPage() {
   };
 
   useEffect(() => {
-    fetchDocuments();
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/rag-documents");
+        const result = await res.json();
+        if (res.ok) {
+          setDocuments(result.data || []);
+        } else {
+          setToast(`Gagal memuat: ${result.error}`);
+          setTimeout(() => setToast(""), 3500);
+        }
+      } catch {
+        setToast("Gagal mengambil basis pengetahuan AI.");
+        setTimeout(() => setToast(""), 3500);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   const handleSubmit = async (e) => {

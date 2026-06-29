@@ -26,7 +26,6 @@ export default function AdminTutorsPage() {
   };
 
   const fetchTutors = async () => {
-    setLoading(true);
     try {
       const res = await fetch("/api/admin/tutors?all=true");
       const result = await res.json();
@@ -43,7 +42,23 @@ export default function AdminTutorsPage() {
   };
 
   useEffect(() => {
-    fetchTutors();
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/tutors?all=true");
+        const result = await res.json();
+        if (res.ok) {
+          setTutors(result.data || []);
+        } else {
+          setToast(`Gagal memuat: ${result.error}`);
+          setTimeout(() => setToast(""), 3500);
+        }
+      } catch {
+        setToast("Gagal mengambil data tutor dari database.");
+        setTimeout(() => setToast(""), 3500);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   const handleSubmit = async (e) => {

@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const headerPropsSchema = z.object({
   theme: z.enum(["light", "dark"]),
-  toggleTheme: z.function().args().returns(z.void()),
+  toggleTheme: z.function(),
   hasMarquee: z.boolean().optional(),
 });
 
@@ -172,7 +172,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
         id="mobile-nav" 
         aria-hidden={!isMenuOpen}
         onClick={(e) => {
-          if (e.target.id === "mobile-nav") {
+          if ((e.target as HTMLElement).id === "mobile-nav") {
             setIsMenuOpen(false);
           }
         }}
