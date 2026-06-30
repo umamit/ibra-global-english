@@ -51,19 +51,48 @@
   box-shadow: var(--shadow-xl);
   border-radius: var(--radius-xl, 18px);
   overflow: hidden;
-  border: 10px double var(--color-accent, #a68849);
-  padding: 2.5rem 3rem;
+  padding: 3.5cqw 4.5cqw;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+  transition: background-color var(--transition-normal);
+  container-type: inline-size; /* Enables container-query scaling for back page */
 }
 
 [data-theme="dark"] .certificate-page-2 {
   background-color: #1c1c1e;
-  border-color: var(--color-accent, #a68849);
+}
+
+/* Inner borders matching front template */
+.cert-back-inner-frame {
+  position: absolute;
+  top: 2.2cqw;
+  left: 2.2cqw;
+  right: 2.2cqw;
+  bottom: 2.2cqw;
+  border: 0.25cqw solid #1c3d3a;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 5;
+  transition: border-color var(--transition-normal);
+}
+
+[data-theme="dark"] .cert-back-inner-frame {
+  border-color: #3e7b75;
+}
+
+.cert-back-inner-gold-line {
+  position: absolute;
+  top: 2.9cqw;
+  left: 2.9cqw;
+  right: 2.9cqw;
+  bottom: 2.9cqw;
+  border: 0.1cqw solid var(--color-accent, #a68849);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .cert-header h2 {
@@ -169,3 +198,196 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
 }
+
+/* ──── Responsive Certificate Container Query Styling ──── */
+.certificate-page-1 {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.414;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-xl);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-gray-200);
+  box-sizing: border-box;
+  container-type: inline-size; /* Enables container-query scaling for overlays */
+}
+
+.cert-student-name-overlay {
+  position: absolute;
+  top: 51.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.cert-student-name-text {
+  font-family: var(--font-sans), Georgia, serif;
+  font-size: 5.2cqw; /* Scaled relative to A4 container width */
+  font-weight: 850;
+  color: #1c3d3a;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.15cqw;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="dark"] .cert-student-name-text {
+  color: #eef6f8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* QR Code Container (Scaled relative to width) */
+.cert-qr-overlay {
+  position: absolute;
+  bottom: 6%;
+  left: 78.5%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 22cqw;
+  z-index: 20;
+}
+
+.cert-qr-box {
+  padding: 0.6cqw;
+  background-color: #ffffff; /* Remains white for scanner contrast */
+  border: 0.15cqw solid var(--color-accent, #a68849);
+  border-radius: 0.8cqw;
+  box-shadow: var(--shadow-xs);
+  width: 10cqw;
+  height: 10cqw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.cert-qr-box:hover {
+  transform: scale(1.05);
+}
+
+.cert-qr-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cert-qr-label-container {
+  margin-top: 0.5cqw;
+  text-align: center;
+  width: 100%;
+}
+
+.cert-qr-line {
+  border-top: 0.15cqw solid var(--color-accent, #a68849);
+  width: 14cqw;
+  margin: 0.4cqw auto;
+}
+
+.cert-qr-label-title {
+  margin: 0;
+  font-size: 1.15cqw;
+  font-weight: 900;
+  color: var(--color-accent, #a68849);
+  letter-spacing: 0.1cqw;
+}
+
+.cert-qr-label-subtitle {
+  margin: 0;
+  font-size: 0.9cqw;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* ──── Dynamic Overlays on Clean Template ──── */
+.cert-no-overlay {
+  position: absolute;
+  top: 29.5%;
+  left: 54.5%; /* Positioned right after "Nomor: " */
+  font-family: var(--font-sans), sans-serif;
+  font-size: 1.8cqw;
+  font-weight: 700;
+  color: #1d1d1f;
+  z-index: 10;
+}
+
+[data-theme="dark"] .cert-no-overlay {
+  color: #eef6f8;
+}
+
+.cert-course-overlay {
+  position: absolute;
+  top: 56.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  text-align: center;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 2.1cqw;
+  font-weight: 600;
+  color: #1d1d1f;
+  z-index: 10;
+}
+
+[data-theme="dark"] .cert-course-overlay {
+  color: #eef6f8;
+}
+
+.cert-date-overlay {
+  position: absolute;
+  top: 63.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  text-align: center;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 2cqw;
+  font-weight: 600;
+  color: #1d1d1f;
+  z-index: 10;
+}
+
+[data-theme="dark"] .cert-date-overlay {
+  color: #eef6f8;
+}
+
+.cert-tutor-name-overlay {
+  position: absolute;
+  top: 77.5%;
+  left: 29.5%;
+  transform: translateX(-50%);
+  width: 25cqw;
+  text-align: center;
+  font-family: Georgia, serif;
+  font-size: 1.8cqw;
+  font-weight: bold;
+  color: #1c3d3a;
+  z-index: 10;
+}
+
+[data-theme="dark"] .cert-tutor-name-overlay {
+  color: #eef6f8;
+}
+
+.cert-tutor-title-overlay {
+  position: absolute;
+  top: 83.5%;
+  left: 29.5%;
+  transform: translateX(-50%);
+  width: 25cqw;
+  text-align: center;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 1.4cqw;
+  font-weight: bold;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+

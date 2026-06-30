@@ -108,6 +108,19 @@ export default function VerifyCertificate() {
 
   const qrCodeUrl = cert ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin + "/verify/" + cert.id : "https://ibra.com/verify/" + cert.id)}` : "";
 
+  const formattedDate = cert ? new Date(cert.issue_date).toLocaleDateString(
+    cert.students?.program?.toLowerCase()?.includes("calistung") ? "id-ID" : "en-US",
+    { day: "numeric", month: "long", year: "numeric" }
+  ) : "";
+
+  const completionText = cert?.students?.program?.toLowerCase()?.includes("calistung")
+    ? `telah menyelesaikan program Calistung ${cert?.module_name || ""}`
+    : `for successfully completing the ${cert?.module_name || ""}`;
+
+  const datePrefixText = cert?.students?.program?.toLowerCase()?.includes("calistung")
+    ? `Diterbitkan tanggal: ${formattedDate}`
+    : `Issued on: ${formattedDate}`;
+
   return (
     <div style={{ minHeight: "100vh", padding: "2rem 1rem" }} className="verify-page-wrapper">
       <style dangerouslySetInnerHTML={{ __html: `
@@ -188,17 +201,7 @@ export default function VerifyCertificate() {
           <div className="certificate-print-container" style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
 
             {/* ==================== PAGE 1: DEPAN (Canva Design) ==================== */}
-            <div className="certificate-page-1" style={{
-              position: "relative",
-              width: "100%",
-              aspectRatio: "1.414",
-              backgroundColor: "var(--color-white)",
-              boxShadow: "var(--shadow-xl)",
-              borderRadius: "var(--radius-xl)",
-              overflow: "hidden",
-              border: "1px solid var(--color-gray-200)",
-              boxSizing: "border-box"
-            }}>
+            <div className="certificate-page-1">
               {/* Canva Image Background */}
               <img
                 src={cert.custom_image_url}
@@ -206,45 +209,90 @@ export default function VerifyCertificate() {
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
               />
 
-              {/* Overlay Signature (QR Code + Tutor Name) */}
-              <div style={{
-                position: "absolute",
-                bottom: "7%",
-                left: "21.5%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                transform: "translateX(-50%)",
-                width: "180px",
-                zIndex: 20
-              }}>
-                {/* Dynamic QR Code */}
-                <div className="qr-code-box">
+              {/* Dynamic Certificate Number Overlay */}
+              {cert.cert_number && (
+                <div className="cert-no-overlay">
+                  {cert.cert_number}
+                </div>
+              )}
+
+              {/* Dynamic Student Name Overlay (Center) */}
+              <div className="cert-student-name-overlay">
+                <h2 className="cert-student-name-text">
+                  {cert.students?.name}
+                </h2>
+              </div>
+
+              {/* Dynamic Completion Course Overlay */}
+              <div className="cert-course-overlay">
+                {completionText}
+              </div>
+
+              {/* Dynamic Date Issued Overlay */}
+              <div className="cert-date-overlay">
+                {datePrefixText}
+              </div>
+
+              {/* Dynamic Tutor Signature Overlay (Bottom Left) */}
+              {cert.tutor_name && (
+                <>
+                  <div className="cert-tutor-name-overlay">{cert.tutor_name}</div>
+                  <div className="cert-tutor-title-overlay">Tutor</div>
+                </>
+              )}
+
+              {/* Dynamic QR Code Verification Overlay (Bottom Right) */}
+              <div className="cert-qr-overlay">
+                <div className="cert-qr-box">
                   <img
                     src={qrCodeUrl}
                     alt="Scan to Verify"
                     loading="lazy"
-                    style={{ width: "70px", height: "70px", display: "block" }}
+                    className="cert-qr-img"
                   />
                 </div>
-
-                {/* Tutor Name & Line */}
-                <div style={{ marginTop: "6px", textAlign: "center", width: "100%" }}>
-                  <div style={{ borderTop: "1px solid var(--color-accent)", width: "130px", margin: "3px auto 4px auto" }} />
-                  <p className="cert-tutor-name" style={{
-                    margin: "0",
-                    fontSize: "0.8rem",
-                    fontWeight: "800"
-                  }}>
-                    {cert.tutor_name}
-                  </p>
-                  <p style={{ margin: "0", fontSize: "0.7rem", color: "var(--color-gray-500)", textTransform: "uppercase", fontWeight: "bold" }}>Tutor</p>
+                <div className="cert-qr-label-container">
+                  <div className="cert-qr-line" />
+                  <p className="cert-qr-label-title">VERIFIKASI</p>
+                  <p className="cert-qr-label-subtitle">ASLI ONLINE</p>
                 </div>
               </div>
             </div>
 
             {/* ==================== PAGE 2: BELAKANG (Grade Transcript) ==================== */}
             <div className="certificate-page-2">
+              {/* Inner Borders Matching Front Template */}
+              <div className="cert-back-inner-frame" />
+              <div className="cert-back-inner-gold-line" />
+
+              {/* Top-Left Diagonal Ribbon */}
+              <svg style={{ position: "absolute", top: 0, left: 0, width: "18cqw", height: "18cqw", zIndex: 6, pointerEvents: "none" }} viewBox="0 0 100 100">
+                <path d="M-10,35 Q 25,25 35,-10 M-10,45 Q 35,35 45,-10 M-10,55 Q 45,45 55,-10 M-10,65 Q 55,55 65,-10" fill="none" stroke="#1c3d3a" strokeWidth="4" />
+                <path d="M-10,40 Q 30,30 40,-10 M-10,50 Q 40,40 50,-10" fill="none" stroke="#a68849" strokeWidth="1.5" />
+              </svg>
+
+              {/* Bottom-Right Diagonal Ribbon */}
+              <svg style={{ position: "absolute", bottom: 0, right: 0, width: "18cqw", height: "18cqw", transform: "rotate(180deg)", zIndex: 6, pointerEvents: "none" }} viewBox="0 0 100 100">
+                <path d="M-10,35 Q 25,25 35,-10 M-10,45 Q 35,35 45,-10 M-10,55 Q 45,45 55,-10 M-10,65 Q 55,55 65,-10" fill="none" stroke="#1c3d3a" strokeWidth="4" />
+                <path d="M-10,40 Q 30,30 40,-10 M-10,50 Q 40,40 50,-10" fill="none" stroke="#a68849" strokeWidth="1.5" />
+              </svg>
+
+              {/* Top-Right Floral Ornament */}
+              <svg style={{ position: "absolute", top: "1.2cqw", right: "1.2cqw", width: "12cqw", height: "12cqw", zIndex: 6, pointerEvents: "none", color: "#1c3d3a" }} viewBox="0 0 100 100">
+                <path d="M85,15 C75,15 65,25 65,35 C65,45 75,45 85,35 C95,25 85,15 85,15 Z M65,35 C55,35 45,45 45,55 C45,65 55,65 65,55 C75,45 65,35 65,35 Z" fill="none" stroke="currentColor" strokeWidth="2.5" />
+                <path d="M78,22 C72,20 68,24 68,28 C68,32 72,32 78,28 C84,24 78,22 78,22 Z" fill="none" stroke="#a68849" strokeWidth="1.5" />
+                <circle cx="55" cy="45" r="2.5" fill="#a68849" />
+                <circle cx="75" cy="25" r="2" fill="#1c3d3a" />
+              </svg>
+
+              {/* Bottom-Left Floral Ornament */}
+              <svg style={{ position: "absolute", bottom: "1.2cqw", left: "1.2cqw", width: "12cqw", height: "12cqw", transform: "rotate(180deg)", zIndex: 6, pointerEvents: "none", color: "#1c3d3a" }} viewBox="0 0 100 100">
+                <path d="M85,15 C75,15 65,25 65,35 C65,45 75,45 85,35 C95,25 85,15 85,15 Z M65,35 C55,35 45,45 45,55 C45,65 55,65 65,55 C75,45 65,35 65,35 Z" fill="none" stroke="currentColor" strokeWidth="2.5" />
+                <path d="M78,22 C72,20 68,24 68,28 C68,32 72,32 78,28 C84,24 78,22 78,22 Z" fill="none" stroke="#a68849" strokeWidth="1.5" />
+                <circle cx="55" cy="45" r="2.5" fill="#a68849" />
+                <circle cx="75" cy="25" r="2" fill="#1c3d3a" />
+              </svg>
+
               {/* Elegant Faded Background Logo */}
               <div style={{
                 position: "absolute",
