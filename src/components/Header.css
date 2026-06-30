@@ -94,8 +94,8 @@ header.scrolled .logo-text h1 {
 
 .logo-text p {
   font-size: 0.72rem;
-  color: var(--color-gray-500);
-  font-weight: 500;
+  color: var(--color-accent);   /* Gold #A68849 — Ibra brand identity */
+  font-weight: 600;
   letter-spacing: 0.03em;
   transition: font-size var(--transition-normal), opacity var(--transition-normal);
 }
