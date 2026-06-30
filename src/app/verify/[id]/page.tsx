@@ -124,7 +124,7 @@ export default function VerifyCertificate() {
       const opt = {
         margin: 0,
         filename: `sertifikat-ige-${cert.cert_number || cert.id}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
+        image: { type: "jpeg" as const, quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
@@ -133,11 +133,11 @@ export default function VerifyCertificate() {
           backgroundColor: "#ffffff",
         },
         jsPDF: {
-          unit: "mm",
+          unit: "mm" as const,
           format: "a4",
-          orientation: "landscape",
+          orientation: "landscape" as const,
         },
-        pagebreak: { mode: ["css"], before: ".pdf-page-break" },
+        pagebreak: { mode: ["css"] as const, before: ".pdf-page-break" },
       };
       await html2pdf().set(opt).from(element).save();
     } catch (err) {
