@@ -145,15 +145,29 @@ function embeddingToPgVector(embedding: number[]) {
  */
 export async function upsertRagDocument({ title, content, source = "manual", metadata = {}, id }: { title: string; content: string; source?: string; metadata?: any; id?: string }) {
   console.log(`🔄 Generating embedding for: "${title}"`);
-  const embedding = await generateEmbedding(`${title}. ${content}`);
-  const vectorStr = embeddingToPgVector(embedding);
+  
+  let vectorStr: string | null = null;
+  try {
+    const embedding = await generateEmbedding(`${title}. ${content}`);
+    vectorStr = embeddingToPgVector(embedding);
+  } catch (err: any) {
+    console.warn("⚠️ Gagal membuat vector embedding (Hugging Face gagal/offline/diblokir):", err.message);
+    console.warn("Dokumen akan disimpan tanpa vector embedding (hanya teks).");
+  }
 
   if (id) {
     // Update existing document
-    await prisma.$executeRawUnsafe(
-      `UPDATE rag_documents SET title = $1, content = $2, source = $3, metadata = $4, embedding = $5::vector WHERE id = $6`,
-      title, content, source, JSON.stringify(metadata), vectorStr, id
-    );
+    if (vectorStr) {
+      await prisma.$executeRawUnsafe(
+        `UPDATE rag_documents SET title = $1, content = $2, source = $3, metadata = $4, embedding = $5::vector WHERE id = $6`,
+        title, content, source, JSON.stringify(metadata), vectorStr, id
+      );
+    } else {
+      await prisma.$executeRawUnsafe(
+        `UPDATE rag_documents SET title = $1, content = $2, source = $3, metadata = $4 WHERE id = $5`,
+        title, content, source, JSON.stringify(metadata), id
+      );
+    }
     const updated = await prisma.ragDocument.findUnique({ where: { id } });
     console.log(`✅ Updated document: ${id}`);
     return updated;
@@ -162,11 +176,13 @@ export async function upsertRagDocument({ title, content, source = "manual", met
     const doc = await prisma.ragDocument.create({
       data: { title, content, source, metadata },
     });
-    // Set embedding via raw SQL (Prisma doesn't support vector type natively)
-    await prisma.$executeRawUnsafe(
-      `UPDATE rag_documents SET embedding = $1::vector WHERE id = $2`,
-      vectorStr, doc.id
-    );
+    // Set embedding via raw SQL if available
+    if (vectorStr) {
+      await prisma.$executeRawUnsafe(
+        `UPDATE rag_documents SET embedding = $1::vector WHERE id = $2`,
+        vectorStr, doc.id
+      );
+    }
     console.log(`✅ Created document: ${doc.id}`);
     return doc;
   }
@@ -182,8 +198,10 @@ export async function upsertRagDocument({ title, content, source = "manual", met
  */
 export async function searchSimilarDocuments(query: string, topK = 5, threshold = 0.5) {
   try {
-    // 1. Ambil data dari database Supabase (Vector Similarity Search)
     let pgResults: any[] = [];
+    let vectorSearchSuccess = false;
+
+    // 1. Coba pencarian Vector Similarity (jika Hugging Face dan pgvector berfungsi)
     try {
       const embedding = await generateEmbedding(query);
       const vectorStr = embeddingToPgVector(embedding);
@@ -202,12 +220,73 @@ export async function searchSimilarDocuments(query: string, topK = 5, threshold 
           metadata: typeof r.metadata === "string" ? JSON.parse(r.metadata) : (r.metadata || {}),
           similarity: r.similarity
         }));
+        vectorSearchSuccess = pgResults.length > 0;
       }
     } catch (dbErr: any) {
-      console.warn("Gagal melakukan pencarian vector di database:", dbErr.message);
+      console.warn("Pencarian vector gagal atau dilewati (Hugging Face / pgvector offline):", dbErr.message);
     }
 
-    // 2. Urutkan berdasarkan skor relevansi
+    // 2. Fallback: PostgreSQL Full-Text Search (FTS) menggunakan kata kunci ILIKE
+    if (!vectorSearchSuccess) {
+      console.log("Menjalankan Full-Text Search fallback pada tabel rag_documents...");
+      
+      const searchPattern = `%${query.trim()}%`;
+      const keywords = query.trim().split(/\s+/).map(w => w.replace(/[^a-zA-Z0-9]/g, "")).filter(w => w.length > 1);
+
+      let textResults: any[] = [];
+      try {
+        if (keywords.length > 0) {
+          // Cari dokumen dengan pembobotan pencocokan: judul cocok (1.0), konten cocok (0.5)
+          const conditions = keywords.map((_, idx) => `(title ILIKE $${idx * 2 + 1} OR content ILIKE $${idx * 2 + 2})`).join(" OR ");
+          const params: any[] = keywords.flatMap(w => [`%${w}%`, `%${w}%`]);
+
+          const sql = `
+            SELECT 
+              id, 
+              title, 
+              content, 
+              source, 
+              metadata,
+              (
+                (CASE WHEN title ILIKE $${params.length + 1} THEN 1.0 ELSE 0.0 END) +
+                (CASE WHEN content ILIKE $${params.length + 1} THEN 0.5 ELSE 0.0 END)
+              ) as similarity
+            FROM rag_documents
+            WHERE ${conditions}
+            ORDER BY similarity DESC
+            LIMIT $${params.length + 2}
+          `;
+
+          textResults = await prisma.$queryRawUnsafe(
+            sql,
+            ...params,
+            searchPattern,
+            topK
+          );
+        } else {
+          // Fallback tanpa kata kunci (ambil dokumen terbaru)
+          textResults = await prisma.$queryRawUnsafe(
+            `SELECT id, title, content, source, metadata, 0.5 as similarity FROM rag_documents ORDER BY updated_at DESC LIMIT $1`,
+            topK
+          );
+        }
+
+        if (textResults && Array.isArray(textResults)) {
+          pgResults = textResults.map(r => ({
+            id: r.id,
+            title: r.title,
+            content: r.content,
+            source: r.source,
+            metadata: typeof r.metadata === "string" ? JSON.parse(r.metadata) : (r.metadata || {}),
+            similarity: r.similarity
+          }));
+        }
+      } catch (ftsErr: any) {
+        console.error("Full-Text Search fallback failed:", ftsErr.message);
+      }
+    }
+
+    // 3. Urutkan berdasarkan skor relevansi
     const combined = pgResults
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, topK);
