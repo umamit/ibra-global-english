@@ -1,0 +1,171 @@
+/* ==========================================================================
+   VERIFY CERTIFICATE — Apple Human Interface Guidelines
+   Adapts to light & dark modes on-screen, maintains layout for printing
+   ========================================================================== */
+
+.verify-page-wrapper {
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* ──── Verification Card / Container ──── */
+.verify-title-success {
+  color: var(--color-green, #34c759);
+}
+
+.verify-title-error {
+  color: var(--color-red, #ff3b30);
+}
+
+.verify-subtitle {
+  color: var(--color-gray-500, #8e8e93);
+}
+
+/* ──── QR Code Signature Overlay ──── */
+.qr-code-box {
+  padding: 4px;
+  background-color: #ffffff; /* Must remain white for QR code readability */
+  border: 1.5px solid var(--color-accent, #a68849);
+  border-radius: var(--radius-xs, 6px);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast);
+}
+.qr-code-box:hover {
+  transform: scale(1.05);
+}
+
+.cert-tutor-name {
+  font-family: var(--font-sans), Georgia, serif;
+  color: #1c3d3a;
+  letter-spacing: 0.2px;
+}
+
+[data-theme="dark"] .cert-tutor-name {
+  color: #eef6f8;
+}
+
+/* ──── Certificate Back View (Academic Transcript) ──── */
+.certificate-page-2 {
+  width: 100%;
+  aspect-ratio: 1.414;
+  background-color: #faf7f2;
+  box-shadow: var(--shadow-xl);
+  border-radius: var(--radius-xl, 18px);
+  overflow: hidden;
+  border: 10px double var(--color-accent, #a68849);
+  padding: 2.5rem 3rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+[data-theme="dark"] .certificate-page-2 {
+  background-color: #1c1c1e;
+  border-color: var(--color-accent, #a68849);
+}
+
+.cert-header h2 {
+  color: #1c3d3a;
+  transition: color var(--transition-normal);
+}
+[data-theme="dark"] .cert-header h2 {
+  color: #eef6f8;
+}
+
+.cert-header h3 {
+  color: var(--color-gray-900);
+}
+
+.cert-metadata-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  color: var(--color-gray-700);
+}
+
+.cert-metadata-table td {
+  padding: 4px 0;
+}
+
+/* ──── Academic Grade Table ──── */
+.cert-grade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-xs);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.cert-grade-table th {
+  padding: 8px 12px;
+  border: 1px solid var(--color-gray-300);
+  background-color: #1c3d3a;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .cert-grade-table th {
+  background-color: #142a27;
+  border-color: var(--color-gray-700);
+}
+
+.cert-grade-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--color-gray-200);
+  color: var(--color-gray-800);
+}
+
+[data-theme="dark"] .cert-grade-table td {
+  border-color: var(--color-gray-700);
+  color: var(--color-gray-700);
+}
+
+.cert-grade-table tr.average-row {
+  background-color: var(--color-accent-light, #faf3e8);
+  font-weight: bold;
+}
+
+.cert-grade-table tr.average-row td {
+  color: #1c3d3a;
+}
+[data-theme="dark"] .cert-grade-table tr.average-row td {
+  color: #ffffff;
+}
+
+/* ──── Tutor Review Box ──── */
+.tutor-review-box {
+  border-left: 3.5px solid var(--color-accent, #a68849);
+  background-color: var(--color-white);
+  padding: 0.75rem 1rem;
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  box-shadow: var(--shadow-xs);
+}
+
+[data-theme="dark"] .tutor-review-box {
+  background-color: var(--color-gray-100);
+}
+
+.tutor-review-box p.title {
+  color: #1c3d3a;
+}
+[data-theme="dark"] .tutor-review-box p.title {
+  color: #eef6f8;
+}
+
+.tutor-review-box p.content {
+  color: var(--color-gray-600);
+}
+
+/* ──── Invalid Certificate Card ──── */
+.invalid-cert-card {
+  padding: 3.5rem;
+  text-align: center;
+  border-left: 5px solid var(--color-red);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}

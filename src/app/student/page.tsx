@@ -257,7 +257,7 @@ export default function StudentPortal() {
   if (loading) {
     return (
       <div className="auth-wrapper">
-        <div style={{ textAlign: "center", color: "var(--color-gray-50)" }}>
+        <div style={{ textAlign: "center", color: "var(--color-gray-500)" }}>
           <svg style={{ animation: "spin 1s linear infinite", width: "40px", height: "40px", marginBottom: "1rem", color: "var(--color-primary)" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>

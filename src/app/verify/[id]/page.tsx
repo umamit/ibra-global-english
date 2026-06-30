@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+import "./verify.css";
 
 interface CertStudents {
   name: string;
@@ -108,7 +109,7 @@ export default function VerifyCertificate() {
   const qrCodeUrl = cert ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin + "/verify/" + cert.id : "https://ibra.com/verify/" + cert.id)}` : "";
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--color-gray-50)", padding: "2rem 1rem" }} className="verify-page-wrapper">
+    <div style={{ minHeight: "100vh", padding: "2rem 1rem" }} className="verify-page-wrapper">
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           body, html, .verify-page-wrapper {
@@ -147,6 +148,8 @@ export default function VerifyCertificate() {
           .certificate-page-2 {
             border: 10px double #a68849 !important;
             page-break-before: always !important;
+            background-color: #faf7f2 !important;
+            color: #1d1d1f !important;
           }
         }
         @page {
@@ -173,10 +176,10 @@ export default function VerifyCertificate() {
             </button>
           </div>
 
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "900", color: cert ? "var(--color-green)" : "var(--color-red)", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "900", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }} className={cert ? "verify-title-success" : "verify-title-error"}>
             {cert ? "✓ Sertifikat Terverifikasi Asli" : "✗ Sertifikat Tidak Valid"}
           </h1>
-          <p style={{ color: "var(--color-gray-500)", fontSize: "0.9rem", marginTop: "0.25rem" }}>
+          <p className="verify-subtitle" style={{ fontSize: "0.9rem", marginTop: "0.25rem" }}>
             Sistem Verifikasi Kelulusan LKP Ibra Global English Bobong (Dinas Pendidikan)
           </p>
         </div>
@@ -189,9 +192,9 @@ export default function VerifyCertificate() {
               position: "relative",
               width: "100%",
               aspectRatio: "1.414",
-              backgroundColor: "#fff",
+              backgroundColor: "var(--color-white)",
               boxShadow: "var(--shadow-xl)",
-              borderRadius: "12px",
+              borderRadius: "var(--radius-xl)",
               overflow: "hidden",
               border: "1px solid var(--color-gray-200)",
               boxSizing: "border-box"
@@ -216,13 +219,7 @@ export default function VerifyCertificate() {
                 zIndex: 20
               }}>
                 {/* Dynamic QR Code */}
-                <div style={{
-                  padding: "4px",
-                  backgroundColor: "#ffffff",
-                  border: "1.5px solid #a68849",
-                  borderRadius: "6px",
-                  boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
-                }}>
+                <div className="qr-code-box">
                   <img
                     src={qrCodeUrl}
                     alt="Scan to Verify"
@@ -233,38 +230,21 @@ export default function VerifyCertificate() {
 
                 {/* Tutor Name & Line */}
                 <div style={{ marginTop: "6px", textAlign: "center", width: "100%" }}>
-                  <div style={{ borderTop: "1px solid #a68849", width: "130px", margin: "3px auto 4px auto" }} />
-                  <p style={{
+                  <div style={{ borderTop: "1px solid var(--color-accent)", width: "130px", margin: "3px auto 4px auto" }} />
+                  <p className="cert-tutor-name" style={{
                     margin: "0",
                     fontSize: "0.8rem",
-                    fontWeight: "800",
-                    color: "#1c3d3a",
-                    fontFamily: "Georgia, serif",
-                    letterSpacing: "0.2px"
+                    fontWeight: "800"
                   }}>
                     {cert.tutor_name}
                   </p>
-                  <p style={{ margin: "0", fontSize: "0.7rem", color: "#666", textTransform: "uppercase", fontWeight: "bold" }}>Tutor</p>
+                  <p style={{ margin: "0", fontSize: "0.7rem", color: "var(--color-gray-500)", textTransform: "uppercase", fontWeight: "bold" }}>Tutor</p>
                 </div>
               </div>
             </div>
 
             {/* ==================== PAGE 2: BELAKANG (Grade Transcript) ==================== */}
-            <div className="certificate-page-2" style={{
-              width: "100%",
-              aspectRatio: "1.414",
-              backgroundColor: "#faf7f2",
-              boxShadow: "var(--shadow-xl)",
-              borderRadius: "12px",
-              overflow: "hidden",
-              border: "10px double #a68849",
-              padding: "2.5rem 3rem",
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              position: "relative"
-            }}>
+            <div className="certificate-page-2">
               {/* Elegant Faded Background Logo */}
               <div style={{
                 position: "absolute",
@@ -282,118 +262,111 @@ export default function VerifyCertificate() {
               }} />
 
               {/* Header */}
-              <div style={{ textAlign: "center", borderBottom: "2px solid #a68849", paddingBottom: "0.75rem" }}>
-                <h2 style={{ fontSize: "1.5rem", fontWeight: "900", color: "#1c3d3a", letterSpacing: "1.5px", margin: "0 0 2px" }}>
+              <div className="cert-header" style={{ textAlign: "center", borderBottom: "2px solid var(--color-accent)", paddingBottom: "0.75rem" }}>
+                <h2 style={{ fontSize: "1.5rem", fontWeight: "900", letterSpacing: "1.5px", margin: "0 0 2px" }}>
                   IBRA GLOBAL ENGLISH
                 </h2>
-                <p style={{ fontSize: "0.75rem", color: "#a68849", letterSpacing: "1px", fontWeight: "bold", margin: "0 0 6px", textTransform: "uppercase" }}>
+                <p style={{ fontSize: "0.75rem", color: "var(--color-accent)", letterSpacing: "1px", fontWeight: "bold", margin: "0 0 6px", textTransform: "uppercase" }}>
                   Lembaga Kursus & Pelatihan (LKP) Dinas Pendidikan Bobong
                 </p>
-                <h3 style={{ fontSize: "1.05rem", fontWeight: "800", color: "#222", margin: "0", textTransform: "uppercase" }}>
+                <h3 style={{ fontSize: "1.05rem", fontWeight: "800", margin: "0", textTransform: "uppercase" }}>
                   TRANSKRIP EVALUASI AKADEMIK (ACADEMIC TRANSCRIPT)
                 </h3>
               </div>
 
               {/* Student Metadata Info Grid */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", margin: "1rem 0" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", color: "#333" }}>
+                <table className="cert-metadata-table">
                   <tbody>
                     <tr>
-                      <td style={{ padding: "4px 0", fontWeight: "bold", width: "130px" }}>Nama Siswa</td>
-                      <td style={{ padding: "4px 0" }}>: {cert.students?.name}</td>
+                      <td style={{ fontWeight: "bold", width: "130px" }}>Nama Siswa</td>
+                      <td>: {cert.students?.name}</td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "4px 0", fontWeight: "bold" }}>Program Belajar</td>
-                      <td style={{ padding: "4px 0" }}>: {cert.students?.program}</td>
+                      <td style={{ fontWeight: "bold" }}>Program Belajar</td>
+                      <td>: {cert.students?.program}</td>
                     </tr>
                   </tbody>
                 </table>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", color: "#333" }}>
+                <table className="cert-metadata-table">
                   <tbody>
                     <tr>
-                      <td style={{ padding: "4px 0", fontWeight: "bold", width: "130px" }}>Nomor Sertifikat</td>
-                      <td style={{ padding: "4px 0" }}>: {cert.cert_number || "-"}</td>
+                      <td style={{ fontWeight: "bold", width: "130px" }}>Nomor Sertifikat</td>
+                      <td>: {cert.cert_number || "-"}</td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "4px 0", fontWeight: "bold" }}>Tanggal Terbit</td>
-                      <td style={{ padding: "4px 0" }}>: {new Date(cert.issue_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</td>
+                      <td style={{ fontWeight: "bold" }}>Tanggal Terbit</td>
+                      <td>: {new Date(cert.issue_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
               {/* Grades Table */}
-              <table style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: "0.8rem",
-                textAlign: "left",
-                backgroundColor: "#ffffff",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.02)"
-              }}>
+              <table className="cert-grade-table">
                 <thead>
-                  <tr style={{ backgroundColor: "#1c3d3a", color: "#ffffff" }}>
-                    <th style={{ padding: "8px 12px", border: "1px solid #ddd", width: "40px", textAlign: "center" }}>No</th>
-                    <th style={{ padding: "8px 12px", border: "1px solid #ddd" }}>Kompetensi Belajar (Subjects)</th>
-                    <th style={{ padding: "8px 12px", border: "1px solid #ddd", width: "120px", textAlign: "center" }}>Skor (Score)</th>
-                    <th style={{ padding: "8px 12px", border: "1px solid #ddd", width: "120px", textAlign: "center" }}>Predikat (Grade)</th>
+                  <tr>
+                    <th style={{ width: "40px", textAlign: "center" }}>No</th>
+                    <th>Kompetensi Belajar (Subjects)</th>
+                    <th style={{ width: "120px", textAlign: "center" }}>Skor (Score)</th>
+                    <th style={{ width: "120px", textAlign: "center" }}>Predikat (Grade)</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center" }}>1</td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", fontWeight: "600" }}>
+                    <td style={{ textAlign: "center" }}>1</td>
+                    <td style={{ fontWeight: "600" }}>
                       {isCalistung ? "Kemampuan Membaca (Reading Skill)" : "Speaking & Pronunciation"}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {report?.speaking_score || 0}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {(report?.speaking_score || 0) >= 85 ? "A" : (report?.speaking_score || 0) >= 75 ? "B" : "C"}
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center" }}>2</td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", fontWeight: "600" }}>
+                    <td style={{ textAlign: "center" }}>2</td>
+                    <td style={{ fontWeight: "600" }}>
                       {isCalistung ? "Kemampuan Menulis (Writing Skill)" : "Grammar & Structure"}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {report?.grammar_score || 0}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {(report?.grammar_score || 0) >= 85 ? "A" : (report?.grammar_score || 0) >= 75 ? "B" : "C"}
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center" }}>3</td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", fontWeight: "600" }}>
+                    <td style={{ textAlign: "center" }}>3</td>
+                    <td style={{ fontWeight: "600" }}>
                       {isCalistung ? "Kemampuan Berhitung (Math Skill)" : "Vocabulary & Comprehension"}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {report?.vocabulary_score || 0}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {(report?.vocabulary_score || 0) >= 85 ? "A" : (report?.vocabulary_score || 0) >= 75 ? "B" : "C"}
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center" }}>4</td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", fontWeight: "600" }}>
+                    <td style={{ textAlign: "center" }}>4</td>
+                    <td style={{ fontWeight: "600" }}>
                       Keaktifan Siswa (Class Participation)
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {report?.active_score || 0}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", fontWeight: "700" }}>
+                    <td style={{ textAlign: "center", fontWeight: "700" }}>
                       {(report?.active_score || 0) >= 85 ? "A" : (report?.active_score || 0) >= 75 ? "B" : "C"}
                     </td>
                   </tr>
-                  <tr style={{ backgroundColor: "#faf3e8", fontWeight: "bold" }}>
-                    <td colSpan={2} style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "right", color: "#1c3d3a" }}>RATA-RATA / AVERAGE</td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", color: "#1c3d3a", fontSize: "0.9rem" }}>
+                  <tr className="average-row">
+                    <td colSpan={2} style={{ textAlign: "right" }}>RATA-RATA / AVERAGE</td>
+                    <td style={{ textAlign: "center", fontSize: "0.9rem" }}>
                       {avgScore}
                     </td>
-                    <td style={{ padding: "8px 12px", border: "1px solid #ddd", textAlign: "center", color: "#a68849", fontSize: "0.85rem" }}>
+                    <td style={{ textAlign: "center", fontSize: "0.85rem" }}>
                       {cert.grade}
                     </td>
                   </tr>
@@ -404,27 +377,21 @@ export default function VerifyCertificate() {
               <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: "2rem", alignItems: "flex-end", marginTop: "0.5rem" }}>
 
                 {/* Notes */}
-                <div style={{
-                  borderLeft: "3.5px solid #a68849",
-                  backgroundColor: "#ffffff",
-                  padding: "0.75rem 1rem",
-                  borderRadius: "0 6px 6px 0",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.02)"
-                }}>
-                  <p style={{ margin: "0 0 3px 0", fontSize: "0.75rem", fontWeight: "bold", color: "#1c3d3a", textTransform: "uppercase" }}>Catatan Guru (Tutor Review Notes)</p>
-                  <p style={{ margin: "0", fontSize: "0.75rem", color: "#555", fontStyle: "italic", lineHeight: "1.4" }}>
+                <div className="tutor-review-box">
+                  <p className="title" style={{ margin: "0 0 3px 0", fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase" }}>Catatan Guru (Tutor Review Notes)</p>
+                  <p className="content" style={{ margin: "0", fontSize: "0.75rem", fontStyle: "italic", lineHeight: "1.4" }}>
                     &ldquo;{report?.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!"}&rdquo;
                   </p>
                 </div>
 
                 {/* Sign-off */}
                 <div style={{ textAlign: "center" }}>
-                  <p style={{ margin: "0 0 40px", fontSize: "0.75rem", color: "#555" }}>
+                  <p style={{ margin: "0 0 40px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
                     Bobong, {new Date(cert.issue_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
-                  <div style={{ borderTop: "1px solid #333", width: "140px", margin: "4px auto" }} />
-                  <p style={{ margin: "0", fontSize: "0.8rem", fontWeight: "bold", color: "#222" }}>{cert.tutor_name}</p>
-                  <p style={{ margin: "0", fontSize: "0.7rem", color: "#777" }}>Tutor Pendamping</p>
+                  <div style={{ borderTop: "1px solid var(--color-gray-300)", width: "140px", margin: "4px auto" }} />
+                  <p style={{ margin: "0", fontSize: "0.8rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>{cert.tutor_name}</p>
+                  <p style={{ margin: "0", fontSize: "0.7rem", color: "var(--color-gray-500)" }}>Tutor Pendamping</p>
                 </div>
 
               </div>
@@ -434,7 +401,7 @@ export default function VerifyCertificate() {
           </div>
         ) : (
           /* INVALID CERTIFICATE ERROR CARD */
-          <div className="portal-card" style={{ padding: "3.5rem", textAlign: "center", borderLeft: "5px solid var(--color-red)", backgroundColor: "#fff" }}>
+          <div className="invalid-cert-card">
             <svg style={{ color: "var(--color-red)", width: "56px", height: "56px", marginBottom: "1.5rem" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>

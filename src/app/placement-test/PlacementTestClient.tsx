@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "../dashboard-components.css";
+import "./placement-test.css";
 import FormInput from "@/components/FormInput";
 import { createClient } from "@/utils/supabase/client";
 import posthog from "posthog-js";
@@ -327,15 +328,15 @@ export default function PlacementTestClient() {
               </p>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1.5rem", width: "100%", marginBottom: "3rem" }}>
-                <div style={{ padding: "1.25rem", border: "1px solid var(--color-gray-150)", borderRadius: "var(--radius-md)", backgroundColor: "white" }}>
+                <div className="placement-info-card">
                   <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>15 Soal</h3>
                   <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "4px" }}>Pilihan ganda interaktif</p>
                 </div>
-                <div style={{ padding: "1.25rem", border: "1px solid var(--color-gray-150)", borderRadius: "var(--radius-md)", backgroundColor: "white" }}>
+                <div className="placement-info-card">
                   <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>Instan</h3>
                   <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "4px" }}>Rekomendasi level belajar</p>
                 </div>
-                <div style={{ padding: "1.25rem", border: "1px solid var(--color-gray-150)", borderRadius: "var(--radius-md)", backgroundColor: "white" }}>
+                <div className="placement-info-card">
                   <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>Resmi</h3>
                   <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "4px" }}>Sertifikat digital & ulasan</p>
                 </div>
@@ -439,7 +440,7 @@ export default function PlacementTestClient() {
                 </h3>
 
                 {QUESTIONS[currentQuestionIndex].is_audio && (
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", padding: "1.5rem", backgroundColor: "var(--color-primary-light)", borderRadius: "12px", marginBottom: "2rem" }}>
+                  <div className="speaking-mic-container">
                     <button
                       type="button"
                       onClick={() => playListeningAudio(QUESTIONS[currentQuestionIndex].audio_text || "")}
@@ -629,16 +630,7 @@ export default function PlacementTestClient() {
           {/* STEP 3: SUCCESS RESULT (CERTIFICATE & CALL TO ACTION) */}
           {step === 3 && finalResult && (
             <div className="no-print">
-              <div className="printable-report" style={{
-                backgroundColor: "white",
-                padding: "3.5rem 3rem",
-                borderRadius: "var(--radius-lg)",
-                boxShadow: "var(--shadow-lg)",
-                border: "12px double var(--color-accent)",
-                position: "relative",
-                marginBottom: "2.5rem",
-                textAlign: "center"
-              }}>
+              <div className="placement-result-card">
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
                   <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "60px", height: "64px" }} />
                   <div style={{ textAlign: "left" }}>
@@ -666,11 +658,11 @@ export default function PlacementTestClient() {
                 </p>
 
                 <div className="form-grid" style={{ gap: "2rem", maxWidth: "500px", margin: "0 auto 2.5rem" }}>
-                  <div style={{ padding: "1.25rem", border: "1px solid var(--color-gray-100)", borderRadius: "8px", backgroundColor: "var(--color-gray-50)" }}>
+                  <div className="result-sub-box">
                     <p style={{ fontSize: "0.8rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)" }}>Skor Capaian</p>
                     <p style={{ fontSize: "2rem", fontWeight: "900", color: "var(--color-primary)" }}>{finalResult.score} <span style={{ fontSize: "1.1rem", color: "var(--color-gray-400)" }}>/ 15</span></p>
                   </div>
-                  <div style={{ padding: "1.25rem", border: "1px solid var(--color-gray-100)", borderRadius: "8px", backgroundColor: "var(--color-gray-50)" }}>
+                  <div className="result-sub-box">
                     <p style={{ fontSize: "0.8rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)" }}>Rekomendasi Tingkat</p>
                     <p style={{ fontSize: "2rem", fontWeight: "900", color: "var(--color-accent)" }}>{finalResult.level}</p>
                   </div>
@@ -684,13 +676,13 @@ export default function PlacementTestClient() {
 
                 {/* Program & Study Time Recommendations */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", maxWidth: "550px", margin: "0 auto 2.5rem", padding: "0 1.5rem" }}>
-                  <div style={{ padding: "1rem 1.25rem", background: "linear-gradient(135deg, var(--color-primary-light), #e0f2f7)", borderRadius: "10px", border: "1px solid rgba(3, 119, 130, 0.2)", textAlign: "left" }}>
+                  <div className="rec-card-primary">
                     <p style={{ fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-primary-dark)", marginBottom: "6px", letterSpacing: "0.5px" }}>🎓 Program yang Direkomendasikan</p>
                     <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>{finalResult.programRecommendation}</p>
                   </div>
-                  <div style={{ padding: "1rem 1.25rem", background: "linear-gradient(135deg, rgba(166, 136, 73, 0.08), rgba(166, 136, 73, 0.15))", borderRadius: "10px", border: "1px solid rgba(166, 136, 73, 0.25)", textAlign: "left" }}>
+                  <div className="rec-card-accent">
                     <p style={{ fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-accent)", marginBottom: "6px", letterSpacing: "0.5px" }}>⏱️ Saran Waktu Belajar</p>
-                    <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "#6b5523", lineHeight: "1.4" }}>{finalResult.studyTimeAdvice}</p>
+                    <p className="rec-card-accent-text">{finalResult.studyTimeAdvice}</p>
                   </div>
                 </div>
 
@@ -718,16 +710,16 @@ export default function PlacementTestClient() {
                   <span>Daftar Kelas via WhatsApp</span>
                 </a>
 
-                <button onClick={handlePrint} className="btn-portal-outline" style={{ display: "flex", gap: "0.5rem", alignItems: "center", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700", backgroundColor: "white" }}>
+                <button onClick={handlePrint} className="btn-portal-outline btn-placement-action" style={{ display: "flex", gap: "0.5rem", alignItems: "center", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                   <span>Cetak Sertifikat</span>
                 </button>
 
-                <button onClick={() => { setStep(0); setAnswers({}); setCurrentQuestionIndex(0); }} className="btn-portal-outline" style={{ padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700", backgroundColor: "white" }}>
+                <button onClick={() => { setStep(0); setAnswers({}); setCurrentQuestionIndex(0); }} className="btn-portal-outline btn-placement-action" style={{ padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
                   Ulangi Tes
                 </button>
 
-                <Link href="/" className="btn-portal-outline" style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700", backgroundColor: "white", color: "var(--color-gray-700)" }}>
+                <Link href="/" className="btn-portal-outline btn-placement-action" style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                   <span>Keluar Tes</span>
                 </Link>

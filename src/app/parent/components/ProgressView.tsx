@@ -108,7 +108,7 @@ export default function ProgressView({
       {/* B1: Pengumuman Aktif */}
       {announcements.length > 0 && (
         <div>
-          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-50)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
             📢 Pengumuman untuk {selectedChild?.name || "Anak Anda"}
           </h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
@@ -144,7 +144,7 @@ export default function ProgressView({
       {/* B2: Jadwal Kelas Online */}
       {onlineSchedules.length > 0 && (
         <div>
-          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-50)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
             🎥 Jadwal Kelas Online Mendatang
           </h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>

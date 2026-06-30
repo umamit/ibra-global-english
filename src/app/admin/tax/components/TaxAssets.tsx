@@ -99,7 +99,7 @@ export default function TaxAssets({
 
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #f59e0b", background: "rgba(245, 158, 11, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-            <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-50)" }}>Penyusutan Bulanan</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Penyusutan Bulanan</span>
             <span style={{ fontSize: "1.2rem" }}>📉</span>
           </div>
           <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "#92400e" }}>

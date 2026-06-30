@@ -62,7 +62,7 @@ export default function ParentSessionManager({ supabase, router, onSessionReady 
 
   if (!sessionValid) {
     return (
-      <div style={{ textAlign: "center", color: "var(--color-gray-50)", padding: "2rem" }}>
+      <div style={{ textAlign: "center", color: "var(--color-gray-500)", padding: "2rem" }}>
         <p style={{ fontWeight: "600" }}>Memverifikasi sesi...</p>
       </div>
     );
