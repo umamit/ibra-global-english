@@ -53,7 +53,6 @@ export async function proxy(request: NextRequest) {
 
   const addSecurityHeaders = (res: NextResponse) => {
     res.headers.set("Content-Security-Policy", cspHeader);
-    res.headers.set("Content-Security-Policy-Report-Only", "require-trusted-types-for 'script'");
     
     // Kelola X-Frame-Options dan Cross-Origin-Resource-Policy secara dinamis
     const hasSanityContext = request.nextUrl.searchParams.has("_context");
