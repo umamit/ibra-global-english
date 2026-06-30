@@ -117,6 +117,13 @@ export default function VerifyCertificate() {
   const handleDownloadPDF = async () => {
     if (!cert) return;
     setIsGeneratingPDF(true);
+
+    // Safety net: reset setelah 30 detik jika stuck
+    const safetyTimer = setTimeout(() => {
+      setIsGeneratingPDF(false);
+      alert("Pembuatan PDF timeout (30 detik). Coba refresh dan ulangi.");
+    }, 30000);
+
     try {
       const html2canvas = (await import("html2canvas")).default;
       const { jsPDF } = await import("jspdf");
@@ -128,28 +135,38 @@ export default function VerifyCertificate() {
         return;
       }
 
-      // Fetch gambar Canva sebagai base64 untuk menghindari CORS error di html2canvas
-      if (cert.custom_image_url) {
-        try {
-          const res = await fetch(cert.custom_image_url);
-          const blob = await res.blob();
-          const base64 = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-          });
-          const imgEl = page1El.querySelector("img") as HTMLImageElement | null;
-          if (imgEl) imgEl.src = base64;
-        } catch {
-          // lanjutkan meski fetch gambar gagal
-        }
-      }
+      // Konversi SEMUA gambar dalam kedua halaman ke base64 agar tidak ada CORS block
+      const convertImagesToBase64 = async (el: HTMLElement) => {
+        const imgs = el.querySelectorAll("img");
+        await Promise.all(Array.from(imgs).map(async (img) => {
+          try {
+            if (!img.src || img.src.startsWith("data:")) return;
+            const res = await fetch(img.src);
+            const blob = await res.blob();
+            const b64 = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(blob);
+            });
+            img.src = b64;
+          } catch { /* skip jika satu gambar gagal */ }
+        }));
+      };
+
+      await convertImagesToBase64(page1El);
+      await convertImagesToBase64(page2El);
 
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const pdfW = pdf.internal.pageSize.getWidth();
       const pdfH = pdf.internal.pageSize.getHeight();
 
-      const canvasOpts = { scale: 2, useCORS: true, logging: false, backgroundColor: "#ffffff" };
+      const canvasOpts = {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        imageTimeout: 0,
+        backgroundColor: "#ffffff",
+      };
 
       const canvas1 = await html2canvas(page1El, canvasOpts);
       pdf.addImage(canvas1.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
@@ -158,15 +175,18 @@ export default function VerifyCertificate() {
       const canvas2 = await html2canvas(page2El, { ...canvasOpts, backgroundColor: "#fdfaf6" });
       pdf.addImage(canvas2.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
 
+      clearTimeout(safetyTimer);
       pdf.save(`sertifikat-ige-${cert.cert_number || cert.id}.pdf`);
     } catch (err) {
-      console.error("Gagal generate PDF:", err);
-      alert("Gagal membuat PDF. Silakan coba lagi atau gunakan browser Chrome.");
+      clearTimeout(safetyTimer);
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(`Gagal membuat PDF: ${msg}`);
+      console.error("PDF error:", err);
     } finally {
+      clearTimeout(safetyTimer);
       setIsGeneratingPDF(false);
     }
   };
-
 
   const completionText = cert?.students?.program?.toLowerCase()?.includes("calistung")
     ? `telah menyelesaikan program Calistung ${cert?.module_name || ""}`
