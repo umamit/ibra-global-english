@@ -74,6 +74,141 @@
   --color-header-bg-scrolled: rgba(255, 255, 255, 0.85);
 }
 
+/* ── Dark Mode — Apple macOS Dark appearance ── */
+[data-theme="dark"] {
+  /* Apple exact dark backgrounds */
+  --color-white: #1c1c1e;          /* systemBackground */
+  --color-gray-50: #000000;        /* systemGroupedBackground */
+  --color-gray-25: #1c1c1e;
+
+  /* Apple dark grouped fills */
+  --color-gray-100: #2c2c2e;       /* secondarySystemBackground */
+  --color-gray-200: #3a3a3c;       /* tertiarySystemBackground */
+  --color-gray-250: #3a3a3c;
+  --color-gray-300: #48484a;       /* separator */
+
+  /* Apple dark labels */
+  --color-gray-400: #636366;       /* quaternaryLabel */
+  --color-gray-500: #8e8e93;       /* tertiaryLabel */
+  --color-gray-600: #aeaeb2;       /* secondaryLabel */
+  --color-gray-700: #e5e5ea;       /* label slightly muted */
+  --color-gray-900: #ffffff;       /* primaryLabel */
+
+  /* Brand tints adjust for dark */
+  --color-primary-light: #0f2a33;
+  --color-accent-light: #2a2218;
+  --color-bg-teal-50: #0a1f26;
+  --color-bg-teal-100: #12303b;
+  --color-bg-teal-200: #1a4050;
+
+  /* Semantic colors stay vibrant in dark */
+  --color-green-light: rgba(52, 199, 89, 0.15);
+  --color-red-light: rgba(255, 59, 48, 0.15);
+
+  /* Header dark */
+  --color-header-bg: rgba(28, 28, 30, 0.82);
+  --color-header-bg-scrolled: rgba(28, 28, 30, 0.92);
+}
+
+/* Dark mode body & html */
+[data-theme="dark"] html,
+[data-theme="dark"] body {
+  background-color: #000000;
+}
+
+/* Dark sidebar glassmorphism */
+[data-theme="dark"] .dashboard-sidebar {
+  background-color: rgba(28, 28, 30, 0.88);
+  border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Dark portal cards */
+[data-theme="dark"] .portal-card,
+[data-theme="dark"] .table-wrapper {
+  background-color: #1c1c1e;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Dark table header */
+[data-theme="dark"] .portal-table th {
+  background-color: #2c2c2e;
+  color: #8e8e93;
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .portal-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+  color: #e5e5ea;
+}
+
+[data-theme="dark"] .portal-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Dark form inputs */
+[data-theme="dark"] .form-input {
+  background-color: #2c2c2e;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(33, 108, 126, 0.2);
+  background-color: #2c2c2e;
+}
+
+/* Dark modal */
+[data-theme="dark"] .portal-modal {
+  background: rgba(28, 28, 30, 0.96);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .portal-modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+
+/* Dark sidebar nav active */
+[data-theme="dark"] .sidebar-nav-link.active {
+  background-color: rgba(33, 108, 126, 0.2);
+}
+
+[data-theme="dark"] .sidebar-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Dark close button */
+[data-theme="dark"] .btn-close-modal {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #8e8e93;
+}
+
+[data-theme="dark"] .btn-close-modal:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+/* Dark theme toggle */
+[data-theme="dark"] .theme-toggle {
+  background-color: #2c2c2e;
+  border-color: #3a3a3c;
+  color: #aeaeb2;
+}
+
+[data-theme="dark"] .theme-toggle .sun-icon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+[data-theme="dark"] .theme-toggle .moon-icon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0);
+}
+
 /* ── Reset & Base ── */
 *, *::before, *::after {
   box-sizing: border-box;
