@@ -138,7 +138,6 @@ export default function VerifyCertificate() {
             padding: 0 !important;
             background: #ffffff !important;
             width: 297mm !important;
-            height: 210mm !important;
             overflow: hidden !important;
           }
           .verify-page-wrapper {
@@ -175,9 +174,6 @@ export default function VerifyCertificate() {
             break-after: page !important;
           }
           .certificate-page-2 {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
             width: 297mm !important;
             height: 210mm !important;
             max-height: 210mm !important;
@@ -192,8 +188,43 @@ export default function VerifyCertificate() {
             page-break-after: avoid !important;
             background-color: #fdfaf6 !important;
             color: #1d1d1f !important;
-            padding: 5mm 10mm !important;
             box-sizing: border-box !important;
+            padding: 0 !important;
+            display: block !important;
+          }
+          /* Scale inner content to ensure nothing overflows 210mm */
+          .certificate-page-2 > * {
+            transform-origin: top left;
+          }
+          .certificate-page-2 .cert-back-inner-wrapper {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            width: 100% !important;
+            height: 210mm !important;
+            padding: 8mm 12mm !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+          }
+
+          /* Tighten spacing for print only */
+          .cert-header {
+            padding-bottom: 3px !important;
+            margin-bottom: 0 !important;
+          }
+          .cert-metadata-grid {
+            margin: 4px 0 !important;
+            gap: 1rem !important;
+          }
+          .cert-footer-grid {
+            margin-top: 4px !important;
+            gap: 1rem !important;
+          }
+          .tutor-review-box {
+            padding: 4px 8px !important;
+          }
+          .cert-sign-off-date {
+            margin-bottom: 16px !important;
           }
 
           /* Map cqw → mm for A4 landscape (1cqw = 2.97mm) */
@@ -226,7 +257,8 @@ export default function VerifyCertificate() {
             left: 29.5% !important;
           }
           .cert-grade-table th, .cert-grade-table td {
-            padding: 1.2mm 2.1mm !important;
+            padding: 1mm 2mm !important;
+            font-size: 0.65rem !important;
           }
           .cert-qr-overlay {
             bottom: 9% !important;
@@ -253,17 +285,17 @@ export default function VerifyCertificate() {
             font-size: 2.7mm !important;
           }
           .cert-back-inner-frame {
-            top: 5mm !important;
-            left: 5mm !important;
-            right: 5mm !important;
-            bottom: 5mm !important;
+            top: 4mm !important;
+            left: 4mm !important;
+            right: 4mm !important;
+            bottom: 4mm !important;
             border-width: 0.74mm !important;
           }
           .cert-back-inner-gold-line {
-            top: 7mm !important;
-            left: 7mm !important;
-            right: 7mm !important;
-            bottom: 7mm !important;
+            top: 6mm !important;
+            left: 6mm !important;
+            right: 6mm !important;
+            bottom: 6mm !important;
             border-width: 0.3mm !important;
           }
         }
@@ -421,7 +453,7 @@ export default function VerifyCertificate() {
               </div>
 
               {/* Student Metadata Info Grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", margin: "1rem 0" }}>
+              <div className="cert-metadata-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", margin: "1rem 0" }}>
                 <table className="cert-metadata-table">
                   <tbody>
                     <tr>
@@ -520,7 +552,7 @@ export default function VerifyCertificate() {
               </table>
 
               {/* Review Notes & Teacher Sign-off Footer Grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: "2rem", alignItems: "flex-end", marginTop: "0.5rem" }}>
+              <div className="cert-footer-grid" style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: "2rem", alignItems: "flex-end", marginTop: "0.5rem" }}>
 
                 {/* Notes */}
                 <div className="tutor-review-box">
@@ -532,7 +564,7 @@ export default function VerifyCertificate() {
 
                 {/* Sign-off */}
                 <div style={{ textAlign: "center", paddingBottom: "1rem" }}>
-                  <p style={{ margin: "0 0 48px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
+                  <p className="cert-sign-off-date" style={{ margin: "0 0 48px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
                     Bobong, {new Date(cert.issue_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
                   <p style={{ margin: "0 0 4px", fontSize: "0.8rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>{cert.tutor_name}</p>
