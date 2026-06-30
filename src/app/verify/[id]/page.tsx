@@ -123,45 +123,50 @@ export default function VerifyCertificate() {
 
       const page1El = document.getElementById("cert-page-1-el");
       const page2El = document.getElementById("cert-page-2-el");
-      if (!page1El || !page2El) return;
+      if (!page1El || !page2El) {
+        alert("Elemen sertifikat tidak ditemukan. Coba refresh halaman.");
+        return;
+      }
 
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
-      });
+      // Fetch gambar Canva sebagai base64 untuk menghindari CORS error di html2canvas
+      if (cert.custom_image_url) {
+        try {
+          const res = await fetch(cert.custom_image_url);
+          const blob = await res.blob();
+          const base64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(blob);
+          });
+          const imgEl = page1El.querySelector("img") as HTMLImageElement | null;
+          if (imgEl) imgEl.src = base64;
+        } catch {
+          // lanjutkan meski fetch gambar gagal
+        }
+      }
 
-      const pdfW = pdf.internal.pageSize.getWidth();  // 297mm
-      const pdfH = pdf.internal.pageSize.getHeight(); // 210mm
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = pdf.internal.pageSize.getHeight();
 
-      // Render halaman depan
-      const canvas1 = await html2canvas(page1El, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-      });
+      const canvasOpts = { scale: 2, useCORS: true, logging: false, backgroundColor: "#ffffff" };
+
+      const canvas1 = await html2canvas(page1El, canvasOpts);
       pdf.addImage(canvas1.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
 
-      // Render halaman belakang
       pdf.addPage();
-      const canvas2 = await html2canvas(page2El, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#fdfaf6",
-        logging: false,
-      });
+      const canvas2 = await html2canvas(page2El, { ...canvasOpts, backgroundColor: "#fdfaf6" });
       pdf.addImage(canvas2.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
 
       pdf.save(`sertifikat-ige-${cert.cert_number || cert.id}.pdf`);
     } catch (err) {
       console.error("Gagal generate PDF:", err);
+      alert("Gagal membuat PDF. Silakan coba lagi atau gunakan browser Chrome.");
     } finally {
       setIsGeneratingPDF(false);
     }
   };
+
 
   const completionText = cert?.students?.program?.toLowerCase()?.includes("calistung")
     ? `telah menyelesaikan program Calistung ${cert?.module_name || ""}`
