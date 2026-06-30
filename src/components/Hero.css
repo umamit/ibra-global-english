@@ -160,14 +160,14 @@
 .hero-subtitle {
   font-size: 1.875rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-accent);   /* Gold #A68849 — Ibra brand identity */
   letter-spacing: -0.02em;
   margin-bottom: 1.5rem;
   line-height: 1.2;
 }
 
 [data-theme='dark'] .hero-subtitle {
-  color: #5bc4d4;
+  color: #c9a96e;   /* Gold lebih terang untuk dark mode */
 }
 
 .hero-desc {
