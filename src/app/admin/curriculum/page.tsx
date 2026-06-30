@@ -185,11 +185,6 @@ export default function AdminCurriculumPage() {
             Kelola detail silabus, tingkatan level, dan materi pembelajaran program Ibra Global English.
           </p>
         </div>
-        <div style={{ display: "flex", gap: "0.75rem" }}>
-          <Link href="/studio" target="_blank" className="btn-portal-outline" style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
-            Buka di Sanity Studio ↗
-          </Link>
-        </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: "2rem", alignItems: "start" }} className="report-detail-layout">

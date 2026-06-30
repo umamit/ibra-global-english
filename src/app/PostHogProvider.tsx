@@ -10,7 +10,7 @@ import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 if (typeof window !== "undefined") {
   const token = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
 
-  if (token) {
+  if (token && !(posthog as any).__loaded) {
     posthog.init(token, {
       api_host: "/ingest",
       ui_host: "https://us.posthog.com",

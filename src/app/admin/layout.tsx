@@ -300,14 +300,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span>Kelola Kurikulum</span>
           </Link>
 
-          <Link
-            href="/admin/rag"
-            className={`sidebar-nav-link ${isActive("/admin/rag") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M12 2v2"/><path d="M5 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6"/><circle cx="8" cy="16" r="1"/><circle cx="16" cy="16" r="1"/></svg>
-            <span>Basis Pengetahuan AI</span>
-          </Link>
+
 
           <Link
             href="/admin/landing-page"
@@ -318,21 +311,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span>Kelola Landing Page</span>
           </Link>
 
-          <Link
-            href="/studio"
-            className="sidebar-nav-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setMobileOpen(false)}
-            style={{
-              marginTop: "0.5rem",
-              borderTop: "1px dashed var(--color-gray-200)",
-              paddingTop: "1rem"
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-            <span>Buka CMS Sanity</span>
-          </Link>
+
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>

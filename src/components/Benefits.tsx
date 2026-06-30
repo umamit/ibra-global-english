@@ -3,8 +3,6 @@ import "./Benefits.css";
 
 import { useState, useEffect } from "react";
 import { DEFAULT_BENEFITS } from "../utils/fallbackData";
-import { client as sanityClient } from "@/lib/sanity/client";
-
 const ICON_MAP = {
   users: <i className="fi fi-rr-users"></i>,
   award: <i className="fi fi-rr-award"></i>,
@@ -19,7 +17,7 @@ export default function Benefits({ initialSettings }: { initialSettings: any }) 
 
   useEffect(() => {
     async function loadBenefits() {
-      // 1. Get Supabase / fallback benefits
+      // Get Supabase / fallback benefits
       let baseBenefits = DEFAULT_BENEFITS;
       if (initialSettings && initialSettings.landing_benefits) {
         try {
@@ -32,32 +30,7 @@ export default function Benefits({ initialSettings }: { initialSettings: any }) 
         } catch (e: any) {}
       }
 
-      // 2. Fetch Sanity benefits
-      let sanityBenefits = [];
-      const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-      const useSanity = projectId && projectId !== "placeholder" && projectId !== "";
-
-      if (useSanity) {
-        try {
-          const data = await sanityClient.fetch(`*[_type == "benefit"] | order(order asc)`);
-          if (data && data.length > 0) {
-            sanityBenefits = data.map((item: any) => ({
-              title: item.title,
-              desc: item.desc,
-              iconKey: item.iconKey || "check"
-            }));
-          }
-        } catch (e) {
-          console.warn("Gagal memuat keunggulan dari Sanity:", e);
-        }
-      }
-
-      // Use Sanity benefits if present, else fallback to Supabase/default
-      if (sanityBenefits.length > 0) {
-        setBenefits(sanityBenefits);
-      } else {
-        setBenefits(baseBenefits);
-      }
+      setBenefits(baseBenefits);
     }
 
     loadBenefits();

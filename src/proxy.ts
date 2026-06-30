@@ -37,10 +37,10 @@ export async function proxy(request: NextRequest) {
     script-src 'self' 'unsafe-inline' 'report-sample' blob: ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.cloudflareinsights.com https://connect.facebook.net;
     style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     font-src 'self' https://cdn.jsdelivr.net;
-    img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com https://cdn.sanity.io https://api.qrserver.com https://www.facebook.com;
-    connect-src 'self' https://uszukipvrvjrgrikxfwh.supabase.co wss://uszukipvrvjrgrikxfwh.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://analytics.google.com https://stats.g.doubleclick.net https://*.api.sanity.io wss://*.api.sanity.io https://*.apicdn.sanity.io wss://*.apicdn.sanity.io https://graph.facebook.com https://www.facebook.com https://connect.facebook.net;
-    frame-src 'self' https://*.canva.com https://www.canva.com https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://youtube-nocookie.com https://*.sanity.io https://www.facebook.com https://web.facebook.com;
-    frame-ancestors 'self' https://*.sanity.io https://sanity.io https://*.sanity.work;
+    img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://*.canva.com https://www.canva.com https://api.qrserver.com https://www.facebook.com;
+    connect-src 'self' https://uszukipvrvjrgrikxfwh.supabase.co wss://uszukipvrvjrgrikxfwh.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://analytics.google.com https://stats.g.doubleclick.net https://graph.facebook.com https://www.facebook.com https://connect.facebook.net;
+    frame-src 'self' https://*.canva.com https://www.canva.com https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://youtube-nocookie.com https://www.facebook.com https://web.facebook.com;
+    frame-ancestors 'self';
     worker-src 'self' blob:;
     child-src 'self' blob:;
     object-src 'none';
@@ -56,15 +56,8 @@ export async function proxy(request: NextRequest) {
   const addSecurityHeaders = (res: NextResponse) => {
     res.headers.set("Content-Security-Policy", cspHeader);
     
-    // Kelola X-Frame-Options secara dinamis (Izinkan untuk Sanity Studio)
-    const hasSanityContext = request.nextUrl.searchParams.has("_context");
-    const isStudioPath = pathname.startsWith("/studio");
-
-    if (hasSanityContext || isStudioPath) {
-      res.headers.delete("X-Frame-Options");
-    } else {
-      res.headers.set("X-Frame-Options", "DENY");
-    }
+    // Kelola X-Frame-Options secara statis ke DENY (Sanity Studio telah dihapus)
+    res.headers.set("X-Frame-Options", "DENY");
 
     if (
       pathname.startsWith("/admin") ||

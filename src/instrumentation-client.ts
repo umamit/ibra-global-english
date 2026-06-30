@@ -5,13 +5,18 @@
 import * as Sentry from "@sentry/nextjs";
 import posthog from "posthog-js";
 
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN!, {
-  api_host: "/ingest",
-  ui_host: "https://us.posthog.com",
-  defaults: "2026-01-30",
-  capture_exceptions: true,
-  debug: process.env.NODE_ENV === "development",
-});
+if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && !(posthog as any).__loaded) {
+  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN, {
+    api_host: "/ingest",
+    ui_host: "https://us.posthog.com",
+    defaults: "2026-05-30",
+    person_profiles: "identified_only",
+    capture_pageview: false,
+    capture_pageleave: true,
+    capture_exceptions: true,
+    debug: process.env.NODE_ENV === "development",
+  });
+}
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -31,10 +36,10 @@ Sentry.init({
 
   integrations: [
     Sentry.replayIntegration(),
-    // User feedback widget (disabled on Sanity Studio to avoid overlapping the Publish button)
+    // User feedback widget
     Sentry.feedbackIntegration({ 
       colorScheme: "light",
-      autoInject: typeof window !== "undefined" ? !window.location.pathname.startsWith("/studio") : true
+      autoInject: true
     }),
   ],
 });

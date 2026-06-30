@@ -4,9 +4,6 @@ import "./FAQ.css";
 import { z } from "zod";
 import { useState, useMemo } from "react";
 import { DEFAULT_FAQS } from "../utils/fallbackData";
-import type { FaqItem } from "../../sanity.types";
-import { useSanityQuery } from "@/hooks/useSanityQuery";
-
 const faqPropsSchema = z.object({
   initialSettings: z.object({
     landing_faq: z.union([z.string(), z.array(z.any())]).optional(),
@@ -24,18 +21,8 @@ interface FAQEntry {
 export default function FAQ({ initialSettings }: FAQProps) {
   const [activeFaq, setActiveFaq] = useState<string | null>(null);
 
-  // 1. Ambil data dari Sanity menggunakan custom hook yang baru dibuat.
-  const { data: sanityFaqsData, isLoading } = useSanityQuery<FaqItem[]>({
-    query: `*[_type == "faqItem"] | order(order asc)`,
-    options: {
-      // Hanya jalankan query ini jika Sanity Project ID dikonfigurasi
-      enabled: !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder",
-    }
-  });
-
-  // 2. Gabungkan data dari Sanity dengan data fallback/Supabase
+  // Gabungkan data dari Supabase/initialSettings sebagai fallback
   const faqs = useMemo(() => {
-    // Ambil data dari Supabase/initialSettings sebagai fallback
     let supabaseFaqs = DEFAULT_FAQS;
     if (initialSettings?.landing_faq) {
       try {
@@ -50,14 +37,8 @@ export default function FAQ({ initialSettings }: FAQProps) {
       }
     }
 
-    const mappedSanityFaqs: FAQEntry[] = sanityFaqsData?.map((item) => ({
-      id: `sanity-${item._id}`,
-      question: item.question,
-      answer: item.answer,
-    })) || [];
-
-    return [...mappedSanityFaqs, ...supabaseFaqs];
-  }, [sanityFaqsData, initialSettings]);
+    return supabaseFaqs;
+  }, [initialSettings]);
 
   const toggleFaq = (id: string) => {
     setActiveFaq(activeFaq === id ? null : id);
@@ -72,9 +53,7 @@ export default function FAQ({ initialSettings }: FAQProps) {
         </div>
 
         <div className="faq-container">
-          {isLoading && <p style={{ textAlign: 'center' }}>Memuat FAQ...</p>}
-          
-          {!isLoading && faqs.length === 0 && <p style={{ textAlign: 'center' }}>Belum ada FAQ yang tersedia.</p>}
+          {faqs.length === 0 && <p style={{ textAlign: 'center' }}>Belum ada FAQ yang tersedia.</p>}
 
           <div className="faq-list">
             {faqs.map((faq, idx) => {

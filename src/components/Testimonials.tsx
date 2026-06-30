@@ -2,10 +2,6 @@
 import "./Testimonials.css";
 
 import { useMemo, useState, useEffect } from "react";
-import { useSanityQuery } from "@/hooks/useSanityQuery";
-import type { Testimonial as SanityTestimonial } from "../../sanity.types";
-import { createImageUrlBuilder } from "@sanity/image-url";
-import { client as sanityClient } from "@/lib/sanity/client";
 import { createClient } from "@/utils/supabase/client";
 
 // Data fallback jika API gagal atau tidak ada data
@@ -32,12 +28,6 @@ const TESTIMONIALS_FALLBACK = [
     delay: 200,
   }
 ];
-
-// Helper untuk membangun URL gambar dari Sanity
-const builder = createImageUrlBuilder(sanityClient);
-function urlFor(source: any) {
-  return builder.image(source);
-}
 
 interface Testimonial {
   rating: number;
@@ -73,36 +63,13 @@ export default function Testimonials() {
     fetchSupabaseTestimonials();
   }, []);
 
-  // Menggunakan hook useSanityQuery yang sudah type-safe
-  const { data: sanityData, isLoading } = useSanityQuery<SanityTestimonial[]>({
-    query: `*[_type == "testimonial"] | order(_createdAt desc)`,
-    options: {
-      staleTime: 10 * 60 * 1000, // 10 menit
-      enabled: !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder",
-    }
-  });
+  const combinedLoading = supabaseLoading;
 
-  const combinedLoading = isLoading && supabaseLoading;
-
-  // Menggabungkan data dari Sanity dan Supabase dengan fallback data statis
+  // Menggabungkan data dari Supabase dengan data fallback data statis
   const testimonials: Testimonial[] = useMemo(() => {
     const combined: Testimonial[] = [];
 
-    // 1. Tambah data dari Sanity jika ada
-    if (sanityData && sanityData.length > 0) {
-      sanityData.forEach((item) => {
-        combined.push({
-          rating: 5, // Asumsi default rating 5 untuk Sanity
-          text: item.content,
-          author: item.name,
-          role: item.role || "Siswa",
-          avatar: item.avatar ? urlFor(item.avatar).width(96).height(96).quality(80).url() : null,
-          delay: 0,
-        });
-      });
-    }
-
-    // 2. Tambah data dari Supabase jika ada
+    // 1. Tambah data dari Supabase jika ada
     if (supabaseData && supabaseData.length > 0) {
       supabaseData.forEach((item) => {
         combined.push({
@@ -116,7 +83,7 @@ export default function Testimonials() {
       });
     }
 
-    // 3. Jika ada ulasan gabungan, beri efek delay AOS berurutan
+    // 2. Jika ada ulasan gabungan, beri efek delay AOS berurutan
     if (combined.length > 0) {
       return combined.map((item, index) => ({
         ...item,
@@ -126,7 +93,7 @@ export default function Testimonials() {
 
     // Fallback jika sama sekali tidak ada data dari kedua API
     return TESTIMONIALS_FALLBACK;
-  }, [sanityData, supabaseData]);
+  }, [supabaseData]);
 
   return (
     <section id="testimonials" className="testimonials-section">

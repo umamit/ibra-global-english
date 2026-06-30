@@ -8,7 +8,6 @@
  */
 
 import { prisma } from "../../lib/prisma";
-import { client as sanityClient } from "@/lib/sanity/client";
 
 const HF_MODEL = "sentence-transformers/all-MiniLM-L6-v2";
 const HF_API_URL = `https://api-inference.huggingface.co/pipeline/feature-extraction/${HF_MODEL}`;
@@ -180,44 +179,8 @@ export async function searchSimilarDocuments(query: string, topK = 5, threshold 
       console.warn("Gagal melakukan pencarian vector di database:", dbErr.message);
     }
 
-    // 2. Ambil data dari Sanity CMS (Keyword Matching)
-    let sanityResults = [];
-    const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-    const useSanity = projectId && projectId !== "placeholder" && projectId !== "";
-
-    if (useSanity) {
-      try {
-        const sanityDocs = await sanityClient.fetch(`*[_type == "ragDocument"]`);
-        if (sanityDocs && sanityDocs.length > 0) {
-          const queryTerms = query.toLowerCase().split(/\s+/).filter((t: string) => t.length > 2);
-          sanityResults = sanityDocs.map((doc: any) => {
-            let score = 0.5; // default score
-            const titleMatch = doc.title ? doc.title.toLowerCase() : "";
-            const contentMatch = doc.content ? doc.content.toLowerCase() : "";
-            queryTerms.forEach((term: string) => {
-              if (titleMatch.includes(term)) score += 0.2;
-              if (contentMatch.includes(term)) score += 0.05;
-            });
-            return {
-              id: doc._id,
-              title: doc.title,
-              content: doc.content,
-              source: doc.source || "manual",
-              metadata: {
-                keywords: doc.keywords || [],
-                sanity: true
-              },
-              similarity: Math.min(score, 1.0)
-            };
-          }).filter((doc: any) => doc.similarity > threshold);
-        }
-      } catch (sanityErr: any) {
-        console.warn("Gagal melakukan pencarian di Sanity:", sanityErr.message);
-      }
-    }
-
-    // 3. Gabungkan dan urutkan berdasarkan skor relevansi
-    const combined = [...pgResults, ...sanityResults]
+    // 2. Urutkan berdasarkan skor relevansi
+    const combined = pgResults
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, topK);
 
