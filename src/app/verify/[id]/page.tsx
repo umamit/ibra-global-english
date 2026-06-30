@@ -506,11 +506,11 @@ export default function VerifyCertificate() {
 
                 {/* Sign-off */}
                 <div style={{ textAlign: "center", paddingBottom: "1rem" }}>
-                  <p style={{ margin: "0 0 8px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
+                  <p style={{ margin: "0 0 24px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
                     Bobong, {new Date(cert.issue_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
-                  <div style={{ borderTop: "1px solid var(--color-gray-300)", width: "140px", margin: "4px auto" }} />
-                  <p style={{ margin: "0", fontSize: "0.8rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>{cert.tutor_name}</p>
+                  <p style={{ margin: "0 0 4px", fontSize: "0.8rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>{cert.tutor_name}</p>
+                  <div style={{ borderTop: "1px solid var(--color-gray-400)", width: "140px", margin: "4px auto" }} />
                   <p style={{ margin: "0", fontSize: "0.7rem", color: "var(--color-gray-500)" }}>Tutor Pendamping</p>
                 </div>
 
