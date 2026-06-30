@@ -124,49 +124,79 @@ export default function VerifyCertificate() {
   return (
     <div style={{ minHeight: "100vh", padding: "2rem 1rem" }} className="verify-page-wrapper">
       <style dangerouslySetInnerHTML={{ __html: `
+        @page {
+          size: A4 landscape;
+          margin: 0;
+        }
         @media print {
-          body, html, .verify-page-wrapper {
-            background: #ffffff !important;
-            color: #000000 !important;
+          *, *::before, *::after {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          body, html {
             margin: 0 !important;
             padding: 0 !important;
+            background: #ffffff !important;
+            width: 297mm !important;
+            height: 210mm !important;
+            overflow: hidden !important;
+          }
+          .verify-page-wrapper {
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: unset !important;
+            background: #ffffff !important;
           }
           .no-print {
             display: none !important;
           }
           .certificate-print-container {
-            width: 297mm !important;
-            height: auto !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            box-shadow: none !important;
-            background: none !important;
             display: block !important;
-          }
-          .certificate-page-1, .certificate-page-2 {
             width: 297mm !important;
-            height: 210mm !important;
             margin: 0 !important;
             padding: 0 !important;
+            gap: 0 !important;
+            background: none !important;
             box-shadow: none !important;
-            page-break-inside: avoid !important;
-            page-break-after: always !important;
-            box-sizing: border-box !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
           }
           .certificate-page-1 {
+            display: block !important;
+            width: 297mm !important;
+            height: 210mm !important;
+            max-height: 210mm !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
             border: none !important;
+            border-radius: 0 !important;
+            aspect-ratio: unset !important;
+            page-break-after: always !important;
+            break-after: page !important;
           }
           .certificate-page-2 {
-            border: 3.5mm solid #1c3d3a !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            width: 297mm !important;
+            height: 210mm !important;
+            max-height: 210mm !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            aspect-ratio: unset !important;
             page-break-before: always !important;
+            break-before: page !important;
+            page-break-after: avoid !important;
             background-color: #fdfaf6 !important;
             color: #1d1d1f !important;
-            padding: 4.6mm 9.5mm !important;
+            padding: 5mm 10mm !important;
+            box-sizing: border-box !important;
           }
 
-          /* Explicitly map container query units (cqw) to print mm values for PDF generation */
+          /* Map cqw → mm for A4 landscape (1cqw = 2.97mm) */
           .cert-student-name-text {
             font-size: 15.4mm !important;
             letter-spacing: 0.45mm !important;
@@ -223,23 +253,19 @@ export default function VerifyCertificate() {
             font-size: 2.7mm !important;
           }
           .cert-back-inner-frame {
-            top: 6.5mm !important;
-            left: 6.5mm !important;
-            right: 6.5mm !important;
-            bottom: 6.5mm !important;
+            top: 5mm !important;
+            left: 5mm !important;
+            right: 5mm !important;
+            bottom: 5mm !important;
             border-width: 0.74mm !important;
           }
           .cert-back-inner-gold-line {
-            top: 8.6mm !important;
-            left: 8.6mm !important;
-            right: 8.6mm !important;
-            bottom: 8.6mm !important;
+            top: 7mm !important;
+            left: 7mm !important;
+            right: 7mm !important;
+            bottom: 7mm !important;
             border-width: 0.3mm !important;
           }
-        }
-        @page {
-          size: A4 landscape;
-          margin: 0;
         }
       `}} />
 
