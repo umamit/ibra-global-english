@@ -122,7 +122,7 @@ export default function VerifyCertificate() {
       const element = document.getElementById("certificate-print-area");
       if (!element) return;
       const opt = {
-        margin: 0,
+        margin: 5,
         filename: `sertifikat-ige-${cert.cert_number || cert.id}.pdf`,
         image: { type: "jpeg" as const, quality: 0.98 },
         html2canvas: {
