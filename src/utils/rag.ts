@@ -28,20 +28,30 @@ export async function generateEmbedding(text: string) {
   // Truncate very long text to avoid API limits (max ~512 tokens ≈ ~2000 chars)
   const truncatedText = text.slice(0, 2000);
 
+  const hfToken = process.env.HF_TOKEN || process.env.HUGGINGFACE_API_KEY;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (hfToken) {
+    headers["Authorization"] = `Bearer ${hfToken}`;
+  } else {
+    console.warn("⚠️ RAG Warning: HF_TOKEN / HUGGINGFACE_API_KEY is not defined. HuggingFace embedding API might be rate-limited or reject request.");
+  }
+
   let response;
   try {
     response = await fetch(HF_API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify({
         inputs: truncatedText,
         options: { wait_for_model: true },
       }),
     });
-  } catch {
-    throw new Error("Embedding API request failed");
+  } catch (err: any) {
+    console.error("Embedding API connection error:", err);
+    throw new Error("Embedding API request failed due to connection error");
   }
 
   if (!response.ok) {
