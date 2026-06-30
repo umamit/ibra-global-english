@@ -215,7 +215,7 @@
 
 .cert-student-name-overlay {
   position: absolute;
-  top: 59%;
+  top: 60.2%;
   left: 50%;
   transform: translate(-50%, -100%);
   width: 80%;
@@ -243,7 +243,7 @@
 /* QR Code Container (Scaled relative to width) */
 .cert-qr-overlay {
   position: absolute;
-  bottom: 6%;
+  bottom: 9%;
   left: 78.5%;
   transform: translateX(-50%);
   display: flex;
@@ -308,8 +308,8 @@
 /* ──── Dynamic Overlays on Clean Template ──── */
 .cert-no-overlay {
   position: absolute;
-  top: 29.5%;
-  left: 54.5%; /* Positioned right after "Nomor: " */
+  top: 29%;
+  left: 54.2%; /* Positioned right after "Nomor: " */
   font-family: var(--font-sans), sans-serif;
   font-size: 1.8cqw;
   font-weight: 700;
@@ -323,7 +323,7 @@
 
 .cert-course-overlay {
   position: absolute;
-  top: 64.5%;
+  top: 64%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -341,7 +341,7 @@
 
 .cert-date-overlay {
   position: absolute;
-  top: 70.5%;
+  top: 68.5%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -359,7 +359,7 @@
 
 .cert-tutor-name-overlay {
   position: absolute;
-  top: 77.5%;
+  top: 79.5%;
   left: 29.5%;
   transform: translateX(-50%);
   width: 25cqw;
@@ -377,13 +377,13 @@
 
 .cert-tutor-title-overlay {
   position: absolute;
-  top: 83.5%;
+  top: 84.5%;
   left: 29.5%;
   transform: translateX(-50%);
   width: 25cqw;
   text-align: center;
   font-family: var(--font-sans), sans-serif;
-  font-size: 1.4cqw;
+  font-size: 1.1cqw;
   font-weight: bold;
   color: var(--color-gray-500);
   text-transform: uppercase;

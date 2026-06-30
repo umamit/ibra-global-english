@@ -173,32 +173,32 @@ export default function VerifyCertificate() {
           }
           .cert-no-overlay {
             font-size: 5.3mm !important;
-            top: 29.5% !important;
-            left: 54.5% !important;
+            top: 29% !important;
+            left: 54.2% !important;
           }
           .cert-course-overlay {
             font-size: 6.2mm !important;
-            top: 64.5% !important;
+            top: 64% !important;
           }
           .cert-date-overlay {
             font-size: 5.9mm !important;
-            top: 70.5% !important;
+            top: 68.5% !important;
           }
           .cert-tutor-name-overlay {
             font-size: 5.3mm !important;
-            top: 77.5% !important;
+            top: 79.5% !important;
             left: 29.5% !important;
           }
           .cert-tutor-title-overlay {
-            font-size: 4.1mm !important;
-            top: 83.5% !important;
+            font-size: 3.2mm !important;
+            top: 84.5% !important;
             left: 29.5% !important;
           }
           .cert-grade-table th, .cert-grade-table td {
             padding: 1.2mm 2.1mm !important;
           }
           .cert-qr-overlay {
-            bottom: 6% !important;
+            bottom: 9% !important;
             left: 78.5% !important;
             width: 65.3mm !important;
           }
