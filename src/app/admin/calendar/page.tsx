@@ -519,17 +519,35 @@ export default function AdminCalendar() {
         <div style={{ backgroundColor: "white", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-md)", padding: "1.5rem", overflowX: "auto" }}>
           <div style={{ minWidth: "700px" }}>
             
-            {/* Weekdays Row */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "1px", backgroundColor: "var(--color-gray-200)", borderBottom: "2px solid var(--color-gray-200)", paddingBottom: "0.5rem", marginBottom: "1px" }}>
+            {/* Calendar Grid Container */}
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(7, 1fr)", 
+              gap: "4px", 
+              backgroundColor: "var(--color-gray-100)", 
+              borderRadius: "12px",
+              padding: "6px"
+            }}>
+              {/* Weekdays Row */}
               {["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map((day, idx) => (
-                <div key={day} style={{ textAlign: "center", fontWeight: "800", color: idx === 0 || idx === 6 ? "var(--color-accent)" : "var(--color-gray-600)", fontSize: "0.9rem", padding: "0.25rem" }}>
+                <div 
+                  key={day} 
+                  style={{ 
+                    textAlign: "center", 
+                    fontWeight: "800", 
+                    color: idx === 0 || idx === 6 ? "var(--color-accent)" : "var(--color-gray-600)", 
+                    fontSize: "0.9rem", 
+                    padding: "0.6rem 0.25rem",
+                    backgroundColor: "var(--color-gray-200)",
+                    borderRadius: "6px",
+                    marginBottom: "4px"
+                  }}
+                >
                   {day}
                 </div>
               ))}
-            </div>
 
-            {/* Calendar Days Cells Grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px", backgroundColor: "var(--color-gray-100)", borderRadius: "0 0 12px 12px" }}>
+              {/* Grid Cells */}
               {calendarDays.map((cell, idx) => {
                 const daySchedules = getSchedulesForDay(cell.dateString);
                 const isToday = cell.dateString === getLocalDateString(new Date());
