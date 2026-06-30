@@ -159,6 +159,26 @@ export default function VerifyCertificate() {
       await convertImagesToBase64(page1El);
       await convertImagesToBase64(page2El);
 
+      // Simpan style asli untuk dikembalikan nanti
+      const originalStyle1 = page1El.getAttribute("style") || "";
+      const originalStyle2 = page2El.getAttribute("style") || "";
+
+      // Paksa ukuran desktop standar A4 agar container queries (cqw) & layout konsisten
+      const applyPrintStyles = (el: HTMLElement) => {
+        el.style.setProperty("width", "1120px", "important");
+        el.style.setProperty("height", "792px", "important");
+        el.style.setProperty("position", "fixed", "important");
+        el.style.setProperty("left", "-9999px", "important");
+        el.style.setProperty("top", "0", "important");
+        el.style.setProperty("aspect-ratio", "unset", "important");
+      };
+
+      applyPrintStyles(page1El);
+      applyPrintStyles(page2El);
+
+      // Tunggu satu frame agar browser selesai me-layout ulang dengan ukuran baru
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const pdfW = pdf.internal.pageSize.getWidth();
       const pdfH = pdf.internal.pageSize.getHeight();
@@ -171,16 +191,28 @@ export default function VerifyCertificate() {
         backgroundColor: "#ffffff",
       };
 
+      // Render halaman depan
       const canvas1 = await html2canvas(page1El, canvasOpts);
       pdf.addImage(canvas1.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
 
+      // Render halaman belakang
       pdf.addPage();
       const canvas2 = await html2canvas(page2El, { ...canvasOpts, backgroundColor: "#fdfaf6" });
       pdf.addImage(canvas2.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
 
+      // Kembalikan style seperti semula
+      page1El.setAttribute("style", originalStyle1);
+      page2El.setAttribute("style", originalStyle2);
+
       clearTimeout(safetyTimer);
       pdf.save(`sertifikat-ige-${cert.cert_number || cert.id}.pdf`);
     } catch (err) {
+      // Pastikan style dikembalikan jika terjadi error
+      const page1El = document.getElementById("cert-page-1-el");
+      const page2El = document.getElementById("cert-page-2-el");
+      if (page1El) page1El.style.cssText = "";
+      if (page2El) page2El.style.cssText = "";
+
       clearTimeout(safetyTimer);
       const msg = err instanceof Error ? err.message : String(err);
       alert(`Gagal membuat PDF: ${msg}`);
