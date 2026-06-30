@@ -129,6 +129,8 @@
 }
 
 .user-badge {
+  display: inline-block;
+  white-space: nowrap;
   background-color: var(--color-primary-light);
   color: var(--color-primary-dark);
   font-weight: 800;

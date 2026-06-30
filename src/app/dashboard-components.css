@@ -298,3 +298,17 @@
   color: var(--color-gray-600);
   border: 1px solid var(--color-gray-200);
 }
+
+.badge-program {
+  display: inline-block;
+  white-space: nowrap;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--color-bg-teal-200);
+}
