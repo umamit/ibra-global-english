@@ -145,6 +145,16 @@ export default function VerifyCertificate() {
             padding: 0 !important;
             min-height: unset !important;
             background: #ffffff !important;
+            width: 297mm !important;
+            max-width: 297mm !important;
+            overflow: hidden !important;
+          }
+          .cert-outer-wrapper {
+            max-width: 297mm !important;
+            width: 297mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
           }
           .no-print {
             display: none !important;
@@ -301,7 +311,7 @@ export default function VerifyCertificate() {
         }
       `}} />
 
-      <div style={{ maxWidth: "1000px", width: "100%", margin: "0 auto" }}>
+      <div className="cert-outer-wrapper" style={{ maxWidth: "1000px", width: "100%", margin: "0 auto" }}>
 
         {/* Navigation & Verification Banner */}
         <div className="no-print" style={{ textAlign: "center", marginBottom: "2rem" }}>
