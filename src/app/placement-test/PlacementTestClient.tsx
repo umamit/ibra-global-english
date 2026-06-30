@@ -114,7 +114,9 @@ export default function PlacementTestClient() {
 
   // Set issue date once on mount (prevents hydration mismatch)
   useEffect(() => {
-    setIssueDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
+    setTimeout(() => {
+      setIssueDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
+    }, 0);
   }, []);
 
   useEffect(() => {

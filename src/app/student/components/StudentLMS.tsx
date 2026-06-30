@@ -239,7 +239,7 @@ export default function StudentLMS({
                             {sub.notes && (
                               <div style={{ marginTop: "0.75rem", borderTop: "1px dashed var(--color-gray-200)", paddingTop: "0.5rem" }}>
                                 <p style={{ fontSize: "0.72rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Komentar Tutor:</p>
-                                <p style={{ fontSize: "0.78rem", color: "var(--color-gray-600)", fontStyle: "italic", marginTop: "2px" }}>"{sub.notes}"</p>
+                                <p style={{ fontSize: "0.78rem", color: "var(--color-gray-600)", fontStyle: "italic", marginTop: "2px" }}>&ldquo;{sub.notes}&rdquo;</p>
                               </div>
                             )}
                           </div>

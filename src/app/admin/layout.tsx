@@ -49,7 +49,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     // Ambil data awal
-    fetchPendingCount();
+    setTimeout(() => {
+      fetchPendingCount();
+    }, 0);
 
     // 🔴 Realtime: Supabase WebSocket Channel untuk notifikasi instan
     const channel = supabase

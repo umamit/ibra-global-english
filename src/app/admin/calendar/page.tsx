@@ -95,7 +95,9 @@ export default function AdminCalendar() {
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => {
+      setMounted(true);
+    }, 0);
     let cancelled = false;
     const load = async () => {
       if (cancelled) return;

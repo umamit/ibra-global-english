@@ -43,7 +43,9 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => {
+      setMounted(true);
+    }, 0);
   }, []);
 
   // Current calendar view year & month

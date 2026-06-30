@@ -122,8 +122,10 @@ export default function AdminRAGPage() {
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    setMounted(true);
-    fetchDocuments();
+    setTimeout(() => {
+      setMounted(true);
+      fetchDocuments();
+    }, 0);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {

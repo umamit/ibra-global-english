@@ -162,7 +162,9 @@ export default function AdminFinance() {
 
   // Set print date once on mount (prevents hydration mismatch)
   useEffect(() => {
-    setPrintDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
+    setTimeout(() => {
+      setPrintDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
+    }, 0);
   }, []);
 
   useEffect(() => {
