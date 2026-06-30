@@ -179,11 +179,11 @@ export default function VerifyCertificate() {
           }
           .cert-course-overlay {
             font-size: 6.2mm !important;
-            top: 62.5% !important;
+            top: 61.5% !important;
           }
           .cert-date-overlay {
             font-size: 5.9mm !important;
-            top: 67% !important;
+            top: 66.0% !important;
           }
           .cert-tutor-name-overlay {
             font-size: 5.3mm !important;
