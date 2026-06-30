@@ -285,6 +285,8 @@ export default function AdminCalendar() {
           let finalRecurrenceId = selectedSchedule.recurrence_id || null;
           let recurrInsertPayloads: any[] = [];
 
+          // Guard: Saat mode edit, JANGAN buat jadwal baru dari recurrence
+          // isRecurring hanya boleh membuat jadwal baru saat tambah (selectedSchedule === null)
           if (!selectedSchedule.recurrence_id && isRecurring) {
             // Making a single event recurring
             finalRecurrenceId = "rec_" + Date.now() + "_" + Math.random().toString(36).substring(2, 11);
@@ -828,7 +830,11 @@ export default function AdminCalendar() {
                     </label>
                   </div>
                 </div>
+              ) : selectedSchedule ? (
+                /* Mode Edit jadwal tunggal: sembunyikan opsi recurrence agar tidak membuat jadwal baru */
+                null
               ) : (
+                /* Mode Tambah Baru: tampilkan opsi recurrence */
                 <div style={{ 
                   marginBottom: "2rem", 
                   padding: "1rem", 
@@ -879,6 +885,7 @@ export default function AdminCalendar() {
                   )}
                 </div>
               )}
+
 
               <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
                 <div>
