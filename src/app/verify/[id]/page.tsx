@@ -505,8 +505,8 @@ export default function VerifyCertificate() {
                 </div>
 
                 {/* Sign-off */}
-                <div style={{ textAlign: "center" }}>
-                  <p style={{ margin: "0 0 40px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
+                <div style={{ textAlign: "center", paddingBottom: "1rem" }}>
+                  <p style={{ margin: "0 0 8px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
                     Bobong, {new Date(cert.issue_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
                   <div style={{ borderTop: "1px solid var(--color-gray-300)", width: "140px", margin: "4px auto" }} />
