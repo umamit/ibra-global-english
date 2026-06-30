@@ -29,6 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [mobileOpen]);
 
   const [newRegToast, setNewRegToast] = useState<string>("");
+  const [newTestToast, setNewTestToast] = useState<string>("");
 
   // Fetch jumlah pendaftaran pending untuk badge notifikasi
   const fetchPendingCount = async (): Promise<void> => {
@@ -52,7 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     // 🔴 Realtime: Supabase WebSocket Channel untuk notifikasi instan
     const channel = supabase
-      .channel("admin-registrations-realtime")
+      .channel("admin-realtime-all")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "registrations" },
@@ -62,7 +63,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           const program = payload.new?.program || "Program";
           setNewRegToast(`📩 Pendaftaran baru: ${name} (${program})`);
           setTimeout(() => setNewRegToast(""), 6000);
-          // Refresh badge count
           fetchPendingCount();
         }
       )
@@ -70,8 +70,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "registrations" },
         () => {
-          // Status pendaftaran berubah (approve/reject) - refresh badge
           fetchPendingCount();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "placement_test_submissions" },
+        (payload) => {
+          // Ada peserta placement test baru!
+          const name = payload.new?.name || "Seseorang";
+          const level = payload.new?.level || payload.new?.result_level || "";
+          const levelText = level ? ` — Level: ${level}` : "";
+          setNewTestToast(`📝 Placement test selesai: ${name}${levelText}`);
+          setTimeout(() => setNewTestToast(""), 6000);
         }
       )
       .subscribe();
@@ -189,6 +200,52 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               padding: "0 2px",
             }}
             aria-label="Tutup notifikasi"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+      {/* 🔔 Realtime Toast Notifikasi Placement Test Selesai */}
+      {newTestToast && (
+        <div
+          role="alert"
+          aria-live="polite"
+          style={{
+            position: "fixed",
+            top: newRegToast ? "110px" : "24px",
+            right: "24px",
+            zIndex: 9999,
+            background: "linear-gradient(135deg, #1a2d1a 0%, #0f1f0f 100%)",
+            color: "#fff",
+            borderRadius: "12px",
+            padding: "14px 20px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(99,183,99,0.25)",
+            fontSize: "0.9rem",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            maxWidth: "360px",
+            animation: "slideInRight 0.35s cubic-bezier(0.34,1.56,0.64,1)",
+            borderLeft: "4px solid #63b763",
+            transition: "top 0.3s ease",
+          }}
+        >
+          <span style={{ fontSize: "1.3rem" }}>📝</span>
+          <span>{newTestToast}</span>
+          <button
+            onClick={() => setNewTestToast("")}
+            style={{
+              marginLeft: "auto",
+              background: "transparent",
+              border: "none",
+              color: "rgba(255,255,255,0.6)",
+              cursor: "pointer",
+              fontSize: "1rem",
+              lineHeight: 1,
+              padding: "0 2px",
+            }}
+            aria-label="Tutup notifikasi placement test"
           >
             ✕
           </button>
