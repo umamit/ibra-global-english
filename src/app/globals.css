@@ -1,70 +1,80 @@
-/* Custom Premium Styles for Ibra Global English Clone */
+/* ==========================================================================
+   IBRA GLOBAL ENGLISH — Apple Human Interface Guidelines Design System
+   ========================================================================== */
 
 :root {
-  /* Color System */
+  /* ── Brand Colors (Apple-refined teal palette) ── */
   --color-primary: #216c7e;
   --color-primary-dark: #164d57;
-  --color-primary-light: #f0f7f8;
+  --color-primary-light: #eef6f8;
   --color-accent: #A68849;
-  --color-accent-light: #f3ede2;
-  --color-yellow: #facc15;
-  --color-green: #22c55e;
-  --color-green-light: #dcfce7;
-  --color-red: #ef4444;
-  --color-red-dark: #b91c1c;
-  --color-red-light: #fee2e2;
-  
-  --color-bg-teal-50: #f0f7f8;
-  --color-bg-teal-100: #dbeef1;
-  --color-bg-teal-200: #b7dbe1;
-  --color-bg-teal-400: #9acbcf;
-  
-  --color-gray-25: #f9fafb;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-250: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-500: #59616e;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-900: #111827;
-  
+  --color-accent-light: #f5f0e8;
+
+  /* ── Semantic Colors ── */
+  --color-green: #34c759;      /* Apple system green */
+  --color-green-light: #e8f8ec;
+  --color-red: #ff3b30;        /* Apple system red */
+  --color-red-dark: #c0392b;
+  --color-red-light: #fff0ee;
+  --color-yellow: #ff9500;     /* Apple system orange/yellow */
+  --color-blue: #007aff;       /* Apple system blue */
+
+  /* ── Gray Scale (Apple-exact) ── */
   --color-white: #ffffff;
-  
-  /* Fonts */
-  --font-sans: 'Montserrat', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-  /* Container Sizes */
+  --color-gray-25: #fafafa;
+  --color-gray-50: #f5f5f7;    /* Apple's signature off-white */
+  --color-gray-100: #ebebeb;
+  --color-gray-200: #d8d8d8;
+  --color-gray-250: #d1d1d1;
+  --color-gray-300: #c7c7c7;
+  --color-gray-400: #aeaeb2;   /* Apple secondary label */
+  --color-gray-500: #6e6e73;   /* Apple tertiary label */
+  --color-gray-600: #48484a;   /* Apple secondary label dark */
+  --color-gray-700: #3a3a3c;   /* Apple primary label slightly muted */
+  --color-gray-900: #1d1d1f;   /* Apple primary label — exact match */
+
+  /* ── Teal System (used for header/bg tints) ── */
+  --color-bg-teal-50: #eef6f8;
+  --color-bg-teal-100: #d6edf2;
+  --color-bg-teal-200: #aed9e2;
+  --color-bg-teal-400: #6db8c8;
+
+  /* ── Typography — Apple SF Pro System Font Stack ── */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* ── Container ── */
   --container-max-width: 1280px;
-  
-  /* Transitions */
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
-  --radius-3xl: 2rem;
+
+  /* ── Transitions — Apple spring-like easing ── */
+  --transition-fast: 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-normal: 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* ── Shadows — Apple ultra-subtle elevation ── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-2xl: 0 30px 60px rgba(0, 0, 0, 0.14), 0 8px 20px rgba(0, 0, 0, 0.06);
+
+  /* ── Border Radius — Apple HIG standard ── */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;       /* Apple default card/button */
+  --radius-xl: 18px;       /* Apple large card */
+  --radius-2xl: 22px;      /* Apple modal/sheet */
+  --radius-3xl: 28px;
   --radius-full: 9999px;
-  
-  /* Header Backgrounds - Premium Soft Teal Glassmorphism */
-  --color-header-bg: rgba(240, 247, 248, 0.45);
-  --color-header-bg-scrolled: rgba(240, 247, 248, 0.65);
+
+  /* ── Header ── */
+  --color-header-bg: rgba(255, 255, 255, 0.72);
+  --color-header-bg-scrolled: rgba(255, 255, 255, 0.85);
 }
 
-/* Reset & Base Styles */
+/* ── Reset & Base ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -76,21 +86,22 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   background-color: var(--color-white);
-  transition: background-color var(--transition-normal);
   overflow-x: hidden;
   overscroll-behavior: none;
+  /* Apple-grade font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-white);
-  color: var(--color-gray-700);
-  line-height: 1.6;
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
+  line-height: 1.5;
   overflow-x: hidden;
   width: 100%;
   position: relative;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
-  overscroll-behavior: none;
 }
 
 main {
@@ -100,29 +111,31 @@ main {
   position: relative;
 }
 
-/* Custom Scrollbar Styles for Modern Browsers */
+/* ── macOS-style minimal scrollbar ── */
 html {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-primary) var(--color-gray-100);
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-gray-100);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border: 2px solid var(--color-gray-100);
+  background: rgba(0, 0, 0, 0.18);
   border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-dark);
+  background: rgba(0, 0, 0, 0.28);
+  background-clip: padding-box;
 }
 
 a {
@@ -145,7 +158,7 @@ button, input, select, textarea {
   outline: none;
 }
 
-/* Shared Utilities */
+/* ── Container ── */
 .container {
   width: 100%;
   max-width: var(--container-max-width);
@@ -153,7 +166,7 @@ button, input, select, textarea {
   padding-inline: 1.5rem;
 }
 
-/* Theme Toggle & Dark Mode */
+/* ── Theme Toggle (simplified — light only) ── */
 .nav-right-group {
   display: flex;
   align-items: center;
@@ -168,17 +181,16 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--color-gray-700);
+  color: var(--color-gray-600);
   background-color: var(--color-gray-100);
   border: 1px solid var(--color-gray-200);
-  transition: background-color var(--transition-fast), color var(--transition-fast), transform 0.2s ease;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
   position: relative;
   overflow: hidden;
 }
 
 .theme-toggle:hover {
   background-color: var(--color-gray-200);
-  color: var(--color-primary);
   transform: scale(1.05);
 }
 
@@ -188,10 +200,9 @@ button, input, select, textarea {
   left: calc(50% - 0.625rem);
   width: 1.25rem;
   height: 1.25rem;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
 }
 
-/* Light mode defaults: moon is visible, sun is hidden/rotated */
 .theme-toggle .sun-icon {
   opacity: 0;
   transform: rotate(90deg) scale(0);
@@ -202,129 +213,60 @@ button, input, select, textarea {
   transform: rotate(0) scale(1);
 }
 
-/* Dark mode overrides: sun is visible, moon is hidden/rotated */
-[data-theme="dark"] .theme-toggle .sun-icon {
-  opacity: 1;
-  transform: rotate(0) scale(1);
-}
-
-[data-theme="dark"] .theme-toggle .moon-icon {
-  opacity: 0;
-  transform: rotate(-90deg) scale(0);
-}
-
-/* Dark Mode Theme Variables Override */
-[data-theme="dark"] {
-  --color-white: #121824;
-  --color-gray-50: #0b0f17;
-  --color-bg-teal-50: #0f1c24;
-  --color-bg-teal-100: #1b2e3a;
-  --color-bg-teal-200: #203a4a;
-  
-  --color-gray-900: #f9fafb;
-  --color-gray-700: #d1d5db;
-  --color-gray-600: #9ca3af;
-  --color-gray-500: #8c95a0;
-  --color-gray-300: #4b5563;
-  --color-gray-200: #374151;
-  --color-gray-100: #1f2937;
-  
-  --color-primary-light: #162a33;
-  --color-accent-light: #25231c;
-  
-  --color-header-bg: rgba(22, 42, 51, 0.45);
-  --color-header-bg-scrolled: rgba(22, 42, 51, 0.65);
-}
-
-[data-theme="dark"] html {
-  background-color: var(--color-gray-50);
-}
-
-[data-theme="dark"] body {
-  background-color: var(--color-gray-50);
-}
-
-[data-theme="dark"] .theme-toggle {
-  color: var(--color-yellow);
-  background-color: var(--color-gray-100);
-  border-color: var(--color-gray-200);
-}
-
-[data-theme="dark"] .theme-toggle:hover {
-  background-color: var(--color-gray-200);
-}
-
-/* Accessibility Focus Outline Styles */
+/* ── Accessibility Focus Ring — Apple blue ── */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 3px;
+  outline: 3px solid var(--color-blue);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
-/* Print Stylesheet for paper outputs */
+/* ── Print Styles ── */
 @media print {
   *, *::before, *::after {
     background: transparent !important;
-    color: #000000 !important;
+    color: #000 !important;
     box-shadow: none !important;
-    text-shadow: none !important;
   }
-  
   html, body {
-    background-color: #ffffff !important;
-    color: #000000 !important;
+    background-color: #fff !important;
+    color: #000 !important;
     font-size: 12pt;
   }
-
-  /* Hide interactive layouts and components on paper */
-  #header,
-  .mobile-nav,
-  .social-float-group,
-  .hero-actions,
-  .cta-actions,
-  .lightbox-modal,
-  .theme-toggle,
-  .menu-toggle,
-  .hero-stats-badge {
+  #header, .mobile-nav, .social-float-group,
+  .hero-actions, .cta-actions, .lightbox-modal,
+  .theme-toggle, .menu-toggle, .hero-stats-badge {
     display: none !important;
   }
-  
-  /* Simplify layout spacings for page output */
   .container {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
   }
-  
   section {
     padding: 2rem 0 !important;
     page-break-inside: avoid;
   }
-  
-  h2, h3 {
-    page-break-after: avoid;
-  }
+  h2, h3 { page-break-after: avoid; }
 }
 
-/* Student info grid */
+/* ── Shared Grid Utilities ── */
 .student-info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
-/* Report scores grid */
 .report-scores-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
 }
 
-/* Signature block */
 .signature-block {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -332,48 +274,41 @@ textarea:focus-visible {
   margin-top: 2rem;
 }
 
-/* ── Section Shared Styles (landing) ── */
-/* Sections Common Header */
+/* ── Section Shared Styles (Landing) — Apple typography ── */
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
 }
 
 .section-header h2 {
-  font-size: 2.5rem;
+  font-size: clamp(1.875rem, 4vw, 3rem);
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-gray-900);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
   margin-bottom: 0.75rem;
 }
 
 .section-header p {
-  font-size: 1.25rem;
-  color: var(--color-gray-600);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--color-gray-500);
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 @media (max-width: 576px) {
-  .section-header {
-    margin-bottom: 2.5rem;
-  }
-  .section-header h2 {
-    font-size: 1.75rem;
-  }
-  .section-header p {
-    font-size: 1rem;
-  }
+  .section-header { margin-bottom: 2.5rem; }
 }
 
-/* Section base backgrounds */
 section {
   padding-block: 5rem;
   overflow: hidden;
   max-width: 100%;
+  background-color: var(--color-white);
 }
 
-/* Sentry User Feedback mobile responsive position adjustment */
-#sentry-feedback {
-  --bottom: 1.5rem;
-}
+/* ── Sentry mobile position ── */
+#sentry-feedback { --bottom: 1.5rem; }
 
 @media (max-width: 768px) {
   #sentry-feedback {
@@ -382,7 +317,7 @@ section {
   }
 }
 
-/* Sembunyikan Vercel Preview Toolbar secara paksa */
+/* ── Hide Vercel Toolbar ── */
 vercel-devtools,
 [data-vercel-toolbar],
 vercel-live-feedback,
@@ -396,14 +331,19 @@ iframe[src^="https://vercel.live"] {
   opacity: 0 !important;
   pointer-events: none !important;
 }
-/* Animasi Realtime Toast Notifikasi Admin */
+
+/* ── Animations ── */
 @keyframes slideInRight {
-  from {
-    transform: translateX(110%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }

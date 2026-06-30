@@ -1,28 +1,29 @@
 /* ==========================================================================
-   PORTAL DASHBOARD COMPONENT STYLES (Cards, Tables, Badges, Buttons, Forms)
+   PORTAL DASHBOARD COMPONENTS — Apple Human Interface Guidelines
+   Cards, Tables, Badges, Buttons, Forms
    ========================================================================== */
 
-/* Portal Cards */
+/* ── Portal Card — Apple card style ── */
 .portal-card {
   background-color: var(--color-white);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: var(--shadow-sm);
   padding: 1.75rem;
-  transition: all var(--transition-normal);
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
 }
 
 .portal-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
-/* Stat Grid */
+/* ── Stat Grid ── */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 }
 
 .stat-card-header {
@@ -33,17 +34,17 @@
 }
 
 .stat-card-title {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--color-gray-500);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .stat-card-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--radius-full);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-md);
   background-color: var(--color-primary-light);
   color: var(--color-primary);
   display: flex;
@@ -52,57 +53,65 @@
 }
 
 .stat-card-value {
-  font-size: 2.5rem;
-  font-weight: 900;
+  font-size: 2.25rem;
+  font-weight: 700;
   color: var(--color-gray-900);
+  letter-spacing: -0.03em;
   line-height: 1;
 }
 
+/* ── Buttons ── */
+
+/* Primary — Apple-style teal button */
 .btn-portal-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
-  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: var(--color-white);
+  gap: 0.45rem;
+  padding: 0.6rem 1.2rem;
+  background-color: var(--color-primary);
+  color: #fff;
   border-radius: var(--radius-lg);
-  font-weight: 700;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(33, 108, 126, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition: all var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(33, 108, 126, 0.2);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .btn-portal-primary:hover {
-  background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary-dark) 100%);
-  box-shadow: 0 4px 12px rgba(33, 108, 126, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 3px 10px rgba(33, 108, 126, 0.25);
 }
 
 .btn-portal-primary:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  box-shadow: none;
 }
 
+/* Outline — Apple ghost button */
 .btn-portal-outline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
+  gap: 0.45rem;
+  padding: 0.6rem 1.2rem;
   background-color: transparent;
   border: 1px solid var(--color-gray-300);
   color: var(--color-gray-700);
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: 0.9rem;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .btn-portal-outline:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary-dark);
-  background-color: var(--color-primary-light);
+  background-color: var(--color-gray-100);
+  border-color: var(--color-gray-400);
+  color: var(--color-gray-900);
 }
 
 .btn-portal-outline.active {
@@ -111,116 +120,115 @@
   color: var(--color-primary-dark);
 }
 
+/* Danger — Apple destructive button */
 .btn-portal-danger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
+  gap: 0.45rem;
+  padding: 0.6rem 1.2rem;
   background-color: transparent;
-  border: 1px solid var(--color-red);
+  border: 1px solid rgba(255, 59, 48, 0.4);
   color: var(--color-red);
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: 0.9rem;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .btn-portal-danger:hover {
-  background-color: rgba(239, 68, 68, 0.08);
-  border-color: var(--color-red-dark);
-  color: var(--color-red-dark);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
-  transform: translateY(-1px);
+  background-color: var(--color-red-light);
+  border-color: var(--color-red);
 }
 
 .btn-portal-danger:active {
-  transform: translateY(0);
+  transform: scale(0.97);
 }
 
+/* Logout */
 .btn-logout {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1rem;
+  padding: 0.7rem 1rem;
   background-color: transparent;
-  border: 1px solid #ef4444;
-  color: #ef4444;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: 0.9rem;
+  border: 1px solid rgba(255, 59, 48, 0.35);
+  color: var(--color-red);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .btn-logout:hover {
-  background-color: #ef4444;
-  color: var(--color-white);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  background-color: var(--color-red-light);
+  border-color: var(--color-red);
 }
 
-/* Form Controls */
+/* ── Form Controls — Apple input fields ── */
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .form-label {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--color-gray-700);
+  letter-spacing: -0.01em;
 }
 
 .form-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-gray-200);
-  background-color: var(--color-gray-100);
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-gray-200);
+  background-color: var(--color-white);
   color: var(--color-gray-900);
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: all var(--transition-fast);
+  font-weight: 400;
+  font-size: 0.9rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .form-input::placeholder {
-  color: var(--color-gray-500);
+  color: var(--color-gray-400);
 }
 
 .form-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(33, 108, 126, 0.08);
+  box-shadow: 0 0 0 3px rgba(33, 108, 126, 0.1);
   background-color: var(--color-white);
+  outline: none;
 }
 
 .form-input:disabled {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-500);
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-400);
   cursor: not-allowed;
+  border-color: var(--color-gray-200);
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 1.25rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+  .form-grid { grid-template-columns: 1fr; }
 }
 
-/* Table */
+/* ── Table — Apple list-style ── */
 .table-wrapper {
   background-color: var(--color-white);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   overflow-x: auto;
   box-shadow: var(--shadow-sm);
   scrollbar-width: thin;
@@ -230,20 +238,23 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .portal-table th {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary-dark);
-  font-weight: 700;
-  padding: 1rem 1.25rem;
-  border-bottom: 2px solid var(--color-bg-teal-200);
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-600);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--color-gray-200);
 }
 
 .portal-table td {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-gray-100);
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   color: var(--color-gray-700);
   transition: background-color var(--transition-fast);
 }
@@ -256,59 +267,58 @@
   border-bottom: none;
 }
 
-/* Attendance Pill Badges */
-.badge-hadir, .badge-sakit, .badge-izin, .badge-alfa, .badge-tidak_ada_kelas {
+/* ── Status Badges — Apple SF Symbols pill style ── */
+.badge-hadir,
+.badge-sakit,
+.badge-izin,
+.badge-alfa,
+.badge-tidak_ada_kelas {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.75rem;
+  font-weight: 600;
+  font-size: 0.73rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.25rem 0.75rem;
+  padding: 0.2rem 0.65rem;
   border-radius: var(--radius-full);
 }
 
 .badge-hadir {
-  background-color: var(--color-green-light);
-  color: var(--color-green);
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  background-color: rgba(52, 199, 89, 0.12);
+  color: #1a8c3d;
 }
 
 .badge-sakit {
-  background-color: #fef9c3;
-  color: #a16207;
-  border: 1px solid rgba(161, 98, 7, 0.2);
+  background-color: rgba(255, 149, 0, 0.1);
+  color: #b36200;
 }
 
 .badge-izin {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-  border: 1px solid rgba(33, 108, 126, 0.2);
+  background-color: rgba(33, 108, 126, 0.1);
+  color: var(--color-primary-dark);
 }
 
 .badge-alfa {
-  background-color: #ffeeeb;
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background-color: rgba(255, 59, 48, 0.1);
+  color: #c0392b;
 }
 
 .badge-tidak_ada_kelas {
   background-color: var(--color-gray-100);
-  color: var(--color-gray-600);
-  border: 1px solid var(--color-gray-200);
+  color: var(--color-gray-500);
 }
 
 .badge-program {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   white-space: nowrap;
   background-color: var(--color-primary-light);
   color: var(--color-primary-dark);
-  font-weight: 800;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.65rem;
+  font-weight: 600;
+  font-size: 0.73rem;
+  padding: 0.2rem 0.65rem;
   border-radius: var(--radius-full);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 1px solid var(--color-bg-teal-200);
 }
