@@ -28,19 +28,21 @@ export async function generateEmbedding(text: string) {
   const truncatedText = text.slice(0, 2000);
 
   const hfToken = process.env.HF_TOKEN || process.env.HUGGINGFACE_API_KEY;
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
 
-  if (hfToken) {
-    headers["Authorization"] = `Bearer ${hfToken}`;
-  } else {
-    console.warn("⚠️ RAG Warning: HF_TOKEN / HUGGINGFACE_API_KEY is not defined. HuggingFace embedding API might be rate-limited or reject request.");
-  }
+  const tryFetch = async (useToken: boolean, usePipelineUrl: boolean): Promise<Response> => {
+    const url = usePipelineUrl
+      ? `https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2`
+      : `https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2`;
 
-  let response;
-  try {
-    response = await fetch(HF_API_URL, {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (useToken && hfToken) {
+      headers["Authorization"] = `Bearer ${hfToken}`;
+    }
+
+    return await fetch(url, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -48,23 +50,49 @@ export async function generateEmbedding(text: string) {
         options: { wait_for_model: true },
       }),
     });
-  } catch (err: any) {
-    console.error("Embedding API connection error:", err);
-    throw new Error("Embedding API request failed due to connection error");
+  };
+
+  let response: Response | undefined;
+  const attempts = [
+    { useToken: true, usePipelineUrl: false },  // 1. Standard URL + Token
+    { useToken: false, usePipelineUrl: false }, // 2. Standard URL, no Token (fallback for invalid credentials)
+    { useToken: true, usePipelineUrl: true },   // 3. Pipeline URL + Token
+    { useToken: false, usePipelineUrl: true }   // 4. Pipeline URL, no Token
+  ];
+
+  let lastError: any = null;
+
+  for (const opt of attempts) {
+    // Jika tidak ada token terkonfigurasi, lewati opsi percobaan menggunakan token
+    if (opt.useToken && !hfToken) continue;
+
+    try {
+      response = await tryFetch(opt.useToken, opt.usePipelineUrl);
+      
+      if (response.ok) {
+        break; // Berhasil! Keluar dari loop pencarian
+      }
+
+      const errText = await response.text();
+      console.warn(`HF attempt failed (URL: ${opt.usePipelineUrl ? 'pipeline' : 'models'}, Token: ${opt.useToken}): status ${response.status}, ${errText}`);
+      
+      // Jika model sedang dimuat, tunggu sebentar lalu coba lagi opsi yang sama sekali lagi
+      if (response.status === 503) {
+        console.log("Model loading, retrying in 3.5s...");
+        await new Promise((r) => setTimeout(r, 3500));
+        response = await tryFetch(opt.useToken, opt.usePipelineUrl);
+        if (response.ok) break;
+      }
+      
+      lastError = new Error(`HF Status ${response.status}: ${errText}`);
+    } catch (err: any) {
+      console.warn(`HF connection error (Token: ${opt.useToken}): ${err.message}`);
+      lastError = err;
+    }
   }
 
-  if (!response.ok) {
-    const errText = await response.text();
-    console.error("HuggingFace embedding API error:", response.status, errText);
-
-    // If model is loading, retry once after a delay
-    if (response.status === 503) {
-      console.log("Model loading, retrying in 3s...");
-      await new Promise((r) => setTimeout(r, 3000));
-      return generateEmbedding(text);
-    }
-
-    throw new Error(`Embedding API failed: ${response.status}`);
+  if (!response || !response.ok) {
+    throw new Error(`Embedding API failed completely: ${lastError?.message || 'unknown error'}`);
   }
 
   const data = await response.json();
