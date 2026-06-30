@@ -136,7 +136,7 @@ export default function VerifyCertificate() {
           }
           .certificate-print-container {
             width: 297mm !important;
-            height: 420mm !important;
+            height: auto !important;
             margin: 0 !important;
             padding: 0 !important;
             box-shadow: none !important;
@@ -159,10 +159,77 @@ export default function VerifyCertificate() {
             border: none !important;
           }
           .certificate-page-2 {
-            border: 10px double #a68849 !important;
+            border: none !important;
             page-break-before: always !important;
             background-color: #faf7f2 !important;
             color: #1d1d1f !important;
+          }
+
+          /* Explicitly map container query units (cqw) to print mm values for PDF generation */
+          .cert-student-name-text {
+            font-size: 15.4mm !important;
+            letter-spacing: 0.45mm !important;
+          }
+          .cert-no-overlay {
+            font-size: 5.3mm !important;
+            top: 29.5% !important;
+            left: 54.5% !important;
+          }
+          .cert-course-overlay {
+            font-size: 6.2mm !important;
+            top: 66.5% !important;
+          }
+          .cert-date-overlay {
+            font-size: 5.9mm !important;
+            top: 72.5% !important;
+          }
+          .cert-tutor-name-overlay {
+            font-size: 5.3mm !important;
+            top: 77.5% !important;
+            left: 29.5% !important;
+          }
+          .cert-tutor-title-overlay {
+            font-size: 4.1mm !important;
+            top: 83.5% !important;
+            left: 29.5% !important;
+          }
+          .cert-qr-overlay {
+            bottom: 6% !important;
+            left: 78.5% !important;
+            width: 65.3mm !important;
+          }
+          .cert-qr-box {
+            padding: 1.8mm !important;
+            border-width: 0.45mm !important;
+            border-radius: 2.4mm !important;
+            width: 29.7mm !important;
+            height: 29.7mm !important;
+          }
+          .cert-qr-line {
+            border-top-width: 0.45mm !important;
+            width: 41.5mm !important;
+            margin: 1.2mm auto !important;
+          }
+          .cert-qr-label-title {
+            font-size: 3.4mm !important;
+            letter-spacing: 0.3mm !important;
+          }
+          .cert-qr-label-subtitle {
+            font-size: 2.7mm !important;
+          }
+          .cert-back-inner-frame {
+            top: 6.5mm !important;
+            left: 6.5mm !important;
+            right: 6.5mm !important;
+            bottom: 6.5mm !important;
+            border-width: 0.74mm !important;
+          }
+          .cert-back-inner-gold-line {
+            top: 8.6mm !important;
+            left: 8.6mm !important;
+            right: 8.6mm !important;
+            bottom: 8.6mm !important;
+            border-width: 0.3mm !important;
           }
         }
         @page {
