@@ -1,34 +1,35 @@
-/* Header & Navigation */
+/* ==========================================================================
+   HEADER & NAVIGATION — Apple Human Interface Guidelines
+   Inspired by apple.com navigation bar
+   ========================================================================== */
+
+/* ── Header Bar — Apple translucent nav ── */
 header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   background-color: var(--color-header-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-sm);
-  /* z-index lebih tinggi dari marquee (99) agar bisa menutupi marquee saat scroll */
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   z-index: 100;
-  transition: background-color var(--transition-normal), box-shadow var(--transition-normal), top 0s;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal), top 0s;
 }
 
-/* Saat ada marquee: header dimulai di bawah marquee (top: 40px) */
+/* ── Marquee offset ── */
 header.has-marquee {
   top: 40px;
-  /* Fallback smooth: hitung posisi top berdasarkan --scroll-y untuk browser lama */
   top: max(0px, calc(40px - var(--scroll-y, 0px)));
 }
 
-/* Scroll-driven animation: header naik dari top:40px ke top:0, menutupi marquee */
 @supports (animation-timeline: scroll()) {
   @keyframes header-slide {
     from { top: 40px; }
-    to   { top: 0px; }
+    to   { top: 0px;  }
   }
 
   header.has-marquee {
-    /* Override fallback calc() dengan scroll-driven animation yang lebih smooth */
     top: 40px;
     animation: header-slide linear both;
     animation-timeline: scroll();
@@ -36,162 +37,128 @@ header.has-marquee {
   }
 }
 
-/* Hard-lock setelah scroll melewati 40px (fallback untuk JS class toggle) */
 header.has-marquee.scrolled {
   top: 0;
 }
 
+/* ── Scrolled state ── */
 header.scrolled {
   background-color: var(--color-header-bg-scrolled);
-  box-shadow: var(--shadow-md);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
+/* ── Nav Container ── */
 .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-block: 1.15rem;
-  transition: var(--transition-normal);
+  padding-block: 1rem;
+  transition: padding var(--transition-normal);
 }
 
 header.scrolled .nav-container {
-  padding-block: 0.5rem;
+  padding-block: 0.55rem;
 }
 
+/* ── Logo ── */
 .logo-link {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.6rem;
 }
 
 .logo-img {
-  width: 4.8rem;
-  height: 4.8rem;
+  width: 4.4rem;
+  height: 4.4rem;
   object-fit: contain;
   transition: width var(--transition-normal), height var(--transition-normal);
 }
 
 header.scrolled .logo-img {
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 3.2rem;
+  height: 3.2rem;
 }
 
 .logo-text h1 {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-gray-900);
   line-height: 1.15;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   transition: font-size var(--transition-normal);
 }
 
 header.scrolled .logo-text h1 {
-  font-size: 1.15rem;
+  font-size: 1.08rem;
 }
 
 .logo-text p {
-  font-size: 0.775rem;
-  color: var(--color-accent);
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+  letter-spacing: 0.03em;
   transition: font-size var(--transition-normal), opacity var(--transition-normal);
 }
 
 header.scrolled .logo-text p {
-  font-size: 0.675rem;
+  font-size: 0.64rem;
 }
 
 @media (max-width: 480px) {
-  .logo-img {
-    width: 3.8rem;
-    height: 3.8rem;
-  }
-  header.scrolled .logo-img {
-    width: 3.0rem;
-    height: 3.0rem;
-  }
-  .logo-text h1 {
-    font-size: 1.15rem;
-  }
-  header.scrolled .logo-text h1 {
-    font-size: 1.0rem;
-  }
+  .logo-img { width: 3.5rem; height: 3.5rem; }
+  header.scrolled .logo-img { width: 2.75rem; height: 2.75rem; }
+  .logo-text h1 { font-size: 1.05rem; }
+  header.scrolled .logo-text h1 { font-size: 0.95rem; }
   .logo-text p,
-  header.scrolled .logo-text p {
-    display: none;
-  }
-  .logo-link {
-    gap: 0.45rem;
-  }
-  .nav-container {
-    padding-inline: 1rem;
-  }
+  header.scrolled .logo-text p { display: none; }
+  .logo-link { gap: 0.45rem; }
+  .nav-container { padding-inline: 1rem; }
 }
 
 @media (max-width: 360px) {
-  .logo-text h1 {
-    font-size: 0.95rem;
-  }
+  .logo-text h1 { font-size: 0.9rem; }
 }
 
+/* ── Desktop Nav Links — Apple.com style ── */
 .nav-links {
   display: flex;
-  gap: 1.75rem;
+  gap: 1.5rem;
   align-items: center;
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
+  .nav-links { display: none; }
 }
 
 .nav-link {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 400;
   color: var(--color-gray-700);
-  transition: var(--transition-fast);
+  transition: color var(--transition-fast);
   position: relative;
   padding-block: 0.25rem;
   letter-spacing: -0.01em;
   text-decoration: none;
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--color-primary);
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform var(--transition-fast);
-}
-
 .nav-link:hover {
-  color: var(--color-primary);
-  text-decoration: none;
+  color: var(--color-gray-900);
 }
 
-.nav-link:hover::after {
-  transform: scaleX(1);
-}
-
+/* ── Nav Buttons ── */
 .nav-btn {
   background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 0.4rem 1.0rem;
-  border-radius: var(--radius-lg);
-  font-weight: 600;
-  font-size: 0.775rem;
-  transition: var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  color: #fff;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: -0.01em;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.15rem;
+  height: 2.1rem;
   box-sizing: border-box;
 }
 
@@ -202,35 +169,34 @@ header.scrolled .logo-text p {
 
 .nav-btn-outline {
   background-color: transparent;
-  color: var(--color-primary-dark);
-  border: 1.5px solid var(--color-primary);
-  padding: 0.4rem 1.0rem;
-  border-radius: var(--radius-lg);
-  font-weight: 600;
-  font-size: 0.775rem;
-  transition: var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  color: var(--color-primary);
+  border: 1px solid rgba(33, 108, 126, 0.4);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: -0.01em;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.15rem;
+  height: 2.1rem;
   box-sizing: border-box;
   text-decoration: none;
 }
 
 .nav-btn-outline:hover {
   background-color: var(--color-primary-light);
-  color: var(--color-primary-dark);
-  transform: translateY(-1px);
+  border-color: var(--color-primary);
 }
 
-/* Mobile Menu Button */
+/* ── Hamburger Toggle ── */
 .menu-toggle {
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  width: 1.5rem;
-  height: 1rem;
+  width: 1.35rem;
+  height: 0.9rem;
   cursor: pointer;
   z-index: 110;
 }
@@ -238,35 +204,32 @@ header.scrolled .logo-text p {
 .menu-toggle span {
   display: block;
   width: 100%;
-  height: 2px;
-  border-radius: 4px;
+  height: 1.5px;
+  border-radius: var(--radius-full);
   background-color: var(--color-gray-700);
-  transition: var(--transition-normal);
+  transition: transform var(--transition-normal), opacity var(--transition-normal);
 }
 
 [data-theme="dark"] .menu-toggle span {
-  background-color: var(--color-gray-200);
+  background-color: var(--color-gray-300);
 }
 
 @media (max-width: 768px) {
-  .menu-toggle {
-    display: flex;
-  }
-  .nav-btn-desktop {
-    display: none;
-  }
+  .menu-toggle { display: flex; }
+  .nav-btn-desktop { display: none; }
 }
 
-/* Mobile Drawer Overlay */
+/* ── Mobile Drawer — Apple iOS sidebar sheet ── */
 .mobile-nav {
   position: fixed;
   inset: 0;
-  background-color: rgba(17, 24, 39, 0.4);
-  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 105;
   opacity: 0;
   pointer-events: none;
-  transition: var(--transition-normal);
+  transition: opacity var(--transition-normal);
   overflow: hidden;
 }
 
@@ -279,17 +242,25 @@ header.scrolled .logo-text p {
   position: absolute;
   top: 0;
   right: 0;
-  width: 75%;
-  max-width: 320px;
-  height: 100vh;
-  background-color: var(--color-white);
-  padding: 5rem 2rem 2rem;
+  width: 72%;
+  max-width: 300px;
+  height: 100dvh;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  padding: 5rem 1.75rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  box-shadow: var(--shadow-2xl);
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.08);
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
   transform: translateX(100%);
-  transition: var(--transition-normal);
+  transition: transform var(--transition-normal);
+}
+
+[data-theme="dark"] .mobile-nav-content {
+  background-color: rgba(28, 28, 30, 0.95);
+  border-left-color: rgba(255, 255, 255, 0.08);
 }
 
 .mobile-nav.active .mobile-nav-content {
@@ -299,21 +270,30 @@ header.scrolled .logo-text p {
 .mobile-nav-links {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.25rem;
 }
 
 .mobile-nav-links a {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--color-gray-900);
+  padding: 0.75rem 0.5rem;
+  border-radius: var(--radius-md);
+  letter-spacing: -0.01em;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.mobile-nav-links a:hover {
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 .mobile-nav-btn {
   background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 0.875rem 1.5rem;
-  border-radius: var(--radius-lg);
+  color: #fff;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-full);
   font-weight: 600;
+  font-size: 0.9rem;
   text-align: center;
-  box-shadow: var(--shadow-md);
+  letter-spacing: -0.01em;
 }
