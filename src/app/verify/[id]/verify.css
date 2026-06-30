@@ -65,6 +65,13 @@
   background-color: #1c1c1e;
 }
 
+/* Page break marker for html2pdf.js */
+.pdf-page-break {
+  page-break-before: always;
+  break-before: page;
+  margin-top: 2.5rem; /* jarak antar sertifikat di layar */
+}
+
 /* Inner borders matching front template */
 .cert-back-inner-frame {
   position: absolute;

@@ -41,6 +41,7 @@ export default function VerifyCertificate() {
   const [loading, setLoading] = useState<boolean>(true);
   const [cert, setCert] = useState<CertData | null>(null);
   const [theme, setTheme] = useState<string>("light");
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
 
   useEffect(() => {
     // Theme sync
@@ -112,6 +113,39 @@ export default function VerifyCertificate() {
     cert.students?.program?.toLowerCase()?.includes("calistung") ? "id-ID" : "en-US",
     { day: "numeric", month: "long", year: "numeric" }
   ) : "";
+
+  const handleDownloadPDF = async () => {
+    if (!cert) return;
+    setIsGeneratingPDF(true);
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      const element = document.getElementById("certificate-print-area");
+      if (!element) return;
+      const opt = {
+        margin: 0,
+        filename: `sertifikat-ige-${cert.cert_number || cert.id}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          allowTaint: true,
+          backgroundColor: "#ffffff",
+        },
+        jsPDF: {
+          unit: "mm",
+          format: "a4",
+          orientation: "landscape",
+        },
+        pagebreak: { mode: ["css"], before: ".pdf-page-break" },
+      };
+      await html2pdf().set(opt).from(element).save();
+    } catch (err) {
+      console.error("Gagal generate PDF:", err);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   const completionText = cert?.students?.program?.toLowerCase()?.includes("calistung")
     ? `telah menyelesaikan program Calistung ${cert?.module_name || ""}`
@@ -321,11 +355,25 @@ export default function VerifyCertificate() {
             </Link>
             <button
               className="btn-portal-primary"
-              onClick={() => window.print()}
-              style={{ display: "inline-flex", gap: "0.5rem", alignItems: "center", cursor: "pointer" }}
+              onClick={handleDownloadPDF}
+              disabled={isGeneratingPDF}
+              aria-label="Download sertifikat sebagai PDF"
+              style={{ display: "inline-flex", gap: "0.5rem", alignItems: "center", cursor: isGeneratingPDF ? "wait" : "pointer", opacity: isGeneratingPDF ? 0.7 : 1 }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-              <span>Cetak Sertifikat (Bolak-Balik)</span>
+              {isGeneratingPDF ? (
+                <>
+                  <svg style={{ animation: "spin 1s linear infinite", width: "16px", height: "16px" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <span>Sedang Generate PDF...</span>
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download Sertifikat PDF</span>
+                </>
+              )}
             </button>
           </div>
 
@@ -338,7 +386,7 @@ export default function VerifyCertificate() {
         </div>
 
         {cert ? (
-          <div className="certificate-print-container" style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
+          <div id="certificate-print-area" className="certificate-print-container" style={{ display: "flex", flexDirection: "column", gap: "0" }}>
 
             {/* ==================== PAGE 1: DEPAN (Canva Design) ==================== */}
             <div className="certificate-page-1">
@@ -400,7 +448,7 @@ export default function VerifyCertificate() {
             </div>
 
             {/* ==================== PAGE 2: BELAKANG (Grade Transcript) ==================== */}
-            <div className="certificate-page-2">
+            <div className="certificate-page-2 pdf-page-break">
               {/* Inner Borders Matching Front Template */}
               <div className="cert-back-inner-frame" />
               <div className="cert-back-inner-gold-line" />
