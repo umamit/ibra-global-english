@@ -1,9 +1,14 @@
-/* Programs Section */
+/* ── Programs Section — Apple HIG ───────────────────────────────────── */
 .programs-section {
   background-color: var(--color-white);
   position: relative;
 }
 
+[data-theme='dark'] .programs-section {
+  background-color: var(--color-gray-950, #0a0a0a);
+}
+
+/* Hairline top separator */
 .programs-section::before {
   content: '';
   position: absolute;
@@ -11,146 +16,207 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-bg-teal-200), transparent);
+  background: var(--color-gray-200, #e5e7eb);
+  opacity: 0.7;
 }
 
+[data-theme='dark'] .programs-section::before {
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 1;
+}
+
+/* ── Grid ───────────────────────────────────────────────────────────── */
 .programs-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem;
+  gap: 2rem;
   position: relative;
 }
 
 @media (max-width: 992px) {
   .programs-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    gap: 1.625rem;
   }
 }
 
 @media (max-width: 768px) {
   .programs-grid {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
+    gap: 1.375rem;
   }
 }
 
+/* ── Program Card ────────────────────────────────────────────────────── */
 .program-card {
   background: var(--color-white);
-  padding: 2.5rem;
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-200);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 2.375rem 2.25rem 2.5rem;
+  border-radius: var(--radius-xl, 18px);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              border-color 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
 }
 
+/* Apple-style accent bar — scaleX from left on hover */
 .program-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  height: 3px;
+  background-color: var(--color-primary);
+  border-radius: 0 0 3px 3px;
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .program-card:hover {
   transform: translateY(-8px);
-  box-shadow: var(--shadow-2xl);
-  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04),
+              0 12px 32px rgba(0, 0, 0, 0.1),
+              0 4px 16px rgba(33, 108, 126, 0.1);
+  border-color: rgba(33, 108, 126, 0.22);
 }
 
 .program-card:hover::before {
   transform: scaleX(1);
 }
 
+[data-theme='dark'] .program-card {
+  background: #1c1c1e;
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .program-card:hover {
+  border-color: rgba(33, 108, 126, 0.4);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Icon box ───────────────────────────────────────────────────────── */
 .program-icon-box {
-  width: 4.5rem;
-  height: 4.5rem;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  width: 4rem;
+  height: 4rem;
+  background-color: var(--color-primary);
   color: var(--color-white);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-xl, 18px);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.75rem;
-  box-shadow: 0 8px 20px rgba(33, 108, 126, 0.25);
-  transition: transform 0.3s ease;
+  margin-bottom: 1.625rem;
+  box-shadow: 0 4px 16px rgba(33, 108, 126, 0.22);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  flex-shrink: 0;
 }
 
 .program-card:hover .program-icon-box {
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.08) rotate(4deg);
+  box-shadow: 0 6px 22px rgba(33, 108, 126, 0.32);
 }
 
 .program-icon-box svg {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .program-icon-box i {
-  font-size: 2.25rem;
+  font-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* ── Card typography ────────────────────────────────────────────────── */
 .program-card h3 {
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--color-gray-900);
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
+  margin-bottom: 0.375rem;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
 }
 
+[data-theme='dark'] .program-card h3 {
+  color: #f5f5f7;
+}
+
+/* Age/level pill */
 .program-age {
-  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--color-accent);
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  background: rgba(166, 136, 73, 0.08);
+  border: 1px solid rgba(166, 136, 73, 0.18);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+}
+
+[data-theme='dark'] .program-age {
+  background: rgba(166, 136, 73, 0.14);
+  border-color: rgba(166, 136, 73, 0.28);
 }
 
 .program-desc {
   color: var(--color-gray-600);
-  margin-bottom: 2rem;
+  margin-bottom: 1.875rem;
   flex-grow: 1;
-  line-height: 1.7;
+  line-height: 1.68;
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
 }
 
+[data-theme='dark'] .program-desc {
+  color: #8e8e93;
+}
+
+/* ── Feature list ───────────────────────────────────────────────────── */
 .program-features {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
 }
 
 .program-features li {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: 0.75rem;
   color: var(--color-gray-700);
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
+}
+
+[data-theme='dark'] .program-features li {
+  color: #aeaeb2;
 }
 
 .program-features li svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--color-green);
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--color-green, #34c759);
   flex-shrink: 0;
 }
 
 .program-features li i {
-  font-size: 1.25rem;
-  color: var(--color-green);
+  font-size: 1.125rem;
+  color: var(--color-green, #34c759);
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;

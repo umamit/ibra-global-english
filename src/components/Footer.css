@@ -1,12 +1,16 @@
-/* Footer Section */
+/* ==========================================================================
+   FOOTER — Apple Human Interface Guidelines
+   ========================================================================== */
+
 footer {
-  background-color: var(--color-primary-dark);
-  color: var(--color-white);
+  background-color: #1d1d1f;  /* Apple dark near-black */
+  color: rgba(255, 255, 255, 0.85);
   padding-block: 0 3rem;
   overflow: hidden;
   max-width: 100%;
 }
 
+/* ── Top Ribbon ── */
 .footer-yellow-ribbon {
   background-color: var(--color-accent);
   padding-block: 1.5rem;
@@ -18,14 +22,16 @@ footer {
 
 .footer-yellow-ribbon .footer-logo-text h3 {
   color: #0c2327;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .footer-yellow-ribbon .footer-logo-text p {
-  color: rgba(12, 35, 39, 0.85);
-  font-weight: 700;
+  color: rgba(12, 35, 39, 0.75);
+  font-weight: 500;
 }
 
+/* ── Content ── */
 .footer-content {
   display: flex;
   flex-direction: column;
@@ -50,9 +56,10 @@ footer {
 }
 
 .footer-logo img {
-  width: 3.8rem;
-  height: 3.8rem;
+  width: 3.5rem;
+  height: 3.5rem;
   object-fit: contain;
+  border-radius: var(--radius-sm);
 }
 
 .footer-logo-text {
@@ -60,44 +67,49 @@ footer {
 }
 
 @media (max-width: 576px) {
-  .footer-logo-text {
-    text-align: center;
-  }
+  .footer-logo-text { text-align: center; }
 }
 
 .footer-logo-text h3 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.2;
+  color: #ffffff;
 }
 
 .footer-logo-text p {
-  font-size: 0.75rem;
-  color: var(--color-accent-light);
-  font-weight: 600;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+  letter-spacing: 0.03em;
 }
 
 .footer-desc {
-  color: var(--color-bg-teal-100);
-  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  max-width: 480px;
 }
 
+/* ── Copyright ── */
 .footer-copyright {
-  font-size: 0.875rem;
-  color: var(--color-bg-teal-200);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   width: 100%;
   padding-top: 2rem;
   margin-top: 1.5rem;
+  letter-spacing: -0.01em;
 }
 
-/* Scroll Animations (Handled by AOS library) */
+/* ── Scroll reveal ── */
 .scroll-reveal:not(.aos-init) {
   opacity: 0;
 }
 
-/* Floating Social Buttons Group */
-/* Moved higher on the right side to avoid overlapping Sentry feedback button (bottom-right) and AI Chat widget (bottom-left) */
+/* ── Floating Social Buttons ── */
 .social-float-group {
   position: fixed;
   bottom: 6rem;
@@ -109,43 +121,35 @@ footer {
 }
 
 .social-float {
-  width: 3.75rem;
-  height: 3.75rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
   position: relative;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.3s ease;
 }
 
 .social-float:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
 .social-float svg {
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.75rem;
   fill: currentColor;
 }
 
-/* Specific colors */
-.facebook-float {
-  background-color: #1877f2;
-}
+.facebook-float  { background-color: #1877f2; }
+.instagram-float { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.whatsapp-float  { background-color: #25d366; }
 
-.instagram-float {
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-}
-
-.whatsapp-float {
-  background-color: #25d366;
-}
-
-/* Social Floating Buttons Pulse Animation Effect */
+/* Pulse ring */
 .social-float::before {
   content: '';
   position: absolute;
@@ -153,46 +157,31 @@ footer {
   height: 100%;
   border-radius: var(--radius-full);
   z-index: -1;
-  opacity: 0.4;
-  animation: wa-pulse 2s infinite;
+  opacity: 0.35;
+  animation: wa-pulse 2.5s infinite;
 }
 
-.facebook-float::before {
-  background-color: #1877f2;
-}
-
-.instagram-float::before {
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-}
-
-.whatsapp-float::before {
-  background-color: #25d366;
-}
+.facebook-float::before  { background-color: #1877f2; }
+.instagram-float::before { background-color: #dc2743; }
+.whatsapp-float::before  { background-color: #25d366; }
 
 @keyframes wa-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.4;
-  }
-  100% {
-    transform: scale(1.6);
-    opacity: 0;
-  }
+  0%   { transform: scale(1);   opacity: 0.35; }
+  100% { transform: scale(1.65); opacity: 0; }
 }
 
-/* Mobile responsive positioning for floating buttons */
 @media (max-width: 576px) {
   .social-float-group {
     bottom: 5rem;
     right: 1rem;
-    gap: 0.65rem;
+    gap: 0.6rem;
   }
   .social-float {
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 3rem;
+    height: 3rem;
   }
   .social-float svg {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }

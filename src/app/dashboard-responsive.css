@@ -1,56 +1,62 @@
 /* ==========================================================================
-   PORTAL DASHBOARD RESPONSIVE STYLES (Mobile, Tablet)
+   DASHBOARD RESPONSIVE — Apple Human Interface Guidelines
+   Mobile overlay sidebar · Card-tables · Clean breakpoints
    ========================================================================== */
 
+/* ── Sidebar: collapse to overlay drawer on tablet/mobile ────────────── */
 @media (max-width: 1024px) {
   .dashboard-sidebar {
     position: fixed;
     top: 0;
     bottom: 0;
     left: -280px;
-    box-shadow: var(--shadow-2xl);
+    width: 280px;
     height: 100vh;
     height: 100dvh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    box-shadow: var(--shadow-2xl);
+    transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 90;
   }
-  
+
   .dashboard-sidebar.open {
     left: 0;
   }
-  
+
   .dashboard-main {
     padding: 1.5rem;
   }
 }
 
-/* Mobile Sidebar Backdrop Overlay */
+/* ── Sidebar backdrop overlay ────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .dashboard-container::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--transition-normal);
+    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 85;
   }
-  
+
   .dashboard-container.sidebar-open::before {
     opacity: 1;
     pointer-events: auto;
   }
 }
 
-/* ==========================================
-   SMARTPHONE RESPONSIVE OVERRIDES
-   ========================================== */
-
+/* ==========================================================================
+   SMARTPHONE RESPONSIVE OVERRIDES (≤ 768px)
+   Table → stacked card transformation
+   ========================================================================== */
 @media (max-width: 768px) {
-  /* Table-to-Cards Transformation */
+
+  /* ── Table-to-card: block display ──────────────────────────────────── */
   .portal-table.student-table,
   .portal-table.parent-table,
   .portal-table.attendance-table,
@@ -61,7 +67,7 @@
     width: 100%;
     border: none;
   }
-  
+
   .portal-table.student-table thead,
   .portal-table.parent-table thead,
   .portal-table.attendance-table thead,
@@ -70,7 +76,7 @@
   .portal-table.registration-table thead {
     display: none;
   }
-  
+
   .portal-table.student-table tbody,
   .portal-table.parent-table tbody,
   .portal-table.attendance-table tbody,
@@ -80,7 +86,8 @@
     display: block;
     width: 100%;
   }
-  
+
+  /* ── Each row becomes a card ───────────────────────────────────────── */
   .portal-table.student-table tr,
   .portal-table.parent-table tr,
   .portal-table.attendance-table tr,
@@ -88,25 +95,25 @@
   .portal-table.report-table tr,
   .portal-table.registration-table tr {
     display: block;
-    background-color: var(--color-white);
-    border: 1px solid var(--color-gray-200);
-    border-radius: var(--radius-lg);
+    background-color: var(--color-white, #ffffff);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: var(--radius-lg, 14px);
     padding: 1.25rem;
-    margin-bottom: 1.25rem;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-normal);
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 10px rgba(0, 0, 0, 0.04);
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
-  [data-theme="dark"] .portal-table.student-table tr,
-  [data-theme="dark"] .portal-table.parent-table tr,
-  [data-theme="dark"] .portal-table.attendance-table tr,
-  [data-theme="dark"] .portal-table.parent-attendance-table tr,
-  [data-theme="dark"] .portal-table.report-table tr,
-  [data-theme="dark"] .portal-table.registration-table tr {
-    background-color: #0f172a;
-    border-color: rgba(255, 255, 255, 0.1);
+
+  [data-theme='dark'] .portal-table.student-table tr,
+  [data-theme='dark'] .portal-table.parent-table tr,
+  [data-theme='dark'] .portal-table.attendance-table tr,
+  [data-theme='dark'] .portal-table.parent-attendance-table tr,
+  [data-theme='dark'] .portal-table.report-table tr,
+  [data-theme='dark'] .portal-table.registration-table tr {
+    background-color: #1c1c1e;
+    border-color: rgba(255, 255, 255, 0.08);
   }
-  
+
   .portal-table.student-table tr:hover,
   .portal-table.parent-table tr:hover,
   .portal-table.attendance-table tr:hover,
@@ -115,9 +122,19 @@
   .portal-table.registration-table tr:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-color: var(--color-primary-dark);
+    border-color: var(--color-primary, #216c7e);
   }
-  
+
+  [data-theme='dark'] .portal-table.student-table tr:hover,
+  [data-theme='dark'] .portal-table.parent-table tr:hover,
+  [data-theme='dark'] .portal-table.attendance-table tr:hover,
+  [data-theme='dark'] .portal-table.parent-attendance-table tr:hover,
+  [data-theme='dark'] .portal-table.report-table tr:hover,
+  [data-theme='dark'] .portal-table.registration-table tr:hover {
+    border-color: #5ac8e0;
+  }
+
+  /* ── Each cell: label-value row ────────────────────────────────────── */
   .portal-table.student-table td,
   .portal-table.parent-table td,
   .portal-table.attendance-table td,
@@ -127,22 +144,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--color-gray-100);
+    padding: 0.625rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     text-align: right;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 500;
     gap: 1rem;
+    color: var(--color-gray-900, #1d1d1f);
   }
-  
-  [data-theme="dark"] .portal-table.student-table td,
-  [data-theme="dark"] .portal-table.parent-table td,
-  [data-theme="dark"] .portal-table.attendance-table td,
-  [data-theme="dark"] .portal-table.parent-attendance-table td,
-  [data-theme="dark"] .portal-table.report-table td,
-  [data-theme="dark"] .portal-table.registration-table td {
+
+  [data-theme='dark'] .portal-table.student-table td,
+  [data-theme='dark'] .portal-table.parent-table td,
+  [data-theme='dark'] .portal-table.attendance-table td,
+  [data-theme='dark'] .portal-table.parent-attendance-table td,
+  [data-theme='dark'] .portal-table.report-table td,
+  [data-theme='dark'] .portal-table.registration-table td {
     border-bottom-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.82);
   }
-  
+
   .portal-table.student-table td:last-child,
   .portal-table.parent-table td:last-child,
   .portal-table.attendance-table td:last-child,
@@ -153,7 +173,7 @@
     padding-bottom: 0;
   }
 
-  /* Pseudo elements for injection labels */
+  /* ── ::before label ────────────────────────────────────────────────── */
   .portal-table.student-table td::before,
   .portal-table.parent-table td::before,
   .portal-table.attendance-table td::before,
@@ -161,19 +181,20 @@
   .portal-table.report-table td::before,
   .portal-table.registration-table td::before {
     font-weight: 700;
-    color: var(--color-gray-500);
+    font-size: 0.78rem;
+    color: rgba(29, 29, 31, 0.45);
     text-align: left;
-    font-size: 0.85rem;
     flex-shrink: 0;
+    letter-spacing: 0.01em;
   }
-  
-  [data-theme="dark"] .portal-table.student-table td::before,
-  [data-theme="dark"] .portal-table.parent-table td::before,
-  [data-theme="dark"] .portal-table.attendance-table td::before,
-  [data-theme="dark"] .portal-table.parent-attendance-table td::before,
-  [data-theme="dark"] .portal-table.report-table td::before,
-  [data-theme="dark"] .portal-table.registration-table td::before {
-    color: #94a3b8;
+
+  [data-theme='dark'] .portal-table.student-table td::before,
+  [data-theme='dark'] .portal-table.parent-table td::before,
+  [data-theme='dark'] .portal-table.attendance-table td::before,
+  [data-theme='dark'] .portal-table.parent-attendance-table td::before,
+  [data-theme='dark'] .portal-table.report-table td::before,
+  [data-theme='dark'] .portal-table.registration-table td::before {
+    color: rgba(255, 255, 255, 0.35);
   }
 
   /* Student Table Labels */
@@ -229,36 +250,36 @@
   .portal-table.registration-table td:nth-child(8)::before { content: "Status:"; }
   .portal-table.registration-table td:nth-child(9)::before { content: "Aksi:"; }
 
-  /* Inner align tweaks */
+  /* ── Inner alignment tweaks ────────────────────────────────────────── */
   .portal-table.attendance-table td:nth-child(4) div {
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 0.5rem !important;
   }
-  
+
   .portal-table.report-table td:nth-child(8) {
     max-width: none !important;
     white-space: normal !important;
     overflow: visible !important;
   }
-  
-  /* Topbar structure improvements on mobile */
+
+  /* ── Topbar mobile ─────────────────────────────────────────────────── */
   .dashboard-topbar {
     flex-direction: column;
     align-items: stretch;
     gap: 1.25rem;
     margin-bottom: 1.75rem;
   }
-  
+
   .topbar-title {
     text-align: center;
   }
-  
+
   .topbar-user {
     justify-content: center;
     width: 100%;
   }
-  
+
   .topbar-user button,
   .topbar-user select,
   .topbar-user input {
@@ -267,33 +288,33 @@
   }
 }
 
-/* Modals & Dashboard padding refinements on small phones */
+/* ── Small phones (≤ 576px) ──────────────────────────────────────────── */
 @media (max-width: 576px) {
   .dashboard-main {
     padding: 1rem 0.75rem;
   }
-  
+
   .portal-modal {
     max-height: calc(100vh - 2rem);
     display: flex;
     flex-direction: column;
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-xl, 18px);
   }
-  
+
   .portal-modal-header {
     padding: 1.25rem 1.5rem;
   }
-  
+
   .portal-modal form {
-    padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+    padding: 1.25rem 1.5rem 1.5rem;
     overflow-y: auto;
     flex-grow: 1;
   }
-  
+
   .portal-modal .auth-error-banner {
-    margin: 1rem 1.5rem 0 1.5rem;
+    margin: 1rem 1.5rem 0;
   }
-  
+
   .stat-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -301,18 +322,19 @@
   }
 }
 
-/* Responsive nav optimize */
+/* ── Tablet nav optimizations ────────────────────────────────────────── */
 @media (min-width: 769px) and (max-width: 1180px) {
-  .nav-links { gap: 1.0rem !important; }
-  .nav-link { font-size: 0.85rem !important; }
-  .logo-text p { display: none !important; }
-  .logo-text h1 { font-size: 1.15rem !important; }
-  .logo-img { width: 3.6rem !important; height: 3.6rem !important; }
-  .nav-btn, .nav-btn-outline { padding: 0.35rem 0.8rem !important; font-size: 0.725rem !important; height: 1.95rem !important; }
-  .nav-right-group { gap: 0.5rem !important; }
+  .nav-links         { gap: 1rem !important; }
+  .nav-link          { font-size: 0.85rem !important; }
+  .logo-text p       { display: none !important; }
+  .logo-text h1      { font-size: 1.1rem !important; }
+  .logo-img          { width: 3.5rem !important; height: 3.5rem !important; }
+  .nav-btn,
+  .nav-btn-outline   { padding: 0.35rem 0.8rem !important; font-size: 0.72rem !important; height: 1.95rem !important; }
+  .nav-right-group   { gap: 0.5rem !important; }
 }
 
-/* Report detail layout responsive stacking */
+/* ── Report detail stacking ──────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .report-detail-layout {
     grid-template-columns: 1fr !important;
@@ -321,34 +343,96 @@
 }
 
 @media (max-width: 768px) {
-  .three-column-grid { grid-template-columns: 1fr !important; }
-  .four-column-grid { grid-template-columns: 1fr 1fr !important; }
-  .report-scores-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+  .three-column-grid   { grid-template-columns: 1fr !important; }
+  .four-column-grid    { grid-template-columns: 1fr 1fr !important; }
+  .report-scores-grid  { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
 }
 
 @media (max-width: 640px) {
-  .student-info-grid { grid-template-columns: 1fr !important; text-align: left !important; gap: 1rem !important; }
-  .student-info-grid > div { text-align: left !important; }
+  .student-info-grid          { grid-template-columns: 1fr !important; text-align: left !important; gap: 1rem !important; }
+  .student-info-grid > div   { text-align: left !important; }
 }
 
 @media (max-width: 480px) {
-  .four-column-grid { grid-template-columns: 1fr !important; }
-  .signature-block { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
-  .receipt-row { grid-template-columns: 1fr !important; gap: 0.25rem !important; }
+  .four-column-grid   { grid-template-columns: 1fr !important; }
+  .signature-block    { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+  .receipt-row        { grid-template-columns: 1fr !important; gap: 0.25rem !important; }
   .receipt-row span:nth-child(2) { display: none !important; }
 }
 
-/* Finance print header */
+/* ── Finance print header ────────────────────────────────────────────── */
 .finance-print-header { display: none; }
 
-/* LMS Progress Ring SVG */
-.lms-progress-ring-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-.lms-progress-ring circle.track { fill: none; stroke: var(--color-gray-200); }
-.lms-progress-ring circle.fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset 1s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
-.lms-progress-ring-text { position: absolute; font-weight: 900; text-align: center; line-height: 1; }
-.lms-progress-ring-text span { display: block; font-size: 0.6rem; font-weight: 600; color: var(--color-gray-500); margin-top: 2px; }
+/* ── LMS Progress Ring SVG ───────────────────────────────────────────── */
+.lms-progress-ring-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
-/* Responsive Custom Grids */
-.three-column-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-.four-column-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
-.receipt-row { display: grid; grid-template-columns: 180px 10px 1fr; border-bottom: 1px dashed var(--color-gray-250); padding-bottom: 0.5rem; }
+.lms-progress-ring circle.track {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.07);
+}
+
+[data-theme='dark'] .lms-progress-ring circle.track {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.lms-progress-ring circle.fill {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.lms-progress-ring-text {
+  position: absolute;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1;
+  color: var(--color-gray-900, #1d1d1f);
+  letter-spacing: -0.02em;
+}
+
+[data-theme='dark'] .lms-progress-ring-text {
+  color: var(--color-white, #ffffff);
+}
+
+.lms-progress-ring-text span {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(29, 29, 31, 0.4);
+  margin-top: 2px;
+}
+
+[data-theme='dark'] .lms-progress-ring-text span {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── Responsive custom grid utilities ────────────────────────────────── */
+.three-column-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.four-column-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.receipt-row {
+  display: grid;
+  grid-template-columns: 180px 10px 1fr;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+  padding-bottom: 0.5rem;
+}
+
+[data-theme='dark'] .receipt-row {
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+}

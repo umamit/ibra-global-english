@@ -1,7 +1,7 @@
-/* ── Marquee Banner ─────────────────────────────────────────────────── */
+/* ── Marquee Banner — Apple HIG ─────────────────────────────────────── */
 .marquee-container {
   width: 100%;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background-color: var(--color-primary-dark);
   overflow: hidden;
   height: 40px;
   display: flex;
@@ -10,21 +10,30 @@
   top: 0;
   left: 0;
   right: 0;
-  /* z-index di bawah header agar header bisa menimpa/menyembunyikan marquee saat scroll */
+  /* z-index below header so header can overlay on scroll */
   z-index: 99;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
+[data-theme='dark'] .marquee-container {
+  background-color: #0d2b33;
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Scrolling track ─────────────────────────────────────────────────── */
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee-scroll 40s linear infinite;
+  animation: marquee-scroll 42s linear infinite;
   will-change: transform;
+  transition: animation-play-state 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .marquee-container:hover .marquee-track {
   animation-play-state: paused;
 }
 
+/* ── Content block ──────────────────────────────────────────────────── */
 .marquee-content-block {
   display: flex;
   align-items: center;
@@ -32,43 +41,50 @@
   white-space: nowrap;
 }
 
+/* ── Individual item ─────────────────────────────────────────────────── */
 .marquee-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   padding-inline: 1.5rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-
-.marquee-divider {
   font-size: 0.75rem;
-  opacity: 0.7;
-  flex-shrink: 0;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  font-family: var(--font-sans);
 }
 
+[data-theme='dark'] .marquee-item {
+  color: rgba(126, 207, 219, 0.88);
+}
+
+/* ── Separator dot ───────────────────────────────────────────────────── */
+.marquee-divider {
+  font-size: 0.6875rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='dark'] .marquee-divider {
+  color: rgba(126, 207, 219, 0.4);
+}
+
+/* ── Scroll keyframe ─────────────────────────────────────────────────── */
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 
-[data-theme="dark"] .marquee-container {
-  background: linear-gradient(90deg, #0f2d38 0%, #0a1f28 100%);
-}
-
-[data-theme="dark"] .marquee-item {
-  color: rgba(167, 216, 224, 0.9);
-}
-
+/* ── Reduced motion ──────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
     animation: none;
     justify-content: center;
     width: 100%;
   }
+
   .marquee-content-block:last-child {
     display: none;
   }

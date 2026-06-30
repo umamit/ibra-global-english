@@ -1,39 +1,49 @@
-/* Contact & Registration Section */
+/* ==========================================================================
+   CONTACT & REGISTRATION — Apple Human Interface Guidelines
+   ========================================================================== */
+
 .contact-section {
   background-color: var(--color-white);
+  padding-block: 7rem;
 }
 
+/* ── Layout Grid ── */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 5rem;
   align-items: center;
 }
 
 @media (max-width: 992px) {
   .contact-grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 3.5rem;
   }
 }
 
+/* ── Info Panel ── */
 .contact-info-panel h2 {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 800;
-  color: var(--color-primary);
-  margin-bottom: 1.5rem;
+  color: var(--color-gray-900);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 
 .contact-info-panel > p {
-  font-size: 1.25rem;
-  color: var(--color-gray-600);
+  font-size: 1.125rem;
+  color: var(--color-gray-500);
   margin-bottom: 2.5rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
 }
 
 .contact-links {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .contact-item {
@@ -43,10 +53,10 @@
 }
 
 .contact-icon-box {
-  width: 3rem;
-  height: 3rem;
-  background-color: var(--color-primary-light);
-  border-radius: var(--radius-md);
+  width: 2.75rem;
+  height: 2.75rem;
+  background-color: var(--color-primary-light, rgba(33, 108, 126, 0.1));
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,25 +64,30 @@
 }
 
 .contact-icon-box svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
   color: var(--color-primary);
 }
 
 .contact-details h4 {
-  font-size: 1.125rem;
+  font-size: 0.9375rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-gray-900);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.2rem;
 }
 
 .contact-details p {
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .contact-email-link,
 .contact-phone-link,
 .contact-address-link {
-  transition: color var(--transition-fast);
+  transition: color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .contact-email-link:hover,
@@ -80,38 +95,48 @@
 .contact-address-link:hover {
   color: var(--color-primary);
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-/* Registration Form Panel */
+/* ── Form Panel (Frosted Glass Card) ── */
 .form-panel {
-  background: linear-gradient(135deg, var(--color-bg-teal-50) 0%, var(--color-white) 100%);
-  padding: 3rem;
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--color-bg-teal-100);
+  background: var(--color-white);
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 @media (max-width: 576px) {
   .form-panel {
-    padding: 2rem 1.5rem;
+    padding: 1.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-panel {
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--radius-lg);
   }
 }
 
 .form-panel h3 {
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-gray-900);
   margin-bottom: 1.5rem;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
-/* ──── Contact Tab Switcher ──── */
+/* ── Tab Switcher (Apple Segmented Control) ── */
 .contact-tab-switcher {
   display: flex;
-  gap: 0.5rem;
-  background: rgba(0,0,0,0.04);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 0.5rem;
+  gap: 0.25rem;
+  background: rgba(116, 116, 128, 0.1);
+  border-radius: 11px;
+  padding: 3px;
+  margin-bottom: 1.5rem;
 }
 
 .contact-tab-btn {
@@ -119,67 +144,87 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.85rem;
-  font-weight: 700;
+  gap: 0.4rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
   border: none;
   border-radius: 9px;
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   background: transparent;
   color: var(--color-gray-500);
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .contact-tab-btn.active {
-  background: white;
-  color: var(--color-primary-dark);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  background: var(--color-white);
+  color: var(--color-gray-900);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1), 0 0.5px 1px rgba(0, 0, 0, 0.06);
+  font-weight: 700;
 }
 
 .contact-tab-btn:hover:not(.active) {
   color: var(--color-primary);
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.55);
 }
 
-/* ──── Registration Success Card ──── */
+@media (max-width: 480px) {
+  .contact-tab-btn {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.35rem;
+    gap: 0.2rem;
+  }
+  .contact-tab-btn svg {
+    width: 13px;
+    height: 13px;
+  }
+  .form-panel h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* ── Registration Success State ── */
 .reg-success-card {
   text-align: center;
   padding: 2.5rem 1.5rem;
-  background: linear-gradient(135deg, rgba(52,199,89,0.08) 0%, rgba(255,255,255,0.6) 100%);
-  border-radius: 16px;
-  border: 1px solid rgba(52,199,89,0.2);
+  background: rgba(52, 199, 89, 0.06);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(52, 199, 89, 0.18);
 }
 
 .reg-success-icon {
-  width: 72px;
-  height: 72px;
-  background: rgba(52,199,89,0.12);
-  border-radius: 50%;
+  width: 68px;
+  height: 68px;
+  background: rgba(52, 199, 89, 0.1);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.25rem;
-  color: var(--color-green, #22c55e);
+  color: #34c759;
 }
 
 .reg-success-card h4 {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 800;
-  color: var(--color-primary-dark);
+  color: var(--color-gray-900);
   margin-bottom: 0.75rem;
+  letter-spacing: -0.03em;
 }
 
 .reg-success-card p {
-  color: var(--color-gray-600);
-  font-size: 0.925rem;
-  line-height: 1.6;
-  max-width: 340px;
+  color: var(--color-gray-500);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  max-width: 320px;
   margin: 0 auto;
+  letter-spacing: -0.01em;
 }
 
-/* Form Grid System to lay out form elements nicely */
+/* ── Form Grid ── */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -193,100 +238,170 @@
   }
 }
 
-/* Mobile responsive enhancements for Contact Registration Form to prevent overflow */
-@media (max-width: 480px) {
-  .form-panel {
-    padding: 1.5rem 1rem; /* Reduce padding from 2rem 1.5rem to fit mobile screens */
-    border-radius: var(--radius-xl);
-  }
-
-  .contact-tab-btn {
-    font-size: 0.75rem; /* Shrink font size to prevent layout overflow */
-    padding: 0.5rem 0.35rem;
-    gap: 0.25rem;
-  }
-  
-  .contact-tab-btn svg {
-    width: 13px;
-    height: 13px;
-  }
-  
-  .form-panel h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-  }
+/* ── Form Elements ── */
+.form-group {
+  margin-bottom: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
+.form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  letter-spacing: -0.01em;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
+  font-weight: 400;
+  font-size: 0.9375rem;
+  font-family: var(--font-sans);
+  transition: border-color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.2s ease;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input::placeholder {
+  color: var(--color-gray-500);
+  font-weight: 400;
+}
+
+.form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(33, 108, 126, 0.12);
+  background-color: var(--color-white);
+}
+
+/* ── Submit Button ── */
+.form-btn {
+  width: 100%;
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark, #185f71) 100%);
+  color: var(--color-white);
+  padding: 0.875rem;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  box-shadow: 0 1px 3px rgba(33, 108, 126, 0.2),
+              0 4px 12px rgba(33, 108, 126, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(33, 108, 126, 0.25),
+              0 8px 20px rgba(33, 108, 126, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.form-btn:active {
+  transform: scale(0.985) translateY(0);
+  box-shadow: 0 1px 3px rgba(33, 108, 126, 0.15);
+}
+
+/* ── Responsive ── */
 @media (max-width: 576px) {
   .contact-info-panel h2 {
-    font-size: 1.75rem;
+    font-size: 1.875rem;
   }
   .contact-info-panel > p {
     font-size: 1rem;
   }
 }
 
-/* ──── Shared Form Elements ──── */
-.form-group {
-  margin-bottom: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* ── Dark Mode ── */
+[data-theme='dark'] .contact-section {
+  background-color: #1c1c1e;
 }
 
-.form-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-gray-700);
+[data-theme='dark'] .contact-info-panel h2 {
+  color: #ffffff;
 }
 
-.form-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-gray-200);
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-900);
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: all var(--transition-fast);
+[data-theme='dark'] .contact-info-panel > p {
+  color: rgba(255, 255, 255, 0.55);
 }
 
-.form-input::placeholder {
-  color: var(--color-gray-500);
+[data-theme='dark'] .contact-details h4 {
+  color: #ffffff;
 }
 
-.form-input:focus {
+[data-theme='dark'] .contact-details p {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme='dark'] .contact-icon-box {
+  background-color: rgba(33, 108, 126, 0.2);
+}
+
+[data-theme='dark'] .form-panel {
+  background: #2c2c2e;
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .form-panel h3 {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .contact-tab-switcher {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .contact-tab-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .contact-tab-btn {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme='dark'] .form-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme='dark'] .form-input {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .form-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme='dark'] .form-input:focus {
+  background-color: rgba(255, 255, 255, 0.08);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(33, 108, 126, 0.08);
-  background-color: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(33, 108, 126, 0.2);
 }
 
-.form-btn {
-  width: 100%;
-  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: var(--color-white);
-  padding: 0.875rem;
-  border-radius: var(--radius-lg);
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  border: none;
-  box-shadow: 0 2px 8px rgba(33, 108, 126, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+[data-theme='dark'] .reg-success-card h4 {
+  color: #ffffff;
 }
 
-.form-btn:hover {
-  background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary-dark) 100%);
-  box-shadow: 0 4px 12px rgba(33, 108, 126, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+[data-theme='dark'] .reg-success-card p {
+  color: rgba(255, 255, 255, 0.55);
 }
-
-.form-btn:active {
-  transform: scale(0.985);
-}
-

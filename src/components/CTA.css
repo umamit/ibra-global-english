@@ -1,40 +1,56 @@
-/* --- CTA Banner Section --- */
+/* ── CTA Banner Section — Apple HIG ─────────────────────────────────── */
 .cta-section {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background-color: var(--color-primary-dark);
   position: relative;
   overflow: hidden;
+  padding: 6rem 0;
+}
+
+[data-theme='dark'] .cta-section {
+  background-color: #0d2b33;
 }
 
 .cta-section .section-header h2 {
   color: var(--color-white);
+  letter-spacing: -0.03em;
+  font-weight: 800;
 }
 
 .cta-section .section-header p {
-  color: var(--color-bg-teal-100);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: -0.01em;
 }
 
+/* ── Banner card — glassmorphism on teal ──────────────────────────── */
 .cta-banner {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  border-radius: var(--radius-2xl);
-  padding: 3rem 2rem;
-  box-shadow: var(--shadow-xl);
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-xl, 18px);
+  padding: 3.5rem 2.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12),
+              0 16px 48px rgba(0, 0, 0, 0.18);
   position: relative;
   overflow: hidden;
 }
 
+/* ── Tag / eyebrow pill ─────────────────────────────────────────────── */
 .cta-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   background-color: var(--color-accent);
   color: var(--color-white);
-  padding: 0.4rem 1.2rem;
+  padding: 0.35rem 1rem;
   border-radius: var(--radius-full);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 1.125rem;
 }
 
+/* ── Content block ──────────────────────────────────────────────────── */
 .cta-content {
   text-align: center;
   position: relative;
@@ -42,67 +58,88 @@
 }
 
 .cta-content h2 {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   font-weight: 800;
   color: var(--color-white);
   margin-bottom: 1rem;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 .cta-content p {
-  font-size: 1.25rem;
-  color: var(--color-bg-teal-100);
-  margin-bottom: 2rem;
-  max-width: 600px;
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2.25rem;
+  max-width: 560px;
   margin-inline: auto;
+  letter-spacing: -0.01em;
+  line-height: 1.65;
+  font-weight: 400;
 }
 
+/* ── Action buttons ─────────────────────────────────────────────────── */
 .cta-actions {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.875rem;
   flex-wrap: wrap;
 }
 
 .cta-btn-primary {
   background-color: var(--color-white);
   color: var(--color-primary-dark);
-  padding: 1rem 2rem;
-  border-radius: var(--radius-lg);
+  padding: 0.875rem 1.875rem;
+  border-radius: var(--radius-full);
   font-weight: 700;
-  font-size: 1.125rem;
-  transition: var(--transition-fast);
-  box-shadow: var(--shadow-lg);
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  transition: background-color 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .cta-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  background-color: #f0f0f2;
+}
+
+.cta-btn-primary:active {
+  transform: translateY(0);
 }
 
 .cta-btn-secondary {
   background-color: transparent;
   color: var(--color-white);
-  padding: 1rem 2rem;
-  border-radius: var(--radius-lg);
+  padding: 0.875rem 1.875rem;
+  border-radius: var(--radius-full);
   font-weight: 700;
-  font-size: 1.125rem;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  transition: var(--transition-fast);
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  transition: border-color 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .cta-btn-secondary:hover {
-  border-color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.85);
   background-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
 
-/* Glassmorphic decorative background shapes */
+.cta-btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* ── Ambient decorative orbs ─────────────────────────────────────────── */
 .cta-decor {
   position: absolute;
   border-radius: 50%;
@@ -111,48 +148,31 @@
 }
 
 .cta-decor-1 {
-  width: 400px;
-  height: 400px;
-  background: rgba(255, 255, 255, 0.05);
-  top: -200px;
-  right: -100px;
+  width: 380px;
+  height: 380px;
+  background: rgba(255, 255, 255, 0.04);
+  top: -190px;
+  right: -90px;
 }
 
 .cta-decor-2 {
-  width: 300px;
-  height: 300px;
+  width: 280px;
+  height: 280px;
   background: rgba(255, 255, 255, 0.03);
-  bottom: -150px;
-  left: -100px;
+  bottom: -140px;
+  left: -90px;
 }
 
 .cta-decor-3 {
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.04);
+  width: 180px;
+  height: 180px;
+  background: rgba(255, 255, 255, 0.035);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-/* Responsive adjustments for CTA Banner */
-@media (max-width: 768px) {
-  .cta-banner {
-    padding: 2rem 1.25rem;
-  }
-  .cta-content h2 {
-    font-size: 1.75rem;
-  }
-  .cta-content p {
-    font-size: 1rem;
-  }
-  .cta-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
-/* --- Scroll-triggered Highlight Paint Effect --- */
+/* ── Scroll-triggered highlight paint ──────────────────────────────── */
 .highlight-paint {
   position: relative;
   display: inline-block;
@@ -164,24 +184,25 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 30%;
-  background: linear-gradient(90deg, rgba(166, 136, 73, 0.2), rgba(166, 136, 73, 0.1));
+  height: 28%;
+  background: rgba(166, 136, 73, 0.18);
   z-index: -1;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: 2px;
 }
 
 .highlight-paint.reveal-active::after {
   transform: scaleX(1);
 }
 
-/* CTA Brochure Hover Effect */
+/* ── Brochure card hover ─────────────────────────────────────────────── */
 .cta-brochure-card:hover {
   transform: scale(1.02);
 }
 
-/* No Copy & No Selection Protection (Hanya untuk Landing Page) */
+/* ── No-copy protection ─────────────────────────────────────────────── */
 .nocopy-container {
   user-select: none !important;
   -webkit-user-select: none !important;
@@ -195,9 +216,34 @@
 .nocopy-container input,
 .nocopy-container textarea,
 .nocopy-container select,
-.nocopy-container [contenteditable="true"] {
+.nocopy-container [contenteditable='true'] {
   user-select: text !important;
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   -ms-user-select: text !important;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cta-section {
+    padding: 4rem 0;
+  }
+
+  .cta-banner {
+    padding: 2.25rem 1.5rem;
+  }
+
+  .cta-content h2 {
+    font-size: 2rem;
+    letter-spacing: -0.025em;
+  }
+
+  .cta-content p {
+    font-size: 1rem;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    align-items: center;
+  }
 }
