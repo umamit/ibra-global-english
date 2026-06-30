@@ -180,7 +180,7 @@ export default function AdminCurriculumPage() {
 
       <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>📖 Kelola Kurikulum &amp; Silabus</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>📖 Kelola Kurikulum & Silabus</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Kelola detail silabus, tingkatan level, dan materi pembelajaran program Ibra Global English.
           </p>
@@ -209,7 +209,7 @@ export default function AdminCurriculumPage() {
 
             <div className="form-group" style={{ marginBottom: "1rem" }}>
               <label className="form-label">Nama Level / Tingkatan</label>
-              <input className="form-input" placeholder="Contoh: Phonics &amp; Vocab 1" value={levelName} onChange={e => setLevelName(e.target.value)} required />
+              <input className="form-input" placeholder="Contoh: Phonics & Vocab 1" value={levelName} onChange={e => setLevelName(e.target.value)} required />
             </div>
 
             <div className="form-group" style={{ marginBottom: "1rem" }}>
@@ -224,7 +224,7 @@ export default function AdminCurriculumPage() {
 
             <div className="form-group" style={{ marginBottom: "1rem" }}>
               <label className="form-label">Topik Pembelajaran (Satu topik per baris)</label>
-              <textarea className="form-input" style={{ height: "120px", padding: "0.75rem", fontFamily: "inherit" }} placeholder="Contoh:&#10;Introduction &amp; Greetings&#10;Alphabet &amp; Phonics Sounds&#10;Numbers 1-100" value={topicsInput} onChange={e => setTopicsInput(e.target.value)} />
+              <textarea className="form-input" style={{ height: "120px", padding: "0.75rem", fontFamily: "inherit" }} placeholder="Contoh:&#10;Introduction & Greetings&#10;Alphabet & Phonics Sounds&#10;Numbers 1-100" value={topicsInput} onChange={e => setTopicsInput(e.target.value)} />
             </div>
 
             <div className="form-group" style={{ marginBottom: "1.5rem" }}>
@@ -250,7 +250,7 @@ export default function AdminCurriculumPage() {
         {/* List Panel */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            Daftar Kurikulum &amp; Silabus (Database Supabase)
+            Daftar Kurikulum & Silabus (Database Supabase)
           </h3>
 
           {loading ? (
@@ -262,7 +262,7 @@ export default function AdminCurriculumPage() {
               <table className="portal-table" style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
-                    <th style={{ textAlign: "left", padding: "10px" }}>Program &amp; Level</th>
+                    <th style={{ textAlign: "left", padding: "10px" }}>Program & Level</th>
                     <th style={{ textAlign: "left", padding: "10px", width: "120px" }}>Durasi</th>
                     <th style={{ textAlign: "center", padding: "10px", width: "80px" }}>Topik</th>
                     <th style={{ textAlign: "center", padding: "10px", width: "80px" }}>Status</th>

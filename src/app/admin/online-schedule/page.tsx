@@ -153,7 +153,7 @@ export default function AdminOnlineSchedulePage() {
 
             <div className="form-grid" style={{ gap: "1rem", marginBottom: "1rem" }}>
               <div className="form-group">
-                <label className="form-label">Tanggal &amp; Jam</label>
+                <label className="form-label">Tanggal & Jam</label>
                 <input type="datetime-local" className="form-input" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)} required />
               </div>
               <div className="form-group">

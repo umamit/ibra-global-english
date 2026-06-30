@@ -173,7 +173,7 @@ export default function AdminTutorsPage() {
 
       <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>👨‍🏫 Kelola Tutor &amp; Staf</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>👨‍🏫 Kelola Tutor & Staf</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Kelola profil tim pengajar dan staf pendidikan Ibra Global English Bobong.
           </p>
@@ -255,7 +255,7 @@ export default function AdminTutorsPage() {
                 <thead>
                   <tr>
                     <th style={{ textAlign: "left", padding: "10px", width: "60px" }}>Foto</th>
-                    <th style={{ textAlign: "left", padding: "10px" }}>Nama &amp; Peran</th>
+                    <th style={{ textAlign: "left", padding: "10px" }}>Nama & Peran</th>
                     <th style={{ textAlign: "center", padding: "10px", width: "80px" }}>Urutan</th>
                     <th style={{ textAlign: "center", padding: "10px", width: "80px" }}>Status</th>
                     <th style={{ textAlign: "right", padding: "10px", width: "140px" }}>Aksi</th>

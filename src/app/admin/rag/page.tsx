@@ -59,7 +59,10 @@ export default function AdminRAGPage() {
     }
   };
 
+  const [mounted, setMounted] = useState<boolean>(false);
+
   useEffect(() => {
+    setMounted(true);
     (async () => {
       try {
         const res = await fetch("/api/admin/rag-documents");
@@ -162,6 +165,14 @@ export default function AdminRAGPage() {
     }
   };
 
+  if (!mounted) {
+    return (
+      <div className="dashboard-main" style={{ padding: "2rem", color: "var(--color-gray-500)", textAlign: "center" }}>
+        <p>Memuat basis pengetahuan AI...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-main" style={{ padding: "2rem" }}>
       {toast && (
@@ -211,7 +222,7 @@ export default function AdminRAGPage() {
 
             <div style={{ display: "flex", gap: "0.75rem" }}>
               <button type="submit" className="btn-portal-primary" style={{ padding: "0.6rem 1.2rem", fontWeight: "700" }} disabled={saving}>
-                {saving ? "Memproses Embedding &amp; Simpan..." : editingId ? "Simpan Perubahan" : "Simpan &amp; Generate Embedding"}
+                {saving ? "Memproses Embedding & Simpan..." : editingId ? "Simpan Perubahan" : "Simpan & Generate Embedding"}
               </button>
               {editingId && (
                 <button type="button" onClick={handleCancelEdit} className="btn-portal-outline" style={{ padding: "0.6rem 1.2rem" }}>
