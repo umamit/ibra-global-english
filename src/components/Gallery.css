@@ -1,77 +1,81 @@
-/* Gallery Section */
+/* ==========================================================================
+   GALLERY — Apple Human Interface Guidelines
+   ========================================================================== */
+
 .gallery-section {
   background-color: var(--color-white);
 }
 
+/* ── Grid ── */
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 @media (max-width: 992px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (max-width: 576px) {
-  .gallery-grid {
-    grid-template-columns: 1fr;
-  }
+  .gallery-grid { grid-template-columns: 1fr; }
 }
 
+/* ── Gallery Item ── */
 .gallery-item {
   position: relative;
   border-radius: var(--radius-xl);
   overflow: hidden;
   aspect-ratio: 4 / 3;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* ── Overlay — Apple-style frosted gradient ── */
 .gallery-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(74, 155, 168, 0.9), rgba(0,0,0,0.1));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 60%);
   opacity: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   transition: opacity 0.3s ease;
 }
 
 .gallery-overlay h4 {
-  color: var(--color-white);
-  font-size: 1.25rem;
+  color: #ffffff;
+  font-size: 1.05rem;
   font-weight: 700;
-  transform: translateY(10px);
-  transition: transform 0.3s ease;
+  letter-spacing: -0.02em;
+  transform: translateY(8px);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .gallery-overlay p {
-  color: var(--color-bg-teal-100);
-  font-size: 0.875rem;
-  transform: translateY(10px);
-  transition: transform 0.3s ease 0.05s;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.8rem;
+  font-weight: 400;
+  transform: translateY(8px);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.04s;
 }
 
 .gallery-item:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 .gallery-item:hover img {
-  transform: scale(1.1);
+  transform: scale(1.06);
 }
 
 .gallery-item:hover .gallery-overlay {
@@ -83,26 +87,21 @@
   transform: translateY(0);
 }
 
-/* Stacked Card Gallery Styles */
+/* ── Stacked Layout ── */
 .stacked-gallery {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .stacked-gallery-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
-.stacked-gallery-row:first-child {
-  grid-template-columns: 1.5fr 1fr;
-}
-
-.stacked-gallery-row:last-child {
-  grid-template-columns: 1fr 1.5fr;
-}
+.stacked-gallery-row:first-child { grid-template-columns: 1.5fr 1fr; }
+.stacked-gallery-row:last-child  { grid-template-columns: 1fr 1.5fr; }
 
 @media (max-width: 768px) {
   .stacked-gallery-row,
@@ -117,56 +116,56 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   aspect-ratio: 4 / 3;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .stacked-gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .stacked-gallery-item:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 .stacked-gallery-item:hover img {
-  transform: scale(1.1);
+  transform: scale(1.06);
 }
 
 .stacked-gallery-item .gallery-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(74, 155, 168, 0.9), rgba(0,0,0,0.1));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 60%);
   opacity: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   transition: opacity 0.3s ease;
 }
 
-.stacked-gallery-item:hover .gallery-overlay {
-  opacity: 1;
-}
+.stacked-gallery-item:hover .gallery-overlay { opacity: 1; }
 
 .stacked-gallery-item .gallery-overlay h4 {
-  color: var(--color-white);
-  font-size: 1.25rem;
+  color: #ffffff;
+  font-size: 1.05rem;
   font-weight: 700;
-  transform: translateY(10px);
-  transition: transform 0.3s ease;
+  letter-spacing: -0.02em;
+  transform: translateY(8px);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .stacked-gallery-item .gallery-overlay p {
-  color: var(--color-bg-teal-100);
-  font-size: 0.875rem;
-  transform: translateY(10px);
-  transition: transform 0.3s ease 0.05s;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.8rem;
+  transform: translateY(8px);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.04s;
 }
 
 .stacked-gallery-item:hover .gallery-overlay h4,
@@ -174,25 +173,28 @@
   transform: translateY(0);
 }
 
-/* Controls */
+/* ── Filter Controls — Apple segmented pill ── */
 .gallery-controls {
   display: flex;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
 }
 
 .gallery-filter-btn {
-  padding: 0.5rem 1.25rem;
-  border-radius: 100px;
-  border: 1.5px solid var(--color-gray-200);
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-gray-200);
   background: var(--color-white);
   color: var(--color-gray-600);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: -0.01em;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast);
 }
 
 .gallery-filter-btn:hover {
@@ -203,26 +205,28 @@
 .gallery-filter-btn.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: var(--color-white);
+  color: #ffffff;
+  font-weight: 600;
 }
 
-/* Lightbox Modal */
+/* ── Lightbox — Apple full-screen viewer ── */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  animation: lightboxFadeIn 0.3s ease;
+  animation: lightboxFadeIn 0.25s ease;
 }
 
 @keyframes lightboxFadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 .lightbox-content {
@@ -243,26 +247,33 @@
 }
 
 .lightbox-caption {
-  color: var(--color-white);
+  color: rgba(255, 255, 255, 0.75);
   margin-top: 1rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-align: center;
+  letter-spacing: -0.01em;
 }
 
 .lightbox-close {
   position: absolute;
   top: -2.5rem;
   right: -2.5rem;
-  background: none;
+  background: rgba(255, 255, 255, 0.12);
   border: none;
-  color: var(--color-white);
+  color: #fff;
   cursor: pointer;
   padding: 0.5rem;
-  transition: transform 0.2s ease;
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lightbox-close:hover {
-  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .lightbox-nav {
@@ -271,34 +282,47 @@
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: var(--color-white);
-  padding: 1rem;
+  color: #fff;
+  padding: 0.85rem;
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lightbox-nav:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.lightbox-prev {
-  left: -4rem;
-}
-
-.lightbox-next {
-  right: -4rem;
-}
+.lightbox-prev { left: -4rem; }
+.lightbox-next { right: -4rem; }
 
 @media (max-width: 768px) {
-  .lightbox-prev {
-    left: 0;
-  }
-  .lightbox-next {
-    right: 0;
-  }
-  .lightbox-close {
-    top: -2.5rem;
-    right: 0;
-  }
+  .lightbox-prev { left: 0; }
+  .lightbox-next { right: 0; }
+  .lightbox-close { top: -2.5rem; right: 0; }
+}
+
+/* ── Dark mode (section bg only, rest stays dark) ── */
+[data-theme="dark"] .gallery-section {
+  background-color: #000000;
+}
+
+[data-theme="dark"] .gallery-filter-btn {
+  background: #2c2c2e;
+  border-color: #3a3a3c;
+  color: #aeaeb2;
+}
+
+[data-theme="dark"] .gallery-filter-btn:hover {
+  border-color: var(--color-primary);
+  color: #5ac8d8;
+}
+
+[data-theme="dark"] .gallery-filter-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
 }
