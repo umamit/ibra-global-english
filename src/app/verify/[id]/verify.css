@@ -51,7 +51,7 @@
   box-shadow: var(--shadow-xl);
   border-radius: var(--radius-xl, 18px);
   overflow: hidden;
-  padding: 3.5cqw 4.5cqw;
+  padding: 2.2cqw 4.5cqw;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -115,7 +115,7 @@
 }
 
 .cert-metadata-table td {
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
 /* ──── Academic Grade Table ──── */
@@ -131,7 +131,7 @@
 }
 
 .cert-grade-table th {
-  padding: 8px 12px;
+  padding: 0.6cqw 1cqw;
   border: 1px solid var(--color-gray-300);
   background-color: #1c3d3a;
   color: #ffffff;
@@ -143,7 +143,7 @@
 }
 
 .cert-grade-table td {
-  padding: 8px 12px;
+  padding: 0.6cqw 1cqw;
   border: 1px solid var(--color-gray-200);
   color: var(--color-gray-800);
 }
@@ -215,9 +215,9 @@
 
 .cert-student-name-overlay {
   position: absolute;
-  top: 48.5%;
+  top: 59%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%);
   width: 80%;
   text-align: center;
   z-index: 10;
@@ -323,7 +323,7 @@
 
 .cert-course-overlay {
   position: absolute;
-  top: 66.5%;
+  top: 64.5%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -341,7 +341,7 @@
 
 .cert-date-overlay {
   position: absolute;
-  top: 72.5%;
+  top: 70.5%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;

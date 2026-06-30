@@ -163,6 +163,7 @@ export default function VerifyCertificate() {
             page-break-before: always !important;
             background-color: #faf7f2 !important;
             color: #1d1d1f !important;
+            padding: 4.6mm 9.5mm !important;
           }
 
           /* Explicitly map container query units (cqw) to print mm values for PDF generation */
@@ -177,11 +178,11 @@ export default function VerifyCertificate() {
           }
           .cert-course-overlay {
             font-size: 6.2mm !important;
-            top: 66.5% !important;
+            top: 64.5% !important;
           }
           .cert-date-overlay {
             font-size: 5.9mm !important;
-            top: 72.5% !important;
+            top: 70.5% !important;
           }
           .cert-tutor-name-overlay {
             font-size: 5.3mm !important;
@@ -192,6 +193,9 @@ export default function VerifyCertificate() {
             font-size: 4.1mm !important;
             top: 83.5% !important;
             left: 29.5% !important;
+          }
+          .cert-grade-table th, .cert-grade-table td {
+            padding: 1.2mm 2.1mm !important;
           }
           .cert-qr-overlay {
             bottom: 6% !important;
