@@ -308,13 +308,15 @@
 /* ──── Dynamic Overlays on Clean Template ──── */
 .cert-no-overlay {
   position: absolute;
-  top: 29%;
-  left: 54.2%; /* Positioned right after "Nomor: " */
+  top: 33.2%;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: var(--font-sans), sans-serif;
   font-size: 1.8cqw;
   font-weight: 700;
   color: #1d1d1f;
   z-index: 10;
+  text-align: center;
 }
 
 [data-theme="dark"] .cert-no-overlay {
