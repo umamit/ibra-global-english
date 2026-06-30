@@ -37,86 +37,165 @@ export default function LightboxModal({
       style={{
         position: "fixed",
         inset: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.9)",
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
         zIndex: 9999,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "1rem"
+        padding: "2rem 1rem",
+        transition: "opacity 0.25s ease-in-out"
       }}
     >
-      <div className="lightbox-content" style={{ position: "relative", maxWidth: "90%", maxHeight: "90%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <button 
-          className="lightbox-close" 
-          id="lightbox-close" 
-          onClick={onClose} 
-          aria-label="Tutup Galeri"
-          style={{
-            position: "absolute",
-            top: "-40px",
-            right: "0",
-            background: "none",
-            border: "none",
-            color: "white",
-            fontSize: "2rem",
-            cursor: "pointer"
-          }}
-        >
-          &times;
-        </button>
+      {/* Circle Close Button at top-right */}
+      <button 
+        className="lightbox-close" 
+        id="lightbox-close" 
+        onClick={onClose} 
+        aria-label="Tutup Galeri"
+        style={{
+          position: "absolute",
+          top: "24px",
+          right: "24px",
+          width: "44px",
+          height: "44px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(255, 255, 255, 0.12)",
+          border: "1px solid rgba(255, 255, 255, 0.15)",
+          color: "white",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "background-color 0.2s, transform 0.2s",
+          zIndex: 10000,
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+          e.currentTarget.style.transform = "scale(1.05)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)";
+          e.currentTarget.style.transform = "scale(1)";
+        }}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
 
+      <div className="lightbox-content" style={{ position: "relative", maxWidth: "800px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        
+        {/* Navigation Left Button */}
         {hasNavigation && onPrev && (
           <button
             onClick={(e) => { e.stopPropagation(); onPrev(); }}
             aria-label="Foto sebelumnya"
             style={{
               position: "absolute",
-              left: "-60px",
+              left: "-64px",
               top: "50%",
               transform: "translateY(-50%)",
-              background: "rgba(255, 255, 255, 0.15)",
-              border: "none",
+              background: "rgba(255, 255, 255, 0.12)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
               color: "white",
-              fontSize: "1.5rem",
-              width: "44px",
-              height: "44px",
+              width: "48px",
+              height: "48px",
               borderRadius: "50%",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
+              transition: "all 0.2s ease",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
+              zIndex: 10
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.08)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
             }}
           >
-            &#10094;
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
           </button>
         )}
 
-        <img src={src} alt={caption} className="lightbox-img" id="lightbox-img" style={{ maxWidth: "100%", maxHeight: "75vh", objectFit: "contain", borderRadius: "4px" }} />
-        <p className="lightbox-caption" id="lightbox-caption" style={{ color: "white", marginTop: "1rem", fontSize: "1rem", fontWeight: "700", textAlign: "center" }}>{caption}</p>
+        {/* Rounded Image Container */}
+        <div style={{ width: "100%", overflow: "hidden", borderRadius: "18px", boxShadow: "0 30px 60px rgba(0,0,0,0.5)", border: "1px solid rgba(255, 255, 255, 0.15)" }}>
+          <img 
+            src={src} 
+            alt={caption} 
+            className="lightbox-img" 
+            id="lightbox-img" 
+            style={{ width: "100%", maxHeight: "70vh", objectFit: "contain", display: "block", backgroundColor: "#000" }} 
+          />
+        </div>
 
+        {/* Stylized Caption Text */}
+        <p 
+          className="lightbox-caption" 
+          id="lightbox-caption" 
+          style={{ 
+            color: "white", 
+            marginTop: "1.25rem", 
+            fontSize: "1.05rem", 
+            fontWeight: "700", 
+            textAlign: "center", 
+            letterSpacing: "-0.01em",
+            fontFamily: "var(--font-sans), sans-serif",
+            textShadow: "0 2px 4px rgba(0, 0, 0, 0.6)"
+          }}
+        >
+          {caption}
+        </p>
+
+        {/* Navigation Right Button */}
         {hasNavigation && onNext && (
           <button
             onClick={(e) => { e.stopPropagation(); onNext(); }}
             aria-label="Foto berikutnya"
             style={{
               position: "absolute",
-              right: "-60px",
+              right: "-64px",
               top: "50%",
               transform: "translateY(-50%)",
-              background: "rgba(255, 255, 255, 0.15)",
-              border: "none",
+              background: "rgba(255, 255, 255, 0.12)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
               color: "white",
-              fontSize: "1.5rem",
-              width: "44px",
-              height: "44px",
+              width: "48px",
+              height: "48px",
               borderRadius: "50%",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
+              transition: "all 0.2s ease",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
+              zIndex: 10
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.08)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
             }}
           >
-            &#10095;
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
           </button>
         )}
       </div>
