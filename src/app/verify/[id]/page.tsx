@@ -118,28 +118,44 @@ export default function VerifyCertificate() {
     if (!cert) return;
     setIsGeneratingPDF(true);
     try {
-      const html2pdf = (await import("html2pdf.js")).default;
-      const element = document.getElementById("certificate-print-area");
-      if (!element) return;
-      const opt = {
-        margin: 5,
-        filename: `sertifikat-ige-${cert.cert_number || cert.id}.pdf`,
-        image: { type: "jpeg" as const, quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          allowTaint: true,
-          backgroundColor: "#ffffff",
-        },
-        jsPDF: {
-          unit: "mm" as const,
-          format: "a4",
-          orientation: "landscape" as const,
-        },
-        pagebreak: { mode: ["css"] as const, before: ".pdf-page-break" },
-      };
-      await html2pdf().set(opt).from(element).save();
+      const html2canvas = (await import("html2canvas")).default;
+      const { jsPDF } = await import("jspdf");
+
+      const page1El = document.getElementById("cert-page-1-el");
+      const page2El = document.getElementById("cert-page-2-el");
+      if (!page1El || !page2El) return;
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const pdfW = pdf.internal.pageSize.getWidth();  // 297mm
+      const pdfH = pdf.internal.pageSize.getHeight(); // 210mm
+
+      // Render halaman depan
+      const canvas1 = await html2canvas(page1El, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      pdf.addImage(canvas1.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
+
+      // Render halaman belakang
+      pdf.addPage();
+      const canvas2 = await html2canvas(page2El, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#fdfaf6",
+        logging: false,
+      });
+      pdf.addImage(canvas2.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
+
+      pdf.save(`sertifikat-ige-${cert.cert_number || cert.id}.pdf`);
     } catch (err) {
       console.error("Gagal generate PDF:", err);
     } finally {
@@ -389,7 +405,7 @@ export default function VerifyCertificate() {
           <div id="certificate-print-area" className="certificate-print-container" style={{ display: "flex", flexDirection: "column", gap: "0" }}>
 
             {/* ==================== PAGE 1: DEPAN (Canva Design) ==================== */}
-            <div className="certificate-page-1">
+            <div id="cert-page-1-el" className="certificate-page-1">
               {/* Canva Image Background */}
               <img
                 src={cert.custom_image_url}
@@ -448,7 +464,7 @@ export default function VerifyCertificate() {
             </div>
 
             {/* ==================== PAGE 2: BELAKANG (Grade Transcript) ==================== */}
-            <div className="certificate-page-2 pdf-page-break">
+            <div id="cert-page-2-el" className="certificate-page-2 pdf-page-break">
               {/* Inner Borders Matching Front Template */}
               <div className="cert-back-inner-frame" />
               <div className="cert-back-inner-gold-line" />
