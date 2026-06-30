@@ -141,7 +141,8 @@ export default function VerifyCertificate() {
         await Promise.all(Array.from(imgs).map(async (img) => {
           try {
             if (!img.src || img.src.startsWith("data:")) return;
-            const res = await fetch(img.src);
+            const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(img.src)}`;
+            const res = await fetch(proxyUrl);
             const blob = await res.blob();
             const b64 = await new Promise<string>((resolve) => {
               const reader = new FileReader();
@@ -149,7 +150,9 @@ export default function VerifyCertificate() {
               reader.readAsDataURL(blob);
             });
             img.src = b64;
-          } catch { /* skip jika satu gambar gagal */ }
+          } catch (e) {
+            console.error("Gagal load gambar proxy:", img.src, e);
+          }
         }));
       };
 
