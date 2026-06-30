@@ -192,7 +192,7 @@ export default function VerifyCertificate() {
           }
           .cert-tutor-title-overlay {
             font-size: 3.2mm !important;
-            top: 84.5% !important;
+            top: 83.2% !important;
             left: 29.5% !important;
           }
           .cert-grade-table th, .cert-grade-table td {
