@@ -15,6 +15,7 @@ interface AcademicSchedule {
   start_time: string;
   end_time: string;
   instructor?: string | null;
+  recurrence_id?: string | null;
   created_at?: string;
 }
 
@@ -69,6 +70,8 @@ export default function AdminCalendar() {
   const [isRecurring, setIsRecurring] = useState<boolean>(false);
   const [recurrenceType, setRecurrenceType] = useState<string>("weekly"); // 'weekly', 'daily'
   const [recurrenceCount, setRecurrenceCount] = useState<number>(4);
+  const [recurrenceId, setRecurrenceId] = useState<string | null>(null);
+  const [editSeriesMode, setEditSeriesMode] = useState<"single" | "series">("single");
 
   const fetchData = async (): Promise<void> => {
     setLoading(true);
@@ -194,6 +197,8 @@ export default function AdminCalendar() {
     setIsRecurring(false);
     setRecurrenceType("weekly");
     setRecurrenceCount(4);
+    setRecurrenceId(null);
+    setEditSeriesMode("single");
     setModalOpen(true);
   };
 
@@ -216,6 +221,8 @@ export default function AdminCalendar() {
     setIsRecurring(false);
     setRecurrenceType("weekly");
     setRecurrenceCount(4);
+    setRecurrenceId(sched.recurrence_id || null);
+    setEditSeriesMode("single");
     setModalOpen(true);
   };
 
@@ -242,54 +249,96 @@ export default function AdminCalendar() {
     try {
       if (selectedSchedule) {
         // Edit Mode
-        const { error } = await supabase
-          .from("academic_schedules")
-          .update(payload)
-          .eq("id", selectedSchedule.id);
+        if (selectedSchedule.recurrence_id && editSeriesMode === "series") {
+          // 1. Update the selected schedule (all fields)
+          const { error: currentError } = await supabase
+            .from("academic_schedules")
+            .update({
+              ...payload,
+              recurrence_id: selectedSchedule.recurrence_id
+            })
+            .eq("id", selectedSchedule.id);
 
-        if (error) throw error;
+          if (currentError) throw currentError;
 
-        if (isRecurring) {
-          const payloads = [];
-          const baseStart = new Date(`${startDate}T${startTime}:00`);
-          const baseEnd = new Date(`${endDate}T${endTime}:00`);
+          // 2. Update other items in the same series (info fields only)
+          const infoPayload = {
+            title: title.trim(),
+            description: description.trim() || null,
+            type,
+            program,
+            instructor: instructor.trim() || null
+          };
+          const { error: seriesError } = await supabase
+            .from("academic_schedules")
+            .update(infoPayload)
+            .eq("recurrence_id", selectedSchedule.recurrence_id)
+            .neq("id", selectedSchedule.id);
 
-          for (let i = 1; i < recurrenceCount; i++) {
-            const currentStart = new Date(baseStart);
-            const currentEnd = new Date(baseEnd);
+          if (seriesError) throw seriesError;
+          setStatusMsg({ type: "success", text: "Seluruh seri jadwal berhasil diperbarui!" });
+        } else {
+          // Edit single
+          let finalRecurrenceId = selectedSchedule.recurrence_id || null;
+          let recurrInsertPayloads: any[] = [];
 
-            if (recurrenceType === "weekly") {
-              currentStart.setDate(baseStart.getDate() + (i * 7));
-              currentEnd.setDate(baseEnd.getDate() + (i * 7));
-            } else if (recurrenceType === "daily") {
-              currentStart.setDate(baseStart.getDate() + i);
-              currentEnd.setDate(baseEnd.getDate() + i);
+          if (!selectedSchedule.recurrence_id && isRecurring) {
+            // Making a single event recurring
+            finalRecurrenceId = "rec_" + Date.now() + "_" + Math.random().toString(36).substring(2, 11);
+            
+            const baseStart = new Date(`${startDate}T${startTime}:00`);
+            const baseEnd = new Date(`${endDate}T${endTime}:00`);
+
+            for (let i = 1; i < recurrenceCount; i++) {
+              const currentStart = new Date(baseStart);
+              const currentEnd = new Date(baseEnd);
+
+              if (recurrenceType === "weekly") {
+                currentStart.setDate(baseStart.getDate() + (i * 7));
+                currentEnd.setDate(baseEnd.getDate() + (i * 7));
+              } else if (recurrenceType === "daily") {
+                currentStart.setDate(baseStart.getDate() + i);
+                currentEnd.setDate(baseEnd.getDate() + i);
+              }
+
+              recurrInsertPayloads.push({
+                title: title.trim(),
+                description: description.trim() || null,
+                type,
+                program,
+                start_time: currentStart.toISOString(),
+                end_time: currentEnd.toISOString(),
+                instructor: instructor.trim() || null,
+                recurrence_id: finalRecurrenceId
+              });
             }
-
-            payloads.push({
-              title: title.trim(),
-              description: description.trim() || null,
-              type,
-              program,
-              start_time: currentStart.toISOString(),
-              end_time: currentEnd.toISOString(),
-              instructor: instructor.trim() || null
-            });
           }
 
-          const { error: recurrError } = await supabase
+          const { error } = await supabase
             .from("academic_schedules")
-            .insert(payloads);
+            .update({
+              ...payload,
+              recurrence_id: finalRecurrenceId
+            })
+            .eq("id", selectedSchedule.id);
 
-          if (recurrError) throw recurrError;
-          setStatusMsg({ type: "success", text: `Jadwal diperbarui dan ${recurrenceCount - 1} perulangan baru dibuat!` });
-        } else {
-          setStatusMsg({ type: "success", text: "Jadwal belajar berhasil diperbarui!" });
+          if (error) throw error;
+
+          if (recurrInsertPayloads.length > 0) {
+            const { error: insertError } = await supabase
+              .from("academic_schedules")
+              .insert(recurrInsertPayloads);
+            if (insertError) throw insertError;
+            setStatusMsg({ type: "success", text: `Jadwal diperbarui dan ${recurrInsertPayloads.length} perulangan baru dibuat!` });
+          } else {
+            setStatusMsg({ type: "success", text: "Jadwal belajar berhasil diperbarui!" });
+          }
         }
       } else {
         // Insert Mode
         if (isRecurring) {
           const payloads = [];
+          const newRecurrenceId = "rec_" + Date.now() + "_" + Math.random().toString(36).substring(2, 11);
           const baseStart = new Date(`${startDate}T${startTime}:00`);
           const baseEnd = new Date(`${endDate}T${endTime}:00`);
 
@@ -312,7 +361,8 @@ export default function AdminCalendar() {
               program,
               start_time: currentStart.toISOString(),
               end_time: currentEnd.toISOString(),
-              instructor: instructor.trim() || null
+              instructor: instructor.trim() || null,
+              recurrence_id: newRecurrenceId
             });
           }
 
@@ -343,23 +393,56 @@ export default function AdminCalendar() {
 
   const handleDeleteSchedule = async (): Promise<void> => {
     if (!selectedSchedule) return;
-    if (confirm(`Apakah Anda yakin ingin menghapus agenda "${selectedSchedule.title}"?`)) {
-      try {
-        const { error } = await supabase
-          .from("academic_schedules")
-          .delete()
-          .eq("id", selectedSchedule.id);
 
-        if (error) throw error;
+    let deleteMode: "single" | "series" | "cancel" = "single";
 
-        setStatusMsg({ type: "success", text: "Jadwal berhasil dihapus." });
-        setModalOpen(false);
-        setTimeout(() => setStatusMsg({ type: "", text: "" }), 3000);
-        fetchData();
-      } catch (err: any) {
-        console.error("Gagal menghapus jadwal:", err);
-        alert("Gagal menghapus jadwal: " + (err.message || String(err)));
+    if (selectedSchedule.recurrence_id) {
+      const confirmResult = confirm(
+        `Agenda "${selectedSchedule.title}" adalah bagian dari seri berulang.\n\n` +
+        `Apakah Anda ingin MENGHAPUS SELURUH SERI agenda berulang ini?\n\n` +
+        `• Klik OK / Yes untuk menghapus seluruh seri.\n` +
+        `• Klik Batal / Cancel untuk menghapus agenda hari ini saja.`
+      );
+      
+      if (confirmResult) {
+        deleteMode = "series";
+      } else {
+        const confirmSingle = confirm(`Apakah Anda yakin ingin menghapus agenda "${selectedSchedule.title}" HANYA untuk hari ini saja?`);
+        if (confirmSingle) {
+          deleteMode = "single";
+        } else {
+          deleteMode = "cancel";
+        }
       }
+    } else {
+      const confirmNormal = confirm(`Apakah Anda yakin ingin menghapus agenda "${selectedSchedule.title}"?`);
+      if (!confirmNormal) deleteMode = "cancel";
+    }
+
+    if (deleteMode === "cancel") return;
+
+    try {
+      let query = supabase.from("academic_schedules").delete();
+      
+      if (deleteMode === "series" && selectedSchedule.recurrence_id) {
+        query = query.eq("recurrence_id", selectedSchedule.recurrence_id);
+      } else {
+        query = query.eq("id", selectedSchedule.id);
+      }
+
+      const { error } = await query;
+      if (error) throw error;
+
+      setStatusMsg({ 
+        type: "success", 
+        text: deleteMode === "series" ? "Seluruh seri jadwal berhasil dihapus." : "Jadwal berhasil dihapus." 
+      });
+      setModalOpen(false);
+      setTimeout(() => setStatusMsg({ type: "", text: "" }), 3000);
+      fetchData();
+    } catch (err: any) {
+      console.error("Gagal menghapus jadwal:", err);
+      alert("Gagal menghapus jadwal: " + (err.message || String(err)));
     }
   };
 
@@ -686,56 +769,95 @@ export default function AdminCalendar() {
                 />
               </div>
 
-              {/* Pilihan Ulangi Agenda */}
-              <div style={{ 
-                marginBottom: "2rem", 
-                padding: "1rem", 
-                backgroundColor: "var(--color-gray-50)", 
-                borderRadius: "var(--radius-md)", 
-                border: "1px solid var(--color-gray-200)" 
-              }}>
-                <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: "700", fontSize: "0.9rem", color: "var(--color-gray-800)" }}>
-                  <input
-                    type="checkbox"
-                    checked={isRecurring}
-                    onChange={(e) => setIsRecurring(e.target.checked)}
-                    style={{ accentColor: "var(--color-primary)", width: "16px", height: "16px" }}
-                  />
-                  <span>Ulangi agenda ini (Recurrence)</span>
-                </label>
-
-                {isRecurring && (
-                  <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
-                    <div className="form-group">
-                      <label className="form-label" style={{ fontSize: "0.8rem" }}>Frekuensi Ulang</label>
-                      <select
-                        className="form-input"
-                        style={{ padding: "0.5rem", fontSize: "0.85rem" }}
-                        value={recurrenceType}
-                        onChange={(e) => setRecurrenceType(e.target.value)}
-                      >
-                        <option value="weekly">📅 Setiap Minggu (Hari yang sama)</option>
-                        <option value="daily">📆 Setiap Hari</option>
-                      </select>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="form-label" style={{ fontSize: "0.8rem" }}>Jumlah Perulangan</label>
+              {/* Pilihan Ulangi / Edit Seri Agenda */}
+              {selectedSchedule && selectedSchedule.recurrence_id ? (
+                <div style={{ 
+                  marginBottom: "2rem", 
+                  padding: "1rem", 
+                  backgroundColor: "rgba(166, 136, 73, 0.05)", 
+                  borderRadius: "var(--radius-md)", 
+                  border: "1px solid var(--color-accent-light)" 
+                }}>
+                  <p style={{ fontWeight: "800", fontSize: "0.9rem", color: "var(--color-gray-800)", marginBottom: "0.5rem" }}>
+                    🔄 Agenda ini adalah bagian dari seri berulang.
+                  </p>
+                  <label className="form-label" style={{ marginBottom: "0.5rem" }}>Terapkan Perubahan Ke:</label>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-700)" }}>
                       <input
-                        type="number"
-                        className="form-input"
-                        style={{ padding: "0.5rem", fontSize: "0.85rem" }}
-                        min="2"
-                        max="12"
-                        value={recurrenceCount}
-                        onChange={(e) => setRecurrenceCount(parseInt(e.target.value) || 2)}
-                        required={isRecurring}
+                        type="radio"
+                        name="editSeriesMode"
+                        value="single"
+                        checked={editSeriesMode === "single"}
+                        onChange={() => setEditSeriesMode("single")}
+                        style={{ accentColor: "var(--color-primary)" }}
                       />
-                      <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Maksimal 12 kali perulangan</span>
-                    </div>
+                      <span>Hanya agenda terpilih ini</span>
+                    </label>
+                    <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-700)" }}>
+                      <input
+                        type="radio"
+                        name="editSeriesMode"
+                        value="series"
+                        checked={editSeriesMode === "series"}
+                        onChange={() => setEditSeriesMode("series")}
+                        style={{ accentColor: "var(--color-primary)" }}
+                      />
+                      <span>Seluruh seri agenda berulang ini (Update Judul, Deskripsi, Program, Tutor, & Tipe)</span>
+                    </label>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div style={{ 
+                  marginBottom: "2rem", 
+                  padding: "1rem", 
+                  backgroundColor: "var(--color-gray-50)", 
+                  borderRadius: "var(--radius-md)", 
+                  border: "1px solid var(--color-gray-200)" 
+                }}>
+                  <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: "700", fontSize: "0.9rem", color: "var(--color-gray-800)" }}>
+                    <input
+                      type="checkbox"
+                      checked={isRecurring}
+                      onChange={(e) => setIsRecurring(e.target.checked)}
+                      style={{ accentColor: "var(--color-primary)", width: "16px", height: "16px" }}
+                    />
+                    <span>Ulangi agenda ini (Recurrence)</span>
+                  </label>
+
+                  {isRecurring && (
+                    <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: "0.8rem" }}>Frekuensi Ulang</label>
+                        <select
+                          className="form-input"
+                          style={{ padding: "0.5rem", fontSize: "0.85rem" }}
+                          value={recurrenceType}
+                          onChange={(e) => setRecurrenceType(e.target.value)}
+                        >
+                          <option value="weekly">📅 Setiap Minggu (Hari yang sama)</option>
+                          <option value="daily">📆 Setiap Hari</option>
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: "0.8rem" }}>Jumlah Perulangan</label>
+                        <input
+                          type="number"
+                          className="form-input"
+                          style={{ padding: "0.5rem", fontSize: "0.85rem" }}
+                          min="2"
+                          max="12"
+                          value={recurrenceCount}
+                          onChange={(e) => setRecurrenceCount(parseInt(e.target.value) || 2)}
+                          required={isRecurring}
+                        />
+                        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Maksimal 12 kali perulangan</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
                 <div>

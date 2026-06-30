@@ -61,6 +61,7 @@ export default function ParentPortal() {
   // Data States
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [onlineSchedules, setOnlineSchedules] = useState<any[]>([]);
+  const [academicSchedules, setAcademicSchedules] = useState<any[]>([]);
   const [attendance, setAttendance] = useState<any[]>([]);
   const [attendanceStats, setAttendanceStats] = useState<AttendanceStats>({ hadir: 0, sakit: 0, izin: 0, alfa: 0 });
   const [reports, setReports] = useState<any[]>([]);
@@ -200,14 +201,6 @@ export default function ParentPortal() {
         .limit(3);
       setAnnouncements(annData || []);
 
-      // Fetch online schedules
-      const { data: schedData } = await supabase
-        .from("online_schedules")
-        .select("*")
-        .order("scheduled_at", { ascending: true })
-        .limit(2);
-      setOnlineSchedules(schedData || []);
-
       // Fetch certificates
       const { data: certData } = await supabase
         .from("certificates")
@@ -277,6 +270,24 @@ export default function ParentPortal() {
         .order("month", { ascending: false });
 
       setParentPayments(payData || []);
+
+      // Fetch online schedules for this child's program
+      const { data: schedData } = await supabase
+        .from("online_schedules")
+        .select("*")
+        .eq("program", child.program)
+        .eq("is_active", true)
+        .order("scheduled_at", { ascending: true })
+        .limit(2);
+      setOnlineSchedules(schedData || []);
+
+      // Fetch academic schedules for this child's program or 'All'
+      const { data: acadData } = await supabase
+        .from("academic_schedules")
+        .select("*")
+        .in("program", [child.program, "All"])
+        .order("start_time", { ascending: true });
+      setAcademicSchedules(acadData || []);
 
     } catch (err) {
       console.error("Error fetching child details:", err);
@@ -542,7 +553,7 @@ export default function ParentPortal() {
             {activeView === "calendar" && (
               <div className="view-fade-in">
                 <CalendarView
-                  parentSchedules={onlineSchedules}
+                  parentSchedules={academicSchedules}
                   detailsLoading={detailsLoading}
                   selectedChild={selectedChild}
                 />
