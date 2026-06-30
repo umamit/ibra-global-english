@@ -308,7 +308,7 @@
 /* ──── Dynamic Overlays on Clean Template ──── */
 .cert-no-overlay {
   position: absolute;
-  top: 31.5%;
+  top: 30.8%;
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--font-sans), sans-serif;

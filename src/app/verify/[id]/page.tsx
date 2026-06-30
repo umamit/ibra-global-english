@@ -173,7 +173,7 @@ export default function VerifyCertificate() {
           }
           .cert-no-overlay {
             font-size: 5.3mm !important;
-            top: 31.5% !important;
+            top: 30.8% !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
           }
