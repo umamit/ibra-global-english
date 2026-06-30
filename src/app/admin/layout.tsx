@@ -28,25 +28,58 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => window.removeEventListener("keydown", handleEscape);
   }, [mobileOpen]);
 
+  const [newRegToast, setNewRegToast] = useState<string>("");
+
   // Fetch jumlah pendaftaran pending untuk badge notifikasi
-  useEffect(() => {
-    const fetchPendingCount = async (): Promise<void> => {
-      try {
-        const res = await fetch("/api/register", {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const result = await res.json().catch(() => null);
-        if (result && result.data) {
-          setPendingCount(result.data.filter((r: { status: string }) => r.status === "pending").length);
-        }
-      } catch {
-        // Silent fail untuk badge notifikasi agar tidak mengganggu UI
+  const fetchPendingCount = async (): Promise<void> => {
+    try {
+      const res = await fetch("/api/register", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const result = await res.json().catch(() => null);
+      if (result && result.data) {
+        setPendingCount(result.data.filter((r: { status: string }) => r.status === "pending").length);
       }
-    };
+    } catch {
+      // Silent fail untuk badge notifikasi agar tidak mengganggu UI
+    }
+  };
+
+  useEffect(() => {
+    // Ambil data awal
     fetchPendingCount();
-    const interval = setInterval(fetchPendingCount, 60000);
-    return () => clearInterval(interval);
+
+    // 🔴 Realtime: Supabase WebSocket Channel untuk notifikasi instan
+    const channel = supabase
+      .channel("admin-registrations-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "registrations" },
+        (payload) => {
+          // Ada pendaftaran baru masuk!
+          const name = payload.new?.student_name || "Seseorang";
+          const program = payload.new?.program || "Program";
+          setNewRegToast(`📩 Pendaftaran baru: ${name} (${program})`);
+          setTimeout(() => setNewRegToast(""), 6000);
+          // Refresh badge count
+          fetchPendingCount();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "registrations" },
+        () => {
+          // Status pendaftaran berubah (approve/reject) - refresh badge
+          fetchPendingCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Session checker using Supabase's built-in session management only
@@ -116,6 +149,51 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className={`dashboard-container ${mobileOpen ? "sidebar-open" : ""}`}>
+      {/* 🔔 Realtime Toast Notifikasi Pendaftaran Baru */}
+      {newRegToast && (
+        <div
+          role="alert"
+          aria-live="polite"
+          style={{
+            position: "fixed",
+            top: "24px",
+            right: "24px",
+            zIndex: 9999,
+            background: "linear-gradient(135deg, #1a2a3a 0%, #0f1f2d 100%)",
+            color: "#fff",
+            borderRadius: "12px",
+            padding: "14px 20px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(99,202,183,0.25)",
+            fontSize: "0.9rem",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            maxWidth: "360px",
+            animation: "slideInRight 0.35s cubic-bezier(0.34,1.56,0.64,1)",
+            borderLeft: "4px solid #63cab7",
+          }}
+        >
+          <span style={{ fontSize: "1.3rem" }}>🔔</span>
+          <span>{newRegToast}</span>
+          <button
+            onClick={() => setNewRegToast("")}
+            style={{
+              marginLeft: "auto",
+              background: "transparent",
+              border: "none",
+              color: "rgba(255,255,255,0.6)",
+              cursor: "pointer",
+              fontSize: "1rem",
+              lineHeight: 1,
+              padding: "0 2px",
+            }}
+            aria-label="Tutup notifikasi"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       {/* Tombol Toggle Menu Mobile */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}

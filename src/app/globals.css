@@ -396,3 +396,14 @@ iframe[src^="https://vercel.live"] {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+/* Animasi Realtime Toast Notifikasi Admin */
+@keyframes slideInRight {
+  from {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
