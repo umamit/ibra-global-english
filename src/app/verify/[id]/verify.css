@@ -225,7 +225,7 @@
 }
 
 .cert-student-name-text {
-  font-family: var(--font-sans), Georgia, serif;
+  font-family: var(--font-sans), sans-serif;
   font-size: 5.2cqw; /* Scaled relative to A4 container width */
   font-weight: 850;
   color: #1c3d3a;
@@ -366,9 +366,9 @@
   transform: translateX(-50%);
   width: 25cqw;
   text-align: center;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans), sans-serif;
   font-size: 1.8cqw;
-  font-weight: bold;
+  font-weight: 700;
   color: #1c3d3a;
   z-index: 10;
 }
