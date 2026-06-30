@@ -48,7 +48,6 @@
   width: 100%;
   aspect-ratio: 1.414;
   background-color: #fdfaf6;
-  border: 1.2cqw solid #1c3d3a;
   box-shadow: var(--shadow-xl);
   border-radius: var(--radius-xl, 18px);
   overflow: hidden;
@@ -58,13 +57,12 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  transition: background-color var(--transition-normal), border-color var(--transition-normal);
-  container-type: inline-size; /* Enables container-query scaling for back page */
+  transition: background-color var(--transition-normal);
+  container-type: inline-size;
 }
 
 [data-theme="dark"] .certificate-page-2 {
   background-color: #1c1c1e;
-  border-color: #122826;
 }
 
 /* Inner borders matching front template */
