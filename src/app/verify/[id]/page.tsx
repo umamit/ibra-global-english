@@ -135,23 +135,42 @@ export default function VerifyCertificate() {
         return;
       }
 
-      // Konversi SEMUA gambar dalam kedua halaman ke base64 agar tidak ada CORS block
+      // Konversi gambar luar (cross-origin) ke base64 agar tidak ada CORS block
       const convertImagesToBase64 = async (el: HTMLElement) => {
         const imgs = el.querySelectorAll("img");
+        const currentHost = window.location.hostname;
+
         await Promise.all(Array.from(imgs).map(async (img) => {
           try {
             if (!img.src || img.src.startsWith("data:")) return;
+
+            // Cek apakah gambar berasal dari origin eksternal
+            const imgUrl = new URL(img.src);
+            const isCrossOrigin = imgUrl.hostname !== currentHost;
+
+            if (!isCrossOrigin) return; // Lewati jika gambar satu origin
+
             const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(img.src)}`;
-            const res = await fetch(proxyUrl);
+            
+            // Tambahkan timeout 6 detik agar tidak stuck selamanya jika server lambat
+            const controller = new AbortController();
+            const fetchTimeout = setTimeout(() => controller.abort(), 6000);
+
+            const res = await fetch(proxyUrl, { signal: controller.signal });
+            clearTimeout(fetchTimeout);
+
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
             const blob = await res.blob();
-            const b64 = await new Promise<string>((resolve) => {
+            const b64 = await new Promise<string>((resolve, reject) => {
               const reader = new FileReader();
               reader.onloadend = () => resolve(reader.result as string);
+              reader.onerror = () => reject(new Error("File reading failed"));
               reader.readAsDataURL(blob);
             });
             img.src = b64;
           } catch (e) {
-            console.error("Gagal load gambar proxy:", img.src, e);
+            console.warn("Gagal load gambar proxy (melewati konversi):", img.src, e);
           }
         }));
       };
