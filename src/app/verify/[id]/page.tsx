@@ -159,9 +159,9 @@ export default function VerifyCertificate() {
             border: none !important;
           }
           .certificate-page-2 {
-            border: none !important;
+            border: 3.5mm solid #1c3d3a !important;
             page-break-before: always !important;
-            background-color: #faf7f2 !important;
+            background-color: #fdfaf6 !important;
             color: #1d1d1f !important;
             padding: 4.6mm 9.5mm !important;
           }
