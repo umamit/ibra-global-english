@@ -92,7 +92,10 @@ export default function AdminCalendar() {
     }
   };
 
+  const [mounted, setMounted] = useState<boolean>(false);
+
   useEffect(() => {
+    setMounted(true);
     let cancelled = false;
     const load = async () => {
       if (cancelled) return;
@@ -511,7 +514,7 @@ export default function AdminCalendar() {
       </div>
 
       {/* Main Calendar Month Grid */}
-      {loading ? (
+      {loading || !mounted ? (
         <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--color-gray-500)" }}>
           <p>Memuat kalender akademik...</p>
         </div>

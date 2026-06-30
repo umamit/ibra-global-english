@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Schedule {
   id: string;
@@ -40,6 +40,12 @@ function getLocalDateString(dateObj: Date): string {
 }
 
 export default function CalendarView({ parentSchedules, detailsLoading, selectedChild }: CalendarViewProps) {
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Current calendar view year & month
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const viewYear = currentDate.getFullYear();
@@ -49,7 +55,7 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
 
-  if (detailsLoading) {
+  if (detailsLoading || !mounted) {
     return (
       <div className="portal-card">
         <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
