@@ -4,6 +4,7 @@ import "./Header.css";
 import { z } from "zod";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const headerPropsSchema = z.object({
   theme: z.enum(["light", "dark"]),
@@ -17,6 +18,52 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState("");
+
+  // Scrollspy logic
+  useEffect(() => {
+    if (pathname === "/gallery") {
+      setActiveSection("gallery");
+      return;
+    }
+    if (pathname === "/placement-test") {
+      setActiveSection("placement-test");
+      return;
+    }
+    if (pathname !== "/") {
+      setActiveSection("");
+      return;
+    }
+
+    const handleScrollspy = () => {
+      const scrollPosition = window.scrollY + 140; // 140px offset for fixed navbar
+      const sections = ["home", "programs", "faq"];
+
+      // Edge case: if at the bottom of the page, check the last section (FAQ)
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 20) {
+        setActiveSection("faq");
+        return;
+      }
+
+      for (const sec of sections) {
+        const el = document.getElementById(sec);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(sec);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollspy, { passive: true });
+    handleScrollspy();
+
+    return () => window.removeEventListener("scroll", handleScrollspy);
+  }, [pathname]);
 
   // Handle scroll effect on header
   useEffect(() => {
@@ -71,9 +118,9 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
           </Link>
           
           <nav className="nav-links" aria-label="Navigasi Utama">
-            <Link href="/#home" className="nav-link">Home</Link>
+            <Link href="/#home" className={`nav-link ${activeSection === "home" ? "active" : ""}`}>Home</Link>
             <div className="dropdown-container">
-              <button className="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <button className={`nav-link dropdown-toggle ${activeSection === "programs" ? "active" : ""}`} aria-haspopup="true" aria-expanded="false">
                 Program <span className="dropdown-chevron">▼</span>
               </button>
               <div className="dropdown-menu">
@@ -83,9 +130,9 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
                 <Link href="/#fun-calistung" className="dropdown-item">Fun Calistung</Link>
               </div>
             </div>
-            <Link href="/gallery" className="nav-link">Galeri</Link>
-            <Link href="/placement-test" className="nav-link">Tes Penempatan</Link>
-            <Link href="/#faq" className="nav-link">FAQ</Link>
+            <Link href="/gallery" className={`nav-link ${activeSection === "gallery" ? "active" : ""}`}>Galeri</Link>
+            <Link href="/placement-test" className={`nav-link ${activeSection === "placement-test" ? "active" : ""}`}>Tes Penempatan</Link>
+            <Link href="/#faq" className={`nav-link ${activeSection === "faq" ? "active" : ""}`}>FAQ</Link>
           </nav>
           
           <div className="nav-right-group">
@@ -190,11 +237,11 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
       >
         <div className="mobile-nav-content">
           <nav className="mobile-nav-links" aria-label="Navigasi Seluler">
-            <Link href="/#home" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Home</Link>
+            <Link href="/#home" className={`mobile-link ${activeSection === "home" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Home</Link>
             
             <div className="mobile-dropdown-container" style={{ display: "flex", flexDirection: "column" }}>
               <button 
-                className="mobile-link mobile-dropdown-toggle" 
+                className={`mobile-link mobile-dropdown-toggle ${activeSection === "programs" ? "active" : ""}`} 
                 onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
               >
                 Program <span className="dropdown-chevron" style={{ transform: isMobileDropdownOpen ? "rotate(180deg)" : "none", transition: "transform 0.3s" }}>▼</span>
@@ -207,9 +254,9 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
               </div>
             </div>
 
-            <Link href="/gallery" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Galeri</Link>
-            <Link href="/placement-test" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Tes Penempatan</Link>
-            <Link href="/#faq" className="mobile-link" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
+            <Link href="/gallery" className={`mobile-link ${activeSection === "gallery" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Galeri</Link>
+            <Link href="/placement-test" className={`mobile-link ${activeSection === "placement-test" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Tes Penempatan</Link>
+            <Link href="/#faq" className={`mobile-link ${activeSection === "faq" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>FAQ</Link>
             <Link href="/login" className="mobile-link" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary-dark)", fontWeight: "700" }}>Login Portal</Link>
           </nav>
           <Link href="/#contact" className="mobile-nav-btn mobile-link" onClick={() => setIsMenuOpen(false)}>Daftar Sekarang</Link>

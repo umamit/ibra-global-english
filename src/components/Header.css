@@ -134,15 +134,22 @@ header.scrolled .logo-text p {
   font-size: 0.85rem;
   font-weight: 400;
   color: var(--color-gray-700);
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
   position: relative;
-  padding-block: 0.25rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
   letter-spacing: -0.01em;
   text-decoration: none;
 }
 
 .nav-link:hover {
   color: var(--color-gray-900);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .nav-link:hover {
+  color: var(--color-gray-100);
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 /* ── Nav Buttons ── */
@@ -410,4 +417,31 @@ header.scrolled .logo-text p {
 }
 [data-theme="dark"] .mobile-dropdown-item {
   color: var(--color-gray-400) !important;
+}
+
+/* ── Active Section Highlights (Pill Shape) ── */
+.nav-link.active,
+.dropdown-toggle.active {
+  color: var(--color-primary-dark) !important;
+  background-color: var(--color-primary-light) !important;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .nav-link.active,
+[data-theme="dark"] .dropdown-toggle.active {
+  color: #5ac8d8 !important;
+  background-color: rgba(33, 108, 126, 0.2) !important;
+}
+
+.mobile-nav-links .mobile-link.active,
+.mobile-nav-links .mobile-dropdown-toggle.active {
+  color: var(--color-primary-dark) !important;
+  background-color: var(--color-primary-light) !important;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .mobile-nav-links .mobile-link.active,
+[data-theme="dark"] .mobile-nav-links .mobile-dropdown-toggle.active {
+  color: #5ac8d8 !important;
+  background-color: rgba(33, 108, 126, 0.2) !important;
 }
