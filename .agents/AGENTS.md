@@ -96,4 +96,7 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 •  Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
 •  Rely strictly on actual tool outputs and files present in this repository.
 
-
+## Testing & Validation Rules
+•  DO NOT create fake, mocked, or stubbed tests to pass verification.
+•  Always run  npm test  (or equivalent) to verify changes against the real runtime environment.
+•  If a test fails, you must read the error logs and fix the actual code, not change the test to bypass it.
