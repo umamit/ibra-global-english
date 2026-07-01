@@ -17,6 +17,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [pendingCount, setPendingCount] = useState<number>(0);
 
+  // State untuk dropdown accordion di sidebar
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    akademik: false,
+    keuangan: false,
+    komunikasi: false,
+    pengguna: false,
+  });
+
+  const toggleGroup = (group: string) => {
+    setOpenGroups(prev => ({
+      ...prev,
+      [group]: !prev[group]
+    }));
+  };
+
+  // Auto-expand kelompok menu aktif berdasarkan pathname saat ini
+  useEffect(() => {
+    const isAkademik = ["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/placement-test", "/admin/curriculum"].includes(pathname);
+    const isKeuangan = ["/admin/finance", "/admin/tax"].includes(pathname);
+    const isKomunikasi = ["/admin/whatsapp", "/admin/announcements", "/admin/rag", "/admin/landing-page"].includes(pathname);
+    const isPengguna = ["/admin/students", "/admin/tutors"].includes(pathname);
+
+    const timer = setTimeout(() => {
+      setOpenGroups({
+        akademik: isAkademik,
+        keuangan: isKeuangan,
+        komunikasi: isKomunikasi,
+        pengguna: isPengguna,
+      });
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
   // Escape key handler untuk menutup sidebar
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -300,6 +334,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <nav className="sidebar-nav">
+          {/* Ringkasan */}
           <Link
             href="/admin"
             className={`sidebar-nav-link ${isActive("/admin") ? "active" : ""}`}
@@ -309,152 +344,192 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span>Ringkasan</span>
           </Link>
 
-          <Link
-            href="/admin/students"
-            className={`sidebar-nav-link ${isActive("/admin/students") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-            style={{ position: "relative" }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span>Kelola Siswa</span>
-            {pendingCount > 0 && (
-              <span style={{
-                position: "absolute",
-                top: "50%",
-                right: "0.75rem",
-                transform: "translateY(-50%)",
-                backgroundColor: "var(--color-red)",
-                color: "white",
-                borderRadius: "10px",
-                fontSize: "0.65rem",
-                fontWeight: "800",
-                padding: "0.1rem 0.4rem",
-                minWidth: "18px",
-                textAlign: "center",
-                animation: "pulse 2s infinite"
-              }}>
-                {pendingCount}
-              </span>
-            )}
-          </Link>
+          {/* Akademik & Kelas */}
+          <div className="sidebar-group">
+            <button
+              type="button"
+              onClick={() => toggleGroup("akademik")}
+              className={`sidebar-group-toggle ${["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/placement-test", "/admin/curriculum"].includes(pathname) ? "active-parent" : ""}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span>Akademik & Kelas</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={`chevron-icon ${openGroups.akademik ? "rotated" : ""}`}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className={`sidebar-group-items ${openGroups.akademik ? "expanded" : ""}`}>
+              <Link href="/admin/calendar" className={`sidebar-sub-link ${isActive("/admin/calendar") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Jadwal & Kalender</span>
+              </Link>
+              <Link href="/admin/online-schedule" className={`sidebar-sub-link ${isActive("/admin/online-schedule") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Jadwal Kelas Online</span>
+              </Link>
+              <Link href="/admin/attendance" className={`sidebar-sub-link ${isActive("/admin/attendance") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Absensi Harian</span>
+              </Link>
+              <Link href="/admin/reports" className={`sidebar-sub-link ${isActive("/admin/reports") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Input Rapor</span>
+              </Link>
+              <Link href="/admin/placement-test" className={`sidebar-sub-link ${isActive("/admin/placement-test") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Hasil Tes Penempatan</span>
+              </Link>
+              <Link href="/admin/curriculum" className={`sidebar-sub-link ${isActive("/admin/curriculum") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Kelola Kurikulum</span>
+              </Link>
+            </div>
+          </div>
 
-          <Link
-            href="/admin/whatsapp"
-            className={`sidebar-nav-link ${isActive("/admin/whatsapp") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            <span>WhatsApp Gateway</span>
-          </Link>
+          {/* Keuangan & Pajak */}
+          <div className="sidebar-group">
+            <button
+              type="button"
+              onClick={() => toggleGroup("keuangan")}
+              className={`sidebar-group-toggle ${["/admin/finance", "/admin/tax"].includes(pathname) ? "active-parent" : ""}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Keuangan & Pajak</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={`chevron-icon ${openGroups.keuangan ? "rotated" : ""}`}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className={`sidebar-group-items ${openGroups.keuangan ? "expanded" : ""}`}>
+              <Link href="/admin/finance" className={`sidebar-sub-link ${isActive("/admin/finance") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Kelola Keuangan / SPP</span>
+              </Link>
+              <Link href="/admin/tax" className={`sidebar-sub-link ${isActive("/admin/tax") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>SPT Pajak PT Perseorangan</span>
+              </Link>
+            </div>
+          </div>
 
-          <Link
-            href="/admin/attendance"
-            className={`sidebar-nav-link ${isActive("/admin/attendance") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            <span>Absensi Harian</span>
-          </Link>
+          {/* Komunikasi & Konten */}
+          <div className="sidebar-group">
+            <button
+              type="button"
+              onClick={() => toggleGroup("komunikasi")}
+              className={`sidebar-group-toggle ${["/admin/whatsapp", "/admin/announcements", "/admin/rag", "/admin/landing-page"].includes(pathname) ? "active-parent" : ""}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span>Komunikasi & Konten</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={`chevron-icon ${openGroups.komunikasi ? "rotated" : ""}`}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className={`sidebar-group-items ${openGroups.komunikasi ? "expanded" : ""}`}>
+              <Link href="/admin/whatsapp" className={`sidebar-sub-link ${isActive("/admin/whatsapp") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>WhatsApp Gateway</span>
+              </Link>
+              <Link href="/admin/announcements" className={`sidebar-sub-link ${isActive("/admin/announcements") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Pengumuman</span>
+              </Link>
+              <Link href="/admin/rag" className={`sidebar-sub-link ${isActive("/admin/rag") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Basis Pengetahuan AI</span>
+              </Link>
+              <Link href="/admin/landing-page" className={`sidebar-sub-link ${isActive("/admin/landing-page") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Kelola Landing Page</span>
+              </Link>
+            </div>
+          </div>
 
-          <Link
-            href="/admin/reports"
-            className={`sidebar-nav-link ${isActive("/admin/reports") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="12 8 12 12 16 14"/></svg>
-            <span>Input Rapor</span>
-          </Link>
-
-          <Link
-            href="/admin/finance"
-            className={`sidebar-nav-link ${isActive("/admin/finance") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span>Kelola Keuangan / SPP</span>
-          </Link>
-
-          <Link
-            href="/admin/tax"
-            className={`sidebar-nav-link ${isActive("/admin/tax") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-            <span>SPT Pajak PT Perseorangan</span>
-          </Link>
-
-          <Link
-            href="/admin/placement-test"
-            className={`sidebar-nav-link ${isActive("/admin/placement-test") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            <span>Hasil Tes Penempatan</span>
-          </Link>
-
-          <Link
-            href="/admin/calendar"
-            className={`sidebar-nav-link ${isActive("/admin/calendar") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span>Jadwal & Kalender</span>
-          </Link>
-
-          <Link
-            href="/admin/announcements"
-            className={`sidebar-nav-link ${isActive("/admin/announcements") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>
-            <span>Pengumuman</span>
-          </Link>
-
-          <Link
-            href="/admin/online-schedule"
-            className={`sidebar-nav-link ${isActive("/admin/online-schedule") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 10l4.553-2.277A1 1 0 0 1 21 8.623v6.754a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
-            <span>Jadwal Kelas Online</span>
-          </Link>
-
-          <Link
-            href="/admin/tutors"
-            className={`sidebar-nav-link ${isActive("/admin/tutors") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span>Kelola Tutor & Staf</span>
-          </Link>
-
-          <Link
-            href="/admin/curriculum"
-            className={`sidebar-nav-link ${isActive("/admin/curriculum") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            <span>Kelola Kurikulum</span>
-          </Link>
-          <Link
-            href="/admin/rag"
-            className={`sidebar-nav-link ${isActive("/admin/rag") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M12 2v2"/><path d="M5 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6"/><circle cx="8" cy="16" r="1"/><circle cx="16" cy="16" r="1"/></svg>
-            <span>Basis Pengetahuan AI</span>
-          </Link>
-
-          <Link
-            href="/admin/landing-page"
-            className={`sidebar-nav-link ${isActive("/admin/landing-page") ? "active" : ""}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            <span>Kelola Landing Page</span>
-          </Link>
-
-
+          {/* Manajemen Pengguna */}
+          <div className="sidebar-group">
+            <button
+              type="button"
+              onClick={() => toggleGroup("pengguna")}
+              className={`sidebar-group-toggle ${["/admin/students", "/admin/tutors"].includes(pathname) ? "active-parent" : ""}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Manajemen Pengguna</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={`chevron-icon ${openGroups.pengguna ? "rotated" : ""}`}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className={`sidebar-group-items ${openGroups.pengguna ? "expanded" : ""}`}>
+              <Link href="/admin/students" className={`sidebar-sub-link ${isActive("/admin/students") ? "active" : ""}`} onClick={() => setMobileOpen(false)} style={{ position: "relative" }}>
+                <span className="bullet"></span>
+                <span>Kelola Siswa</span>
+                {pendingCount > 0 && (
+                  <span style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "0.75rem",
+                    transform: "translateY(-50%)",
+                    backgroundColor: "var(--color-red)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "0.65rem",
+                    fontWeight: "800",
+                    padding: "0.1rem 0.4rem",
+                    minWidth: "18px",
+                    textAlign: "center",
+                    animation: "pulse 2s infinite"
+                  }}>
+                    {pendingCount}
+                  </span>
+                )}
+              </Link>
+              <Link href="/admin/tutors" className={`sidebar-sub-link ${isActive("/admin/tutors") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Kelola Tutor & Staf</span>
+              </Link>
+            </div>
+          </div>
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>

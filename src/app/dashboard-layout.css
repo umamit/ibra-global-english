@@ -162,3 +162,158 @@
   letter-spacing: -0.01em;
   border: 1px solid var(--color-gray-200);
 }
+
+/* ── Sidebar Accordion Dropdown Group ── */
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2px;
+}
+
+.sidebar-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.875rem;
+  border-radius: var(--radius-lg);
+  color: var(--color-gray-700);
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.sidebar-group-toggle svg {
+  opacity: 0.65;
+  flex-shrink: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.sidebar-group-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-gray-900);
+}
+
+.sidebar-group-toggle:hover svg {
+  opacity: 1;
+}
+
+/* Chevron indicator with smooth transition */
+.chevron-icon {
+  margin-left: auto;
+  opacity: 0.5;
+  transition: transform var(--transition-normal);
+}
+
+.chevron-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* State when one of sub-links inside is active */
+.sidebar-group-toggle.active-parent {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.sidebar-group-toggle.active-parent svg {
+  opacity: 0.85;
+  color: var(--color-primary);
+}
+
+/* Sub-items list with height/opacity transition */
+.sidebar-group-items {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 1.25rem;
+}
+
+.sidebar-group-items.expanded {
+  max-height: 400px;
+  opacity: 1;
+  margin-top: 2px;
+  margin-bottom: 6px;
+}
+
+/* Sub-link styles */
+.sidebar-sub-link {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-md);
+  color: var(--color-gray-600);
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: -0.01em;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+/* Bullet indicator */
+.sidebar-sub-link .bullet {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-gray-400);
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.sidebar-sub-link:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--color-gray-900);
+}
+
+.sidebar-sub-link:hover .bullet {
+  background-color: var(--color-gray-600);
+  transform: scale(1.2);
+}
+
+/* Active state for sub-links */
+.sidebar-sub-link.active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.sidebar-sub-link.active .bullet {
+  background-color: var(--color-primary);
+  transform: scale(1.3);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] .sidebar-group-toggle {
+  color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .sidebar-group-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--color-gray-900);
+}
+
+[data-theme="dark"] .sidebar-group-toggle.active-parent {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .sidebar-sub-link {
+  color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .sidebar-sub-link:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--color-gray-900);
+}
+
+[data-theme="dark"] .sidebar-sub-link.active {
+  background-color: rgba(33, 108, 126, 0.2);
+  color: var(--color-primary);
+}
