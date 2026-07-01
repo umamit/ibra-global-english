@@ -91,6 +91,10 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 16. **Jangan Sok Tahu (No Speculative Assumptions):**
    - Agen dilarang membuat asumsi spekulatif mengenai elemen visual, antarmuka browser, atau kondisi sistem pengguna tanpa melakukan investigasi mendalam terlebih dahulu. Jika terdapat ambiguitas, agen wajib melakukan verifikasi atau bertanya langsung kepada pengguna alih-alih membuat kesimpulan yang salah.
 
+17. **Pengelolaan Commit & Push Git:**
+   - Jangan push ke GitHub jika tidak diminta secara eksplisit oleh pengguna. Cukup lakukan commit lokal saja untuk mengamankan pekerjaan.
+
+
 ## Hallucination Prevention & Strict Constraints
 •  If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 •  Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
