@@ -256,6 +256,7 @@ header.scrolled .logo-text p {
   border-left: 1px solid rgba(0, 0, 0, 0.06);
   transform: translateX(100%);
   transition: transform var(--transition-normal);
+  overflow-y: auto; /* Memastikan bisa di-scroll di layar HP kecil jika menu memanjang */
 }
 
 [data-theme="dark"] .mobile-nav-content {
