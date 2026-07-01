@@ -14,7 +14,7 @@ import LegalLayout from "@/app/legal/LegalLayout";
 
 export default function PrivacyPage() {
   return (
-    <LegalLayout title="Kebijakan Privasi">
+    <LegalLayout title="Kebijakan Privasi" lastUpdated="1 Juli 2026">
       <section>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
           1. Pengantar
@@ -33,8 +33,11 @@ export default function PrivacyPage() {
         </p>
         <ul style={{ paddingLeft: "1.25rem", marginTop: "0.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           <li><strong>Informasi Wali Murid (Orang Tua)</strong>: Nama lengkap, alamat email, nomor telepon/WhatsApp, dan kata sandi akun portal.</li>
+          <li><strong>Profil Login Sosial (OAuth)</strong>: Apabila Anda memilih untuk masuk/mendaftar menggunakan metode masuk sosial (Social Login), kami mengumpulkan data profil publik seperti nama lengkap, alamat email, dan foto profil yang disediakan oleh pihak ketiga (Google atau Facebook).</li>
           <li><strong>Informasi Siswa</strong>: Nama anak, tanggal lahir/usia, pilihan program belajar (Kids, Teens, Calistung), data kehadiran (absensi), dan pencapaian akademik (nilai rapor).</li>
+          <li><strong>Informasi Kondisi Kesehatan & Medis</strong>: Data mengenai riwayat medis khusus, alergi berat, atau kondisi kesehatan tertentu anak yang dilaporkan oleh orang tua saat pendaftaran.</li>
           <li><strong>Informasi Pembayaran</strong>: Nominal pembayaran SPP bulanan, metode pembayaran, dan berkas foto bukti transfer yang diunggah ke portal.</li>
+          <li><strong>Dokumentasi Kegiatan</strong>: Dokumentasi dalam bentuk foto atau rekaman video selama kegiatan belajar mengajar berlangsung di lingkungan kelas.</li>
         </ul>
       </section>
 
@@ -47,16 +50,28 @@ export default function PrivacyPage() {
         </p>
         <ul style={{ paddingLeft: "1.25rem", marginTop: "0.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           <li>Menghubungkan akun orang tua dengan data perkembangan belajar siswa secara real-time.</li>
+          <li>Memfasilitasi pendaftaran dan autentikasi akun Anda secara aman menggunakan akun Google atau Facebook.</li>
           <li>Menampilkan visualisasi statistik evaluasi nilai (Radar Chart) dan riwayat absensi anak.</li>
           <li>Memverifikasi pembayaran biaya kursus/SPP bulanan secara akurat oleh divisi keuangan.</li>
           <li>Menerbitkan sertifikat kelulusan digital resmi yang valid.</li>
           <li>Mengirimkan informasi pengumuman penting seputar kegiatan belajar mengajar.</li>
+          <li>Menggunakan dokumentasi foto atau video kelas untuk publikasi prestasi siswa, perkembangan kelas, serta materi promosi resmi di media sosial resmi Ibra Global English. Orang tua berhak mengajukan keberatan secara tertulis jika tidak ingin dokumentasi anak dipublikasikan.</li>
+          <li>Menyimpan dan menggunakan data medis/kesehatan siswa secara rahasia dan internal untuk memastikan keselamatan, penanganan medis yang tepat (jika terjadi keadaan darurat), dan kenyamanan belajar siswa selama di kelas.</li>
         </ul>
       </section>
 
       <section>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
-          4. Perlindungan & Penyimpanan Data
+          4. Cookies & Alat Analisis (Analytics)
+        </h2>
+        <p>
+          Kami menggunakan cookies dan teknologi pelacak sejenis (seperti Google Analytics, Cloudflare Analytics, dan PostHog) untuk mengumpulkan data statistik kunjungan website secara anonim. Informasi ini membantu kami memahami bagaimana pengunjung berinteraksi dengan website kami, mendiagnosis masalah server, mengukur kinerja halaman, serta meningkatkan kualitas layanan dan kegunaan situs web kami. Data yang dikumpulkan bersifat non-identifikasi pribadi.
+        </p>
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
+          5. Perlindungan & Penyimpanan Data
         </h2>
         <p>
           Kami menyadari pentingnya keamanan informasi Anda. Seluruh data pribadi Anda disimpan secara terenkripsi dan aman di dalam database cloud terintegrasi (Supabase) dengan protokol keamanan tingkat lanjut. Kami membatasi akses ke data pribadi Anda hanya untuk staf administratif, tutor, dan pengelola keuangan PT Ibra Global English yang membutuhkannya untuk menjalankan tugas mereka.
@@ -65,7 +80,7 @@ export default function PrivacyPage() {
 
       <section>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
-          5. Berbagi Data dengan Pihak Ketiga
+          6. Berbagi Data dengan Pihak Ketiga
         </h2>
         <p>
           **Kami tidak akan pernah menjual, menyewakan, menukarkan, atau memberikan informasi pribadi Anda kepada pihak ketiga** mana pun untuk tujuan pemasaran atau komersial tanpa persetujuan tertulis dari Anda, kecuali diwajibkan oleh undang-undang atau otoritas hukum negara yang sah.
@@ -74,10 +89,28 @@ export default function PrivacyPage() {
 
       <section>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
-          6. Hak-Hak Anda
+          7. Hak-Hak Anda
         </h2>
         <p>
           Anda memiliki hak penuh untuk meminta akses, perbaikan, atau penghapusan informasi pribadi Anda dari sistem kami. Anda juga dapat memperbarui profil atau meminta tutor untuk melakukan sinkronisasi data anak Anda apabila terdapat kesalahan pencatatan.
+        </p>
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
+          8. Tautan ke Situs Web Pihak Ketiga
+        </h2>
+        <p>
+          Website kami mungkin menyediakan tautan ke situs web pihak ketiga lainnya (seperti API WhatsApp atau pemutar video YouTube). Kami tidak bertanggung jawab atas kebijakan privasi, pengolahan data, atau konten dari situs web eksternal tersebut. Anda disarankan untuk meninjau kebijakan privasi di situs web tujuan tersebut secara mandiri.
+        </p>
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
+          9. Pembaruan Kebijakan Privasi
+        </h2>
+        <p>
+          PT Ibra Global English berhak untuk memperbarui, mengubah, atau memodifikasi Kebijakan Privasi ini sewaktu-waktu tanpa pemberitahuan terlebih dahulu. Setiap perubahan akan segera berlaku setelah diunggah di halaman ini. Anda diimbau untuk memeriksa halaman Kebijakan Privasi ini secara berkala.
         </p>
       </section>
 
