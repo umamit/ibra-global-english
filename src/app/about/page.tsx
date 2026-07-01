@@ -123,40 +123,46 @@ export default function AboutPage() {
       <MarqueeBanner />
 
       <main className="about-wrapper">
-        <div className="about-container">
-          
-          {/* Hero Section */}
-          <section className="about-hero reveal">
+        
+        {/* 1. Hero Section */}
+        <section className="about-hero-section reveal">
+          <div className="about-container text-center">
             <h1>Tentang Kami</h1>
             <p>
               Ibra Global English Bobong berkomitmen untuk menghadirkan bimbingan kursus Bahasa Inggris berkualitas premium dan bimbingan Calistung (Membaca, Menulis, Berhitung) yang interaktif, menyenangkan, dan berpusat pada perkembangan rasa percaya diri anak di Pulau Taliabu.
             </p>
-          </section>
+          </div>
+        </section>
 
-          {/* Visi & Misi */}
-          <section className="about-vision-mission reveal">
-            <div className="vision-card">
-              <span className="card-icon" aria-hidden="true">👁️‍🗨️</span>
-              <h2>Visi Kami</h2>
-              <p>
-                Menjadi pusat bimbingan pendidikan non-formal terdepan di Pulau Taliabu yang mampu melahirkan generasi muda yang cerdas, kreatif, berakhlak mulia, serta fasih berkomunikasi secara aktif dalam Bahasa Inggris untuk siap bersaing di kancah global.
-              </p>
+        {/* 2. Visi & Misi Section (Soft Teal Background) */}
+        <section className="about-vision-mission-section reveal">
+          <div className="about-container">
+            <div className="about-vision-mission">
+              <div className="vision-card">
+                <span className="card-icon" aria-hidden="true">👁️‍🗨️</span>
+                <h2>Visi Kami</h2>
+                <p>
+                  Menjadi pusat bimbingan pendidikan non-formal terdepan di Pulau Taliabu yang mampu melahirkan generasi muda yang cerdas, kreatif, berakhlak mulia, serta fasih berkomunikasi secara aktif dalam Bahasa Inggris untuk siap bersaing di kancah global.
+                </p>
+              </div>
+
+              <div className="mission-card">
+                <span className="card-icon" aria-hidden="true">🎯</span>
+                <h2>Misi Kami</h2>
+                <ul>
+                  <li>Menyelenggarakan kursus Bahasa Inggris dengan metode belajar sambil bermain (*fun learning method*) bebas tekanan.</li>
+                  <li>Menyediakan program bimbingan membaca, menulis, dan berhitung yang terstruktur dan ramah anak.</li>
+                  <li>Melatih kemampuan berdiskusi dan berbicara aktif (*Speaking-First*) siswa sejak pertemuan pertama.</li>
+                  <li>Memfasilitasi pemantauan hasil belajar secara terbuka bagi orang tua melalui laporan berkala.</li>
+                </ul>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div className="mission-card">
-              <span className="card-icon" aria-hidden="true">🎯</span>
-              <h2>Misi Kami</h2>
-              <ul>
-                <li>Menyelenggarakan kursus Bahasa Inggris dengan metode belajar sambil bermain (*fun learning method*) bebas tekanan.</li>
-                <li>Menyediakan program bimbingan membaca, menulis, dan berhitung yang terstruktur dan ramah anak.</li>
-                <li>Melatih kemampuan berdiskusi dan berbicara aktif (*Speaking-First*) siswa sejak pertemuan pertama.</li>
-                <li>Memfasilitasi pemantauan hasil belajar secara terbuka bagi orang tua melalui laporan berkala.</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Core Values */}
-          <section className="about-values reveal">
+        {/* 3. Core Values Section (White Background) */}
+        <section className="about-values-section reveal">
+          <div className="about-container">
             <h2 className="section-title">Nilai-Nilai Utama Kami</h2>
             <div className="values-grid">
               <div className="value-card">
@@ -177,10 +183,12 @@ export default function AboutPage() {
                 <p>Kapasitas kelas dibatasi maksimal 10 siswa agar pengajar dapat fokus memberikan perhatian personal ke setiap individu secara adil.</p>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Tutors Section */}
-          <section className="about-tutors reveal">
+        {/* 4. Tutors Section (Soft Gold/Cream Background) */}
+        <section className="about-tutors-section reveal">
+          <div className="about-container">
             <h2 className="section-title">Tim Pengajar Kami</h2>
             
             {loading ? (
@@ -216,9 +224,9 @@ export default function AboutPage() {
                 ))}
               </div>
             )}
-          </section>
+          </div>
+        </section>
 
-        </div>
       </main>
 
       <Footer />

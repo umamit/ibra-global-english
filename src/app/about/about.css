@@ -3,10 +3,8 @@
    ========================================================================== */
 
 .about-wrapper {
-  padding-top: 120px; /* Space for fixed header */
-  padding-bottom: 5rem;
+  padding-top: 80px; /* Header spacing */
   background-color: var(--color-gray-50);
-  min-height: 100vh;
 }
 
 .about-container {
@@ -15,48 +13,57 @@
   padding-inline: 1.5rem;
 }
 
-/* ── Hero Section ── */
-.about-hero {
+.text-center {
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto 4rem;
 }
 
-.about-hero h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
+/* ── 1. Hero Section ── */
+.about-hero-section {
+  background-color: var(--color-gray-50);
+  padding: 5rem 0 3.5rem;
+}
+
+.about-hero-section h1 {
+  font-size: clamp(2.25rem, 6vw, 3.25rem);
   font-weight: 800;
   color: var(--color-primary-dark);
-  letter-spacing: -0.03em;
-  margin-bottom: 1rem;
+  letter-spacing: -0.035em;
+  margin-bottom: 1.25rem;
 }
 
-.about-hero p {
+.about-hero-section p {
   font-size: clamp(1rem, 2vw, 1.15rem);
   color: var(--color-gray-600);
-  line-height: 1.6;
+  line-height: 1.7;
   font-weight: 500;
+  max-width: 800px;
+  margin-inline: auto;
 }
 
-/* ── Visi & Misi Section ── */
+/* ── 2. Visi & Misi Section (Soft Teal Background) ── */
+.about-vision-mission-section {
+  background-color: var(--color-primary-light);
+  padding: 5.5rem 0;
+}
+
 .about-vision-mission {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 5rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.25rem;
 }
 
 .vision-card, .mission-card {
   background-color: var(--color-white);
-  padding: 2.5rem;
+  padding: 2.75rem 2.5rem;
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .vision-card:hover, .mission-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(33, 108, 126, 0.08);
 }
 
 .card-icon {
@@ -67,17 +74,17 @@
 }
 
 .vision-card h2, .mission-card h2 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--color-gray-900);
-  margin-bottom: 1rem;
-  letter-spacing: -0.015em;
+  margin-bottom: 1.15rem;
+  letter-spacing: -0.02em;
 }
 
 .vision-card p, .mission-card li {
   font-size: 0.95rem;
   color: var(--color-gray-600);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .mission-card ul {
@@ -86,56 +93,57 @@
 }
 
 .mission-card li {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .mission-card li::marker {
   color: var(--color-accent);
 }
 
-/* ── Core Values Section ── */
-.about-values {
-  text-align: center;
-  margin-bottom: 5rem;
+/* ── 3. Core Values Section (White Background) ── */
+.about-values-section {
+  background-color: var(--color-white);
+  padding: 5.5rem 0;
 }
 
 .section-title {
   font-size: 1.85rem;
   font-weight: 700;
   color: var(--color-gray-900);
-  letter-spacing: -0.02em;
-  margin-bottom: 2.5rem;
+  letter-spacing: -0.025em;
+  margin-bottom: 3rem;
+  text-align: center;
 }
 
 .values-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.75rem;
+  gap: 2rem;
 }
 
 .value-card {
-  background-color: var(--color-white);
+  background-color: var(--color-gray-50);
   padding: 2.25rem 2rem;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--color-gray-100);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
   text-align: left;
 }
 
 .value-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  background-color: var(--color-white);
 }
 
 .value-icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 2.25rem;
+  margin-bottom: 1.25rem;
   display: inline-block;
 }
 
 .value-card h3 {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-gray-900);
   margin-bottom: 0.75rem;
@@ -144,38 +152,39 @@
 .value-card p {
   font-size: 0.9rem;
   color: var(--color-gray-600);
-  line-height: 1.55;
+  line-height: 1.6;
   margin: 0;
 }
 
-/* ── Tutors Section ── */
-.about-tutors {
-  text-align: center;
+/* ── 4. Tutors Section (Soft Gold/Cream Background) ── */
+.about-tutors-section {
+  background-color: var(--color-accent-light);
+  padding: 5.5rem 0;
 }
 
 .tutors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  gap: 2.25rem;
 }
 
 .tutor-card {
   background-color: var(--color-white);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
   text-align: center;
 }
 
 .tutor-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(166, 136, 73, 0.12);
 }
 
 .tutor-image-container {
-  height: 240px;
+  height: 250px;
   width: 100%;
   position: relative;
   background: linear-gradient(135deg, var(--color-bg-teal-100) 0%, var(--color-bg-teal-50) 100%);
@@ -207,34 +216,34 @@
 }
 
 .tutor-info {
-  padding: 1.75rem;
+  padding: 1.85rem;
 }
 
 .tutor-info h3 {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--color-gray-900);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
   letter-spacing: -0.01em;
 }
 
 .tutor-role {
   font-size: 0.825rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   margin-bottom: 1rem;
   display: inline-block;
   background-color: var(--color-primary-light);
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 0.85rem;
   border-radius: var(--radius-full);
 }
 
 .tutor-bio {
   font-size: 0.875rem;
   color: var(--color-gray-600);
-  line-height: 1.6;
+  line-height: 1.65;
   margin: 0;
 }
 
@@ -242,15 +251,40 @@
    DARK MODE OVERRIDES
    ========================================================================== */
 [data-theme="dark"] .about-wrapper {
-  background-color: var(--color-gray-50); /* Inherits black from global dark */
+  background-color: var(--color-gray-50);
+}
+
+[data-theme="dark"] .about-hero-section {
+  background-color: var(--color-gray-50);
+}
+
+[data-theme="dark"] .about-vision-mission-section {
+  background-color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .about-values-section {
+  background-color: var(--color-gray-50);
+}
+
+[data-theme="dark"] .about-tutors-section {
+  background-color: var(--color-accent-light);
 }
 
 [data-theme="dark"] .vision-card,
 [data-theme="dark"] .mission-card,
-[data-theme="dark"] .value-card,
 [data-theme="dark"] .tutor-card {
-  background-color: var(--color-white); /* Inherits dark surface color */
+  background-color: var(--color-white);
   border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .value-card {
+  background-color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .value-card:hover {
+  background-color: var(--color-gray-100);
 }
 
 [data-theme="dark"] .tutor-image-container {
@@ -259,4 +293,5 @@
 
 [data-theme="dark"] .tutor-role {
   background-color: rgba(33, 108, 126, 0.2);
+  color: var(--color-primary);
 }
