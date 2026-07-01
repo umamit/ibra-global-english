@@ -5,6 +5,33 @@ import { getSupabaseConfig } from "@/utils/supabase/config";
 const { url: supabaseUrl } = getSupabaseConfig();
 export const dynamic = "force-dynamic";
 
+const TOPICS = [
+  "technology and digital era",
+  "environmental challenges and ecology",
+  "global cuisine and food culture",
+  "modern job search and career paths",
+  "traveling adventures and destinations",
+  "sports, fitness and health",
+  "art, music and cultural expressions",
+  "space exploration and astronomy",
+  "history and ancient civilizations",
+  "financial literacy and economy",
+  "hobbies and creative writing",
+  "education and future of learning",
+  "social media and communication",
+  "climate change and green energy",
+  "human psychology and behavior",
+  "movies, theater and storytelling",
+  "transportation and city life",
+  "science discoveries and innovations",
+  "shopping, fashion and design",
+  "family relationships and friendship",
+  "volunteering and community service",
+  "myths, legends and folklore",
+  "nature, wildlife and conservation",
+  "business ethics and entrepreneurship"
+];
+
 async function generateFromGroq() {
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) {
@@ -14,8 +41,12 @@ async function generateFromGroq() {
     return null;
   }
 
+  const randomTopic = TOPICS[Math.floor(Math.random() * TOPICS.length)];
+
   const prompt = `Kamu adalah pakar pedagogi Bahasa Inggris bersertifikat CEFR yang merancang soal placement test untuk lembaga kursus Ibra Global English.
 Tugas: Rancang tepat 15 soal pilihan ganda bahasa Inggris yang mencakup 5 level CEFR dan 6 tipe soal berbeda.
+
+Untuk memastikan tes kali ini unik dan bervariasi, fokuskan tema utama naskah, kalimat, dan teks bacaan pada konteks: "${randomTopic}".
 
 Pembagian soal berdasarkan level CEFR (masing-masing 3 soal):
 - Soal 1, 2, 3:  Level A1 (Pemula Mutlak)
@@ -23,6 +54,10 @@ Pembagian soal berdasarkan level CEFR (masing-masing 3 soal):
 - Soal 7, 8, 9:  Level B1 (Menengah Awal)
 - Soal 10, 11, 12: Level B2 (Menengah Atas)
 - Soal 13, 14, 15: Level C1 (Mahir)
+
+DIREKTIF TINGKAT KESULITAN MAKSIMAL (WAJIB DIPATUHI):
+- Tingkat kesulitan untuk setiap level harus diset pada batas MAKSIMAL standar kompetensi CEFR masing-masing agar tes benar-benar menantang dan akurat.
+- Soal level B2 dan C1 harus menggunakan tata bahasa tingkat tinggi yang kompleks (seperti: inversion, mixed conditionals, relative clauses, subjunctive mood), teks membaca yang panjang dengan argumen akademis/filosofis, pertanyaan pemahaman yang kritis (bukan sekadar mencocokkan kata), serta pilihan kosakata (vocabulary) tingkat tinggi.
 
 Distribusi tipe soal yang WAJIB ada dalam 15 soal tersebut:
 - 3 soal Grammar (struktur kalimat, tenses, agreement)
@@ -50,7 +85,6 @@ Aturan ketat:
 - Soal Reading WAJIB diawali dengan teks artikel/paragraf pendek sebelum pertanyaan dimulai.
 - Soal Listening: audio_text berisi percakapan atau narasi pendek (3-5 kalimat).
 - Soal Speaking: target_sentence berisi satu kalimat yang harus diucapkan peserta.
-- Tingkat kesulitan soal harus benar-benar sesuai level CEFR masing-masing.
 
 DIREKTIF ANTI-GAGAL (WAJIB DIPATUHI):
 - DILARANG KERAS membuat pertanyaan yang jawabannya sudah tertulis di dalam kalimat tanya itu sendiri (Contoh PROHIBITED: Text: "My name is John" -> Question: "What is John's name?").
@@ -80,7 +114,7 @@ DIREKTIF ANTI-GAGAL (WAJIB DIPATUHI):
         },
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile",
-          temperature: 0.65,
+          temperature: 1.0,
           max_tokens: 6000,
           messages: [{ role: "user", content: prompt }],
         }),
