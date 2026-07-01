@@ -16,6 +16,7 @@ type HeaderProps = z.infer<typeof headerPropsSchema>;
 export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
 
   // Handle scroll effect on header
   useEffect(() => {
@@ -71,7 +72,17 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
           
           <nav className="nav-links" aria-label="Navigasi Utama">
             <Link href="/#home" className="nav-link">Home</Link>
-            <Link href="/#programs" className="nav-link">Program</Link>
+            <div className="dropdown-container">
+              <button className="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                Program <span className="dropdown-chevron">▼</span>
+              </button>
+              <div className="dropdown-menu">
+                <Link href="/#programs" className="dropdown-item">Semua Program</Link>
+                <Link href="/#kids-program" className="dropdown-item">Kids Program</Link>
+                <Link href="/#teens-program" className="dropdown-item">Teens Program</Link>
+                <Link href="/#fun-calistung" className="dropdown-item">Fun Calistung</Link>
+              </div>
+            </div>
             <Link href="/gallery" className="nav-link">Galeri</Link>
             <Link href="/placement-test" className="nav-link">Tes Penempatan</Link>
             <Link href="/#faq" className="nav-link">FAQ</Link>
@@ -180,7 +191,22 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
         <div className="mobile-nav-content">
           <nav className="mobile-nav-links" aria-label="Navigasi Seluler">
             <Link href="/#home" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link href="/#programs" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Program</Link>
+            
+            <div className="mobile-dropdown-container" style={{ display: "flex", flexDirection: "column" }}>
+              <button 
+                className="mobile-link mobile-dropdown-toggle" 
+                onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
+              >
+                Program <span className="dropdown-chevron" style={{ transform: isMobileDropdownOpen ? "rotate(180deg)" : "none", transition: "transform 0.3s" }}>▼</span>
+              </button>
+              <div className={`mobile-dropdown-menu ${isMobileDropdownOpen ? "active" : ""}`}>
+                <Link href="/#programs" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Semua Program</Link>
+                <Link href="/#kids-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Kids Program</Link>
+                <Link href="/#teens-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Teens Program</Link>
+                <Link href="/#fun-calistung" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Fun Calistung</Link>
+              </div>
+            </div>
+
             <Link href="/gallery" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Galeri</Link>
             <Link href="/placement-test" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Tes Penempatan</Link>
             <Link href="/#faq" className="mobile-link" onClick={() => setIsMenuOpen(false)}>FAQ</Link>

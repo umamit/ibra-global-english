@@ -297,3 +297,103 @@ header.scrolled .logo-text p {
   text-align: center;
   letter-spacing: -0.01em;
 }
+
+/* ── Dropdown Menu (Desktop) ── */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-toggle {
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.dropdown-chevron {
+  font-size: 0.55rem;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+.dropdown-container:hover .dropdown-chevron {
+  transform: rotate(180deg);
+}
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: var(--color-header-bg-scrolled);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem 0;
+  min-width: 160px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  z-index: 120;
+}
+[data-theme="dark"] .dropdown-menu {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.dropdown-container:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+.dropdown-item {
+  display: block;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.8rem;
+  color: var(--color-gray-700);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+  text-align: left;
+}
+.dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--color-gray-900);
+}
+[data-theme="dark"] .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Accordion Dropdown (Mobile) ── */
+.mobile-dropdown-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.mobile-dropdown-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.mobile-dropdown-menu.active {
+  max-height: 250px;
+}
+.mobile-dropdown-item {
+  font-size: 0.9rem !important;
+  font-weight: 400 !important;
+  color: var(--color-gray-600) !important;
+  padding: 0.5rem 0.5rem !important;
+}
+[data-theme="dark"] .mobile-dropdown-item {
+  color: var(--color-gray-400) !important;
+}

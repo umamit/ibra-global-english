@@ -39,6 +39,7 @@ export default function Programs({ initialSettings }: any) {
           {programs.map((prog, idx) => (
             <div 
               key={idx} 
+              id={prog.title.toLowerCase().replace(/\s+/g, "-")}
               className="program-card glowing-card" 
               data-aos="fade-up" 
               data-aos-delay={idx * 150}
