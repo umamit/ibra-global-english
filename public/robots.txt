@@ -6,6 +6,10 @@ Disallow: /student/
 Disallow: /parent/
 Disallow: /tutor/
 Disallow: /api/
+Disallow: /auth/
+Disallow: /verify/
+Disallow: /onboarding/
+Disallow: /posthog-test
 Content-Signal: ai-train=no, search=yes, ai-input=no
 
 Sitemap: https://www.ibraglobalenglish.uk/sitemap.xml
