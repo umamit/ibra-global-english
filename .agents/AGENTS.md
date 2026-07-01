@@ -100,3 +100,8 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 •  DO NOT create fake, mocked, or stubbed tests to pass verification.
 •  Always run  npm test  (or equivalent) to verify changes against the real runtime environment.
 •  If a test fails, you must read the error logs and fix the actual code, not change the test to bypass it.
+
+## Tool Execution Protocol
+•  Always verify schema requirements before invoking any external APIs or database tools.
+•  Do not populate parameters with placeholder data. If a mandatory parameter is missing, ask the user for clarification first.
+
