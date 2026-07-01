@@ -23,6 +23,10 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
 
   // Scrollspy logic
   useEffect(() => {
+    if (pathname === "/about") {
+      setActiveSection("about");
+      return;
+    }
     if (pathname === "/gallery") {
       setActiveSection("gallery");
       return;
@@ -119,6 +123,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
           
           <nav className="nav-links" aria-label="Navigasi Utama">
             <Link href="/#home" className={`nav-link ${activeSection === "home" ? "active" : ""}`}>Home</Link>
+            <Link href="/about" className={`nav-link ${activeSection === "about" ? "active" : ""}`}>Tentang Kami</Link>
             <div className="dropdown-container">
               <button className={`nav-link dropdown-toggle ${activeSection === "programs" ? "active" : ""}`} aria-haspopup="true" aria-expanded="false">
                 Program <span className="dropdown-chevron">▼</span>
@@ -238,6 +243,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
         <div className="mobile-nav-content">
           <nav className="mobile-nav-links" aria-label="Navigasi Seluler">
             <Link href="/#home" className={`mobile-link ${activeSection === "home" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Home</Link>
+            <Link href="/about" className={`mobile-link ${activeSection === "about" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Tentang Kami</Link>
             
             <div className="mobile-dropdown-container" style={{ display: "flex", flexDirection: "column" }}>
               <button 

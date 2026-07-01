@@ -1,0 +1,229 @@
+"use client";
+
+import React from 'react';
+import { useState, useEffect } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import SocialFloat from "@/components/SocialFloat";
+import AIChatWidget from "@/components/AIChatWidget";
+import MarqueeBanner from "@/components/MarqueeBanner";
+import { createClient } from "@/utils/supabase/client";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import "./about.css";
+
+interface Tutor {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  image_url: string;
+}
+
+const FALLBACK_TUTORS: Tutor[] = [
+  {
+    id: "fallback-1",
+    name: "Ibra",
+    role: "Founder & Head Tutor",
+    bio: "Pendidik yang bersemangat dengan pengalaman bertahun-tahun dalam melatih kecakapan berbicara (Speaking) bahasa Inggris aktif untuk remaja dan dewasa di Pulau Taliabu.",
+    image_url: ""
+  },
+  {
+    id: "fallback-2",
+    name: "Sarah",
+    role: "Kids Program Specialist",
+    bio: "Ahli dalam metode pengajaran bahasa Inggris ramah anak dengan menggunakan media interaktif, lagu, dan permainan motorik yang menyenangkan.",
+    image_url: ""
+  },
+  {
+    id: "fallback-3",
+    name: "Rahma",
+    role: "Calistung Specialist",
+    bio: "Spesialis bimbingan belajar Calistung (Membaca, Menulis, Berhitung) anak usia dini dengan pendekatan kesabaran personal.",
+    image_url: ""
+  }
+];
+
+export default function AboutPage() {
+  const supabase = createClient();
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [tutors, setTutors] = useState<Tutor[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useScrollReveal();
+
+  // Handle theme initialization
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
+
+    setTimeout(() => {
+      setTheme(initialTheme === "dark" ? "dark" : "light");
+    }, 0);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    document.documentElement.setAttribute("data-theme", nextTheme);
+    localStorage.setItem("theme", nextTheme);
+  };
+
+  // Fetch tutors from Supabase database
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchTutors() {
+      try {
+        const { data, error } = await supabase
+          .from("tutors")
+          .select("id, name, role, bio, image_url")
+          .eq("is_active", true)
+          .order("display_order", { ascending: true });
+
+        if (error) throw error;
+
+        if (isMounted) {
+          if (data && data.length > 0) {
+            setTutors(data as Tutor[]);
+          } else {
+            setTutors(FALLBACK_TUTORS);
+          }
+        }
+      } catch (err) {
+        console.warn("Gagal memuat data tutor dari database, menggunakan fallback data:", err);
+        if (isMounted) {
+          setTutors(FALLBACK_TUTORS);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchTutors();
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase]);
+
+  // Helper to render initials as a clean placeholder for tutor photos
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map(n => n[0])
+      .slice(0, 2)
+      .join("");
+  };
+
+  return (
+    <>
+      <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
+      <MarqueeBanner />
+
+      <main className="about-wrapper">
+        <div className="about-container">
+          
+          {/* Hero Section */}
+          <section className="about-hero reveal">
+            <h1>Tentang Kami</h1>
+            <p>
+              Ibra Global English Bobong berkomitmen untuk menghadirkan bimbingan kursus Bahasa Inggris berkualitas premium dan bimbingan Calistung (Membaca, Menulis, Berhitung) yang interaktif, menyenangkan, dan berpusat pada perkembangan rasa percaya diri anak di Pulau Taliabu.
+            </p>
+          </section>
+
+          {/* Visi & Misi */}
+          <section className="about-vision-mission reveal">
+            <div className="vision-card">
+              <span className="card-icon" aria-hidden="true">👁️‍🗨️</span>
+              <h2>Visi Kami</h2>
+              <p>
+                Menjadi pusat bimbingan pendidikan non-formal terdepan di Pulau Taliabu yang mampu melahirkan generasi muda yang cerdas, kreatif, berakhlak mulia, serta fasih berkomunikasi secara aktif dalam Bahasa Inggris untuk siap bersaing di kancah global.
+              </p>
+            </div>
+
+            <div className="mission-card">
+              <span className="card-icon" aria-hidden="true">🎯</span>
+              <h2>Misi Kami</h2>
+              <ul>
+                <li>Menyelenggarakan kursus Bahasa Inggris dengan metode belajar sambil bermain (*fun learning method*) bebas tekanan.</li>
+                <li>Menyediakan program bimbingan membaca, menulis, dan berhitung yang terstruktur dan ramah anak.</li>
+                <li>Melatih kemampuan berdiskusi dan berbicara aktif (*Speaking-First*) siswa sejak pertemuan pertama.</li>
+                <li>Memfasilitasi pemantauan hasil belajar secara terbuka bagi orang tua melalui laporan berkala.</li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Core Values */}
+          <section className="about-values reveal">
+            <h2 className="section-title">Nilai-Nilai Utama Kami</h2>
+            <div className="values-grid">
+              <div className="value-card">
+                <span className="value-icon" aria-hidden="true">🤝</span>
+                <h3>Child-Friendly Method</h3>
+                <p>Pembelajaran dirancang khusus tanpa tekanan akademis berlebih untuk merawat kesehatan mental dan kreativitas anak.</p>
+              </div>
+
+              <div className="value-card">
+                <span className="value-icon" aria-hidden="true">🗣️</span>
+                <h3>Speaking-First Approach</h3>
+                <p>Mendorong siswa aktif berbicara bahasa Inggris minimal 70% dari waktu pertemuan di kelas untuk melatih mental berbicara sejak dini.</p>
+              </div>
+
+              <div className="value-card">
+                <span className="value-icon" aria-hidden="true">🎓</span>
+                <h3>Attention to Detail</h3>
+                <p>Kapasitas kelas dibatasi maksimal 10 siswa agar pengajar dapat fokus memberikan perhatian personal ke setiap individu secara adil.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Tutors Section */}
+          <section className="about-tutors reveal">
+            <h2 className="section-title">Tim Pengajar Kami</h2>
+            
+            {loading ? (
+              <div className="tutors-grid">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="tutor-card skeleton-pulse" style={{ height: "350px", borderRadius: "18px" }}></div>
+                ))}
+              </div>
+            ) : (
+              <div className="tutors-grid">
+                {tutors.map(tutor => (
+                  <div key={tutor.id} className="tutor-card">
+                    <div className="tutor-image-container">
+                      {tutor.image_url ? (
+                        <img 
+                          src={tutor.image_url} 
+                          alt={`Foto ${tutor.name}`} 
+                          className="tutor-img"
+                          loading="lazy" 
+                        />
+                      ) : (
+                        <div className="tutor-avatar-placeholder" aria-hidden="true">
+                          {getInitials(tutor.name)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="tutor-info">
+                      <h3>{tutor.name}</h3>
+                      <span className="tutor-role">{tutor.role}</span>
+                      <p className="tutor-bio">{tutor.bio || "Tutor berpengalaman di Ibra Global English."}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+        </div>
+      </main>
+
+      <Footer />
+      <SocialFloat />
+      <AIChatWidget />
+    </>
+  );
+}
