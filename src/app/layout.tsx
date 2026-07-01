@@ -76,6 +76,11 @@ export async function generateMetadata(): Promise<Metadata> {
         }
       ],
     },
+    verification: {
+      other: {
+        "facebook-domain-verification": ["7f0myl220gjkh4ndqe6cvvz26h7iyg"],
+      },
+    },
   };
 }
 
