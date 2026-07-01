@@ -449,8 +449,8 @@ section {
 
 @media (max-width: 768px) {
   #sentry-feedback {
-    --bottom: 1.5rem !important;
-    bottom: 1.5rem !important;
+    --bottom: 90px !important;
+    bottom: 90px !important;
     left: 1rem !important;
     right: auto !important;
   }
