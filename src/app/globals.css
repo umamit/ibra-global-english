@@ -443,12 +443,16 @@ section {
 }
 
 /* ── Sentry mobile position ── */
-#sentry-feedback { --bottom: 1.5rem; }
+#sentry-feedback {
+  --bottom: 1.5rem;
+}
 
 @media (max-width: 768px) {
   #sentry-feedback {
-    --bottom: 95px !important;
-    bottom: 95px !important;
+    --bottom: 1.5rem !important;
+    bottom: 1.5rem !important;
+    left: 1rem !important;
+    right: auto !important;
   }
 }
 
