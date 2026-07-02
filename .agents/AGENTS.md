@@ -113,20 +113,20 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 
 
 ## Hallucination Prevention & Strict Constraints
-•  If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
-•  Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
-•  Rely strictly on actual tool outputs and files present in this repository.
+22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
+23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
+24. **Truthful Source:** Rely strictly on actual tool outputs and files present in this repository.
 
 ## Testing & Validation Rules
-•  DO NOT create fake, mocked, or stubbed tests to pass verification.
-•  Always run  npm test  (or equivalent) to verify changes against the real runtime environment.
-•  If a test fails, you must read the error logs and fix the actual code, not change the test to bypass it.
+25. **No Mocked Tests:** DO NOT create fake, mocked, or stubbed tests to pass verification.
+26. **Test Execution:** Always run `npm test` (or equivalent) to verify changes against the real runtime environment.
+27. **Test Failure Actions:** If a test fails, you must read the error logs and fix the actual code, not change the test to bypass it.
 
 ## Tool Execution Protocol
-•  Always verify schema requirements before invoking any external APIs or database tools.
-•  Do not populate parameters with placeholder data. If a mandatory parameter is missing, ask the user for clarification first.
+28. **Schema Verification:** Always verify schema requirements before invoking any external APIs or database tools.
+29. **No Placeholders:** Do not populate parameters with placeholder data. If a mandatory parameter is missing, ask the user for clarification first.
 
 ## Compliance & Strict Rule Enforcement
-•  If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
+30. **Strict Enforcement:** If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
 
 
