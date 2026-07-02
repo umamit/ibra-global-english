@@ -5,25 +5,9 @@ import { PDFDocument, rgb } from "pdf-lib";
 const fontkitRaw = require("@pdf-lib/fontkit");
 const fontkit = fontkitRaw.default ?? fontkitRaw;
 import { createAdminClient } from "@/utils/supabase/server";
+import fs from "fs";
+import path from "path";
 
-// ── Font CDN URLs (jsDelivr → @fontsource/montserrat, WOFF2 supported by fontkit) ──
-const FONT_URLS = {
-  regular:  "https://cdn.jsdelivr.net/npm/@fontsource/montserrat@5.0.3/files/montserrat-latin-400-normal.woff2",
-  semiBold: "https://cdn.jsdelivr.net/npm/@fontsource/montserrat@5.0.3/files/montserrat-latin-600-normal.woff2",
-  bold:     "https://cdn.jsdelivr.net/npm/@fontsource/montserrat@5.0.3/files/montserrat-latin-700-normal.woff2",
-};
-
-// Module-level cache — fonts loaded once per serverless instance
-const fontCache: Record<string, Buffer> = {};
-
-async function fetchFont(url: string): Promise<Buffer> {
-  if (fontCache[url]) return fontCache[url];
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Font fetch failed (${res.status}): ${url}`);
-  const buf = Buffer.from(await res.arrayBuffer());
-  fontCache[url] = buf;
-  return buf;
-}
 
 // ── A4 Landscape: 297mm × 210mm in PDF points (1pt = 1/72 inch) ──
 const W = 841.89;
@@ -106,12 +90,14 @@ export async function GET(request: NextRequest) {
       report = repData;
     }
 
-    // ── Load Montserrat fonts from CDN (WOFF2 supported by @pdf-lib/fontkit) ──
-    const [regularBytes, semiBoldBytes, boldBytes] = await Promise.all([
-      fetchFont(FONT_URLS.regular),
-      fetchFont(FONT_URLS.semiBold),
-      fetchFont(FONT_URLS.bold),
-    ]);
+    // ── Load Montserrat WOFF fonts from public/fonts (valid binary, committed to repo) ──
+    const fontsDir = path.join(process.cwd(), "public", "fonts");
+    const [regularBytes, semiBoldBytes, boldBytes] = [
+      fs.readFileSync(path.join(fontsDir, "Montserrat-Regular.woff")),
+      fs.readFileSync(path.join(fontsDir, "Montserrat-SemiBold.woff")),
+      fs.readFileSync(path.join(fontsDir, "Montserrat-Bold.woff")),
+    ];
+
 
     // ── Fetch template PDF from Supabase Storage ────────────────
     const TEMPLATE_URL =
