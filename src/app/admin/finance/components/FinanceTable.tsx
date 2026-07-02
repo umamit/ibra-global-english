@@ -21,6 +21,7 @@ interface FinanceTableProps {
   onQuickConfirm: (studentId: string) => void;
   onPrintReceipt: (student: Student, pay: PaymentResult) => void;
   onEditPayment: (student: Student) => void;
+  onTriggerWaBilling: (student: Student, pay: PaymentResult) => void;
 }
 
 export default function FinanceTable({
@@ -35,7 +36,8 @@ export default function FinanceTable({
   sppPrices,
   onQuickConfirm,
   onPrintReceipt,
-  onEditPayment
+  onEditPayment,
+  onTriggerWaBilling
 }: FinanceTableProps) {
   if (loading) {
     return (
@@ -115,6 +117,16 @@ export default function FinanceTable({
                         title="Cetak Kuitansi Pembayaran"
                       >
                         🖨️ Kuitansi
+                      </button>
+                    )}
+                    {pay.status !== "lunas" && (
+                      <button
+                        onClick={() => onTriggerWaBilling(student, pay)}
+                        className="btn-portal-outline"
+                        style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem", borderColor: "var(--color-accent)", color: "var(--color-accent-dark)", fontWeight: "600" }}
+                        title="Kirim pesan tagihan via WhatsApp"
+                      >
+                        💬 Tagih WA
                       </button>
                     )}
                     <button

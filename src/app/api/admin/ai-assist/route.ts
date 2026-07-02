@@ -101,29 +101,50 @@ function getSyllabusTopic(program: any, moduleName: any) {
 // Mengambil ringkasan data riil Supabase untuk basis pengetahuan Copilot
 async function getRealtimeDatabaseContext() {
   try {
-    const { data: studentsList } = await adminSupabase.from("students").select("name, program");
-    const { data: attendanceData } = await adminSupabase.from("attendance").select("status");
-    const { data: paymentData } = await adminSupabase.from("tuition_payments").select("status");
+    const { data: studentsList } = await adminSupabase
+      .from("students")
+      .select("id, name, program, parent_id, profiles:parent_id(full_name)");
     
+    const { data: attendanceData } = await adminSupabase
+      .from("attendance")
+      .select("student_id, status");
+      
+    const { data: paymentData } = await adminSupabase
+      .from("tuition_payments")
+      .select("student_id, month, status, amount");
+      
     const totalStudents = studentsList?.length || 0;
-    const studentNames = studentsList?.map(s => `- ${s.name} (${s.program})`).join("\n") || "Belum ada siswa.";
     
-    const totalAtt = attendanceData?.length || 0;
-    const presentCount = attendanceData?.filter(a => a.status === "hadir")?.length || 0;
-    const attendanceRate = totalAtt > 0 ? Math.round((presentCount / totalAtt) * 100) : 100;
-    
-    const paidCount = paymentData?.filter(p => p.status === "lunas")?.length || 0;
-    const unpaidCount = paymentData?.filter(p => p.status === "belum_bayar")?.length || 0;
-    const pendingCount = paymentData?.filter(p => p.status === "menunggu_konfirmasi")?.length || 0;
+    const studentDetailedList = (studentsList || []).map(s => {
+      const studentAtt = (attendanceData || []).filter(a => a.student_id === s.id);
+      const totalAtt = studentAtt.length;
+      const presentCount = studentAtt.filter(a => a.status === "hadir").length;
+      const attRate = totalAtt > 0 ? Math.round((presentCount / totalAtt) * 100) : 100;
+      
+      const parentName = s.profiles && !Array.isArray(s.profiles) ? (s.profiles as any).full_name : "-";
+      
+      const studentPayments = (paymentData || []).filter(p => p.student_id === s.id);
+      const unpaidMonths = studentPayments
+        .filter(p => p.status === "belum_bayar")
+        .map(p => p.month)
+        .join(", ");
+        
+      const pendingMonths = studentPayments
+        .filter(p => p.status === "menunggu_konfirmasi")
+        .map(p => p.month)
+        .join(", ");
+        
+      return `- Nama: ${s.name} | Program: ${s.program} | Orang Tua: ${parentName} | Kehadiran: ${attRate}% | Belum Bayar SPP: [${unpaidMonths || "Nihil"}] | Menunggu Konfirmasi: [${pendingMonths || "Nihil"}]`;
+    }).join("\n");
     
     return `
-[DATA RIIL LEMBAGA SAAT INI (DATABASE LIVE CONTEXT)]
-- Total Siswa Aktif: ${totalStudents} orang
-- Daftar Siswa & Programnya:
-${studentNames}
-- Persentase Kehadiran Kelas Kumulatif: ${attendanceRate}% hadir
-- Status SPP Bulan Ini: ${paidCount} lunas, ${pendingCount} menunggu konfirmasi admin, ${unpaidCount} belum bayar.
-(Gunakan data riil live ini secara spesifik untuk menjawab jika tutor atau admin bertanya mengenai jumlah siswa, status SPP, absensi, atau daftar nama mereka!)
+[DATA RIIL LIVE DATABASE SISWA & KEUANGAN SAAT INI]
+Total Siswa Aktif: ${totalStudents} orang
+
+Rincian Detail Siswa & Status Pembayaran/Kehadiran:
+${studentDetailedList}
+
+(PENTING: Gunakan data di atas untuk menjawab secara akurat jika admin/tutor bertanya secara detail mengenai performa absen siswa tertentu atau siapa saja yang menunggak SPP pada bulan-bulan tertentu!)
 `;
   } catch (err) {
     console.error("Gagal memuat konteks database riil:", err);
@@ -300,7 +321,7 @@ Aturan Format Output:
     "start_time": "HH:MM",
     "end_date": "YYYY-MM-DD",
     "end_time": "HH:MM",
-    "description": "Deskripsi singkat kelas/kegiatan",
+    "description": "Rencana Pelaksanaan Pembelajaran (RPP) singkat berisi topik utama kelas dan aktivitas utama (misal: 'Topik: Greetings & Intro. Aktivitas: Latihan roleplay perkenalan diri dan kuis kosakata'). Buat bervariasi dan menarik.",
     "instructor": "Nama Tutor (jika disebutkan, default kosong)"
   }
 
@@ -352,7 +373,27 @@ Contoh Output:
     "instructor": ""
   }
 ]`;
-      userPrompt = `Buat draf jadwal dari instruksi berikut:\n"${promptText || ""}"`;
+    }
+    // 4b. MODE: SPP-BILLING-DRAFT (Pembuat Tagihan SPP AI)
+    else if (mode === "spp-billing-draft") {
+      const { name, program, month, amount, parent_name } = payload || {};
+      systemPrompt = `Kamu adalah Asisten AI Keuangan di Ibra Global English Bobong.
+Tugasmu adalah menulis draf pesan pengingat tagihan SPP bulanan yang sopan, ramah, dan profesional untuk dikirim via WhatsApp kepada orang tua murid.
+Pesan harus memuat detail tagihan secara jelas. Gunakan Bahasa Indonesia yang ramah, sopan, serta sertakan salam penutup yang hangat. Gunakan emoji secukupnya agar pesan terlihat menarik namun tetap profesional.`;
+      
+      userPrompt = `Buat draf pesan WhatsApp pengingat SPP dengan rincian berikut:
+- Nama Orang Tua: ${parent_name || "Bapak/Ibu Orang Tua Murid"}
+- Nama Siswa/Anak: ${name || "Siswa"}
+- Program Belajar: ${program || "Kids Program"}
+- Bulan Tagihan: ${month || "Bulan Berjalan"}
+- Nominal SPP: Rp ${amount ? amount.toLocaleString('id-ID') : "300000"}
+
+Pesan harus memuat:
+1. Sapaan hangat kepada orang tua.
+2. Pemberitahuan pengingat pembayaran SPP untuk bulan terkait dengan nominal yang jelas.
+3. Ajakan untuk melakukan pembayaran via transfer bank atau tunai.
+4. Instruksi untuk mengirimkan bukti transfer jika membayar secara online.
+5. Dilarang keras menggunakan tanda kurung kosong atau placeholder. Langsung tulis pesan utuh yang siap kirim.`;
     }
     // 5. MODE: CHAT (Asisten Copilot Interaktif)
     else if (mode === "chat") {
