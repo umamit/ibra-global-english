@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Programs from "@/components/Programs";
 import Benefits from "@/components/Benefits";
+import Curriculum from "@/components/Curriculum";
 import Footer from "@/components/Footer";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -179,6 +180,7 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
       <main>
         <Hero initialSettings={initialSettings} />
         <Programs initialSettings={initialSettings} />
+        <Curriculum initialSettings={initialSettings} />
         <Benefits initialSettings={initialSettings} />
         <Testimonials />
         <FAQ initialSettings={initialSettings} />
