@@ -101,6 +101,12 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
      - `src/app/parent/components/ParentSidebar.tsx` (pada label `"Orang Tua Dashboard v..."`).
    - Gunakan penomoran versi SemVer (Semantic Versioning), misalnya naikkan versi patch (misal dari `v3.2.5` ke `v3.2.6`) untuk perbaikan kecil/fitur minor.
 
+19. **Matikan Server Lokal Setelah Digunakan (Mandatory Local Server Cleanup):**
+   - Setiap kali Agen menyalakan server lokal Next.js (misal untuk testing/debugging dengan `npm run dev`), Agen WAJIB segera menghentikan/mematikan server tersebut setelah selesai memverifikasi kode.
+   - Gunakan perintah `npx kill-port 3000` atau setara untuk memastikan tidak ada proses server Next.js yang tertinggal berjalan di latar belakang sebelum mengakhiri giliran kerja.
+
+
+
 
 ## Hallucination Prevention & Strict Constraints
 •  If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
