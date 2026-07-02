@@ -203,11 +203,11 @@ export async function GET(request: NextRequest) {
       height: H,
     });
 
-    const TM     = 44;
-    const TW     = W - 88;
+    const TM     = 70;
+    const TW     = W - 140;
 
     // Header starting y position
-    let cy = H - 65;
+    let cy = H - 85;
 
     const hdr1 = "IBRA GLOBAL ENGLISH";
     page2.drawText(hdr1, { x: (W - fBold.widthOfTextAtSize(hdr1, 24)) / 2, y: cy, font: fBold, size: 24, color: C_DARK_GREEN });
@@ -281,20 +281,20 @@ export async function GET(request: NextRequest) {
 
     // ── Footer: Notes (left) + Sign-off (right) ───────────────
     const FOOT_TOP = ty - 14;
-    const FOOT_BOT = 28;
+    const FOOT_BOT = 50;
     const FOOT_H   = FOOT_TOP - FOOT_BOT;
-    const NOTE_W   = W * 0.60;
-    const SIGN_X2  = NOTE_W + 6;
-    const SIGN_W2  = W - NOTE_W - 6;
+    const NOTE_W   = TW * 0.58;
+    const SIGN_X2  = TM + NOTE_W + 20;
+    const SIGN_W2  = TW - NOTE_W - 20;
     const SIGN_CX2 = SIGN_X2 + SIGN_W2 / 2;
 
     // Notes: outline only, no solid backgrounds
-    page2.drawRectangle({ x: TM, y: FOOT_BOT, width: NOTE_W - TM, height: FOOT_H, borderColor: C_ROW_BORDER, borderWidth: 0.5 });
+    page2.drawRectangle({ x: TM, y: FOOT_BOT, width: NOTE_W, height: FOOT_H, borderColor: C_ROW_BORDER, borderWidth: 0.5 });
     page2.drawText("Catatan Guru (Tutor Review Notes)", { x: TM + 12, y: FOOT_BOT + FOOT_H - 17, font: fBold, size: 10, color: C_TEAL_DARK });
 
     const noteText = sanitize((report?.tutor_notes as string) ||
       "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!");
-    const noteLines = wrapText(`"${noteText}"`, fRegular, 9.5, NOTE_W - TM - 26);
+    const noteLines = wrapText(`"${noteText}"`, fRegular, 9.5, NOTE_W - 24);
     noteLines.slice(0, 10).forEach((ln, i) => {
       page2.drawText(ln, { x: TM + 12, y: FOOT_BOT + FOOT_H - 33 - i * 14, font: fRegular, size: 9.5, color: C_DARK });
     });
