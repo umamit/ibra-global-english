@@ -366,6 +366,7 @@ CREATE TABLE IF NOT EXISTS public.academic_schedules (
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   instructor TEXT,
+  recurrence_id TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
