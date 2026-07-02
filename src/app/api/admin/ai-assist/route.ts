@@ -239,6 +239,44 @@ JUDUL: [Judul baru yang menarik dan profesional]
 ---
 [Isi pengumuman yang rapi, ramah, dan jelas menggunakan spasi paragraf yang pas. Gunakan emoji secukupnya agar menarik]`;
     } 
+    // 3a. MODE: PLACEMENT-TEST-EVALUATION (Tindak Lanjut Tes Penempatan)
+    else if (mode === "placement-test-evaluation") {
+      const { name, score, level, course } = payload || {};
+      systemPrompt = `Kamu adalah asisten penerimaan siswa baru AI (Student Admission Assistant) di Ibra Global English Bobong. Tugasmu adalah menyusun pesan follow-up WhatsApp yang profesional, hangat, ramah, dan persuasif untuk calon siswa baru yang baru saja menyelesaikan tes penempatan level (Placement Test) online.`;
+      userPrompt = `Buat draf pesan tindak lanjut WhatsApp personal untuk calon siswa:
+Nama Calon Siswa: ${name || "Siswa"}
+Skor Ujian: ${score || 0} / 15
+Level Hasil Tes: ${level || "Beginner"}
+Rekomendasi Kelas/Program: ${course || "Kids Program"}
+
+Pesan harus terstruktur dengan baik:
+1. Sapaan hangat dan ucapan selamat atas penyelesaian tes.
+2. Analisis singkat yang menyemangati tentang tingkat level mereka (${level}) dengan skor ${score}/15, serta apa manfaat dan keseruan program kelas (${course}) di Ibra Global English Bobong untuk tingkat mereka.
+3. Ajakan/CTA yang sopan untuk berkonsultasi mengenai penawaran biaya khusus, jadwal kelas, atau trial gratis.
+4. Gunakan gaya bahasa yang ramah (gunakan sapaan 'Kak [Nama]' untuk nuansa yang ramah dan dekat) serta tambahkan emoji yang relevan. Jangan terlalu kaku, tetapi tetap sopan. Tulis langsung sebagai draf siap kirim tanpa teks pembuka/penutup asisten.`;
+    }
+    // 3b. MODE: FINANCE-PROJECTION (Analisis Keuangan Proyektif)
+    else if (mode === "finance-projection") {
+      if (authUser.role !== "admin") {
+        return NextResponse.json({ error: "Hanya Admin yang dapat mengakses Analisis Keuangan." }, { status: 403 });
+      }
+      const { selectedMonth, activeExpected, activeCollected, outstanding, collectionRate, activePaidCount, activeUnpaidCount, chartData, programBreakdown } = payload || {};
+      systemPrompt = `Kamu adalah asisten analis keuangan AI (Financial Analyst Assistant) di Ibra Global English Bobong. Tugasmu adalah memberikan evaluasi taktis, ringkas, dan jelas tentang kinerja keuangan, tingkat kolektabilitas SPP bulan berjalan, serta proyeksi jangka pendek berdasarkan metrik keuangan riil yang diberikan.`;
+      userPrompt = `Berikan analisis taktis untuk bulan ${selectedMonth || "berjalan"} berdasarkan data berikut:
+- Target Pendapatan SPP (Expected): ${activeExpected || 0}
+- Realisasi Pendapatan (Collected): ${activeCollected || 0}
+- Tunggakan SPP (Outstanding): ${outstanding || 0}
+- Rasio Kolektabilitas (Collection Rate): ${collectionRate || 0}%
+- Jumlah Siswa Lunas: ${activePaidCount || 0} siswa
+- Jumlah Siswa Belum Bayar: ${activeUnpaidCount || 0} siswa
+- Distribusi Program: ${JSON.stringify(programBreakdown || [])}
+- Riwayat Tren Pendapatan 6 Bulan Terakhir: ${JSON.stringify(chartData || [])}
+
+Tulis analisis keuangan dalam format Bahasa Indonesia yang jelas, profesional, dan to-the-point dalam 3 bagian singkat (gunakan markdown):
+1. **Analisis Kolektabilitas Bulan Berjalan**: Evaluasi singkat mengenai persentase kolektabilitas saat ini (${collectionRate}%). Apakah berkinerja baik atau butuh perhatian ekstra?
+2. **Proyeksi Keuangan 30 Hari Ke depan**: Perkiraan nominal sisa SPP yang bisa dikumpulkan beserta program studi mana yang memberikan kontribusi terbesar atau terkecil.
+3. **2 Tindakan Taktis Admin**: Dua poin rekomendasi operasional konkret untuk admin keuangan (misalnya strategi WhatsApp billing atau intensitas penagihan tunggakan). Jangan bertele-tele, langsung berikan 3 bagian tersebut.`;
+    }
     // 4. MODE: INSIGHTS (Analisis Dasbor Ringkasan)
     else if (mode === "insights") {
       if (authUser.role !== "admin") {

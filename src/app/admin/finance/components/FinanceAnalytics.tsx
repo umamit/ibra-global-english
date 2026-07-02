@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { getMonthName } from "../../utils";
+import FinanceAiInsights from "./FinanceAiInsights";
 
 interface Student {
   id: string | number;
@@ -508,6 +509,20 @@ export default function FinanceAnalytics({
           })}
         </div>
       </div>
+
+      {/* Panel Rekomendasi & Proyeksi AI */}
+      <FinanceAiInsights
+        selectedMonth={selectedMonth}
+        activeExpected={activeExpected}
+        activeCollected={activeCollected}
+        outstanding={outstanding}
+        collectionRate={collectionRate}
+        activePaidCount={activePaidCount}
+        activeUnpaidCount={activeUnpaidCount}
+        chartData={chartData}
+        programBreakdown={programBreakdown}
+        formatRupiah={formatRupiah}
+      />
 
     </div>
   );

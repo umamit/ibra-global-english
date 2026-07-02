@@ -73,6 +73,11 @@ export default function AdminPlacementTest() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [levelFilter, setLevelFilter] = useState<string>("all");
 
+  // AI Follow-up states
+  const [followUpStudent, setFollowUpStudent] = useState<Submission | null>(null);
+  const [followUpMessage, setFollowUpMessage] = useState<string>("");
+  const [followUpAiLoading, setFollowUpAiLoading] = useState<boolean>(false);
+
   // Metrics
   const [metrics, setMetrics] = useState<Metrics>({
     total: 0,
@@ -199,10 +204,6 @@ export default function AdminPlacementTest() {
 
   // WhatsApp follow-up link generation
   const triggerWhatsAppFollowUp = (sub: Submission) => {
-    const targetPhone = sub.whatsapp_number.startsWith("0")
-      ? "62" + sub.whatsapp_number.slice(1)
-      : sub.whatsapp_number.replace("+", "");
-
     const courseRecommendation = sub.level === "Beginner"
       ? "Kids Program atau Basic Teens"
       : sub.level === "Intermediate"
@@ -211,8 +212,44 @@ export default function AdminPlacementTest() {
 
     const message = `Halo Kak ${sub.full_name}!\n\nKami dari *Ibra Global English Bobong* ingin mengucapkan selamat atas penyelesaian *Tes Penempatan Bahasa Inggris Online* Anda.\n\nBerikut hasil ringkasan tes Anda:\n📌 *Rekomendasi Level:* ${sub.level}\n📌 *Skor Tes:* ${sub.score} / 15\n📌 *Program Belajar:* ${courseRecommendation}\n\nTutor kami sangat merekomendasikan Anda untuk bergabung bersama kami di tingkat ini guna mengembangkan kompetensi secara optimal. Apakah Kak ${sub.full_name} berminat berkonsultasi mengenai jadwal kelas dan penawaran biaya khusus? \n\nKami tunggu kehadirannya! 😊`;
 
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${targetPhone}?text=${encodedMessage}`, "_blank");
+    setFollowUpStudent(sub);
+    setFollowUpMessage(message);
+  };
+
+  const handleGenerateAiFollowUp = async () => {
+    if (!followUpStudent) return;
+    setFollowUpAiLoading(true);
+    try {
+      const courseRecommendation = followUpStudent.level === "Beginner"
+        ? "Kids Program atau Basic Teens"
+        : followUpStudent.level === "Intermediate"
+          ? "Teens Program (Intermediate)"
+          : "Teens Program (Advanced / TOEFL Prep)";
+
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "placement-test-evaluation",
+          payload: {
+            name: followUpStudent.full_name,
+            score: followUpStudent.score,
+            level: followUpStudent.level,
+            course: courseRecommendation
+          }
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.reply) {
+        setFollowUpMessage(data.reply);
+      } else {
+        alert("Gagal membuat draf AI: " + (data.error || "Error tidak dikenal"));
+      }
+    } catch (err) {
+      alert("Gagal menghubungi server AI.");
+    } finally {
+      setFollowUpAiLoading(false);
+    }
   };
 
   // Filter & Search Logic
@@ -519,6 +556,96 @@ export default function AdminPlacementTest() {
           </div>
         )}
       </div>
+      {/* AI Follow-Up Modal */}
+      {followUpStudent && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+          backdropFilter: "blur(4px)",
+          padding: "1rem"
+        }}>
+          <div className="portal-card" style={{
+            width: "100%",
+            maxWidth: "600px",
+            padding: "2rem",
+            backgroundColor: "white",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
+                💬 Follow-Up Calon Siswa (AI Assistant)
+              </h3>
+              <button
+                onClick={() => setFollowUpStudent(null)}
+                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--color-gray-400)" }}
+              >
+                &times;
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ fontSize: "0.85rem", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "6px", border: "1px solid var(--color-gray-200)" }}>
+                <div><strong>Nama:</strong> {followUpStudent.full_name}</div>
+                <div><strong>WhatsApp:</strong> {followUpStudent.whatsapp_number}</div>
+                <div><strong>Hasil Tes:</strong> Level {followUpStudent.level} (Skor {followUpStudent.score} / 15)</div>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-700)" }}>Draf Pesan WhatsApp:</label>
+                <textarea
+                  className="form-input"
+                  style={{ width: "100%", height: "200px", resize: "vertical", fontFamily: "inherit", fontSize: "0.9rem", padding: "0.75rem", lineHeight: "1.4" }}
+                  value={followUpMessage}
+                  onChange={(e) => setFollowUpMessage(e.target.value)}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end", marginTop: "1rem" }}>
+                <button
+                  type="button"
+                  onClick={handleGenerateAiFollowUp}
+                  disabled={followUpAiLoading}
+                  className="btn-portal-outline"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.6rem 1.25rem" }}
+                >
+                  {followUpAiLoading ? (
+                    <>
+                      <svg style={{ animation: "spin 1s linear infinite", width: "12px", height: "12px", color: "currentColor" }} fill="none" viewBox="0 0 24 24">
+                        <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                      <span>Mendraf...</span>
+                    </>
+                  ) : (
+                    <span>🤖 Draf dengan AI</span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const targetPhone = followUpStudent.whatsapp_number.startsWith("0")
+                      ? "62" + followUpStudent.whatsapp_number.slice(1)
+                      : followUpStudent.whatsapp_number.replace("+", "");
+                    const encodedMessage = encodeURIComponent(followUpMessage);
+                    window.open(`https://wa.me/${targetPhone}?text=${encodedMessage}`, "_blank");
+                    setFollowUpStudent(null);
+                  }}
+                  className="btn-portal-primary"
+                  style={{ padding: "0.6rem 1.25rem" }}
+                >
+                  🚀 Kirim WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
