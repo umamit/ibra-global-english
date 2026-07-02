@@ -424,7 +424,7 @@ export default function VerifyCertificate() {
               {cert.tutor_name && (
                 <>
                   <div className="cert-tutor-name-overlay">{cert.tutor_name}</div>
-                  <div className="cert-tutor-title-overlay">Tutor</div>
+                  <div className="cert-tutor-title-overlay">Direktur</div>
                 </>
               )}
 
@@ -447,62 +447,21 @@ export default function VerifyCertificate() {
             </div>
 
             {/* ==================== PAGE 2: BELAKANG (Grade Transcript) ==================== */}
-            <div id="cert-page-2-el" className="certificate-page-2 pdf-page-break">
-              {/* Inner Borders Matching Front Template */}
-              <div className="cert-back-inner-frame" />
-              <div className="cert-back-inner-gold-line" />
-
-              {/* Top-Left Diagonal Ribbon */}
-              <svg style={{ position: "absolute", top: 0, left: 0, width: "18cqw", height: "18cqw", zIndex: 6, pointerEvents: "none" }} viewBox="0 0 100 100">
-                <path d="M-10,35 Q 25,25 35,-10 M-10,45 Q 35,35 45,-10 M-10,55 Q 45,45 55,-10 M-10,65 Q 55,55 65,-10" fill="none" stroke="#1c3d3a" strokeWidth="4" />
-                <path d="M-10,40 Q 30,30 40,-10 M-10,50 Q 40,40 50,-10" fill="none" stroke="#a68849" strokeWidth="1.5" />
-              </svg>
-
-              {/* Bottom-Right Diagonal Ribbon */}
-              <svg style={{ position: "absolute", bottom: 0, right: 0, width: "18cqw", height: "18cqw", transform: "rotate(180deg)", zIndex: 6, pointerEvents: "none" }} viewBox="0 0 100 100">
-                <path d="M-10,35 Q 25,25 35,-10 M-10,45 Q 35,35 45,-10 M-10,55 Q 45,45 55,-10 M-10,65 Q 55,55 65,-10" fill="none" stroke="#1c3d3a" strokeWidth="4" />
-                <path d="M-10,40 Q 30,30 40,-10 M-10,50 Q 40,40 50,-10" fill="none" stroke="#a68849" strokeWidth="1.5" />
-              </svg>
-
-              {/* Top-Right Floral Ornament */}
-              <svg style={{ position: "absolute", top: "1.2cqw", right: "1.2cqw", width: "12cqw", height: "12cqw", zIndex: 6, pointerEvents: "none", color: "#1c3d3a" }} viewBox="0 0 100 100">
-                <path d="M85,15 C75,15 65,25 65,35 C65,45 75,45 85,35 C95,25 85,15 85,15 Z M65,35 C55,35 45,45 45,55 C45,65 55,65 65,55 C75,45 65,35 65,35 Z" fill="none" stroke="currentColor" strokeWidth="2.5" />
-                <path d="M78,22 C72,20 68,24 68,28 C68,32 72,32 78,28 C84,24 78,22 78,22 Z" fill="none" stroke="#a68849" strokeWidth="1.5" />
-                <circle cx="55" cy="45" r="2.5" fill="#a68849" />
-                <circle cx="75" cy="25" r="2" fill="#1c3d3a" />
-              </svg>
-
-              {/* Bottom-Left Floral Ornament */}
-              <svg style={{ position: "absolute", bottom: "1.2cqw", left: "1.2cqw", width: "12cqw", height: "12cqw", transform: "rotate(180deg)", zIndex: 6, pointerEvents: "none", color: "#1c3d3a" }} viewBox="0 0 100 100">
-                <path d="M85,15 C75,15 65,25 65,35 C65,45 75,45 85,35 C95,25 85,15 85,15 Z M65,35 C55,35 45,45 45,55 C45,65 55,65 65,55 C75,45 65,35 65,35 Z" fill="none" stroke="currentColor" strokeWidth="2.5" />
-                <path d="M78,22 C72,20 68,24 68,28 C68,32 72,32 78,28 C84,24 78,22 78,22 Z" fill="none" stroke="#a68849" strokeWidth="1.5" />
-                <circle cx="55" cy="45" r="2.5" fill="#a68849" />
-                <circle cx="75" cy="25" r="2" fill="#1c3d3a" />
-              </svg>
-
-              {/* Elegant Faded Background Logo */}
-              <div style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                opacity: 0.04,
-                width: "350px",
-                height: "350px",
-                backgroundImage: "url('/assets/logo.png')",
-                backgroundSize: "contain",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                pointerEvents: "none"
-              }} />
+            <div id="cert-page-2-el" className="certificate-page-2 pdf-page-break" style={{
+              backgroundImage: "url('/assets/Salinan dari Salinan dari Blue and Gold Simple Elegant Certificate of Appreciation.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              padding: "4.5cqw 6.5cqw"
+            }}>
 
               {/* Header */}
-              <div className="cert-header" style={{ textAlign: "center", borderBottom: "2px solid var(--color-accent)", paddingBottom: "0.75rem" }}>
+              <div className="cert-header" style={{ textAlign: "center", paddingBottom: "0.75rem" }}>
                 <h2 style={{ fontSize: "1.5rem", fontWeight: "900", letterSpacing: "1.5px", margin: "0 0 2px" }}>
                   IBRA GLOBAL ENGLISH
                 </h2>
-                <p style={{ fontSize: "0.75rem", color: "var(--color-accent)", letterSpacing: "1px", fontWeight: "bold", margin: "0 0 6px", textTransform: "uppercase" }}>
-                  Lembaga Kursus & Pelatihan (LKP) Dinas Pendidikan Bobong
+                <p style={{ fontSize: "0.75rem", color: "var(--color-primary-dark)", letterSpacing: "1px", fontWeight: "bold", margin: "0 0 6px", textTransform: "uppercase" }}>
+                  Lembaga Kursus & Pelatihan (LKP)
                 </p>
                 <h3 style={{ fontSize: "1.05rem", fontWeight: "800", margin: "0", textTransform: "uppercase" }}>
                   TRANSKRIP EVALUASI AKADEMIK (ACADEMIC TRANSCRIPT)
@@ -608,25 +567,17 @@ export default function VerifyCertificate() {
                 </tbody>
               </table>
 
-              {/* Review Notes & Teacher Sign-off Footer Grid */}
-              <div className="cert-footer-grid" style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: "2rem", alignItems: "flex-end", marginTop: "0.5rem" }}>
-
-                {/* Notes */}
-                <div className="tutor-review-box">
-                  <p className="title" style={{ margin: "0 0 3px 0", fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase" }}>Catatan Guru (Tutor Review Notes)</p>
-                  <p className="content" style={{ margin: "0", fontSize: "0.75rem", fontStyle: "italic", lineHeight: "1.4" }}>
-                    &ldquo;{report?.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!"}&rdquo;
-                  </p>
-                </div>
+              {/* Teacher Sign-off Footer */}
+              <div className="cert-footer-grid" style={{ display: "flex", justifyContent: "flex-end", marginTop: "1.5rem" }}>
 
                 {/* Sign-off */}
-                <div style={{ textAlign: "center", paddingBottom: "1rem" }}>
-                  <p className="cert-sign-off-date" style={{ margin: "0 0 48px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
+                <div style={{ textAlign: "center", paddingBottom: "1rem", width: "200px" }}>
+                  <p className="cert-sign-off-date" style={{ margin: "0 0 56px", fontSize: "0.75rem", color: "var(--color-gray-600)" }}>
                     Bobong, {new Date(cert.issue_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
                   <p style={{ margin: "0 0 4px", fontSize: "0.8rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>{cert.tutor_name}</p>
                   <div style={{ borderTop: "1px solid var(--color-gray-400)", width: "140px", margin: "4px auto" }} />
-                  <p style={{ margin: "0", fontSize: "0.7rem", color: "var(--color-gray-500)" }}>Tutor Pendamping</p>
+                  <p style={{ margin: "0", fontSize: "0.7rem", color: "var(--color-gray-500)" }}>Direktur</p>
                 </div>
 
               </div>
