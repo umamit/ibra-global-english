@@ -169,7 +169,7 @@ export default function AboutPage() {
             <h2 className="section-title">Legalitas & Badan Hukum</h2>
             <div className="about-legal-card">
               <div style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1rem" }}>
-                <span style={{ fontSize: "2.5rem", marginRight: "1rem" }}>🛡️</span>
+                <img src="/assets/logo.png" alt="Logo PT. Ibra Global English" style={{ width: "50px", height: "50px", objectFit: "contain", marginRight: "1.25rem" }} />
                 <div>
                   <h3 style={{ margin: "0", fontSize: "1.35rem", fontWeight: "700", color: "var(--color-gray-900)" }}>PT. Ibra Global English</h3>
                   <p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "var(--color-primary-dark)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px" }}>Perseroan Perorangan</p>

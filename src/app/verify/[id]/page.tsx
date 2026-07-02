@@ -589,7 +589,9 @@ export default function VerifyCertificate() {
           
           {/* Legal Information Card */}
           <div className="verify-legal-card">
-            <div style={{ fontSize: "2.5rem" }}>🛡️</div>
+            <div style={{ width: "50px", height: "50px", flexShrink: 0 }}>
+              <img src="/assets/logo.png" alt="Logo PT. Ibra Global English" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            </div>
             <div style={{ flex: 1 }}>
               <h4 style={{ margin: "0 0 4px", fontSize: "1.1rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>Informasi Hukum & Legalitas Lembaga</h4>
               <p style={{ margin: "0", fontSize: "0.85rem", color: "var(--color-gray-600)", lineHeight: "1.6" }}>
