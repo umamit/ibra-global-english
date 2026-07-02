@@ -211,8 +211,11 @@ export default function AboutPage() {
                 <p style={{ margin: "0", fontSize: "0.95rem", color: "var(--color-gray-600)", lineHeight: "1.65" }}>
                   Kurikulum Ibra Global English mengintegrasikan Kurikulum Merdeka dengan kerangka kompetensi internasional Common European Framework of Reference for Languages (CEFR). Setiap level pembelajaran dirancang dengan capaian kompetensi yang jelas dan terukur, sehingga peserta didik berkembang secara bertahap sesuai standar internasional yang digunakan di berbagai negara.
                 </p>
+                <p style={{ margin: "1.5rem 0 0", fontSize: "0.95rem", color: "var(--color-gray-700)", fontWeight: "600", lineHeight: "1.6" }}>
+                  Jalur pembelajaran Ibra Global English dirancang secara bertahap untuk membantu peserta mencapai kompetensi bahasa Inggris sesuai target CEFR pada setiap fase pembelajaran:
+                </p>
               </div>
-              <div style={{ marginTop: "1.5rem", overflowX: "auto" }}>
+              <div style={{ marginTop: "1.25rem", overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem", textAlign: "left" }}>
                   <thead>
                     <tr style={{ borderBottom: "2px solid var(--color-gray-200)" }}>
