@@ -203,8 +203,8 @@ export default function AboutPage() {
               <div style={{ display: "flex", alignItems: "center", marginBottom: "1.25rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1rem" }}>
                 <span style={{ fontSize: "2.5rem", marginRight: "1.25rem" }}>🇪🇺</span>
                 <div>
-                  <h3 style={{ margin: "0", fontSize: "1.35rem", fontWeight: "700", color: "var(--color-gray-900)" }}>Kurikulum Berstandar Global (CEFR-Aligned)</h3>
-                  <p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "var(--color-primary-dark)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px" }}>Kerangka Kompetensi Bahasa Internasional</p>
+                  <h3 style={{ margin: "0", fontSize: "1.35rem", fontWeight: "700", color: "var(--color-gray-900)" }}>IGE Curriculum</h3>
+                  <p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "var(--color-primary-dark)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px" }}>Diselaraskan dengan Standar Internasional CEFR</p>
                 </div>
               </div>
               <div>
