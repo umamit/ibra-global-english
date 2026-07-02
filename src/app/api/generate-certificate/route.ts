@@ -279,7 +279,7 @@ export async function GET(request: NextRequest) {
     page2.drawText(finalGrade, { x: colX[3] + colW[3] / 2 - fBold.widthOfTextAtSize(finalGrade, CELL_S) / 2, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_TEAL_DARK });
     ty -= ROW_H;
 
-    // ── Footer: Notes (left) + Sign-off (right) ───────────────
+    // ── Footer: Sign-off (right) ───────────────
     const FOOT_TOP = ty - 14;
     const FOOT_BOT = 50;
     const FOOT_H   = FOOT_TOP - FOOT_BOT;
@@ -287,17 +287,6 @@ export async function GET(request: NextRequest) {
     const SIGN_X2  = TM + NOTE_W + 20;
     const SIGN_W2  = TW - NOTE_W - 20;
     const SIGN_CX2 = SIGN_X2 + SIGN_W2 / 2;
-
-    // Notes: outline only, no solid backgrounds
-    page2.drawRectangle({ x: TM, y: FOOT_BOT, width: NOTE_W, height: FOOT_H, borderColor: C_ROW_BORDER, borderWidth: 0.5 });
-    page2.drawText("Catatan Guru (Tutor Review Notes)", { x: TM + 12, y: FOOT_BOT + FOOT_H - 17, font: fBold, size: 10, color: C_TEAL_DARK });
-
-    const noteText = sanitize((report?.tutor_notes as string) ||
-      "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!");
-    const noteLines = wrapText(`"${noteText}"`, fRegular, 9.5, NOTE_W - 24);
-    noteLines.slice(0, 10).forEach((ln, i) => {
-      page2.drawText(ln, { x: TM + 12, y: FOOT_BOT + FOOT_H - 33 - i * 14, font: fRegular, size: 9.5, color: C_DARK });
-    });
 
     // Sign-off
     const signDate = `Bobong, ${issueDate.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}`;
