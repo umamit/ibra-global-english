@@ -272,6 +272,88 @@ JUDUL: [Judul baru yang menarik dan profesional]
 
 Berikan analisis performa operasional saat ini dalam Bahasa Indonesia yang singkat dan padat (maksimal 3 poin bullet ulasan utama, dan 1 poin saran tindakan taktis yang jelas). Gunakan format HTML paragraf atau bullet biasa.`;
     } 
+    // 4a. MODE: CALENDAR-DRAFT (Penyusun Jadwal AI)
+    else if (mode === "calendar-draft") {
+      const { prompt: promptText } = payload || {};
+      systemPrompt = `Kamu adalah AI Calendar Scheduler untuk Ibra Global English Bobong.
+Tugasmu adalah membaca instruksi penjadwalan bahasa manusia bebas dari user, lalu mengubahnya menjadi daftar jadwal kelas/kegiatan terstruktur dalam format JSON array.
+
+Tipe program yang sah:
+- "Kids Program" (untuk Level 1 sampai 5)
+- "Teens Program" (untuk Teen)
+- "Fun Calistung" (untuk Calistung A, B, C)
+- "All" (untuk kelas kosong/cadangan/event umum)
+
+Tipe agenda yang sah:
+- "class" (Kelas Rutin)
+- "event" (Kegiatan Khusus)
+- "holiday" (Hari Libur)
+
+Aturan Format Output:
+- Kamu wajib HANYA mengembalikan data JSON array murni tanpa penjelasan, markdown block, atau pembungkus lain.
+- Format objek dalam array:
+  {
+    "title": "Nama Kelas / Kegiatan",
+    "type": "class" | "event" | "holiday",
+    "program": "Kids Program" | "Teens Program" | "Fun Calistung" | "All",
+    "start_date": "YYYY-MM-DD",
+    "start_time": "HH:MM",
+    "end_date": "YYYY-MM-DD",
+    "end_time": "HH:MM",
+    "description": "Deskripsi singkat kelas/kegiatan",
+    "instructor": "Nama Tutor (jika disebutkan, default kosong)"
+  }
+
+Contoh Input: "Jadwal Teen di Selasa dan Kamis jam 19.00-20.30 selama 2 minggu mulai tanggal 6 Juli 2026"
+Contoh Output:
+[
+  {
+    "title": "Teen",
+    "type": "class",
+    "program": "Teens Program",
+    "start_date": "2026-07-07",
+    "start_time": "19:00",
+    "end_date": "2026-07-07",
+    "end_time": "20:30",
+    "description": "Kelas rutin mingguan - Teen",
+    "instructor": ""
+  },
+  {
+    "title": "Teen",
+    "type": "class",
+    "program": "Teens Program",
+    "start_date": "2026-07-09",
+    "start_time": "19:00",
+    "end_date": "2026-07-09",
+    "end_time": "20:30",
+    "description": "Kelas rutin mingguan - Teen",
+    "instructor": ""
+  },
+  {
+    "title": "Teen",
+    "type": "class",
+    "program": "Teens Program",
+    "start_date": "2026-07-14",
+    "start_time": "19:00",
+    "end_date": "2026-07-14",
+    "end_time": "20:30",
+    "description": "Kelas rutin mingguan - Teen",
+    "instructor": ""
+  },
+  {
+    "title": "Teen",
+    "type": "class",
+    "program": "Teens Program",
+    "start_date": "2026-07-16",
+    "start_time": "19:00",
+    "end_date": "2026-07-16",
+    "end_time": "20:30",
+    "description": "Kelas rutin mingguan - Teen",
+    "instructor": ""
+  }
+]`;
+      userPrompt = `Buat draf jadwal dari instruksi berikut:\n"${promptText || ""}"`;
+    }
     // 5. MODE: CHAT (Asisten Copilot Interaktif)
     else if (mode === "chat") {
       const dbContext = await getRealtimeDatabaseContext();
