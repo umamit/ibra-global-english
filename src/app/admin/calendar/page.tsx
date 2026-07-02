@@ -73,6 +73,7 @@ export default function AdminCalendar() {
   const [recurrenceCount, setRecurrenceCount] = useState<number>(4);
   const [recurrenceId, setRecurrenceId] = useState<string | null>(null);
   const [editSeriesMode, setEditSeriesMode] = useState<"single" | "series">("single");
+  const [viewAllDate, setViewAllDate] = useState<string | null>(null);
 
   const fetchData = async (): Promise<void> => {
     setLoading(true);
@@ -664,18 +665,29 @@ export default function AdminCalendar() {
                         );
                       })}
                       {daySchedules.length > 3 && (
-                        <div style={{ 
-                          fontSize: "0.68rem", 
-                          fontWeight: "800", 
-                          color: "var(--color-gray-500)", 
-                          backgroundColor: "var(--color-gray-100)",
-                          borderRadius: "4px",
-                          padding: "0.15rem 0.25rem",
-                          textAlign: "center",
-                          border: "1px dashed var(--color-gray-300)"
-                        }}>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setViewAllDate(cell.dateString);
+                          }}
+                          style={{ 
+                            fontSize: "0.68rem", 
+                            fontWeight: "800", 
+                            color: "var(--color-primary-dark)", 
+                            backgroundColor: "var(--color-primary-light)",
+                            borderRadius: "4px",
+                            padding: "0.25rem 0.25rem",
+                            textAlign: "center",
+                            border: "1px dashed var(--color-primary)",
+                            cursor: "pointer",
+                            width: "100%",
+                            display: "block",
+                            boxShadow: "var(--shadow-sm)"
+                          }}
+                        >
                           + {daySchedules.length - 3} agenda lagi
-                        </div>
+                        </button>
                       )}
                     </div>
                   </div>
@@ -694,6 +706,81 @@ export default function AdminCalendar() {
           onEdit={handleOpenEditModal}
         />
         </>
+      )}
+
+      {/* VIEW ALL AGENDA FOR SPECIFIC DAY MODAL */}
+      {viewAllDate && (
+        <div className="portal-modal-overlay" onClick={() => setViewAllDate(null)}>
+          <div className="portal-modal" style={{
+            maxWidth: "450px",
+            padding: "1.5rem",
+            animation: "slideIn 0.2s ease"
+          }} onClick={(e) => e.stopPropagation()}>
+            
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h3 style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
+                📅 Agenda: {new Date(viewAllDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              </h3>
+              <button 
+                type="button" 
+                onClick={() => setViewAllDate(null)}
+                style={{ background: "transparent", border: "none", fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-400)", cursor: "pointer" }}
+              >
+                &times;
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "300px", overflowY: "auto", padding: "0.25rem 0" }}>
+              {getSchedulesForDay(viewAllDate).map((s) => {
+                let badgeBg = "var(--color-primary-light)";
+                let badgeColor = "var(--color-primary-dark)";
+                if (s.type === "holiday") {
+                  badgeBg = "#fee2e2";
+                  badgeColor = "#ef4444";
+                } else if (s.type === "event") {
+                  badgeBg = "var(--color-accent-light)";
+                  badgeColor = "var(--color-accent)";
+                }
+                const cleanTimeStr = new Date(s.start_time).toTimeString().slice(0, 5);
+
+                return (
+                  <div
+                    key={s.id}
+                    onClick={(e) => {
+                      setViewAllDate(null);
+                      handleOpenEditModal(s, e);
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "0.6rem 0.8rem",
+                      borderRadius: "6px",
+                      backgroundColor: badgeBg,
+                      color: badgeColor,
+                      cursor: "pointer",
+                      fontWeight: "700",
+                      fontSize: "0.82rem",
+                      border: "1px solid rgba(0,0,0,0.05)"
+                    }}
+                  >
+                    <span>{cleanTimeStr} - {s.title} ({s.program})</span>
+                    <span style={{ fontSize: "0.75rem", opacity: 0.85 }}>⚙️ Ubah</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1.5rem" }}>
+              <button type="button" className="btn-portal-outline" style={{ padding: "0.4rem 1rem", fontSize: "0.85rem" }} onClick={() => setViewAllDate(null)}>
+                Tutup
+              </button>
+            </div>
+
+          </div>
+        </div>
       )}
 
       {/* MODAL FORM: ADD / EDIT SCHEDULE */}
