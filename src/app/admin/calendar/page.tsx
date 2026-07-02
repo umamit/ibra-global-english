@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import React from 'react';
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import ScheduleList from "./ScheduleList";
 
 interface AcademicSchedule {
   id: string;
@@ -523,7 +524,8 @@ export default function AdminCalendar() {
           <p>Memuat kalender akademik...</p>
         </div>
       ) : (
-        <div style={{ backgroundColor: "white", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-md)", padding: "1.5rem", overflowX: "auto" }}>
+        <>
+          <div style={{ backgroundColor: "white", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-md)", padding: "1.5rem", overflowX: "auto" }}>
           <div style={{ minWidth: "700px" }}>
             
             {/* Calendar Grid Container */}
@@ -669,6 +671,15 @@ export default function AdminCalendar() {
 
           </div>
         </div>
+        
+        {/* LIST VIEW FOR EASY MANUAL EDIT/DELETE */}
+        <ScheduleList 
+          schedules={schedules}
+          viewYear={viewYear}
+          viewMonth={viewMonth}
+          onEdit={handleOpenEditModal}
+        />
+        </>
       )}
 
       {/* MODAL FORM: ADD / EDIT SCHEDULE */}
