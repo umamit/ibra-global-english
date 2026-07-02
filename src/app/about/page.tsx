@@ -163,6 +163,35 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* 3.5. Legalitas & Badan Hukum Section */}
+        <section className="about-legal-section reveal">
+          <div className="about-container">
+            <h2 className="section-title">Legalitas & Badan Hukum</h2>
+            <div className="about-legal-card">
+              <div style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1rem" }}>
+                <span style={{ fontSize: "2.5rem", marginRight: "1rem" }}>🛡️</span>
+                <div>
+                  <h3 style={{ margin: "0", fontSize: "1.35rem", fontWeight: "700", color: "var(--color-gray-900)" }}>PT. Ibra Global English</h3>
+                  <p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "var(--color-primary-dark)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px" }}>Perseroan Perorangan</p>
+                </div>
+              </div>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                <div>
+                  <p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Nomor SK Pendirian Kemenkumham</p>
+                  <p style={{ margin: "2px 0 0", fontSize: "1rem", color: "var(--color-gray-800)", fontWeight: "600" }}>AHU-A096371.AH.01.30.Tahun 2026</p>
+                </div>
+                <div>
+                  <p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Status Verifikasi</p>
+                  <p style={{ margin: "2px 0 0", fontSize: "1rem", color: "#10b981", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span>✓</span> Terdaftar & Terverifikasi Resmi
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 4. Tutors Section — hanya tampil jika ada data tutor */}
         {(loading || tutors.length > 0) && (
           <section className="about-tutors-section reveal">

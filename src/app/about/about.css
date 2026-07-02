@@ -295,3 +295,36 @@
   background-color: rgba(33, 108, 126, 0.2);
   color: var(--color-primary);
 }
+
+/* ── 5. Legalitas & Badan Hukum Section ── */
+.about-legal-section {
+  background-color: var(--color-gray-50);
+  padding: 5.5rem 0;
+}
+
+.about-legal-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--color-white);
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  text-align: left;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.about-legal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .about-legal-section {
+  background-color: var(--color-gray-50);
+}
+
+[data-theme="dark"] .about-legal-card {
+  background-color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}

@@ -385,7 +385,8 @@ export default function VerifyCertificate() {
         </div>
 
         {cert ? (
-          <div id="certificate-print-area" className="certificate-print-container" style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+          <>
+            <div id="certificate-print-area" className="certificate-print-container" style={{ display: "flex", flexDirection: "column", gap: "0" }}>
 
             {/* ==================== PAGE 1: DEPAN (Canva Design) ==================== */}
             <div id="cert-page-1-el" className="certificate-page-1">
@@ -585,6 +586,18 @@ export default function VerifyCertificate() {
             </div>
 
           </div>
+          
+          {/* Legal Information Card */}
+          <div className="verify-legal-card">
+            <div style={{ fontSize: "2.5rem" }}>🛡️</div>
+            <div style={{ flex: 1 }}>
+              <h4 style={{ margin: "0 0 4px", fontSize: "1.1rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>Informasi Hukum & Legalitas Lembaga</h4>
+              <p style={{ margin: "0", fontSize: "0.85rem", color: "var(--color-gray-600)", lineHeight: "1.5" }}>
+                Sertifikat ini diterbitkan secara sah oleh <strong>PT. Ibra Global English</strong> (Perseroan Perorangan) yang berbadan hukum resmi berdasarkan Keputusan Menteri Hukum dan Hak Asasi Manusia Republik Indonesia dengan Nomor SK Pendirian: <strong>AHU-A096371.AH.01.30.Tahun 2026</strong>.
+              </p>
+            </div>
+          </div>
+          </>
         ) : (
           /* INVALID CERTIFICATE ERROR CARD */
           <div className="invalid-cert-card">
