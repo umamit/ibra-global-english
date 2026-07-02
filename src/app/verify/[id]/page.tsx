@@ -592,8 +592,8 @@ export default function VerifyCertificate() {
             <div style={{ fontSize: "2.5rem" }}>🛡️</div>
             <div style={{ flex: 1 }}>
               <h4 style={{ margin: "0 0 4px", fontSize: "1.1rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>Informasi Hukum & Legalitas Lembaga</h4>
-              <p style={{ margin: "0", fontSize: "0.85rem", color: "var(--color-gray-600)", lineHeight: "1.5" }}>
-                Sertifikat ini diterbitkan secara sah oleh <strong>PT. Ibra Global English</strong> (Perseroan Perorangan) yang berbadan hukum resmi berdasarkan Keputusan Menteri Hukum dan Hak Asasi Manusia Republik Indonesia dengan Nomor SK Pendirian: <strong>AHU-A096371.AH.01.30.Tahun 2026</strong>.
+              <p style={{ margin: "0", fontSize: "0.85rem", color: "var(--color-gray-600)", lineHeight: "1.6" }}>
+                Sertifikat ini diterbitkan secara sah oleh <strong>PT. Ibra Global English</strong> (Perseroan Perorangan) yang berbadan hukum resmi berdasarkan Keputusan Menteri Hukum dan Hak Asasi Manusia Republik Indonesia dengan Nomor SK Pendirian: <strong>AHU-A096371.AH.01.30.Tahun 2026</strong> dan NIB: <strong>2806230044842</strong>.
               </p>
             </div>
           </div>
