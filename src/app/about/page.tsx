@@ -209,7 +209,7 @@ export default function AboutPage() {
               </div>
               <div>
                 <p style={{ margin: "0", fontSize: "0.95rem", color: "var(--color-gray-600)", lineHeight: "1.65" }}>
-                  Materi pembelajaran dan evaluasi akademik siswa di Ibra Global English sepenuhnya mengacu pada kerangka acuan standar Eropa (CEFR) dari tingkat Basic hingga Advanced, guna menjamin hasil belajar yang terukur dan diakui secara global.
+                  Kurikulum Ibra Global English mengintegrasikan Kurikulum Merdeka dengan kerangka kompetensi internasional CEFR (Common European Framework of Reference for Languages). Pendekatan ini memastikan peserta didik mengembangkan kemampuan bahasa Inggris yang relevan dengan kebutuhan pendidikan di Indonesia sekaligus memenuhi standar kompetensi yang diakui secara global.
                 </p>
               </div>
             </div>
