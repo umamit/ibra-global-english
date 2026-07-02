@@ -94,6 +94,13 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 17. **Pengelolaan Commit & Push Git:**
    - Jangan push ke GitHub jika tidak diminta secara eksplisit oleh pengguna. Cukup lakukan commit lokal saja untuk mengamankan pekerjaan.
 
+18. **Pembaruan Versi Website Otomatis (Automatic Version Bumping):**
+   - Setiap kali Agen melakukan perubahan kode, perbaikan bug, atau penambahan fitur di basis kode (codebase), Agen WAJIB memperbarui nomor versi platform pada berkas-berkas berikut sebelum melakukan commit:
+     - `package.json` (pada bidang `"version"`).
+     - `src/app/admin/layout.tsx` (pada label `"Admin Dashboard v..."`).
+     - `src/app/parent/components/ParentSidebar.tsx` (pada label `"Orang Tua Dashboard v..."`).
+   - Gunakan penomoran versi SemVer (Semantic Versioning), misalnya naikkan versi patch (misal dari `v3.2.5` ke `v3.2.6`) untuk perbaikan kecil/fitur minor.
+
 
 ## Hallucination Prevention & Strict Constraints
 •  If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
