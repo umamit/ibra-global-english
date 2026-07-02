@@ -105,7 +105,8 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
    - Setiap kali Agen menyalakan server lokal Next.js (misal untuk testing/debugging dengan `npm run dev`), Agen WAJIB segera menghentikan/mematikan server tersebut setelah selesai memverifikasi kode.
    - Gunakan perintah `npx kill-port 3000` atau setara untuk memastikan tidak ada proses server Next.js yang tertinggal berjalan di latar belakang sebelum mengakhiri giliran kerja.
 
-
+20. **Aturan Tindakan Berdasarkan Perintah (Command-Only Actions):**
+   - Mulai detik ini, saya akan menahan diri sepenuhnya. Jika Anda hanya bertanya atau memberi komentar, saya hanya akan membalas dengan teks dan tidak akan memanggil tool pembuat kode/perintah apa pun sebelum Anda memerintahkannya.
 
 
 ## Hallucination Prevention & Strict Constraints
