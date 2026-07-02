@@ -56,6 +56,7 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
   // Modal / Detail state
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+  const [syncModalOpen, setSyncModalOpen] = useState<boolean>(false);
 
   if (detailsLoading || !mounted) {
     return (
@@ -187,6 +188,14 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
           {getMonthNameIndonesian(viewMonth)} {viewYear}
         </h4>
         <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button 
+            type="button"
+            className="btn-portal-outline" 
+            style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", border: "1px dashed var(--color-primary)", color: "var(--color-primary-dark)" }} 
+            onClick={() => setSyncModalOpen(true)}
+          >
+            🔗 Sinkronkan ke HP
+          </button>
           <button 
             className="btn-portal-outline" 
             style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }} 
@@ -448,6 +457,86 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
                 Tutup
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* SINKRONISASI KALENDER HP MODAL */}
+      {syncModalOpen && (
+        <div className="portal-modal-overlay" onClick={() => setSyncModalOpen(false)}>
+          <div className="portal-modal" style={{
+            maxWidth: "500px",
+            padding: "2rem",
+            animation: "slideIn 0.2s ease"
+          }} onClick={(e) => e.stopPropagation()}>
+            
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <h4 style={{ fontSize: "1.2rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
+                🔗 Hubungkan ke Kalender HP
+              </h4>
+              <button 
+                type="button" 
+                onClick={() => setSyncModalOpen(false)}
+                style={{ background: "transparent", border: "none", fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-400)", cursor: "pointer" }}
+              >
+                &times;
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", fontSize: "0.9rem", color: "var(--color-gray-700)", lineHeight: "1.6" }}>
+              <p style={{ margin: 0 }}>
+                Sinkronkan jadwal belajar anak Anda (**{selectedChild?.name}**) untuk program **{selectedChild?.program}** ke aplikasi kalender di HP Anda (Google Calendar / Apple Calendar).
+              </p>
+
+              <div>
+                <label className="form-label" style={{ fontWeight: "800", marginBottom: "0.5rem", display: "block" }}>Tautan Sinkronisasi (iCal Link)</label>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    readOnly 
+                    value={typeof window !== "undefined" ? `${window.location.origin}/api/calendar/export?program=${encodeURIComponent(selectedChild?.program || "All")}` : ""} 
+                    style={{ fontSize: "0.8rem", backgroundColor: "var(--color-gray-50)", cursor: "text" }}
+                    onClick={(e) => (e.target as HTMLInputElement).select()}
+                    id="parent-ical-link-input"
+                  />
+                  <button 
+                    type="button" 
+                    className="btn-portal-primary"
+                    style={{ padding: "0.5rem 1rem", whiteSpace: "nowrap" }}
+                    onClick={() => {
+                      const input = document.getElementById("parent-ical-link-input") as HTMLInputElement;
+                      if (input) {
+                        input.select();
+                        navigator.clipboard.writeText(input.value);
+                        alert("Tautan kalender berhasil disalin!");
+                      }
+                    }}
+                  >
+                    Salin Link
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-primary-dark)", color: "var(--color-primary-dark)" }}>
+                <h5 style={{ margin: "0 0 0.5rem 0", fontWeight: "800", fontSize: "0.85rem" }}>📱 Cara Menghubungkan ke HP:</h5>
+                <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <li>
+                    <strong>iPhone (Apple Calendar):</strong> Buka <em>Pengaturan</em> &gt; <em>Kalender</em> &gt; <em>Akun</em> &gt; <em>Tambah Akun</em> &gt; <em>Lainnya</em> &gt; <em>Tambah Kalender Berlangganan</em>, lalu tempel (*paste*) tautan di atas.
+                  </li>
+                  <li>
+                    <strong>Android & Google Calendar:</strong> Buka <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", fontWeight: "800", textDecoration: "underline" }}>Google Calendar Web</a> di komputer. Klik tanda **`+`** di samping *"Kalender lainnya"* &gt; pilih **Dari URL**, lalu tempel tautan di atas. Jadwal akan otomatis sinkron ke Google Calendar HP Android Anda.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2rem" }}>
+              <button type="button" className="btn-portal-outline" style={{ padding: "0.5rem 1.5rem" }} onClick={() => setSyncModalOpen(false)}>
+                Tutup
+              </button>
+            </div>
+
           </div>
         </div>
       )}
