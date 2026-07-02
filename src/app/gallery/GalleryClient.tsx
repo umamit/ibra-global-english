@@ -10,6 +10,7 @@ import MarqueeBanner from "@/components/MarqueeBanner";
 import { createClient } from "@/utils/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { DEFAULT_VIDEOS } from "@/utils/fallbackData";
+import { STATIC_GALLERY } from "./galleryData";
 
 interface GalleryItem {
   title: string;
@@ -179,32 +180,29 @@ export default function GalleryClient() {
     localStorage.setItem("theme", nextTheme);
   };
 
-  // Fetch dynamic gallery from gallery_items (B3: admin-managed)
+  // Fetch dynamic gallery from 'gallery' table in Supabase
   useEffect(() => {
     async function fetchGallery() {
       let supabaseItems: GalleryItem[] = [];
       try {
-        const res = await fetch(`/api/gallery?t=${Date.now()}`, {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-          },
-        });
-        if (res.ok) {
-          const { data } = await res.json();
-          if (data && data.length > 0) {
-            supabaseItems = data
-              .filter((item: any) => item.image_url && item.image_url !== "")
-              .map((item: any) => ({
-                title: item.title,
-                desc: item.description || "",
-                thumb: item.image_url,
-                full: item.image_url,
-                caption: item.title,
-                category: item.category || "Kegiatan"
-              }));
-          }
+        const { data, error } = await supabase
+          .from("gallery")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          supabaseItems = data
+            .filter((item: any) => item.image_url && item.image_url !== "")
+            .map((item: any) => ({
+              title: item.title,
+              desc: item.description || "",
+              thumb: item.image_url,
+              full: item.image_url,
+              caption: item.caption || item.title,
+              category: "Kegiatan"
+            }));
         }
       } catch (e) {
         console.warn("Gagal memuat galeri dari Supabase:", e);
@@ -214,6 +212,7 @@ export default function GalleryClient() {
         setGalleryItems(supabaseItems);
       } else {
         console.warn("Gagal memuat galeri dari Supabase. Menggunakan data default (statis).");
+        setGalleryItems(STATIC_GALLERY);
       }
     }
     fetchGallery();
