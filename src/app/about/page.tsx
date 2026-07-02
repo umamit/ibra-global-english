@@ -212,6 +212,38 @@ export default function AboutPage() {
                   Kurikulum Ibra Global English mengintegrasikan Kurikulum Merdeka dengan kerangka kompetensi internasional Common European Framework of Reference for Languages (CEFR). Setiap level pembelajaran dirancang dengan capaian kompetensi yang jelas dan terukur, sehingga peserta didik berkembang secara bertahap sesuai standar internasional yang digunakan di berbagai negara.
                 </p>
               </div>
+              <div style={{ marginTop: "1.5rem", overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem", textAlign: "left" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "2px solid var(--color-gray-200)" }}>
+                      <th style={{ padding: "0.75rem 0.5rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>IGE Curriculum</th>
+                      <th style={{ padding: "0.75rem 0.5rem", fontWeight: "bold", color: "var(--color-gray-900)" }}>CEFR Target</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-gray-700)", fontWeight: "500" }}>Foundation 1–5</td>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-primary-dark)", fontWeight: "bold" }}>A1</td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-gray-700)", fontWeight: "500" }}>Bridge 1–5</td>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-primary-dark)", fontWeight: "bold" }}>A2</td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-gray-700)", fontWeight: "500" }}>Communicator 1–5</td>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-primary-dark)", fontWeight: "bold" }}>B1</td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-gray-700)", fontWeight: "500" }}>Achiever 1–5</td>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-primary-dark)", fontWeight: "bold" }}>B2</td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-gray-700)", fontWeight: "500" }}>Professional 1–5</td>
+                      <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-primary-dark)", fontWeight: "bold" }}>C1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>
