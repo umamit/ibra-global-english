@@ -19,6 +19,20 @@ interface GalleryItem {
   full: string;
   caption: string;
   category: string;
+  created_at?: string;
+}
+
+interface GalleryGroup {
+  id: string;
+  title: string;
+  desc: string;
+  category: string;
+  created_at: string;
+  images: Array<{
+    thumb: string;
+    full: string;
+    caption: string;
+  }>;
 }
 
 interface VideoItem {
@@ -32,7 +46,20 @@ export default function GalleryClient() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("Semua");
-  const [lightbox, setLightbox] = useState({ isOpen: false, src: "", caption: "", index: 0 });
+  const [lightbox, setLightbox] = useState<{
+    isOpen: boolean;
+    src: string;
+    caption: string;
+    index: number;
+    images: Array<{ full: string; caption: string }>;
+  }>({
+    isOpen: false,
+    src: "",
+    caption: "",
+    index: 0,
+    images: []
+  });
+  const [groupActiveIndexes, setGroupActiveIndexes] = useState<{ [groupId: string]: number }>({});
 
   useScrollReveal();
 
@@ -201,7 +228,8 @@ export default function GalleryClient() {
               thumb: item.image_url,
               full: item.image_url,
               caption: item.caption || item.title,
-              category: "Kegiatan"
+              category: "Kegiatan",
+              created_at: item.created_at
             }));
         }
       } catch (e) {
@@ -228,26 +256,52 @@ export default function GalleryClient() {
     cat === "Semua" || galleryItems.some(item => item.category === cat)
   );
 
-  const openLightbox = (src: string, caption: string, index: number) => {
-    setLightbox({ isOpen: true, src, caption, index });
+  const openLightbox = (groupImages: Array<{ full: string; caption: string }>, startIndex: number) => {
+    setLightbox({
+      isOpen: true,
+      src: groupImages[startIndex].full,
+      caption: groupImages[startIndex].caption,
+      index: startIndex,
+      images: groupImages
+    });
   };
 
   const closeLightbox = () => {
-    setLightbox({ isOpen: false, src: "", caption: "", index: 0 });
+    setLightbox({ isOpen: false, src: "", caption: "", index: 0, images: [] });
   };
 
   const navigateLightbox = (direction: number) => {
-    if (filteredItems.length <= 1) return;
+    if (lightbox.images.length <= 1) return;
     let nextIndex = lightbox.index + direction;
-    if (nextIndex < 0) nextIndex = filteredItems.length - 1;
-    if (nextIndex >= filteredItems.length) nextIndex = 0;
+    if (nextIndex < 0) nextIndex = lightbox.images.length - 1;
+    if (nextIndex >= lightbox.images.length) nextIndex = 0;
     
     setLightbox({
-      isOpen: true,
-      src: filteredItems[nextIndex].full,
-      caption: filteredItems[nextIndex].caption,
+      ...lightbox,
+      src: lightbox.images[nextIndex].full,
+      caption: lightbox.images[nextIndex].caption,
       index: nextIndex
     });
+  };
+
+  const getActiveIndexForGroup = (groupId: string) => {
+    return groupActiveIndexes[groupId] || 0;
+  };
+
+  const nextGroupImage = (groupId: string, max: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setGroupActiveIndexes(prev => ({
+      ...prev,
+      [groupId]: ((prev[groupId] || 0) + 1) % max
+    }));
+  };
+
+  const prevGroupImage = (groupId: string, max: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setGroupActiveIndexes(prev => ({
+      ...prev,
+      [groupId]: ((prev[groupId] || 0) - 1 + max) % max
+    }));
   };
 
   return (
@@ -296,57 +350,165 @@ export default function GalleryClient() {
 
               {/* Gallery Grid */}
               <div className="gallery-masonry">
-                {filteredItems.map((item, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => openLightbox(item.full, item.caption, idx)}
-                    className="gallery-masonry-item"
-                  >
-                    <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
-                      <img
-                        src={item.thumb}
-                        alt={item.caption || "Foto kegiatan belajar mengajar aktif di Ibra Global English Bobong"}
-                        loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: "auto",
-                          display: "block",
-                          transition: "transform 0.5s ease"
-                        }}
-                        className="gallery-item-image"
-                      />
+                {(() => {
+                  const groups: { [key: string]: GalleryGroup } = {};
+                  filteredItems.forEach((item: any) => {
+                    const timestamp = item.created_at || 'static';
+                    const key = `${item.title}_${timestamp}`;
+                    if (!groups[key]) {
+                      groups[key] = {
+                        id: key,
+                        title: item.title,
+                        desc: item.desc || "",
+                        category: item.category || "Kegiatan",
+                        created_at: timestamp,
+                        images: []
+                      };
+                    }
+                    groups[key].images.push({
+                      thumb: item.thumb,
+                      full: item.full,
+                      caption: item.caption
+                    });
+                  });
+                  const groupedList = Object.values(groups);
+
+                  return groupedList.map((group) => {
+                    const activeImgIdx = getActiveIndexForGroup(group.id);
+                    const currentImage = group.images[activeImgIdx];
+                    const hasMultiple = group.images.length > 1;
+
+                    return (
                       <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          backgroundColor: "rgba(33, 108, 126, 0.4)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          opacity: 0,
-                          transition: "opacity 0.3s ease"
-                        }}
-                        className="gallery-item-overlay"
+                        key={group.id}
+                        onClick={() => openLightbox(group.images, activeImgIdx)}
+                        className="gallery-masonry-item"
+                        style={{ position: "relative" }}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                          <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-                        </svg>
+                        <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
+                          <img
+                            src={currentImage.thumb}
+                            alt={currentImage.caption || group.title}
+                            loading="lazy"
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              display: "block",
+                              transition: "transform 0.5s ease"
+                            }}
+                            className="gallery-item-image"
+                          />
+                          
+                          {/* Multiple images indicator */}
+                          {hasMultiple && (
+                            <div style={{
+                              position: "absolute",
+                              top: "0.75rem",
+                              right: "0.75rem",
+                              backgroundColor: "rgba(0, 0, 0, 0.7)",
+                              color: "#fff",
+                              padding: "0.25rem 0.5rem",
+                              borderRadius: "4px",
+                              fontSize: "0.75rem",
+                              fontWeight: "bold",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.25rem",
+                              zIndex: 2
+                            }}>
+                              <span>{activeImgIdx + 1} / {group.images.length}</span>
+                            </div>
+                          )}
+
+                          {/* Slide Navigation overlays */}
+                          {hasMultiple && (
+                            <>
+                              <button
+                                onClick={(e) => prevGroupImage(group.id, group.images.length, e)}
+                                style={{
+                                  position: "absolute",
+                                  left: "0.5rem",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  background: "rgba(255, 255, 255, 0.85)",
+                                  border: "none",
+                                  borderRadius: "50%",
+                                  width: "28px",
+                                  height: "28px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  cursor: "pointer",
+                                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                                  zIndex: 3,
+                                  fontWeight: "bold",
+                                  fontSize: "1rem"
+                                }}
+                              >
+                                ‹
+                              </button>
+                              <button
+                                onClick={(e) => nextGroupImage(group.id, group.images.length, e)}
+                                style={{
+                                  position: "absolute",
+                                  right: "0.5rem",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  background: "rgba(255, 255, 255, 0.85)",
+                                  border: "none",
+                                  borderRadius: "50%",
+                                  width: "28px",
+                                  height: "28px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  cursor: "pointer",
+                                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                                  zIndex: 3,
+                                  fontWeight: "bold",
+                                  fontSize: "1rem"
+                                }}
+                              >
+                                ›
+                              </button>
+                            </>
+                          )}
+
+                          <div
+                            style={{
+                              position: "absolute",
+                              inset: 0,
+                              backgroundColor: "rgba(33, 108, 126, 0.4)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              opacity: 0,
+                              transition: "opacity 0.3s ease",
+                              pointerEvents: "none"
+                            }}
+                            className="gallery-item-overlay"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                              <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                          </div>
+                        </div>
+                        <div style={{ padding: "1.25rem" }}>
+                          <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", display: "inline-block", marginBottom: "0.25rem" }}>
+                            {group.category}
+                          </span>
+                          <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.35rem" }}>
+                            {group.title}
+                          </h3>
+                          <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", lineHeight: "1.4" }}>
+                            {group.desc}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div style={{ padding: "1.25rem" }}>
-                      <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-primary)", textTransform: "uppercase", display: "inline-block", marginBottom: "0.25rem" }}>
-                        {item.category}
-                      </span>
-                      <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.35rem" }}>
-                        {item.title}
-                      </h3>
-                      <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", lineHeight: "1.4" }}>
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  });
+                })()}
               </div>
             </>
           )}

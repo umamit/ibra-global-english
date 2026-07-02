@@ -83,8 +83,8 @@ export default function LandingPageCMS() {
   const [galleryTitle, setGalleryTitle] = useState<string>("");
   const [galleryDesc, setGalleryDesc] = useState<string>("");
   const [galleryCaption, setGalleryCaption] = useState<string>("");
-  const [galleryFile, setGalleryFile] = useState<File | null>(null);
-  const [galleryPreview, setGalleryPreview] = useState<string | null>("");
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
   const [addingGallery, setAddingGallery] = useState<boolean>(false);
   const galleryFileRef = useRef<HTMLInputElement>(null);
 
@@ -472,40 +472,54 @@ export default function LandingPageCMS() {
   // GALLERY ACTIONS
   // ----------------------------------------------------
   const handleGalleryFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setGalleryFile(file);
-    setGalleryPreview(URL.createObjectURL(file));
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length === 0) return;
+
+    if (selectedFiles.length > 20) {
+      showToast("Maksimal 20 foto yang dapat diunggah sekaligus.", "error");
+      return;
+    }
+
+    setGalleryFiles(selectedFiles);
+    const previews = selectedFiles.map(file => URL.createObjectURL(file));
+    setGalleryPreviews(previews);
   };
 
   const handleAddGalleryItem = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!galleryTitle.trim() || !galleryFile) {
+    if (!galleryTitle.trim() || galleryFiles.length === 0) {
       showToast("Judul kegiatan dan berkas foto wajib diisi.", "error");
       return;
     }
 
     setAddingGallery(true);
     try {
-      const uploadedUrl = await handleUploadToStorage(galleryFile);
+      const batchTimestamp = new Date().toISOString();
 
-      const { error } = await supabase.from("gallery").insert([
-        {
-          title: galleryTitle.trim(),
-          description: galleryDesc.trim() || null,
-          caption: galleryCaption.trim() || null,
-          image_url: uploadedUrl,
-        },
-      ]);
+      for (let i = 0; i < galleryFiles.length; i++) {
+        const file = galleryFiles[i];
 
-      if (error) throw error;
+        const uploadedUrl = await handleUploadToStorage(file);
 
-      showToast("Foto kegiatan baru berhasil ditambahkan ke galeri publik!");
+        const { error } = await supabase.from("gallery").insert([
+          {
+            title: galleryTitle.trim(),
+            description: galleryDesc.trim() || null,
+            caption: galleryCaption.trim() || null,
+            image_url: uploadedUrl,
+            created_at: batchTimestamp
+          },
+        ]);
+
+        if (error) throw error;
+      }
+
+      showToast(`Berhasil menambahkan ${galleryFiles.length} foto kegiatan ke galeri publik!`);
       setGalleryTitle("");
       setGalleryDesc("");
       setGalleryCaption("");
-      setGalleryFile(null);
-      setGalleryPreview("");
+      setGalleryFiles([]);
+      setGalleryPreviews([]);
       if (galleryFileRef.current) galleryFileRef.current.value = "";
       fetchGallery();
     } catch (err: any) {
@@ -685,8 +699,8 @@ export default function LandingPageCMS() {
           galleryTitle={galleryTitle} setGalleryTitle={setGalleryTitle}
           galleryDesc={galleryDesc} setGalleryDesc={setGalleryDesc}
           galleryCaption={galleryCaption} setGalleryCaption={setGalleryCaption}
-          galleryPreview={galleryPreview} setGalleryPreview={setGalleryPreview}
-          galleryFile={galleryFile} setGalleryFile={setGalleryFile}
+          galleryPreviews={galleryPreviews} setGalleryPreviews={setGalleryPreviews}
+          galleryFiles={galleryFiles} setGalleryFiles={setGalleryFiles}
           galleryFileRef={galleryFileRef}
           addingGallery={addingGallery} setAddingGallery={setAddingGallery}
           galleryList={galleryList} setGalleryList={setGalleryItems}

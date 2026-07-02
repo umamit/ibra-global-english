@@ -11,10 +11,10 @@ interface GalleryManagerProps {
   setGalleryDesc: (val: string) => void;
   galleryCaption: string;
   setGalleryCaption: (val: string) => void;
-  galleryPreview: string | null;
-  setGalleryPreview: (val: string | null) => void;
-  galleryFile: File | null;
-  setGalleryFile: (val: File | null) => void;
+  galleryPreviews: string[];
+  setGalleryPreviews: (val: string[]) => void;
+  galleryFiles: File[];
+  setGalleryFiles: (val: File[]) => void;
   galleryFileRef: React.RefObject<HTMLInputElement | null>;
   addingGallery: boolean;
   setAddingGallery: (val: boolean) => void;
@@ -30,8 +30,8 @@ export default function GalleryManager({
   galleryTitle, setGalleryTitle,
   galleryDesc, setGalleryDesc,
   galleryCaption, setGalleryCaption,
-  galleryPreview, setGalleryPreview,
-  galleryFile, setGalleryFile,
+  galleryPreviews, setGalleryPreviews,
+  galleryFiles, setGalleryFiles,
   galleryFileRef,
   addingGallery, setAddingGallery,
   galleryList, setGalleryList,
@@ -44,7 +44,7 @@ export default function GalleryManager({
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       {/* Form Tambah Item */}
       <div className="portal-card" style={{ padding: "2rem" }}>
-        <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Unggah Foto Kegiatan Baru</h2>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>Unggah Foto Kegiatan Baru (Maks 20 Sekaligus)</h2>
 
         <form onSubmit={handleAddGalleryItem} style={{ display: "flex", flexFlow: "column", gap: "1.25rem" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
@@ -93,17 +93,13 @@ export default function GalleryManager({
 
             {/* Pilih Berkas */}
             <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Berkas Gambar (Foto)</label>
-              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                {galleryPreview && (
-                  <div style={{ width: "70px", height: "50px", borderRadius: "4px", overflow: "hidden", border: "1px solid var(--color-gray-300)", flexShrink: 0 }}>
-                    <img src={galleryPreview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  </div>
-                )}
+              <label style={{ fontWeight: "600", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Berkas Gambar (Foto, bisa pilih maks 20)</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                 <input
                   type="file"
                   ref={galleryFileRef}
                   accept="image/*"
+                  multiple
                   onChange={handleGalleryFileChange}
                   style={{ display: "none" }}
                 />
@@ -113,8 +109,17 @@ export default function GalleryManager({
                   className="btn-portal-outline"
                   style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", width: "100%" }}
                 >
-                  {galleryFile ? galleryFile.name : "Pilih Berkas Foto..."}
+                  {galleryFiles.length > 0 ? `${galleryFiles.length} Berkas Foto Terpilih` : "Pilih Berkas Foto..."}
                 </button>
+                {galleryPreviews.length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "0.5rem" }}>
+                    {galleryPreviews.map((src, i) => (
+                      <div key={i} style={{ width: "60px", height: "45px", borderRadius: "4px", overflow: "hidden", border: "1px solid var(--color-gray-300)" }}>
+                        <img src={src} alt={`Preview ${i+1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
