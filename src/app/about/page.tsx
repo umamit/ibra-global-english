@@ -204,7 +204,7 @@ export default function AboutPage() {
                 <span style={{ fontSize: "2.5rem", marginRight: "1.25rem" }}>🇪🇺</span>
                 <div>
                   <h3 style={{ margin: "0", fontSize: "1.35rem", fontWeight: "700", color: "var(--color-gray-900)" }}>Kurikulum Berstandar Global (CEFR-Aligned)</h3>
-                  <p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "var(--color-primary-dark)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px" }}>Standar Kecakapan Bahasa Eropa</p>
+                  <p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "var(--color-primary-dark)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px" }}>Kerangka Kompetensi Bahasa Internasional</p>
                 </div>
               </div>
               <div>
