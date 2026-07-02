@@ -46,6 +46,7 @@ export default function AdminFinance() {
   const [waMessage, setWaMessage] = useState<string>("");
   const [waLoading, setWaLoading] = useState<boolean>(false);
   const [waError, setWaError] = useState<string>("");
+  const [waDuplicityWarning, setWaDuplicityWarning] = useState<boolean>(false);
   const [sppPrices, setSppPrices] = useState<Record<string, number>>({
     "Kids Program": 300000,
     "Teens Program": 300000,
@@ -118,18 +119,21 @@ export default function AdminFinance() {
     setWaPhone("");
     setWaMessage("");
     setWaError("");
+    setWaDuplicityWarning(false);
     setWaModalOpen(true);
     setWaLoading(true);
 
     try {
       const { data: regData, error: errReg } = await supabase
         .from("registrations")
-        .select("whatsapp")
-        .eq("student_name", student.name)
-        .limit(1);
+        .select("whatsapp, parent_name")
+        .eq("student_name", student.name);
 
       if (!errReg && regData && regData.length > 0) {
         setWaPhone(regData[0].whatsapp || "");
+        if (regData.length > 1) {
+          setWaDuplicityWarning(true);
+        }
       }
     } catch (err) {
       console.warn("Gagal mengambil nomor whatsapp registrasi:", err);
@@ -789,6 +793,21 @@ export default function AdminFinance() {
                 <p style={{ margin: 0, fontWeight: "800", color: "var(--color-primary-dark)" }}>{formatRupiah(waPayment?.amount || 0)}</p>
               </div>
             </div>
+
+            {waDuplicityWarning && (
+              <div style={{
+                backgroundColor: "rgba(245, 158, 11, 0.1)",
+                border: "1px solid rgba(245, 158, 11, 0.3)",
+                padding: "0.75rem 1rem",
+                borderRadius: "8px",
+                color: "#d97706",
+                fontSize: "0.85rem",
+                fontWeight: "600",
+                lineHeight: "1.4"
+              }}>
+                ⚠️ Peringatan: Ditemukan lebih dari 1 data pendaftaran dengan nama siswa &quot;{waStudent?.name}&quot;. Harap verifikasi nomor WhatsApp dan nama orang tua penerima di bawah ini dengan teliti.
+              </div>
+            )}
 
             <div className="form-group">
               <label className="form-label" style={{ fontWeight: "800" }}>Nomor WhatsApp Penerima (Orang Tua)</label>
