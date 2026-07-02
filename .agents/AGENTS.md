@@ -108,6 +108,9 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 20. **Aturan Tindakan Berdasarkan Perintah (Command-Only Actions):**
    - Mulai detik ini, saya akan menahan diri sepenuhnya. Jika Anda hanya bertanya atau memberi komentar, saya hanya akan membalas dengan teks dan tidak akan memanggil tool pembuat kode/perintah apa pun sebelum Anda memerintahkannya.
 
+21. **Prinsip Utama Kendali Pengguna (User Control Principle):**
+   - Ini adalah prinsip mendasar yang sangat penting: manusia memegang kendali penuh, dan teknologi/AI tidak boleh sekali-kali melangkahi atau mengambil keputusan sendiri tanpa instruksi.
+
 
 ## Hallucination Prevention & Strict Constraints
 •  If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
