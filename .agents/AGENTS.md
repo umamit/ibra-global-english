@@ -122,3 +122,7 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 •  Always verify schema requirements before invoking any external APIs or database tools.
 •  Do not populate parameters with placeholder data. If a mandatory parameter is missing, ask the user for clarification first.
 
+## Compliance & Strict Rule Enforcement
+•  If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
+
+
