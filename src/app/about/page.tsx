@@ -19,29 +19,6 @@ interface Tutor {
   image_url: string;
 }
 
-const FALLBACK_TUTORS: Tutor[] = [
-  {
-    id: "fallback-1",
-    name: "Ibra",
-    role: "Founder & Head Tutor",
-    bio: "Pendidik yang bersemangat dengan pengalaman bertahun-tahun dalam melatih kecakapan berbicara (Speaking) bahasa Inggris aktif untuk remaja dan dewasa di Pulau Taliabu.",
-    image_url: ""
-  },
-  {
-    id: "fallback-2",
-    name: "Sarah",
-    role: "Kids Program Specialist",
-    bio: "Ahli dalam metode pengajaran bahasa Inggris ramah anak dengan menggunakan media interaktif, lagu, dan permainan motorik yang menyenangkan.",
-    image_url: ""
-  },
-  {
-    id: "fallback-3",
-    name: "Rahma",
-    role: "Calistung Specialist",
-    bio: "Spesialis bimbingan belajar Calistung (Membaca, Menulis, Berhitung) anak usia dini dengan pendekatan kesabaran personal.",
-    image_url: ""
-  }
-];
 
 export default function AboutPage() {
   const supabase = createClient();
@@ -87,13 +64,13 @@ export default function AboutPage() {
           if (data && data.length > 0) {
             setTutors(data as Tutor[]);
           } else {
-            setTutors(FALLBACK_TUTORS);
+            setTutors([]);
           }
         }
       } catch (err) {
-        console.warn("Gagal memuat data tutor dari database, menggunakan fallback data:", err);
+        console.warn("Gagal memuat data tutor dari database:", err);
         if (isMounted) {
-          setTutors(FALLBACK_TUTORS);
+          setTutors([]);
         }
       } finally {
         if (isMounted) {
@@ -186,46 +163,48 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 4. Tutors Section (Soft Gold/Cream Background) */}
-        <section className="about-tutors-section reveal">
-          <div className="about-container">
-            <h2 className="section-title">Tim Pengajar Kami</h2>
-            
-            {loading ? (
-              <div className="tutors-grid">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="tutor-card skeleton-pulse" style={{ height: "350px", borderRadius: "18px" }}></div>
-                ))}
-              </div>
-            ) : (
-              <div className="tutors-grid">
-                {tutors.map(tutor => (
-                  <div key={tutor.id} className="tutor-card">
-                    <div className="tutor-image-container">
-                      {tutor.image_url ? (
-                        <img 
-                          src={tutor.image_url} 
-                          alt={`Foto ${tutor.name}`} 
-                          className="tutor-img"
-                          loading="lazy" 
-                        />
-                      ) : (
-                        <div className="tutor-avatar-placeholder" aria-hidden="true">
-                          {getInitials(tutor.name)}
-                        </div>
-                      )}
+        {/* 4. Tutors Section — hanya tampil jika ada data tutor */}
+        {(loading || tutors.length > 0) && (
+          <section className="about-tutors-section reveal">
+            <div className="about-container">
+              <h2 className="section-title">Tim Pengajar Kami</h2>
+              
+              {loading ? (
+                <div className="tutors-grid">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="tutor-card skeleton-pulse" style={{ height: "350px", borderRadius: "18px" }}></div>
+                  ))}
+                </div>
+              ) : (
+                <div className="tutors-grid">
+                  {tutors.map(tutor => (
+                    <div key={tutor.id} className="tutor-card">
+                      <div className="tutor-image-container">
+                        {tutor.image_url ? (
+                          <img 
+                            src={tutor.image_url} 
+                            alt={`Foto ${tutor.name}`} 
+                            className="tutor-img"
+                            loading="lazy" 
+                          />
+                        ) : (
+                          <div className="tutor-avatar-placeholder" aria-hidden="true">
+                            {getInitials(tutor.name)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="tutor-info">
+                        <h3>{tutor.name}</h3>
+                        <span className="tutor-role">{tutor.role}</span>
+                        <p className="tutor-bio">{tutor.bio || "Tutor berpengalaman di Ibra Global English."}</p>
+                      </div>
                     </div>
-                    <div className="tutor-info">
-                      <h3>{tutor.name}</h3>
-                      <span className="tutor-role">{tutor.role}</span>
-                      <p className="tutor-bio">{tutor.bio || "Tutor berpengalaman di Ibra Global English."}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
       </main>
 
