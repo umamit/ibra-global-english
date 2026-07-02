@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb } from "pdf-lib";
+// @pdf-lib/fontkit may export as default (ESM) or direct (CJS) — handle both
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const fontkit = require("@pdf-lib/fontkit");
+const fontkitRaw = require("@pdf-lib/fontkit");
+const fontkit = fontkitRaw.default ?? fontkitRaw;
 import { createAdminClient } from "@/utils/supabase/server";
 import fs from "fs";
 import path from "path";
