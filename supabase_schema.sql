@@ -402,6 +402,8 @@ CREATE POLICY "Admins have full access to placement_test_questions"
 ON public.placement_test_questions FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- placement_test_regenerate_logs RLS
+ALTER TABLE public.placement_test_regenerate_logs ENABLE ROW LEVEL SECURITY;
+
 CREATE POLICY "Admins have full access to placement_test_regenerate_logs"
 ON public.placement_test_regenerate_logs FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 
