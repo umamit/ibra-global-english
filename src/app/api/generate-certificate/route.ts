@@ -28,7 +28,9 @@ function drawCentered(page: PDFPage, text: string, y: number, font: EmbeddedFont
 
 // Helper: wrap text to fit maxWidth
 function wrapText(text: string, font: EmbeddedFont, size: number, maxWidth: number): string[] {
-  const words = text.split(" ");
+  // Replace newlines with spaces before wrapping
+  const flat  = text.replace(/[\r\n]+/g, " ").trim();
+  const words = flat.split(" ");
   const lines: string[] = [];
   let line = "";
   for (const word of words) {
@@ -43,6 +45,10 @@ function wrapText(text: string, font: EmbeddedFont, size: number, maxWidth: numb
   if (line) lines.push(line);
   return lines;
 }
+
+// Strip newlines and control characters — WinAnsi (StandardFonts) cannot encode them
+const sanitize = (s: string) => (s || "").replace(/[\r\n\t]+/g, " ").trim();
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -94,11 +100,12 @@ export async function GET(request: NextRequest) {
 
     // ── Derived data ─────────────────────────────────────────────
     const isCalistung  = cert.students?.program?.toLowerCase()?.includes("calistung");
-    const studentName  = ((cert.students?.name  as string) || "").toUpperCase();
-    const tutorName    = (cert.tutor_name  as string) || "";
-    const moduleName   = (cert.module_name as string) || "";
-    const certNumber   = (cert.cert_number as string) || "";
-    const grade        = (cert.grade       as string) || "";
+    const studentName  = sanitize(((cert.students?.name  as string) || "")).toUpperCase();
+    const tutorName    = sanitize((cert.tutor_name  as string) || "");
+    const moduleName   = sanitize((cert.module_name as string) || "");
+    const certNumber   = sanitize((cert.cert_number as string) || "");
+    const grade        = sanitize((cert.grade       as string) || "");
+
     const issueDate    = new Date(cert.issue_date as string);
 
     const formattedDate = issueDate.toLocaleDateString(
@@ -275,8 +282,9 @@ export async function GET(request: NextRequest) {
     page2.drawRectangle({ x: CX, y: FOOTER_BOTTOM, width: 3,      height: FOOTER_H, color: C_GOLD });
     page2.drawText("Catatan Guru (Tutor Review Notes)", { x: CX + 8, y: FOOTER_BOTTOM + FOOTER_H - 13, font: fBold, size: 6.8, color: C_DARK_GREEN });
 
-    const noteText  = (report?.tutor_notes as string) ||
-      "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!";
+    const noteText  = sanitize((report?.tutor_notes as string) ||
+      "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!");
+
     const noteLines = wrapText(`"${noteText}"`, fRegular, 7, NOTE_W - 20);
     noteLines.slice(0, 5).forEach((ln, i) => {
       page2.drawText(ln, { x: CX + 8, y: FOOTER_BOTTOM + FOOTER_H - 26 - i * 10, font: fRegular, size: 7, color: C_GRAY });
