@@ -118,129 +118,33 @@ export default function VerifyCertificate() {
     if (!cert) return;
     setIsGeneratingPDF(true);
 
-    // Safety net: reset setelah 30 detik jika stuck
-    const safetyTimer = setTimeout(() => {
-      setIsGeneratingPDF(false);
-      alert("Pembuatan PDF timeout (30 detik). Coba refresh dan ulangi.");
-    }, 30000);
-
     try {
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
+      const origin = encodeURIComponent(window.location.origin);
+      const res = await fetch(`/api/generate-certificate?id=${cert.id}&origin=${origin}`);
 
-      const page1El = document.getElementById("cert-page-1-el");
-      const page2El = document.getElementById("cert-page-2-el");
-      if (!page1El || !page2El) {
-        alert("Elemen sertifikat tidak ditemukan. Coba refresh halaman.");
-        return;
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(body.error || `Server error: ${res.status}`);
       }
 
-      // Konversi gambar luar (cross-origin) ke base64 agar tidak ada CORS block
-      const convertImagesToBase64 = async (el: HTMLElement) => {
-        const imgs = el.querySelectorAll("img");
-        const currentHost = window.location.hostname;
-
-        await Promise.all(Array.from(imgs).map(async (img) => {
-          try {
-            if (!img.src || img.src.startsWith("data:")) return;
-
-            // Cek apakah gambar berasal dari origin eksternal
-            const imgUrl = new URL(img.src);
-            const isCrossOrigin = imgUrl.hostname !== currentHost;
-
-            if (!isCrossOrigin) return; // Lewati jika gambar satu origin
-
-            const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(img.src)}`;
-            
-            // Tambahkan timeout 6 detik agar tidak stuck selamanya jika server lambat
-            const controller = new AbortController();
-            const fetchTimeout = setTimeout(() => controller.abort(), 6000);
-
-            const res = await fetch(proxyUrl, { signal: controller.signal });
-            clearTimeout(fetchTimeout);
-
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
-            const blob = await res.blob();
-            const b64 = await new Promise<string>((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result as string);
-              reader.onerror = () => reject(new Error("File reading failed"));
-              reader.readAsDataURL(blob);
-            });
-            img.src = b64;
-          } catch (e) {
-            console.warn("Gagal load gambar proxy (melewati konversi):", img.src, e);
-          }
-        }));
-      };
-
-      await convertImagesToBase64(page1El);
-      await convertImagesToBase64(page2El);
-
-      // Simpan style asli untuk dikembalikan nanti
-      const originalStyle1 = page1El.getAttribute("style") || "";
-      const originalStyle2 = page2El.getAttribute("style") || "";
-
-      // Paksa ukuran desktop standar A4 agar container queries (cqw) & layout konsisten
-      const applyPrintStyles = (el: HTMLElement) => {
-        el.style.setProperty("width", "1120px", "important");
-        el.style.setProperty("height", "792px", "important");
-        el.style.setProperty("position", "fixed", "important");
-        el.style.setProperty("left", "-9999px", "important");
-        el.style.setProperty("top", "0", "important");
-        el.style.setProperty("aspect-ratio", "unset", "important");
-      };
-
-      applyPrintStyles(page1El);
-      applyPrintStyles(page2El);
-
-      // Tunggu satu frame agar browser selesai me-layout ulang dengan ukuran baru
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-      const pdfW = pdf.internal.pageSize.getWidth();
-      const pdfH = pdf.internal.pageSize.getHeight();
-
-      const canvasOpts = {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        imageTimeout: 0,
-        backgroundColor: "#ffffff",
-      };
-
-      // Render halaman depan
-      const canvas1 = await html2canvas(page1El, canvasOpts);
-      pdf.addImage(canvas1.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
-
-      // Render halaman belakang
-      pdf.addPage();
-      const canvas2 = await html2canvas(page2El, { ...canvasOpts, backgroundColor: "#fdfaf6" });
-      pdf.addImage(canvas2.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdfW, pdfH);
-
-      // Kembalikan style seperti semula
-      page1El.setAttribute("style", originalStyle1);
-      page2El.setAttribute("style", originalStyle2);
-
-      clearTimeout(safetyTimer);
-      pdf.save(`sertifikat-ige-${cert.cert_number || cert.id}.pdf`);
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = `sertifikat-ige-${cert.cert_number || cert.id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     } catch (err) {
-      // Pastikan style dikembalikan jika terjadi error
-      const page1El = document.getElementById("cert-page-1-el");
-      const page2El = document.getElementById("cert-page-2-el");
-      if (page1El) page1El.style.cssText = "";
-      if (page2El) page2El.style.cssText = "";
-
-      clearTimeout(safetyTimer);
       const msg = err instanceof Error ? err.message : String(err);
       alert(`Gagal membuat PDF: ${msg}`);
-      console.error("PDF error:", err);
+      console.error("PDF download error:", err);
     } finally {
-      clearTimeout(safetyTimer);
       setIsGeneratingPDF(false);
     }
   };
+
 
   const completionText = cert?.students?.program?.toLowerCase()?.includes("calistung")
     ? `telah menyelesaikan program Calistung ${cert?.module_name || ""}`
