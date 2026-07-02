@@ -616,7 +616,7 @@ export default function AdminCalendar() {
 
                     {/* Schedules inside day cell */}
                     <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: "4px", overflow: "hidden" }}>
-                      {daySchedules.map((s) => {
+                      {daySchedules.slice(0, 3).map((s) => {
                         let badgeBg = "var(--color-primary-light)";
                         let badgeColor = "var(--color-primary-dark)";
 
@@ -663,6 +663,20 @@ export default function AdminCalendar() {
                           </div>
                         );
                       })}
+                      {daySchedules.length > 3 && (
+                        <div style={{ 
+                          fontSize: "0.68rem", 
+                          fontWeight: "800", 
+                          color: "var(--color-gray-500)", 
+                          backgroundColor: "var(--color-gray-100)",
+                          borderRadius: "4px",
+                          padding: "0.15rem 0.25rem",
+                          textAlign: "center",
+                          border: "1px dashed var(--color-gray-300)"
+                        }}>
+                          + {daySchedules.length - 3} agenda lagi
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
