@@ -247,6 +247,39 @@ export default function AboutPage() {
                   </tbody>
                 </table>
               </div>
+              
+              {/* Stepper Timeline */}
+              <div className="curriculum-timeline">
+                <div className="timeline-step">
+                  <div className="timeline-badge" />
+                  <div className="timeline-label">Foundation</div>
+                  <div className="timeline-sublabel">(A1)</div>
+                </div>
+                <div className="timeline-step">
+                  <div className="timeline-badge" />
+                  <div className="timeline-label">Bridge</div>
+                  <div className="timeline-sublabel">(A2)</div>
+                </div>
+                <div className="timeline-step">
+                  <div className="timeline-badge" />
+                  <div className="timeline-label">Communicator</div>
+                  <div className="timeline-sublabel">(B1)</div>
+                </div>
+                <div className="timeline-step">
+                  <div className="timeline-badge" />
+                  <div className="timeline-label">Achiever</div>
+                  <div className="timeline-sublabel">(B2)</div>
+                </div>
+                <div className="timeline-step">
+                  <div className="timeline-badge" />
+                  <div className="timeline-label">Professional</div>
+                  <div className="timeline-sublabel">(C1)</div>
+                </div>
+                <div className="timeline-step">
+                  <div className="timeline-badge" />
+                  <div className="timeline-label" style={{ fontWeight: "800", color: "var(--color-primary-dark)" }}>International English Proficiency</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
