@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { createAdminClient } from "@/utils/supabase/server";
+import fs from "fs";
+import path from "path";
 
 // ── A4 Landscape: 297mm × 210mm in PDF points (1pt = 1/72 inch) ──
 const W = 841.89;
 const H = 595.28;
 
-// ── Brand Color Palette ──────────────────────────────────────────
-const C_DARK_GREEN = rgb(0.11,  0.239, 0.227);  // #1c3d3a
-const C_GOLD       = rgb(0.651, 0.533, 0.286);  // #a68849
+// ── Brand Color Palette (matches logo teal: --color-primary #216c7e) ──
+const C_DARK_GREEN = rgb(0.129, 0.424, 0.494);  // #216c7e  — brand primary teal
+const C_TEAL_DARK  = rgb(0.086, 0.302, 0.341);  // #164d57  — brand primary dark
+const C_GOLD       = rgb(0.651, 0.533, 0.286);  // #a68849  — gold accent (unchanged)
 const C_DARK       = rgb(0.114, 0.114, 0.122);  // #1d1d1f
 const C_WHITE      = rgb(1, 1, 1);
 const C_GRAY       = rgb(0.43,  0.43,  0.45);
-const C_BG         = rgb(0.992, 0.98,  0.965);  // #fdfaf6
-const C_ACCENT_LT  = rgb(0.98,  0.953, 0.91);   // #faf3e8
-const C_ROW_EVEN   = rgb(0.97,  0.97,  0.97);
-const C_ROW_BORDER = rgb(0.85,  0.85,  0.85);
+const C_BG         = rgb(0.933, 0.965, 0.973);  // #eef6f8  — teal-50 light bg
+const C_ACCENT_LT  = rgb(0.839, 0.929, 0.945);  // #d6edf2  — teal-100
+const C_ROW_EVEN   = rgb(0.961, 0.980, 0.984);  // teal-25 subtle
+const C_ROW_BORDER = rgb(0.80,  0.84,  0.85);
 
 type PDFPage = ReturnType<PDFDocument["getPage"]>;
 type EmbeddedFont = Awaited<ReturnType<PDFDocument["embedFont"]>>;
@@ -136,19 +139,19 @@ export async function GET(request: NextRequest) {
     // ═══════════════════════════════════════════════════════════
     const page1 = pdfDoc.getPage(0);
 
-    // Certificate number  (CSS top: 29%)
+    // Certificate number — kecil, abu-abu, tidak mencolok
     if (certNumber) {
-      drawCentered(page1, certNumber, H * 0.71, fBold, 12, C_DARK);
+      drawCentered(page1, `Nomor : ${certNumber}`, H * 0.675, fRegular, 12, C_DARK);
     }
 
-    // Student name — large  (CSS top: 60.2%, transform: translate(-50%,-100%))
-    drawCentered(page1, studentName, H * 0.42, fBold, 40, C_DARK_GREEN);
+    // Student name — large
+    drawCentered(page1, studentName, H * 0.42, fBold, 40, C_DARK);
 
-    // Completion text  (CSS top: 61.5%)
-    drawCentered(page1, completionText, H * 0.385, fRegular, 16, C_DARK);
+    // Completion text — dekat di bawah garis horizontal
+    drawCentered(page1, completionText, H * 0.355, fRegular, 15, C_DARK);
 
-    // Date  (CSS top: 66%)
-    drawCentered(page1, datePrefixText, H * 0.34, fRegular, 14, C_DARK);
+    // Date
+    drawCentered(page1, datePrefixText, H * 0.305, fRegular, 13, C_DARK);
 
     // Tutor name  (CSS top: 79.5%, left: 29.5%)
     if (tutorName) {
@@ -156,7 +159,7 @@ export async function GET(request: NextRequest) {
       page1.drawText(tutorName, {
         x: tutorCX - fBold.widthOfTextAtSize(tutorName, 13) / 2,
         y: H * 0.205,
-        font: fBold, size: 13, color: C_DARK_GREEN,
+        font: fBold, size: 13, color: C_DARK,
       });
       page1.drawText("TUTOR", {
         x: tutorCX - fRegular.widthOfTextAtSize("TUTOR", 8) / 2,
@@ -180,123 +183,147 @@ export async function GET(request: NextRequest) {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // PAGE 2 — Academic Transcript, generated from scratch
+    // PAGE 2 — Academic Transcript (redesigned)
     // ═══════════════════════════════════════════════════════════
     const page2 = pdfDoc.addPage([W, H]);
 
-    // Background
-    page2.drawRectangle({ x: 0, y: 0, width: W, height: H, color: C_BG });
+    // Load background image for Page 2
+    const bgPath = path.join(
+      process.cwd(),
+      "public/assets/Salinan dari Salinan dari Blue and Gold Simple Elegant Certificate of Appreciation.png"
+    );
+    const bgBytes = fs.readFileSync(bgPath);
+    const bgImage = await pdfDoc.embedPng(new Uint8Array(bgBytes));
 
-    // Inner borders
-    const BM = 11;
-    page2.drawRectangle({ x: BM, y: BM, width: W - BM * 2, height: H - BM * 2, borderColor: C_DARK_GREEN, borderWidth: 1.4, color: undefined });
-    const GM = 17;
-    page2.drawRectangle({ x: GM, y: GM, width: W - GM * 2, height: H - GM * 2, borderColor: C_GOLD, borderWidth: 0.5, color: undefined });
+    // Draw background image
+    page2.drawImage(bgImage, {
+      x: 0,
+      y: 0,
+      width: W,
+      height: H,
+    });
 
-    const CX = 44;
-    const CW = W - 88;
-    let cy = H - 46;
+    const TM     = 44;
+    const TW     = W - 88;
 
-    // ── Header ──────────────────────────────────────────────────
-    drawCentered(page2, "IBRA GLOBAL ENGLISH", cy, fBold, 17, C_DARK_GREEN);
+    // Header starting y position
+    let cy = H - 65;
+
+    const hdr1 = "IBRA GLOBAL ENGLISH";
+    page2.drawText(hdr1, { x: (W - fBold.widthOfTextAtSize(hdr1, 24)) / 2, y: cy, font: fBold, size: 24, color: C_DARK_GREEN });
+    cy -= 15;
+
+    const hdr2 = "Lembaga Kursus & Pelatihan (LKP)  —  Dinas Pendidikan Bobong";
+    page2.drawText(hdr2, { x: (W - fRegular.widthOfTextAtSize(hdr2, 9)) / 2, y: cy, font: fRegular, size: 9, color: C_DARK });
     cy -= 14;
-    drawCentered(page2, "Lembaga Kursus & Pelatihan (LKP) Dinas Pendidikan Bobong", cy, fRegular, 8.5, C_GOLD);
-    cy -= 12;
-    drawCentered(page2, "TRANSKRIP EVALUASI AKADEMIK (ACADEMIC TRANSCRIPT)", cy, fBold, 10.5, C_DARK);
-    cy -= 7;
-    page2.drawLine({ start: { x: CX, y: cy }, end: { x: W - CX, y: cy }, thickness: 1.1, color: C_GOLD });
-    cy -= 14;
 
-    // ── Metadata grid (2 columns) ────────────────────────────────
-    const COL2X   = W / 2 + 10;
-    const META_S  = 8.2;
-    const LINE_H  = 13;
-    const LABEL_W = 82;
+    const hdr3 = "TRANSKRIP EVALUASI AKADEMIK  /  ACADEMIC TRANSCRIPT";
+    page2.drawText(hdr3, { x: (W - fBold.widthOfTextAtSize(hdr3, 10.5)) / 2, y: cy, font: fBold, size: 10.5, color: C_TEAL_DARK });
+    cy -= 26;
 
-    const drawMeta = (label: string, value: string, x: number, y: number) => {
-      page2.drawText(label,       { x,              y, font: fBold,    size: META_S, color: C_DARK });
-      page2.drawText(`: ${value}`,{ x: x + LABEL_W, y, font: fRegular, size: META_S, color: C_DARK });
+    // ── Student info panel (no background) ──
+    const COL2X2 = W / 2 + 10;
+    const IS     = 10.5;
+    const LW2    = 108;
+
+    const drawInfo = (label: string, val: string, x: number, y: number) => {
+      page2.drawText(label,      { x,          y, font: fBold,    size: IS, color: C_DARK });
+      page2.drawText(`: ${val}`, { x: x + LW2, y, font: fRegular, size: IS, color: C_DARK });
     };
+    drawInfo("Nama Siswa",      cert.students?.name    || "-", TM + 12, cy - 18);
+    drawInfo("Program Belajar", cert.students?.program || "-", TM + 12, cy - 36);
+    drawInfo("No. Sertifikat",  certNumber             || "-", COL2X2,  cy - 18);
+    drawInfo("Tanggal Terbit",  issueDate.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }), COL2X2,  cy - 36);
 
-    drawMeta("Nama Siswa",      cert.students?.name || "-",                    CX,    cy);
-    drawMeta("Nomor Sertifikat", certNumber || "-",                             COL2X, cy);
-    cy -= LINE_H;
-    drawMeta("Program Belajar", cert.students?.program || "-",                 CX,    cy);
-    drawMeta("Tanggal Terbit",  issueDate.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }), COL2X, cy);
-    cy -= 16;
-
-    // ── Grade table ──────────────────────────────────────────────
-    const ROW_H  = 20;
-    const CELL_S = 7.5;
-    const colW   = [28, CW - 28 - 82 - 82, 82, 82];
-    const colX   = [CX, CX + colW[0], CX + colW[0] + colW[1], CX + colW[0] + colW[1] + colW[2]];
+    // ── Grade table ───────────────────────────────────────────
+    const ROW_H  = 30;
+    const CELL_S = 11;
+    const colW   = [36, TW - 36 - 96 - 96, 96, 96];
+    const colX   = [TM, TM + colW[0], TM + colW[0] + colW[1], TM + colW[0] + colW[1] + colW[2]];
 
     const subjects = isCalistung
       ? ["Kemampuan Membaca (Reading Skill)", "Kemampuan Menulis (Writing Skill)", "Kemampuan Berhitung (Math Skill)", "Keaktifan Siswa (Class Participation)"]
       : ["Speaking & Pronunciation", "Grammar & Structure", "Vocabulary & Comprehension", "Keaktifan Siswa (Class Participation)"];
     const scoreValues = [scores.speaking, scores.grammar, scores.vocabulary, scores.active];
 
-    // Table header
-    page2.drawRectangle({ x: CX, y: cy - 4, width: CW, height: ROW_H, color: C_DARK_GREEN });
+    let ty = cy - 52 - 22;
+
+    // Table header row (no fill, just border, dark text)
+    page2.drawRectangle({ x: TM, y: ty - ROW_H + 8, width: TW, height: ROW_H, borderColor: C_ROW_BORDER, borderWidth: 0.5 });
     ["No", "Kompetensi Belajar (Subjects)", "Skor", "Predikat"].forEach((h, i) => {
       const hw = fBold.widthOfTextAtSize(h, CELL_S);
-      page2.drawText(h, { x: colX[i] + colW[i] / 2 - hw / 2, y: cy + 2, font: fBold, size: CELL_S, color: C_WHITE });
+      page2.drawText(h, { x: colX[i] + colW[i] / 2 - hw / 2, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_DARK });
     });
-    cy -= ROW_H;
+    ty -= ROW_H;
 
-    // Table rows
+    // Data rows (no background fill)
     subjects.forEach((subj, idx) => {
-      page2.drawRectangle({ x: CX, y: cy - 4, width: CW, height: ROW_H, color: idx % 2 === 0 ? C_ROW_EVEN : C_WHITE, borderColor: C_ROW_BORDER, borderWidth: 0.4 });
-      const noW = fRegular.widthOfTextAtSize(`${idx + 1}`, CELL_S);
-      page2.drawText(`${idx + 1}`, { x: colX[0] + colW[0] / 2 - noW / 2, y: cy + 2, font: fRegular, size: CELL_S, color: C_DARK });
-      page2.drawText(subj,          { x: colX[1] + 4,                       y: cy + 2, font: fBold,    size: CELL_S, color: C_DARK });
-      const sc  = `${scoreValues[idx]}`;
-      const scW = fBold.widthOfTextAtSize(sc, CELL_S);
-      page2.drawText(sc, { x: colX[2] + colW[2] / 2 - scW / 2, y: cy + 2, font: fBold, size: CELL_S, color: C_DARK });
-      const gr  = getGrade(scoreValues[idx]);
-      const grW = fBold.widthOfTextAtSize(gr, CELL_S);
-      page2.drawText(gr, { x: colX[3] + colW[3] / 2 - grW / 2, y: cy + 2, font: fBold, size: CELL_S, color: C_DARK });
-      cy -= ROW_H;
+      page2.drawRectangle({ x: TM, y: ty - ROW_H + 8, width: TW, height: ROW_H, borderColor: C_ROW_BORDER, borderWidth: 0.5 });
+      const noStr = `${idx + 1}`;
+      page2.drawText(noStr, { x: colX[0] + colW[0] / 2 - fRegular.widthOfTextAtSize(noStr, CELL_S) / 2, y: ty - ROW_H + 15, font: fRegular, size: CELL_S, color: C_DARK });
+      page2.drawText(subj,  { x: colX[1] + 8, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_DARK });
+      const sc = `${scoreValues[idx]}`;
+      page2.drawText(sc, { x: colX[2] + colW[2] / 2 - fBold.widthOfTextAtSize(sc, CELL_S) / 2, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_DARK });
+      const gr = getGrade(scoreValues[idx]);
+      page2.drawText(gr, { x: colX[3] + colW[3] / 2 - fBold.widthOfTextAtSize(gr, CELL_S) / 2, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_DARK });
+      ty -= ROW_H;
     });
 
-    // Average row
-    page2.drawRectangle({ x: CX, y: cy - 4, width: CW, height: ROW_H, color: C_ACCENT_LT, borderColor: C_GOLD, borderWidth: 0.5 });
-    const avgLabel = "RATA-RATA / AVERAGE";
-    page2.drawText(avgLabel, { x: colX[2] - fBold.widthOfTextAtSize(avgLabel, CELL_S) - 8, y: cy + 2, font: fBold, size: CELL_S, color: C_DARK_GREEN });
+    // Average row (no background fill)
+    page2.drawRectangle({ x: TM, y: ty - ROW_H + 8, width: TW, height: ROW_H, borderColor: C_GOLD, borderWidth: 0.8 });
+    const avgLabel = "NILAI RATA-RATA / AVERAGE";
+    page2.drawText(avgLabel, { x: colX[2] - fBold.widthOfTextAtSize(avgLabel, CELL_S) - 10, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_TEAL_DARK });
     const avgStr = `${avgScore}`;
-    page2.drawText(avgStr, { x: colX[2] + colW[2] / 2 - fBold.widthOfTextAtSize(avgStr, CELL_S) / 2, y: cy + 2, font: fBold, size: CELL_S, color: C_DARK_GREEN });
+    page2.drawText(avgStr, { x: colX[2] + colW[2] / 2 - fBold.widthOfTextAtSize(avgStr, CELL_S) / 2, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_TEAL_DARK });
     const finalGrade = grade || getGrade(avgScore);
-    page2.drawText(finalGrade, { x: colX[3] + colW[3] / 2 - fBold.widthOfTextAtSize(finalGrade, CELL_S) / 2, y: cy + 2, font: fBold, size: CELL_S, color: C_DARK_GREEN });
-    cy -= ROW_H + 10;
+    page2.drawText(finalGrade, { x: colX[3] + colW[3] / 2 - fBold.widthOfTextAtSize(finalGrade, CELL_S) / 2, y: ty - ROW_H + 15, font: fBold, size: CELL_S, color: C_TEAL_DARK });
+    ty -= ROW_H;
 
-    // ── Footer: Notes | Sign-off ─────────────────────────────────
-    const FOOTER_BOTTOM = 36;
-    const FOOTER_H      = cy - FOOTER_BOTTOM;
-    const NOTE_W        = CW * 0.62;
-    const SIGN_X        = CX + NOTE_W + 16;
-    const SIGN_W        = CW - NOTE_W - 16;
-    const SIGN_CX       = SIGN_X + SIGN_W / 2;
+    // ── Footer: Notes (left) + Sign-off (right) ───────────────
+    const FOOT_TOP = ty - 14;
+    const FOOT_BOT = 28;
+    const FOOT_H   = FOOT_TOP - FOOT_BOT;
+    const NOTE_W   = W * 0.60;
+    const SIGN_X2  = NOTE_W + 6;
+    const SIGN_W2  = W - NOTE_W - 6;
+    const SIGN_CX2 = SIGN_X2 + SIGN_W2 / 2;
 
-    // Notes box
-    page2.drawRectangle({ x: CX, y: FOOTER_BOTTOM, width: NOTE_W, height: FOOTER_H, color: C_WHITE, borderColor: C_ROW_BORDER, borderWidth: 0.5 });
-    page2.drawRectangle({ x: CX, y: FOOTER_BOTTOM, width: 3,      height: FOOTER_H, color: C_GOLD });
-    page2.drawText("Catatan Guru (Tutor Review Notes)", { x: CX + 8, y: FOOTER_BOTTOM + FOOTER_H - 13, font: fBold, size: 6.8, color: C_DARK_GREEN });
+    // Notes: outline only, no solid backgrounds
+    page2.drawRectangle({ x: TM, y: FOOT_BOT, width: NOTE_W - TM, height: FOOT_H, borderColor: C_ROW_BORDER, borderWidth: 0.5 });
+    page2.drawText("Catatan Guru (Tutor Review Notes)", { x: TM + 12, y: FOOT_BOT + FOOT_H - 17, font: fBold, size: 10, color: C_TEAL_DARK });
 
-    const noteText  = sanitize((report?.tutor_notes as string) ||
+    const noteText = sanitize((report?.tutor_notes as string) ||
       "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus tingkatkan kompetensi bahasa Inggrisnya!");
-
-    const noteLines = wrapText(`"${noteText}"`, fRegular, 7, NOTE_W - 20);
-    noteLines.slice(0, 5).forEach((ln, i) => {
-      page2.drawText(ln, { x: CX + 8, y: FOOTER_BOTTOM + FOOTER_H - 26 - i * 10, font: fRegular, size: 7, color: C_GRAY });
+    const noteLines = wrapText(`"${noteText}"`, fRegular, 9.5, NOTE_W - TM - 26);
+    noteLines.slice(0, 10).forEach((ln, i) => {
+      page2.drawText(ln, { x: TM + 12, y: FOOT_BOT + FOOT_H - 33 - i * 14, font: fRegular, size: 9.5, color: C_DARK });
     });
 
     // Sign-off
     const signDate = `Bobong, ${issueDate.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}`;
-    page2.drawText(signDate, { x: SIGN_CX - fRegular.widthOfTextAtSize(signDate, 7.5) / 2, y: FOOTER_BOTTOM + FOOTER_H - 14, font: fRegular, size: 7.5, color: C_GRAY });
+    const SIGN_MID = FOOT_BOT + FOOT_H / 2;
+
+    page2.drawText(signDate, {
+      x: SIGN_CX2 - fRegular.widthOfTextAtSize(signDate, 9.5) / 2,
+      y: SIGN_MID + 28,
+      font: fRegular, size: 9.5, color: C_DARK,
+    });
     if (tutorName) {
-      page2.drawText(tutorName, { x: SIGN_CX - fBold.widthOfTextAtSize(tutorName, 9) / 2, y: FOOTER_BOTTOM + 18, font: fBold, size: 9, color: C_DARK });
-      page2.drawLine({ start: { x: SIGN_CX - 55, y: FOOTER_BOTTOM + 14 }, end: { x: SIGN_CX + 55, y: FOOTER_BOTTOM + 14 }, thickness: 0.6, color: C_ROW_BORDER });
-      page2.drawText("Tutor Pendamping", { x: SIGN_CX - fRegular.widthOfTextAtSize("Tutor Pendamping", 7) / 2, y: FOOTER_BOTTOM + 4, font: fRegular, size: 7, color: C_GRAY });
+      page2.drawText(tutorName, {
+        x: SIGN_CX2 - fBold.widthOfTextAtSize(tutorName, 12) / 2,
+        y: SIGN_MID - 6,
+        font: fBold, size: 12, color: C_DARK,
+      });
+      page2.drawLine({
+        start: { x: SIGN_CX2 - 72, y: SIGN_MID - 15 },
+        end:   { x: SIGN_CX2 + 72, y: SIGN_MID - 15 },
+        thickness: 0.8, color: C_ROW_BORDER,
+      });
+      page2.drawText("Tutor Pendamping", {
+        x: SIGN_CX2 - fRegular.widthOfTextAtSize("Tutor Pendamping", 9) / 2,
+        y: SIGN_MID - 28,
+        font: fRegular, size: 9, color: C_GRAY,
+      });
     }
 
     // ── Serialize & return ───────────────────────────────────────
