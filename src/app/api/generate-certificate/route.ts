@@ -161,8 +161,8 @@ export async function GET(request: NextRequest) {
         y: H * 0.205,
         font: fBold, size: 13, color: C_DARK,
       });
-      page1.drawText("TUTOR", {
-        x: tutorCX - fRegular.widthOfTextAtSize("TUTOR", 8) / 2,
+      page1.drawText("DIREKTUR", {
+        x: tutorCX - fRegular.widthOfTextAtSize("DIREKTUR", 8) / 2,
         y: H * 0.168,
         font: fRegular, size: 8, color: C_GRAY,
       });
@@ -213,8 +213,8 @@ export async function GET(request: NextRequest) {
     page2.drawText(hdr1, { x: (W - fBold.widthOfTextAtSize(hdr1, 24)) / 2, y: cy, font: fBold, size: 24, color: C_DARK_GREEN });
     cy -= 15;
 
-    const hdr2 = "Lembaga Kursus & Pelatihan (LKP)  —  Dinas Pendidikan Bobong";
-    page2.drawText(hdr2, { x: (W - fRegular.widthOfTextAtSize(hdr2, 9)) / 2, y: cy, font: fRegular, size: 9, color: C_DARK });
+    const hdr2 = "Lembaga Kursus & Pelatihan (LKP)";
+    page2.drawText(hdr2, { x: (W - fRegular.widthOfTextAtSize(hdr2, 9.5)) / 2, y: cy, font: fRegular, size: 9.5, color: C_DARK });
     cy -= 14;
 
     const hdr3 = "TRANSKRIP EVALUASI AKADEMIK  /  ACADEMIC TRANSCRIPT";
@@ -294,7 +294,7 @@ export async function GET(request: NextRequest) {
 
     page2.drawText(signDate, {
       x: SIGN_CX2 - fRegular.widthOfTextAtSize(signDate, 9.5) / 2,
-      y: SIGN_MID + 28,
+      y: SIGN_MID + 42,
       font: fRegular, size: 9.5, color: C_DARK,
     });
     if (tutorName) {
@@ -308,8 +308,8 @@ export async function GET(request: NextRequest) {
         end:   { x: SIGN_CX2 + 72, y: SIGN_MID - 15 },
         thickness: 0.8, color: C_ROW_BORDER,
       });
-      page2.drawText("Tutor Pendamping", {
-        x: SIGN_CX2 - fRegular.widthOfTextAtSize("Tutor Pendamping", 9) / 2,
+      page2.drawText("Direktur", {
+        x: SIGN_CX2 - fRegular.widthOfTextAtSize("Direktur", 9) / 2,
         y: SIGN_MID - 28,
         font: fRegular, size: 9, color: C_GRAY,
       });
