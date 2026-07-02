@@ -5,6 +5,10 @@
 .about-wrapper {
   padding-top: 80px; /* Header spacing */
   background-color: var(--color-gray-50);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .about-container {

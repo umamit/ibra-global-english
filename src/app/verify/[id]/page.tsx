@@ -394,7 +394,7 @@ export default function VerifyCertificate() {
               <img
                 src={cert.custom_image_url}
                 alt="Sertifikat Ibra Global English"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
               />
 
               {/* Dynamic Certificate Number Overlay */}
