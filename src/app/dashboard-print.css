@@ -1,11 +1,35 @@
-/* Printing optimization for digital report cards */
+/* ================================================================
+   PRINT STYLES — Ibra Global English
+   Raport: portrait A4 | Finance: landscape A4
+   ================================================================ */
+
+/* ──── @page: Raport portrait (aktif saat body.print-raport) ──── */
+@page {
+  /* Default fallback: portrait */
+  size: A4 portrait;
+  margin: 0.8cm 1.2cm;
+}
+
+/* ──── Shared: Sembunyikan elemen UI saat print ──── */
 @media print {
   .no-print,
   .dashboard-sidebar,
-  .mobile-toggle-btn {
+  .mobile-toggle-btn,
+  .mobile-nav-toggle,
+  .topbar-user,
+  .btn-portal-primary,
+  .btn-portal-outline,
+  .btn-portal-danger,
+  .btn-logout,
+  .portal-modal-overlay,
+  [class*="tab-btn"],
+  .dashboard-topbar .topbar-user,
+  /* Sembunyikan PromoPopup & backdrop saat print */
+  [role="dialog"],
+  [aria-hidden="true"] {
     display: none !important;
   }
-  
+
   body, .dashboard-container, .dashboard-main {
     background-color: white !important;
     padding: 0 !important;
@@ -13,13 +37,22 @@
     min-height: auto !important;
     display: block !important;
   }
-  
+
   .printable-report,
   .printable-receipt {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  
+}
+
+/* ──── RAPORT: Portrait A4 ──── */
+body.print-raport @page {
+  size: A4 portrait;
+  margin: 0.8cm 1.2cm;
+}
+
+/* Fallback jika body class tidak tersedia */
+@media print {
   .printable-report {
     width: 100% !important;
     max-width: 100% !important;
@@ -27,8 +60,10 @@
     border: none !important;
     padding: 0 !important;
     color: black !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
-  
+
   .report-header-section {
     display: flex;
     justify-content: space-between;
@@ -37,22 +72,22 @@
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .report-logo-text {
     text-align: right;
   }
-  
+
   .report-logo-text h2 {
     font-size: 1.4rem;
     font-weight: 800;
     margin: 0;
   }
-  
+
   .report-logo-text p {
     font-size: 0.8rem;
     margin: 0;
   }
-  
+
   .student-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -60,47 +95,47 @@
     margin-bottom: 1.5rem;
     font-size: 0.95rem;
   }
-  
+
   .score-card-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
   }
-  
+
   .score-display-card {
     border: 1px solid #000000;
     padding: 1rem;
     text-align: center;
     border-radius: 4px;
   }
-  
+
   .score-num {
     font-size: 1.8rem;
     font-weight: 800;
     margin: 0;
   }
-  
+
   .score-label {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     margin-top: 0.25rem;
   }
-  
+
   .notes-block {
     border: 1px solid #000000;
     padding: 1rem;
     border-radius: 4px;
     margin-bottom: 2.5rem;
   }
-  
+
   .notes-block h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.95rem;
     font-weight: 700;
   }
-  
+
   .signature-block {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -108,29 +143,18 @@
     text-align: center;
     font-size: 0.95rem;
   }
-  
+
   .sig-col {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  
+
   .sig-space {
     height: 70px;
   }
 
-  /* Force exactly 1 page printing by compacting page elements */
-  @page {
-    size: A4;
-    margin: 0.8cm 1.2cm !important;
-  }
-
-  .printable-report {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    padding: 0 !important;
-  }
-
+  /* ── Compact raport untuk 1 halaman ── */
   .printable-report .report-header-section {
     margin-bottom: 0.75rem !important;
     padding-bottom: 0.35rem !important;
@@ -153,7 +177,6 @@
     gap: 1.5rem !important;
   }
 
-  /* Compact the 4 score cards grid in print */
   .printable-report .report-scores-grid .form-grid {
     gap: 0.5rem !important;
     margin-bottom: 0 !important;
@@ -167,7 +190,6 @@
     font-size: 1.4rem !important;
   }
 
-  /* Compact the Radar Chart wrapper in print */
   .printable-report .report-scores-grid > div > div {
     max-width: 200px !important;
     padding: 0.4rem !important;
@@ -212,24 +234,15 @@
   }
 }
 
-
-/* ──── A1: Print Finance Report ──── */
+/* ──── RAPORT: @page portrait A4 (hanya aktif saat .printable-report ada) ──── */
 @media print {
-  /* Sembunyikan semua elemen non-laporan */
-  .dashboard-sidebar,
-  .mobile-nav-toggle,
-  .topbar-user,
-  .btn-portal-primary,
-  .btn-portal-outline,
-  .btn-portal-danger,
-  .btn-logout,
-  .portal-modal-overlay,
-  [class*="tab-btn"],
-  .dashboard-topbar .topbar-user {
+  .printable-report ~ * {
     display: none !important;
   }
+}
 
-  /* Tampilkan header cetak */
+/* ──── FINANCE: Landscape A4 ──── */
+@media print {
   .finance-print-header {
     display: block !important;
     text-align: center;
@@ -249,7 +262,6 @@
     color: #555 !important;
   }
 
-  /* Layout satu kolom full width */
   .dashboard-layout {
     display: block !important;
   }
@@ -261,7 +273,6 @@
     max-width: 100% !important;
   }
 
-  /* Tabel laporan */
   .portal-table {
     width: 100% !important;
     font-size: 0.8rem !important;
@@ -284,9 +295,14 @@
   .table-wrapper {
     overflow: visible !important;
   }
+}
 
-  @page {
-    size: A4 landscape;
-    margin: 1.5cm;
-  }
+/* ──── @page: Finance landscape (aktif saat body.print-finance) ──── */
+body.print-finance {
+  /* Properti ini diakses browser saat class ada sebelum print() dipanggil */
+}
+/* Gunakan named page untuk landscape finance */
+@page finance-landscape {
+  size: A4 landscape;
+  margin: 1.5cm;
 }

@@ -305,9 +305,18 @@ export default function ReportCardManagement() {
 
   const triggerPrint = (report: Report) => {
     setPrintReport(report);
+    // Tunggu 800ms agar React selesai render konten raport sebelum print dialog dibuka
     setTimeout(() => {
+      // Tambahkan class khusus agar @page portrait aktif untuk raport
+      document.body.classList.add("print-raport");
       window.print();
-    }, 150);
+      // Bersihkan class setelah print dialog ditutup
+      const cleanup = () => {
+        document.body.classList.remove("print-raport");
+        window.removeEventListener("afterprint", cleanup);
+      };
+      window.addEventListener("afterprint", cleanup);
+    }, 800);
   };
 
   const handleCreateReport = async (e: React.FormEvent) => {

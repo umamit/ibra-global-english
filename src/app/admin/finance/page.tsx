@@ -286,7 +286,13 @@ export default function AdminFinance() {
 
   // A1: Cetak laporan keuangan ke PDF
   const printFinanceReport = () => {
+    document.body.classList.add("print-finance");
     window.print();
+    const cleanup = () => {
+      document.body.classList.remove("print-finance");
+      window.removeEventListener("afterprint", cleanup);
+    };
+    window.addEventListener("afterprint", cleanup);
   };
 
   // Filters

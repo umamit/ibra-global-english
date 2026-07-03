@@ -393,12 +393,19 @@ export default function ParentPortal() {
 
   const triggerPrint = (report: any) => {
     setPrintReport(report);
-    setTimeout(() => window.print(), 100);
+    setTimeout(() => {
+      document.body.classList.add("print-raport");
+      window.print();
+      const cleanup = () => { document.body.classList.remove("print-raport"); window.removeEventListener("afterprint", cleanup); };
+      window.addEventListener("afterprint", cleanup);
+    }, 800);
   };
 
   const triggerPrintReceipt = (pay: any) => {
     setPrintReceipt(pay);
-    setTimeout(() => window.print(), 100);
+    setTimeout(() => {
+      window.print();
+    }, 800);
   };
 
   // ----------------------------------------------------
