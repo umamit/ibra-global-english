@@ -45,12 +45,6 @@
   }
 }
 
-/* ──── RAPORT: Portrait A4 ──── */
-body.print-raport @page {
-  size: A4 portrait;
-  margin: 0.8cm 1.2cm;
-}
-
 /* Fallback jika body class tidak tersedia */
 @media print {
   .printable-report {
@@ -295,14 +289,4 @@ body.print-raport @page {
   .table-wrapper {
     overflow: visible !important;
   }
-}
-
-/* ──── @page: Finance landscape (aktif saat body.print-finance) ──── */
-body.print-finance {
-  /* Properti ini diakses browser saat class ada sebelum print() dipanggil */
-}
-/* Gunakan named page untuk landscape finance */
-@page finance-landscape {
-  size: A4 landscape;
-  margin: 1.5cm;
 }
