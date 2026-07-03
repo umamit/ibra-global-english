@@ -465,6 +465,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span className="bullet"></span>
                 <span>Pengumuman</span>
               </Link>
+              <Link href="/admin/promo" className={`sidebar-sub-link ${isActive("/admin/promo") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Promo Popup</span>
+              </Link>
               <Link href="/admin/rag" className={`sidebar-sub-link ${isActive("/admin/rag") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
                 <span className="bullet"></span>
                 <span>Basis Pengetahuan AI</span>
@@ -533,7 +537,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.24</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.25</span>
         </div>
       </aside>
 

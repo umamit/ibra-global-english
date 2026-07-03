@@ -5,6 +5,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { WebVitals } from "@/components/WebVitals";
 import { getLandingSettings } from "@/utils/getLandingSettings";
+import PromoPopup from "@/components/PromoPopup";
 import QueryProvider from "./QueryProvider";
 import { PostHogProviderWrapper } from "./PostHogProvider";
 import "./globals.css";
@@ -242,6 +243,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
           </QueryProvider>
         </PostHogProviderWrapper>
+        <PromoPopup />
         <Analytics />
       </body>
     </html>
