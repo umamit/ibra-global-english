@@ -44,26 +44,26 @@ async function generateFromGroq() {
   const randomTopic = TOPICS[Math.floor(Math.random() * TOPICS.length)];
 
   const prompt = `Kamu adalah pakar pedagogi Bahasa Inggris bersertifikat CEFR yang merancang soal placement test untuk lembaga kursus Ibra Global English.
-Tugas: Rancang tepat 15 soal pilihan ganda bahasa Inggris yang mencakup 5 level CEFR dan 6 tipe soal berbeda.
+Tugas: Rancang tepat 20 soal pilihan ganda bahasa Inggris yang mencakup 5 level CEFR dan 6 tipe soal berbeda.
 
 Untuk memastikan tes kali ini unik dan bervariasi, fokuskan tema utama naskah, kalimat, dan teks bacaan pada konteks: "${randomTopic}".
 
-Pembagian soal berdasarkan level CEFR (masing-masing 3 soal):
-- Soal 1, 2, 3:  Level A1 (Pemula Mutlak)
-- Soal 4, 5, 6:  Level A2 (Pemula Dasar)
-- Soal 7, 8, 9:  Level B1 (Menengah Awal)
-- Soal 10, 11, 12: Level B2 (Menengah Atas)
-- Soal 13, 14, 15: Level C1 (Mahir)
+Pembagian soal berdasarkan level CEFR (masing-masing 4 soal):
+- Soal 1, 2, 3, 4:    Level A1 (Pemula Mutlak)
+- Soal 5, 6, 7, 8:    Level A2 (Pemula Dasar)
+- Soal 9, 10, 11, 12: Level B1 (Menengah Awal)
+- Soal 13, 14, 15, 16: Level B2 (Menengah Atas)
+- Soal 17, 18, 19, 20: Level C1 (Mahir)
 
 DIREKTIF TINGKAT KESULITAN MAKSIMAL (WAJIB DIPATUHI):
 - Tingkat kesulitan untuk setiap level harus diset pada batas MAKSIMAL standar kompetensi CEFR masing-masing agar tes benar-benar menantang dan akurat.
 - Soal level B2 dan C1 harus menggunakan tata bahasa tingkat tinggi yang kompleks (seperti: inversion, mixed conditionals, relative clauses, subjunctive mood), teks membaca yang panjang dengan argumen akademis/filosofis, pertanyaan pemahaman yang kritis (bukan sekadar mencocokkan kata), serta pilihan kosakata (vocabulary) tingkat tinggi.
 
-Distribusi tipe soal yang WAJIB ada dalam 15 soal tersebut:
-- 3 soal Grammar (struktur kalimat, tenses, agreement)
-- 3 soal Vocabulary (kosakata kontekstual)
-- 3 soal Reading Comprehension (WAJIB ada teks bacaan pendek sebelum pertanyaan)
-- 2 soal Listening (is_audio: true, sertakan audio_text naskah percakapan atau monolog pendek)
+Distribusi tipe soal yang WAJIB ada dalam 20 soal tersebut:
+- 4 soal Grammar (struktur kalimat, tenses, agreement — tersebar merata di semua level)
+- 4 soal Vocabulary (kosakata kontekstual — tersebar merata di semua level)
+- 5 soal Reading Comprehension (WAJIB ada teks bacaan pendek sebelum pertanyaan)
+- 3 soal Listening (is_audio: true, sertakan audio_text naskah percakapan atau monolog pendek)
 - 2 soal Speaking (is_speaking: true, sertakan target_sentence kalimat yang harus diucapkan)
 - 2 soal Writing/Translation (memilih terjemahan atau melengkapi kalimat tertulis)
 
@@ -76,11 +76,11 @@ Setiap soal WAJIB memiliki properti berikut:
 - "audio_text": string naskah audio (wajib diisi jika is_audio true, selain itu null)
 - "is_speaking": boolean — true hanya untuk soal Speaking
 - "target_sentence": string kalimat target pengucapan (wajib diisi jika is_speaking true, selain itu null)
-- "order_index": integer 1 sampai 15
+- "order_index": integer 1 sampai 20
 - "cefr_level": string salah satu dari "A1", "A2", "B1", "B2", "C1"
 
 Aturan ketat:
-- Output HARUS berupa JSON array murni 15 objek, tanpa teks pendahuluan, penjelasan, atau markdown code fence.
+- Output HARUS berupa JSON array murni 20 objek, tanpa teks pendahuluan, penjelasan, atau markdown code fence.
 - Tepat 1 opsi jawaban benar (score: 1) di setiap soal.
 - Soal Reading WAJIB diawali dengan teks artikel/paragraf pendek sebelum pertanyaan dimulai.
 - Soal Listening: audio_text berisi percakapan atau narasi pendek (3-5 kalimat).
@@ -115,7 +115,7 @@ DIREKTIF ANTI-GAGAL (WAJIB DIPATUHI):
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile",
           temperature: 1.0,
-          max_tokens: 6000,
+          max_tokens: 8000,
           messages: [{ role: "user", content: prompt }],
         }),
       },
@@ -160,7 +160,7 @@ DIREKTIF ANTI-GAGAL (WAJIB DIPATUHI):
     const escapedText = escapeRawNewlines(cleaned);
     const parsed = JSON.parse(escapedText);
 
-    if (Array.isArray(parsed) && parsed.length === 15) {
+    if (Array.isArray(parsed) && parsed.length === 20) {
       // Validate all questions
       type PlacementOption = { text: string; score: number };
       type PlacementQuestion = {
