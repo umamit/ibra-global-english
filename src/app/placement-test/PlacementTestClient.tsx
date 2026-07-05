@@ -13,7 +13,6 @@ import posthog from "posthog-js";
 import {
   Question,
   PlacementResult,
-  FALLBACK_QUESTIONS,
   calculateSpeechAccuracy,
   determineLevelDetails,
 } from "./placementHelpers";
@@ -39,9 +38,7 @@ export default function PlacementTestClient() {
   const [recognitionError, setRecognitionError] = useState("");
   const [issueDateStr, setIssueDateStr] = useState("");
 
-  // FALLBACK_QUESTIONS is imported from placementHelpers
-
-  const QUESTIONS = questions.length ? questions : FALLBACK_QUESTIONS;
+  const QUESTIONS = questions;
 
   const playListeningAudio = (text: string) => {
     if (typeof window === "undefined" || !window.speechSynthesis) {
@@ -155,6 +152,10 @@ export default function PlacementTestClient() {
 
   const handleStartTest = () => {
     if (loadingQuestions) return;
+    if (questions.length === 0) {
+      alert("Gagal memuat soal AI. Pastikan server AI Groq aktif dan muat ulang halaman.");
+      return;
+    }
     posthog.capture("placement_test_started");
     setStep(1);
   };
@@ -332,7 +333,7 @@ export default function PlacementTestClient() {
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1.5rem", width: "100%", marginBottom: "3rem" }}>
                 <div className="placement-info-card">
-                  <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>{QUESTIONS.length} Soal</h3>
+                  <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>{QUESTIONS.length || 20} Soal</h3>
                   <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "4px" }}>Pilihan ganda interaktif</p>
                 </div>
                 <div className="placement-info-card">
@@ -352,14 +353,23 @@ export default function PlacementTestClient() {
                   fontSize: "1.1rem", 
                   borderRadius: "50px", 
                   fontWeight: "800", 
-                  boxShadow: "0 10px 20px rgba(33, 108, 126, 0.25)",
-                  opacity: loadingQuestions ? 0.75 : 1,
-                  cursor: loadingQuestions ? "wait" : "pointer"
+                  boxShadow: questions.length === 0 && !loadingQuestions ? "none" : "0 10px 20px rgba(33, 108, 126, 0.25)",
+                  opacity: loadingQuestions || (questions.length === 0 && !loadingQuestions) ? 0.6 : 1,
+                  cursor: loadingQuestions ? "wait" : questions.length === 0 && !loadingQuestions ? "not-allowed" : "pointer",
+                  backgroundColor: questions.length === 0 && !loadingQuestions ? "var(--color-gray-350)" : undefined,
+                  borderColor: questions.length === 0 && !loadingQuestions ? "var(--color-gray-350)" : undefined,
+                  color: questions.length === 0 && !loadingQuestions ? "var(--color-gray-500)" : undefined
                 }} 
                 onClick={handleStartTest}
-                disabled={loadingQuestions}
+                disabled={loadingQuestions || (questions.length === 0 && !loadingQuestions)}
               >
-                <span>{loadingQuestions ? "Menyiapkan Lembar Soal AI..." : "Mulai Tes Penempatan Sekarang"}</span>
+                <span>
+                  {loadingQuestions 
+                    ? "Menyiapkan Lembar Soal AI..." 
+                    : questions.length === 0 
+                      ? "Gagal Memuat Soal AI (Pastikan Server AI Aktif)" 
+                      : "Mulai Tes Penempatan Sekarang"}
+                </span>
               </Button>
             </div>
           )}
