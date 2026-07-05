@@ -5,12 +5,37 @@ import { useAIChat } from "@/hooks/useAIChat";
 import "@/components/AIChatWidget.css";
 
 const RobotIcon = ({ size = 20 }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-    <rect x="4" y="8" width="16" height="12" rx="2" />
-    <line x1="9" y1="13" x2="9.01" y2="13" />
-    <line x1="15" y1="13" x2="15.01" y2="13" />
-    <path d="M9 17h6" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ overflow: "visible" }}
+  >
+    {/* Antena */}
+    <path d="M12 6V2" />
+    <circle cx="12" cy="2" r="1.2" fill="currentColor" />
+    
+    {/* Telinga / Samping Kepala */}
+    <path d="M5 11h-1M19 11h-1" />
+    
+    {/* Kepala Bulat Robot */}
+    <rect x="5" y="6" width="14" height="11" rx="4" fill="none" />
+    
+    {/* Mata Menyala */}
+    <circle cx="9.5" cy="11.5" r="1.5" fill="currentColor" />
+    <circle cx="14.5" cy="11.5" r="1.5" fill="currentColor" />
+    
+    {/* Senyum */}
+    <path d="M9.5 14.5c.8 1 2.2 1 3 0" />
+
+    {/* Leher / Badan Penyangga Kecil */}
+    <path d="M9 17h6M10 17v2m4-2v2" />
   </svg>
 );
 
