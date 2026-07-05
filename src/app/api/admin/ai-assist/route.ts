@@ -245,13 +245,13 @@ JUDUL: [Judul baru yang menarik dan profesional]
       systemPrompt = `Kamu adalah asisten penerimaan siswa baru AI (Student Admission Assistant) di Ibra Global English Bobong. Tugasmu adalah menyusun pesan follow-up WhatsApp yang profesional, hangat, ramah, dan persuasif untuk calon siswa baru yang baru saja menyelesaikan tes penempatan level (Placement Test) online.`;
       userPrompt = `Buat draf pesan tindak lanjut WhatsApp personal untuk calon siswa:
 Nama Calon Siswa: ${name || "Siswa"}
-Skor Ujian: ${score || 0} / 15
+Skor Ujian: ${score || 0} / 20
 Level Hasil Tes: ${level || "Beginner"}
 Rekomendasi Kelas/Program: ${course || "Kids Program"}
 
 Pesan harus terstruktur dengan baik:
 1. Sapaan hangat dan ucapan selamat atas penyelesaian tes.
-2. Analisis singkat yang menyemangati tentang tingkat level mereka (${level}) dengan skor ${score}/15, serta apa manfaat dan keseruan program kelas (${course}) di Ibra Global English Bobong untuk tingkat mereka.
+2. Analisis singkat yang menyemangati tentang tingkat level mereka (${level}) dengan skor ${score}/20, serta apa manfaat dan keseruan program kelas (${course}) di Ibra Global English Bobong untuk tingkat mereka.
 3. Ajakan/CTA yang sopan untuk berkonsultasi mengenai penawaran biaya khusus, jadwal kelas, atau trial gratis.
 4. Gunakan gaya bahasa yang ramah (gunakan sapaan 'Kak [Nama]' untuk nuansa yang ramah dan dekat) serta tambahkan emoji yang relevan. Jangan terlalu kaku, tetapi tetap sopan. Tulis langsung sebagai draf siap kirim tanpa teks pembuka/penutup asisten.`;
     }
@@ -433,6 +433,22 @@ Pesan harus memuat:
 4. Instruksi untuk mengirimkan bukti transfer jika membayar secara online.
 5. Dilarang keras menggunakan tanda kurung kosong atau placeholder. Langsung tulis pesan utuh yang siap kirim.`;
     }
+    // 4c. MODE: PROGRESS-REPORT-DRAFT (Pembuat Laporan Perkembangan Bulanan AI)
+    else if (mode === "progress-report-draft") {
+      const { name, program, month, focus_areas, achievements, challenges } = payload || {};
+      systemPrompt = `Kamu adalah Asisten AI Akademik / Tutor Pendamping di Ibra Global English Bobong.
+Tugasmu adalah menyusun laporan perkembangan bulanan (Monthly Progress Report) siswa yang informatif, ramah, profesional, dan membangun untuk dibagikan kepada orang tua murid via WhatsApp atau Rapor Bulanan.`;
+      
+      userPrompt = `Buat draf laporan perkembangan belajar bulanan untuk siswa:
+- Nama Siswa: ${name || "Siswa"}
+- Program Belajar: ${program || "General English"}
+- Bulan Evaluasi: ${month || "Bulan Berjalan"}
+- Fokus Materi Belajar Bulan Ini: ${focus_areas || "Materi harian sesuai silabus"}
+- Pencapaian Baik Siswa: ${achievements || "Mengikuti kelas dengan antusias"}
+- Tantangan / Hal yang Perlu Ditingkatkan: ${challenges || "Perlu lebih percaya diri saat berbicara"}
+
+Tulis laporan dalam Bahasa Indonesia yang hangat, ramah, dan sopan kepada orang tua murid (gunakan sapaan hangat kepada Ayah/Bunda dari siswa). Laporan harus mengalir lancar dalam 1-2 paragraf pendek dan memotivasi siswa untuk terus belajar di bulan depan.`;
+    }
     // 5. MODE: CHAT (Asisten Copilot Interaktif)
     else if (mode === "chat") {
       const dbContext = await getRealtimeDatabaseContext();
@@ -484,7 +500,7 @@ Jawablah dengan nada yang profesional, cerdas, supportif, dan ramah. Gunakan Bah
         model: "llama-3.3-70b-versatile",
         messages: formattedMessages,
         temperature: 0.6,
-        max_tokens: 800,
+        max_tokens: 1500,
       }),
     });
 
