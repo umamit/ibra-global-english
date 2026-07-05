@@ -7,6 +7,7 @@ import Image from "next/image";
 import CountUp from "./CountUp";
 import posthog from "posthog-js";
 import { useQuery } from "@tanstack/react-query";
+import Button from "@/components/Button";
 
 const heroPropsSchema = z.object({
   initialSettings: z.object({
@@ -76,8 +77,8 @@ export default function Hero({ initialSettings }: HeroProps) {
           <p className="hero-subtitle">{renderSubtitle(heroSubtitle)}</p>
           <p className="hero-desc">{heroDesc}</p>
           <div className="hero-actions">
-            <a href="#contact" className="btn-primary">Daftar Gratis</a>
-            <a href="/placement-test" className="btn-secondary" onClick={() => posthog.capture("hero_placement_test_clicked")}>Ikuti Tes Penempatan</a>
+            <Button href="#contact" variant="primary">Daftar Gratis</Button>
+            <Button href="/placement-test" variant="secondary" onClick={() => posthog.capture("hero_placement_test_clicked")}>Ikuti Tes Penempatan</Button>
           </div>
 
           <div className="hero-trilogy">

@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import "../dashboard-components.css";
 import "./placement-test.css";
 import FormInput from "@/components/FormInput";
+import Button from "@/components/Button";
 import { createClient } from "@/utils/supabase/client";
 import posthog from "posthog-js";
 import {
@@ -344,8 +345,8 @@ export default function PlacementTestClient() {
                 </div>
               </div>
 
-              <button 
-                className="btn-portal-primary" 
+              <Button 
+                variant="primary" 
                 style={{ 
                   padding: "1rem 2.5rem", 
                   fontSize: "1.1rem", 
@@ -359,7 +360,7 @@ export default function PlacementTestClient() {
                 disabled={loadingQuestions}
               >
                 <span>{loadingQuestions ? "Menyiapkan Lembar Soal AI..." : "Mulai Tes Penempatan Sekarang"}</span>
-              </button>
+              </Button>
             </div>
           )}
 
@@ -701,30 +702,30 @@ export default function PlacementTestClient() {
               </div>
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
-                <a
+                <Button
                   href={getWhatsAppURL()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-portal-primary"
+                  variant="primary"
                   style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                   <span>Daftar Kelas via WhatsApp</span>
-                </a>
+                </Button>
 
-                <button onClick={handlePrint} className="btn-portal-outline btn-placement-action" style={{ display: "flex", gap: "0.5rem", alignItems: "center", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
+                <Button onClick={handlePrint} variant="placement-action" style={{ display: "flex", gap: "0.5rem", alignItems: "center", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                   <span>Cetak Sertifikat</span>
-                </button>
+                </Button>
 
-                <button onClick={() => { setStep(0); setAnswers({}); setCurrentQuestionIndex(0); }} className="btn-portal-outline btn-placement-action" style={{ padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
+                <Button onClick={() => { setStep(0); setAnswers({}); setCurrentQuestionIndex(0); }} variant="placement-action" style={{ padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
                   Ulangi Tes
-                </button>
+                </Button>
 
-                <Link href="/" className="btn-portal-outline btn-placement-action" style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
+                <Button href="/" variant="placement-action" style={{ display: "flex", gap: "0.5rem", alignItems: "center", textDecoration: "none", padding: "0.85rem 2rem", borderRadius: "50px", fontWeight: "700" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                   <span>Keluar Tes</span>
-                </Link>
+                </Button>
               </div>
             </div>
           )}
