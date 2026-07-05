@@ -477,3 +477,22 @@ iframe[src^="https://vercel.live"] {
   from { transform: scale(0.96); opacity: 0; }
   to   { transform: scale(1);    opacity: 1; }
 }
+
+/* ── Premium Gold Gradient Button Utility ── */
+.btn-gold {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #C5A86B 100%);
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(166, 136, 73, 0.28);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.4s ease;
+  border: none;
+}
+.btn-gold:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px rgba(166, 136, 73, 0.42);
+}
+.btn-gold:active {
+  transform: translateY(0);
+}

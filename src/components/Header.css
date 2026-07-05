@@ -173,14 +173,15 @@ header.scrolled .logo-text p {
 
 /* ── Nav Buttons ── */
 .nav-btn {
-  background-color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #C5A86B 100%);
   color: #fff;
   padding: 0.4rem 1.25rem;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: -0.01em;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  transition: transform var(--transition-fast), filter var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(166, 136, 73, 0.25);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -188,11 +189,13 @@ header.scrolled .logo-text p {
   box-sizing: border-box;
   white-space: nowrap;
   flex-shrink: 0;
+  border: none;
 }
 
 .nav-btn:hover {
-  background-color: var(--color-primary-dark);
+  filter: brightness(1.08);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(166, 136, 73, 0.4);
 }
 
 .nav-btn-outline {
@@ -332,14 +335,24 @@ header.scrolled .logo-text p {
 }
 
 .mobile-nav-btn {
-  background-color: var(--color-primary);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #C5A86B 100%);
+  color: #fff !important;
   padding: 0.85rem 1.5rem;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: 0.9rem;
   text-align: center;
   letter-spacing: -0.01em;
+  box-shadow: 0 4px 12px rgba(166, 136, 73, 0.22);
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+  display: block;
+  text-decoration: none;
+  border: none;
+}
+
+.mobile-nav-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 /* ── Dropdown Menu (Desktop) ── */
