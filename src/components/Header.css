@@ -126,6 +126,15 @@ header.scrolled .logo-text p {
   align-items: center;
 }
 
+@media (max-width: 1024px) {
+  .nav-links {
+    gap: 0.75rem;
+  }
+  .logo-text p {
+    display: none; /* Sembunyikan slogan di layar tanggung */
+  }
+}
+
 @media (max-width: 768px) {
   .nav-links { display: none; }
 }
