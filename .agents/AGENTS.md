@@ -120,6 +120,13 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
       * Background Light: `#f5f5f7` / `var(--color-gray-50)` (Apple Off-White)
       * Background Dark: `#000000` (True Black)
 
+21b. **Kunci Aturan Desain Apple HIG (Strict Apple HIG Locking):**
+    - AI wajib mempertahankan dan mematuhi tema desain Apple Human Interface Guidelines (HIG) secara konsisten di seluruh halaman web:
+      * Kelengkungan Sudut (Border Radius): Gunakan radius yang sangat halus dan melingkar (md: 10px, lg: 14px, xl: 18px, full: 9999px), hindari sudut lancip atau kelengkungan berlebihan.
+      * Bayangan Konten (Shadows): Gunakan bayangan super tipis transparan (soft ambient shadows) untuk memberikan efek lapisan kedalaman yang elegan. Dilarang keras menggunakan bayangan hitam yang kasar/gelap pekat.
+      * Batas Elemen (Borders): Gunakan garis pembatas tipis yang transparan/semi-transparan (1px solid rgba(0, 0, 0, 0.05)) untuk membatasi kartu dan elemen masukan.
+      * Transisi & Easing: Gunakan transisi spring dinamis (cubic-bezier(0.34, 1.56, 0.64, 1)) untuk interaksi hover/active agar antarmuka terasa hidup dan lancar.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
