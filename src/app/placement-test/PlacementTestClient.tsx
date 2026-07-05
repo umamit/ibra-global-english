@@ -332,7 +332,7 @@ export default function PlacementTestClient() {
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1.5rem", width: "100%", marginBottom: "3rem" }}>
                 <div className="placement-info-card">
-                  <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>15 Soal</h3>
+                  <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>{QUESTIONS.length} Soal</h3>
                   <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "4px" }}>Pilihan ganda interaktif</p>
                 </div>
                 <div className="placement-info-card">
@@ -663,7 +663,7 @@ export default function PlacementTestClient() {
                 <div className="form-grid" style={{ gap: "2rem", maxWidth: "500px", margin: "0 auto 2.5rem" }}>
                   <div className="result-sub-box">
                     <p style={{ fontSize: "0.8rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)" }}>Skor Capaian</p>
-                    <p style={{ fontSize: "2rem", fontWeight: "900", color: "var(--color-primary)" }}>{finalResult.score} <span style={{ fontSize: "1.1rem", color: "var(--color-gray-400)" }}>/ 15</span></p>
+                    <p style={{ fontSize: "2rem", fontWeight: "900", color: "var(--color-primary)" }}>{finalResult.score} <span style={{ fontSize: "1.1rem", color: "var(--color-gray-400)" }}>/ {QUESTIONS.length}</span></p>
                   </div>
                   <div className="result-sub-box">
                     <p style={{ fontSize: "0.8rem", fontWeight: "700", textTransform: "uppercase", color: "var(--color-gray-500)" }}>Rekomendasi Tingkat</p>
@@ -751,7 +751,7 @@ export default function PlacementTestClient() {
             <div style={{ display: "flex", justifyContent: "center", gap: "3cm", margin: "2.5rem 0" }}>
               <div style={{ border: "1px solid #ddd", padding: "1rem", minWidth: "4cm" }}>
                 <p style={{ fontSize: "0.8rem", margin: "0 0 0.5rem" }}>SKOR CAPAIAN</p>
-                <p style={{ fontSize: "1.8rem", fontWeight: "bold", margin: "0" }}>{finalResult.score} / 15</p>
+                <p style={{ fontSize: "1.8rem", fontWeight: "bold", margin: "0" }}>{finalResult.score} / {QUESTIONS.length}</p>
               </div>
               <div style={{ border: "1px solid #ddd", padding: "1rem", minWidth: "4cm" }}>
                 <p style={{ fontSize: "0.8rem", margin: "0 0 0.5rem" }}>REKOMENDASI TINGKAT</p>
