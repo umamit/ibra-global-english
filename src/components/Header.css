@@ -10,9 +10,10 @@ header {
   left: 0;
   right: 0;
   background-color: var(--color-header-bg);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: saturate(190%) blur(24px);
+  -webkit-backdrop-filter: saturate(190%) blur(24px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01), 0 4px 12px rgba(0, 0, 0, 0.02);
   z-index: 100;
   transition: background-color var(--transition-normal), border-color var(--transition-normal), top 0s;
 }

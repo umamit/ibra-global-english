@@ -54,9 +54,9 @@
   border-radius: var(--radius-xl, 18px);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-gray-200, #e5e7eb);
-  transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              box-shadow 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              border-color 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -75,7 +75,7 @@
   border-radius: 0 0 3px 3px;
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .program-card:hover {
