@@ -1,8 +1,18 @@
 import React from "react";
 import Link from "next/link";
 
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "placement-action"
+  | "cta-primary"
+  | "cta-secondary"
+  | "nav-btn"
+  | "nav-btn-outline"
+  | "form-btn";
+
 interface ButtonProps {
-  variant?: "primary" | "secondary" | "placement-action";
+  variant?: ButtonVariant;
   href?: string;
   icon?: string; // Class nama Flaticon e.g. "fi-rr-play"
   className?: string;
@@ -15,6 +25,17 @@ interface ButtonProps {
   children: React.ReactNode;
 }
 
+const classMap: Record<ButtonVariant, string> = {
+  "primary": "btn-primary",
+  "secondary": "btn-secondary",
+  "placement-action": "btn-portal-outline btn-placement-action",
+  "cta-primary": "cta-btn-primary",
+  "cta-secondary": "cta-btn-secondary",
+  "nav-btn": "nav-btn nav-btn-desktop",
+  "nav-btn-outline": "nav-btn-outline nav-btn-desktop",
+  "form-btn": "form-btn"
+};
+
 export default function Button({
   variant = "primary",
   href,
@@ -26,11 +47,12 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const combinedClassName = `btn-${variant} ${className}`.trim();
+  const baseClassName = classMap[variant] || "btn-primary";
+  const combinedClassName = `${baseClassName} ${className}`.trim();
 
   // Jika href berupa internal anchor link (smooth scroll)
   if (href) {
-    if (href.startsWith("#")) {
+    if (href.startsWith("#") || href.startsWith("/#")) {
       return (
         <a
           href={href}

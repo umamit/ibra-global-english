@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Button from "@/components/Button";
 
 const headerPropsSchema = z.object({
   theme: z.enum(["light", "dark"]),
@@ -210,8 +211,8 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
               </svg>
             </button>
             
-            <Link href="/login" className="nav-btn-outline nav-btn-desktop" style={{ marginRight: "0.75rem" }}>Portal Login</Link>
-            <Link href="/#contact" className="nav-btn nav-btn-desktop">Daftar Sekarang</Link>
+            <Button href="/login" variant="nav-btn-outline" style={{ marginRight: "0.75rem" }}>Portal Login</Button>
+            <Button href="/#contact" variant="nav-btn">Daftar Sekarang</Button>
             
             <button 
               className="menu-toggle" 

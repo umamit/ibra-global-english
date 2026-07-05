@@ -3,6 +3,7 @@ import "./CTA.css";
 
 import { useState } from "react";
 import posthog from "posthog-js";
+import Button from "@/components/Button";
 
 export default function CTA({ initialSettings }: { initialSettings: any }) {
   const [ctaTag] = useState(initialSettings?.cta_tag || "Promo Terbatas!");
@@ -102,8 +103,8 @@ export default function CTA({ initialSettings }: { initialSettings: any }) {
             <p>{ctaDesc}</p>
           </div>
           <div className="cta-actions">
-            <a href="/placement-test" className="cta-btn-primary" onClick={() => posthog.capture("cta_placement_test_clicked")}>Ikuti Tes Penempatan</a>
-            <a href="#contact" className="cta-btn-secondary" onClick={() => posthog.capture("cta_free_registration_clicked")}>Daftar Bimbingan (Gratis)</a>
+            <Button href="/placement-test" variant="cta-primary" onClick={() => posthog.capture("cta_placement_test_clicked")}>Ikuti Tes Penempatan</Button>
+            <Button href="#contact" variant="cta-secondary" onClick={() => posthog.capture("cta_free_registration_clicked")}>Daftar Bimbingan (Gratis)</Button>
           </div>
         </div>
       </div>

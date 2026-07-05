@@ -2,6 +2,7 @@
 import "./Contact.css";
 
 import { useState } from "react";
+import Button from "@/components/Button";
 
 export default function Contact({ form, setForm, honeypot, setHoneypot, initialSettings }: any) {
   const [address] = useState(initialSettings?.contact_address || "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
@@ -293,9 +294,9 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                   </select>
                 </div>
                 
-                <button type="submit" className="form-btn">
+                <Button type="submit" variant="form-btn">
                   <span>Kirim via WhatsApp</span>
-                </button>
+                </Button>
               </form>
             </>
           )}
@@ -430,14 +431,14 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                     />
                   </div>
 
-                  <button
+                  <Button
                     type="submit"
-                    className="form-btn"
+                    variant="form-btn"
                     disabled={regSubmitting}
                     style={{ opacity: regSubmitting ? 0.7 : 1 }}
                   >
                     <span>{regSubmitting ? "Mengirim..." : "Kirim Pendaftaran Online"}</span>
-                  </button>
+                  </Button>
                 </form>
               )}
             </>
