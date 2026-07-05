@@ -96,6 +96,7 @@ export default function PromoPopup() {
         {/* Tombol Tutup */}
         <button
           onClick={dismiss}
+          className="promo-close-btn"
           aria-label="Tutup promosi"
           style={{
             position: "absolute",
@@ -110,15 +111,17 @@ export default function PromoPopup() {
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            fontSize: "1rem",
             color: "var(--color-gray-700, #444)",
             zIndex: 1,
-            transition: "background 0.2s",
+            transition: "background 0.2s, outline 0.15s",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.15)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.08)")}
         >
-          ✕
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
         </button>
 
         {/* Gambar Banner (opsional) */}
@@ -169,6 +172,7 @@ export default function PromoPopup() {
             <a
               href={banner.cta_url}
               onClick={dismiss}
+              className="promo-cta-btn"
               style={{
                 display: "inline-block",
                 padding: "0.7rem 1.5rem",
@@ -178,7 +182,7 @@ export default function PromoPopup() {
                 fontWeight: 600,
                 fontSize: "0.9rem",
                 textDecoration: "none",
-                transition: "background 0.2s, transform 0.15s",
+                transition: "background 0.2s, transform 0.15s, outline 0.15s",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "var(--color-primary-dark, #2c7a87)";
@@ -204,6 +208,14 @@ export default function PromoPopup() {
         @keyframes promo-scale-in {
           from { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
           to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        .promo-close-btn:focus-visible {
+          outline: 2px solid var(--color-primary, #216c7e);
+          outline-offset: 2px;
+        }
+        .promo-cta-btn:focus-visible {
+          outline: 2px solid var(--color-primary, #216c7e);
+          outline-offset: 3px;
         }
       `}</style>
     </>
