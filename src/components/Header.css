@@ -139,7 +139,7 @@ header.scrolled .logo-text p {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 920px) {
   .nav-links { display: none; }
 }
 
@@ -238,7 +238,7 @@ header.scrolled .logo-text p {
   background-color: var(--color-gray-300);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 920px) {
   .menu-toggle { display: flex; }
   .nav-btn-desktop { display: none; }
 }

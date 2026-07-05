@@ -102,7 +102,7 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
   // Close mobile menu on screen resize to desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
+      if (window.innerWidth > 920) {
         setIsMenuOpen(false);
       }
     };
