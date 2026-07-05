@@ -18,7 +18,7 @@ export default function Curriculum({ initialSettings }: any) {
               Kurikulum Ibra Global English mengintegrasikan Kurikulum Merdeka dengan kerangka kompetensi internasional Common European Framework of Reference for Languages (CEFR). Setiap level pembelajaran dirancang dengan capaian kompetensi yang jelas dan terukur, sehingga peserta didik berkembang secara bertahap sesuai standar internasional yang digunakan di berbagai negara.
             </p>
             <p className="curriculum-intro">
-              Jalur pembelajaran Ibra Global English dirancang secara bertahap untuk membantu peserta mencapai kompetensi bahasa Inggris sesuai target CEFR pada setiap fase pembelajaran:
+              Jalur pembelajaran Ibra Global English dirancang secara bertahap untuk membantu siswa mencapai kompetensi bahasa Inggris sesuai target CEFR pada setiap fase pembelajaran:
             </p>
 
             <div className="curriculum-table-container">
