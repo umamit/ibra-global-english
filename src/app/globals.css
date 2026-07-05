@@ -442,18 +442,9 @@ section {
   background-color: var(--color-white);
 }
 
-/* ── Sentry position (bottom-left to prevent overlap with chatbot) ── */
+/* ── Hide Sentry Feedback Button visually (still records errors in background) ── */
 #sentry-feedback {
-  --bottom: 1.5rem;
-  left: 1.5rem !important;
-  right: auto !important;
-}
-
-@media (max-width: 768px) {
-  #sentry-feedback {
-    --bottom: 90px !important;
-    bottom: 90px !important;
-  }
+  display: none !important;
 }
 
 /* ── Hide Vercel Toolbar ── */
