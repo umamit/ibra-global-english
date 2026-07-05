@@ -50,6 +50,12 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     </image:image>
   </url>
   <url>
+    <loc>https://www.ibraglobalenglish.uk/about</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.ibraglobalenglish.uk/login</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
