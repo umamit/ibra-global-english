@@ -66,6 +66,7 @@ header.scrolled .nav-container {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  flex-shrink: 0;
 }
 
 .logo-img {
@@ -87,6 +88,7 @@ header.scrolled .logo-img {
   line-height: 1.15;
   letter-spacing: -0.02em;
   transition: font-size var(--transition-normal);
+  white-space: nowrap;
 }
 
 header.scrolled .logo-text h1 {
@@ -99,6 +101,7 @@ header.scrolled .logo-text h1 {
   font-weight: 600;
   letter-spacing: 0.03em;
   transition: font-size var(--transition-normal), opacity var(--transition-normal);
+  white-space: nowrap;
 }
 
 header.scrolled .logo-text p {
