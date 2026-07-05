@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import React from 'react';
 import { useState, useEffect } from "react";
+import ToastNotification from "../components/ToastNotification";
 
 interface Announcement {
   id: string;
@@ -33,7 +34,7 @@ export default function AdminAnnouncementsPage() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
-  const [toast, setToast] = useState<string>("");
+  const [toast, setToast] = useState<{ show: boolean; type: "success" | "error"; message: string }>({ show: false, type: "success", message: "" });
 
   // Form state
   const [title, setTitle] = useState<string>("");
@@ -42,13 +43,16 @@ export default function AdminAnnouncementsPage() {
   const [priority, setPriority] = useState<string>("normal");
   const [expiresAt, setExpiresAt] = useState<string>("");
 
-  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type }), 3000);
+  };
 
   const [aiLoading, setAiLoading] = useState<boolean>(false);
 
   const handleAiPolish = async (): Promise<void> => {
     if (!title.trim() && !content.trim()) {
-      showToast("Harap isi judul atau isi pengumuman kasar terlebih dahulu.");
+      showToast("Harap isi judul atau isi pengumuman kasar terlebih dahulu.", "error");
       return;
     }
     setAiLoading(true);
@@ -70,16 +74,16 @@ export default function AdminAnnouncementsPage() {
           const polishedContent = parts.slice(1).join("---").trim();
           setTitle(polishedTitle);
           setContent(polishedContent);
-          showToast("Pengumuman berhasil dipoles dengan AI! ✨");
+          showToast("Pengumuman berhasil dipoles dengan AI! ✨", "success");
         } else {
           setContent(reply);
-          showToast("Pengumuman dipoles dengan AI! ✨");
+          showToast("Pengumuman dipoles dengan AI! ✨", "success");
         }
       } else {
-        showToast(`Gagal memoles: ${data.error || "Error tidak diketahui"}`);
+        showToast(`Gagal memoles: ${data.error || "Error tidak diketahui"}`, "error");
       }
     } catch {
-      showToast("Gagal menghubungi server AI.");
+      showToast("Gagal menghubungi server AI.", "error");
     } finally {
       setAiLoading(false);
     }
@@ -120,7 +124,7 @@ export default function AdminAnnouncementsPage() {
     if (res.ok) {
       setTitle(""); setContent(""); setProgram("Semua Program"); setPriority("normal"); setExpiresAt("");
       fetchAnnouncements();
-      showToast("Pengumuman berhasil diterbitkan! ✅");
+      showToast("Pengumuman berhasil diterbitkan! ✅", "success");
     }
     setSaving(false);
   };
@@ -132,25 +136,21 @@ export default function AdminAnnouncementsPage() {
       body: JSON.stringify({ id, is_active: !isActive }),
     });
     fetchAnnouncements();
-    showToast(isActive ? "Pengumuman dinonaktifkan." : "Pengumuman diaktifkan kembali.");
+    showToast(isActive ? "Pengumuman dinonaktifkan." : "Pengumuman diaktifkan kembali.", "success");
   };
 
   const handleDelete = async (id: string): Promise<void> => {
     if (!confirm("Hapus pengumuman ini secara permanen?")) return;
     await fetch(`/api/announcements?id=${id}`, { method: "DELETE" });
     fetchAnnouncements();
-    showToast("Pengumuman dihapus.");
+    showToast("Pengumuman dihapus.", "success");
   };
 
   const priorityInfo = (p: string): Priority => PRIORITIES.find(x => x.value === p) || PRIORITIES[0];
 
   return (
     <div className="dashboard-main" style={{ padding: "2rem" }}>
-      {toast && (
-        <div className="auth-success-banner" style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>
-          {toast}
-        </div>
-      )}
+      {toast.show && <ToastNotification toast={toast} />}
 
       {/* Header */}
       <div className="dashboard-topbar" style={{ marginBottom: "2rem" }}>

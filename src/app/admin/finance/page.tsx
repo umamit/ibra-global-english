@@ -10,7 +10,7 @@ import FinanceTable from "./components/FinanceTable";
 import FinanceModal from "./components/FinanceModal";
 import FinanceAnalytics from "./components/FinanceAnalytics";
 import { getMonthName, terbilang, formatRupiah, getCurrentMonth } from "../utils";
-import ToastNotification from "../landing-page/components/ToastNotification";
+import ToastNotification from "../components/ToastNotification";
 import { getStudentPayment, exportPaymentsCSV } from "./financeHelpers";
 import { useFinanceModal } from "./hooks/useFinanceModal";
 

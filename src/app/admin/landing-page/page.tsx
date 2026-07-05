@@ -15,7 +15,7 @@ import ProgramManager from "./components/ProgramManager";
 import BenefitManager from "./components/BenefitManager";
 import FAQManager from "./components/FAQManager";
 import MaintenanceSettings from "./components/MaintenanceSettings";
-import ToastNotification from "./components/ToastNotification";
+import ToastNotification from "../components/ToastNotification";
 import LandingTabs from "./components/LandingTabs";
 import { GalleryItem, Testimonial } from "@/types";
 

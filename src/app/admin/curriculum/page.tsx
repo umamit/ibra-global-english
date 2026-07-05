@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import React from 'react';
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import ToastNotification from "../components/ToastNotification";
 
 interface Curriculum {
   id: string;
@@ -22,7 +23,7 @@ export default function AdminCurriculumPage() {
   const [curriculums, setCurriculums] = useState<Curriculum[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
-  const [toast, setToast] = useState<string>("");
+  const [toast, setToast] = useState<{ show: boolean; type: "success" | "error"; message: string }>({ show: false, type: "success", message: "" });
 
   // Form states
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -33,9 +34,9 @@ export default function AdminCurriculumPage() {
   const [syllabusPdfUrl, setSyllabusPdfUrl] = useState<string>("");
   const [isActive, setIsActive] = useState<boolean>(true);
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3500);
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type }), 3500);
   };
 
   const fetchCurriculums = async (): Promise<void> => {
@@ -45,10 +46,10 @@ export default function AdminCurriculumPage() {
       if (res.ok) {
         setCurriculums(result.data || []);
       } else {
-        showToast(`Gagal memuat: ${result.error}`);
+        showToast(`Gagal memuat: ${result.error}`, "error");
       }
     } catch (err) {
-      showToast("Gagal mengambil data silabus.");
+      showToast("Gagal mengambil data silabus.", "error");
     } finally {
       setLoading(false);
     }
@@ -62,12 +63,10 @@ export default function AdminCurriculumPage() {
         if (res.ok) {
           setCurriculums(result.data || []);
         } else {
-          setToast(`Gagal memuat: ${result.error}`);
-          setTimeout(() => setToast(""), 3500);
+          showToast(`Gagal memuat: ${result.error}`, "error");
         }
       } catch {
-        setToast("Gagal mengambil data silabus.");
-        setTimeout(() => setToast(""), 3500);
+        showToast("Gagal mengambil data silabus.", "error");
       } finally {
         setLoading(false);
       }
@@ -77,7 +76,7 @@ export default function AdminCurriculumPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!levelName.trim()) {
-      showToast("Nama Level wajib diisi.");
+      showToast("Nama Level wajib diisi.", "error");
       return;
     }
 
@@ -115,19 +114,19 @@ export default function AdminCurriculumPage() {
 
       const result = await res.json();
       if (res.ok) {
+        showToast(editingId ? "Silabus berhasil disunting! ✅" : "Silabus baru berhasil ditambahkan! ✅", "success");
+        setEditingId(null);
         setLevelName("");
         setDuration("");
         setTopicsInput("");
         setSyllabusPdfUrl("");
         setIsActive(true);
-        setEditingId(null);
         fetchCurriculums();
-        showToast(editingId ? "Silabus berhasil disunting! ✅" : "Silabus baru berhasil ditambahkan! ✅");
       } else {
-        showToast(`Error: ${result.error}`);
+        showToast(`Error: ${result.error}`, "error");
       }
     } catch (err) {
-      showToast("Gagal menyimpan data silabus.");
+      showToast("Gagal menyimpan data silabus.", "error");
     } finally {
       setSaving(false);
     }
@@ -157,26 +156,22 @@ export default function AdminCurriculumPage() {
     if (!confirm("Apakah Anda yakin ingin menghapus silabus ini?")) return;
     try {
       const res = await fetch(`/api/admin/curriculums?id=${id}`, { method: "DELETE" });
+      const result = await res.json();
       if (res.ok) {
+        showToast("Silabus berhasil dihapus.", "success");
         fetchCurriculums();
-        showToast("Silabus berhasil dihapus.");
         if (editingId === id) handleCancelEdit();
       } else {
-        const result = await res.json();
-        showToast(`Error: ${result.error}`);
+        showToast(`Error: ${result.error}`, "error");
       }
     } catch (err) {
-      showToast("Gagal menghapus silabus.");
+      showToast("Gagal menghapus silabus.", "error");
     }
   };
 
   return (
     <div className="dashboard-main" style={{ padding: "2rem" }}>
-      {toast && (
-        <div className="auth-success-banner" style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "380px" }}>
-          {toast}
-        </div>
-      )}
+      {toast.show && <ToastNotification toast={toast} />}
 
       <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
