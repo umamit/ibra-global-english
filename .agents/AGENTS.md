@@ -111,6 +111,14 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 21. **Prinsip Utama Kendali Pengguna (User Control Principle):**
    - Ini adalah prinsip mendasar yang sangat penting: manusia memegang kendali penuh, dan teknologi/AI tidak boleh sekali-kali melangkahi atau mengambil keputusan sendiri tanpa instruksi.
 
+21a. **Kunci Skema Warna Brand Paten (Strict Brand Color Locking):**
+    - AI dilarang keras mengubah, mengganti, atau memodifikasi palet warna identitas paten Ibra Global English Bobong berikut pada tugas-tugas mendatang tanpa persetujuan eksplisit:
+      * Teal Utama: `#216c7e` / `var(--color-primary)`
+      * Teal Gelap: `#164d57` / `var(--color-primary-dark)`
+      * Tonal Teal Muda: `#eef6f8` / `var(--color-bg-teal-50)` / `rgba(33, 108, 126, 0.06)`
+      * Emas Aksen (Gold): `#A68849` / `var(--color-accent)`
+      * Background Light: `#f5f5f7` / `var(--color-gray-50)` (Apple Off-White)
+      * Background Dark: `#000000` (True Black)
 
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
