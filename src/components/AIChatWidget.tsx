@@ -132,7 +132,13 @@ export default function AIChatWidget() {
       <div className={`ai-chat-window ${isOpen ? "open" : ""}`} role="dialog" aria-label="Ibra AI Assistant">
         <div className="ai-chat-header">
           <div className="ai-chat-header-info">
-            <div className="ai-chat-avatar"><RobotIcon size={20} /></div>
+            <div className="ai-chat-avatar">
+              <img 
+                src="/assets/chatbot-logo.png" 
+                alt="Ibra AI Chatbot Logo" 
+                style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} 
+              />
+            </div>
             <div>
               <div className="ai-chat-header-name">Ibra AI Assistant</div>
               <div className="ai-chat-header-status">
@@ -152,7 +158,13 @@ export default function AIChatWidget() {
           {messages.map((msg) => (
             <div key={msg.id} className={`ai-chat-msg ${msg.role === "user" ? "user" : "assistant"}`}>
               {msg.role === "assistant" && (
-                <div className="ai-msg-avatar"><RobotIcon size={13} /></div>
+                <div className="ai-msg-avatar">
+                  <img 
+                    src="/assets/chatbot-logo.png" 
+                    alt="Ibra AI Chatbot" 
+                    style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} 
+                  />
+                </div>
               )}
               <div className="ai-msg-bubble-wrap">
                 <div className="ai-msg-bubble" dangerouslySetInnerHTML={{ __html: parseMarkdownSecure(msg.content) }} />
@@ -185,7 +197,13 @@ export default function AIChatWidget() {
 
           {isLoading && (
             <div className="ai-chat-msg assistant">
-              <div className="ai-msg-avatar"><RobotIcon size={13} /></div>
+              <div className="ai-msg-avatar">
+                <img 
+                  src="/assets/chatbot-logo.png" 
+                  alt="Ibra AI Chatbot" 
+                  style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} 
+                />
+              </div>
               <div className="ai-msg-bubble-wrap">
                 <div className="ai-msg-bubble ai-typing"><span/><span/><span/></div>
               </div>
@@ -237,7 +255,11 @@ export default function AIChatWidget() {
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         ) : (
-          <RobotIcon size={26} />
+          <img 
+            src="/assets/chatbot-logo.png" 
+            alt="Buka Ibra AI Chatbot" 
+            style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} 
+          />
         )}
       </button>
 
