@@ -539,9 +539,12 @@ export default function GalleryClient() {
       <style jsx global>{`
         /* ── Hero ── */
         .apple-gallery-hero {
-          background: #1d1d1f;
+          background: linear-gradient(180deg, var(--color-bg-teal-50) 0%, var(--color-white) 100%);
           padding: 9rem 1.5rem 5rem;
           text-align: center;
+        }
+        [data-theme="dark"] .apple-gallery-hero {
+          background: var(--color-gray-50);
         }
         .apple-gallery-hero-inner {
           max-width: 720px;
@@ -552,24 +555,33 @@ export default function GalleryClient() {
           font-weight: 600;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #6e6e73;
+          color: var(--color-primary);
           margin-bottom: 0.75rem;
+        }
+        [data-theme="dark"] .apple-gallery-eyebrow {
+          color: var(--color-accent);
         }
         .apple-gallery-headline {
           font-size: clamp(2.8rem, 6vw, 4.5rem);
           font-weight: 700;
           letter-spacing: -0.02em;
-          color: #f5f5f7;
+          color: var(--color-primary-dark);
           line-height: 1.05;
           margin-bottom: 1.25rem;
+        }
+        [data-theme="dark"] .apple-gallery-headline {
+          color: var(--color-white);
         }
         .apple-gallery-subhead {
           font-size: 1.1rem;
           font-weight: 400;
-          color: #86868b;
+          color: var(--color-gray-600);
           line-height: 1.6;
           max-width: 520px;
           margin: 0 auto;
+        }
+        [data-theme="dark"] .apple-gallery-subhead {
+          color: var(--color-gray-500);
         }
 
         /* ── Main wrapper ── */
