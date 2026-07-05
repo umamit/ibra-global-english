@@ -9,6 +9,7 @@ interface LandingTabsProps {
 export default function LandingTabs({ activeTab, setActiveTab, maintenanceMode }: LandingTabsProps) {
   const tabs = [
     { key: "hero", label: "Profil & Hero Utama" },
+    { key: "navigation", label: "Menu Navigasi" },
     { key: "gallery", label: "Galeri Kegiatan" },
     { key: "videos", label: "Galeri Video" },
     { key: "testimonials", label: "Ulasan & Testimoni" },

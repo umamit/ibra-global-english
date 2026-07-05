@@ -5,8 +5,9 @@ export const dynamic = 'force-dynamic';
 import React from 'react';
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { DEFAULT_PROGRAMS, DEFAULT_BENEFITS, DEFAULT_FAQS, DEFAULT_VIDEOS } from "@/utils/fallbackData";
+import { DEFAULT_PROGRAMS, DEFAULT_BENEFITS, DEFAULT_FAQS, DEFAULT_VIDEOS, DEFAULT_NAVIGATION_MENU } from "@/utils/fallbackData";
 import HeroSettings from "./components/HeroSettings";
+import NavigationManager from "./components/NavigationManager";
 import GalleryManager from "./components/GalleryManager";
 import VideoGallery from "./components/VideoGallery";
 import TestimonialManager from "./components/TestimonialManager";
@@ -100,12 +101,13 @@ export default function LandingPageCMS() {
   const [testimonialText, setTestimonialText] = useState<string>("");
   const [savingTestimonial, setSavingTestimonial] = useState<boolean>(false);
 
-  // Programs, Benefits, FAQ, Videos list states
   const [programsList, setProgramsList] = useState<any[]>([]);
   const [benefitsList, setBenefitsList] = useState<any[]>([]);
   const [faqsList, setFaqsList] = useState<any[]>([]);
   const [videosList, setVideosList] = useState<any[]>([]);
   const [savingVideos, setSavingVideos] = useState<boolean>(false);
+  const [navigationList, setNavigationList] = useState<any[]>([]);
+  const [savingNavigation, setSavingNavigation] = useState<boolean>(false);
 
   // ----------------------------------------------------
   // UTILITIES & NOTIFICATIONS
@@ -158,6 +160,17 @@ export default function LandingPageCMS() {
         const programsRaw = settings.landing_programs;
         const benefitsRaw = settings.landing_benefits;
         const faqRaw = settings.landing_faq;
+        const navigationRaw = settings.landing_navigation_menu;
+        
+        if (navigationRaw) {
+          try {
+            setNavigationList(JSON.parse(navigationRaw));
+          } catch (e) {
+            setNavigationList(DEFAULT_NAVIGATION_MENU);
+          }
+        } else {
+          setNavigationList(DEFAULT_NAVIGATION_MENU);
+        }
         
         if (programsRaw) {
           try {
@@ -219,6 +232,32 @@ export default function LandingPageCMS() {
     }
   };
 
+  const triggerRevalidation = async () => {
+    try {
+      await fetch("/api/revalidate?path=/", { method: "POST" });
+    } catch (err) {
+      console.warn("Gagal trigger revalidasi:", err);
+    }
+  };
+
+  const handleSaveNavigation = async (updatedList: any[]) => {
+    setSavingNavigation(true);
+    try {
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert({ key: "landing_navigation_menu", value: JSON.stringify(updatedList) });
+      if (error) throw error;
+      setNavigationList(updatedList);
+      showToast("Struktur menu navigasi berhasil disimpan!");
+      await triggerRevalidation();
+    } catch (err) {
+      console.error("Gagal menyimpan navigasi:", err);
+      showToast("Gagal menyimpan menu navigasi ke database.", "error");
+    } finally {
+      setSavingNavigation(false);
+    }
+  };
+
   const handleSaveVideos = async (updatedList: any[]) => {
     setSavingVideos(true);
     try {
@@ -229,6 +268,7 @@ export default function LandingPageCMS() {
       if (error) throw error;
       setVideosList(updatedList);
       showToast("Galeri video berhasil disimpan!");
+      await triggerRevalidation();
     } catch (err) {
       console.error("Gagal menyimpan galeri video:", err);
       showToast("Gagal menyimpan galeri video ke database.", "error");
@@ -247,6 +287,7 @@ export default function LandingPageCMS() {
       if (error) throw error;
       setAllowPublicCopy(newValue);
       showToast(newValue ? "Proteksi salin dinonaktifkan!" : "Proteksi salin diaktifkan!");
+      await triggerRevalidation();
     } catch (err: any) {
       showToast("Gagal mengubah pengaturan: " + err.message, "error");
     } finally {
@@ -263,6 +304,7 @@ export default function LandingPageCMS() {
         .upsert({ key: "visitor_offset", value: visitorOffset.trim() });
       if (error) throw error;
       showToast("Angka awal pengunjung berhasil disimpan!");
+      await triggerRevalidation();
     } catch (err: any) {
       showToast("Gagal menyimpan angka awal pengunjung: " + err.message, "error");
     } finally {
@@ -320,6 +362,7 @@ export default function LandingPageCMS() {
       if (error) throw error;
       setProgramsList(newPrograms);
       showToast("Daftar Program Kursus berhasil disimpan!", "success");
+      await triggerRevalidation();
     } catch (err) {
       console.error(err);
       showToast("Gagal menyimpan program kursus.", "error");
@@ -337,6 +380,7 @@ export default function LandingPageCMS() {
       if (error) throw error;
       setBenefitsList(newBenefits);
       showToast("Daftar Keunggulan berhasil disimpan!", "success");
+      await triggerRevalidation();
     } catch (err) {
       console.error(err);
       showToast("Gagal menyimpan keunggulan.", "error");
@@ -354,6 +398,7 @@ export default function LandingPageCMS() {
       if (error) throw error;
       setFaqsList(newFaqs);
       showToast("Daftar FAQ berhasil disimpan!", "success");
+      await triggerRevalidation();
     } catch (err) {
       console.error(err);
       showToast("Gagal menyimpan FAQ.", "error");
@@ -460,6 +505,7 @@ export default function LandingPageCMS() {
       const { error } = await supabase.from("landing_settings").upsert(payload);
       if (error) throw error;
       showToast("Konfigurasi profil dan hero utama berhasil diperbarui!");
+      await triggerRevalidation();
     } catch (err) {
       console.error("Kesalahan simpan hero:", err);
       showToast("Gagal menyimpan konfigurasi. Periksa koneksi internet atau schema database.", "error");
@@ -522,6 +568,7 @@ export default function LandingPageCMS() {
       setGalleryPreviews([]);
       if (galleryFileRef.current) galleryFileRef.current.value = "";
       fetchGallery();
+      await triggerRevalidation();
     } catch (err: any) {
       console.error("Kesalahan tambah galeri:", err);
       showToast(err.message || "Gagal menyimpan foto kegiatan galeri.", "error");
@@ -538,6 +585,7 @@ export default function LandingPageCMS() {
       if (error) throw error;
       showToast("Foto kegiatan berhasil dihapus dari galeri publik.");
       fetchGallery();
+      await triggerRevalidation();
     } catch (err) {
       console.error("Kesalahan hapus galeri:", err);
       showToast("Gagal menghapus item galeri.", "error");
@@ -591,6 +639,7 @@ export default function LandingPageCMS() {
       setRating(5);
       setTestimonialText("");
       fetchTestimonials();
+      await triggerRevalidation();
     } catch (err) {
       console.error("Kesalahan simpan testimoni:", err);
       showToast("Gagal menyimpan data ulasan testimoni.", "error");
@@ -623,6 +672,7 @@ export default function LandingPageCMS() {
       if (error) throw error;
       showToast("Ulasan testimoni berhasil dihapus.");
       fetchTestimonials();
+      await triggerRevalidation();
     } catch (err) {
       console.error("Kesalahan hapus testimoni:", err);
       showToast("Gagal menghapus testimoni.", "error");
@@ -691,6 +741,14 @@ export default function LandingPageCMS() {
           heroFileRef={heroFileRef} ctaBrochureFileRef={ctaBrochureFileRef}
           handleUploadToStorage={handleUploadToStorage}
           onSave={handleSaveHeroSettings}
+        />
+      )}
+
+      {activeTab === "navigation" && (
+        <NavigationManager
+          navigationList={navigationList}
+          setNavigationList={setNavigationList}
+          handleSaveNavigation={handleSaveNavigation}
         />
       )}
 

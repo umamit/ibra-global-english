@@ -1,3 +1,8 @@
+export interface NavigationItem {
+  label: string;
+  path: string;
+}
+
 export interface Program {
   title: string;
   age: string;
@@ -190,4 +195,13 @@ export const DEFAULT_TAX_ASSETS: TaxAsset[] = [
     purchase_date: "2025-07-20",
     purchase_price: 6000000
   }
+];
+
+export const DEFAULT_NAVIGATION_MENU: NavigationItem[] = [
+  { label: "Home", path: "/#home" },
+  { label: "Tentang Kami", path: "/about" },
+  { label: "Program", path: "/#programs" },
+  { label: "Galeri", path: "/gallery" },
+  { label: "Tes Penempatan", path: "/placement-test" },
+  { label: "FAQ", path: "/#faq" }
 ];

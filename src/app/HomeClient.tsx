@@ -176,7 +176,7 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
   return (
     <div className={initialSettings?.allow_public_copy === "true" ? "" : "nocopy-container"}>
       <MarqueeBanner initialSettings={initialSettings} />
-      <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
+      <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} initialSettings={initialSettings} />
       <main>
         <Hero initialSettings={initialSettings} />
         <Programs initialSettings={initialSettings} />

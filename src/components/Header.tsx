@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/Button";
+import { DEFAULT_NAVIGATION_MENU, NavigationItem } from "../utils/fallbackData";
 
 const headerPropsSchema = z.object({
   theme: z.enum(["light", "dark"]),
@@ -15,12 +16,26 @@ const headerPropsSchema = z.object({
 
 type HeaderProps = z.infer<typeof headerPropsSchema>;
 
-export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) {
+export default function Header({ theme, toggleTheme, hasMarquee, initialSettings }: HeaderProps & { initialSettings?: any }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState("");
+  
+  const [navigationMenu] = useState<NavigationItem[]>(() => {
+    if (initialSettings && initialSettings.landing_navigation_menu) {
+      try {
+        const parsed = typeof initialSettings.landing_navigation_menu === "string"
+          ? JSON.parse(initialSettings.landing_navigation_menu)
+          : initialSettings.landing_navigation_menu;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {}
+    }
+    return DEFAULT_NAVIGATION_MENU;
+  });
 
   // Scrollspy logic
   useEffect(() => {
@@ -123,22 +138,29 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
           </Link>
           
           <nav className="nav-links" aria-label="Navigasi Utama">
-            <Link href="/#home" className={`nav-link ${activeSection === "home" ? "active" : ""}`}>Home</Link>
-            <Link href="/about" className={`nav-link ${activeSection === "about" ? "active" : ""}`}>Tentang Kami</Link>
-            <div className="dropdown-container">
-              <button className={`nav-link dropdown-toggle ${activeSection === "programs" ? "active" : ""}`} aria-haspopup="true" aria-expanded="false">
-                Program <span className="dropdown-chevron">▼</span>
-              </button>
-              <div className="dropdown-menu">
-                <Link href="/#programs" className="dropdown-item">Semua Program</Link>
-                <Link href="/#kids-program" className="dropdown-item">Kids Program</Link>
-                <Link href="/#teens-program" className="dropdown-item">Teens Program</Link>
-                <Link href="/#fun-calistung" className="dropdown-item">Fun Calistung</Link>
-              </div>
-            </div>
-            <Link href="/gallery" className={`nav-link ${activeSection === "gallery" ? "active" : ""}`}>Galeri</Link>
-            <Link href="/placement-test" className={`nav-link ${activeSection === "placement-test" ? "active" : ""}`}>Tes Penempatan</Link>
-            <Link href="/#faq" className={`nav-link ${activeSection === "faq" ? "active" : ""}`}>FAQ</Link>
+            {navigationMenu.map((item, idx) => {
+              if (item.label.toLowerCase() === "program") {
+                return (
+                  <div className="dropdown-container" key={idx}>
+                    <button className={`nav-link dropdown-toggle ${activeSection === "programs" ? "active" : ""}`} aria-haspopup="true" aria-expanded="false">
+                      {item.label} <span className="dropdown-chevron">▼</span>
+                    </button>
+                    <div className="dropdown-menu">
+                      <Link href="/#programs" className="dropdown-item">Semua Program</Link>
+                      <Link href="/#kids-program" className="dropdown-item">Kids Program</Link>
+                      <Link href="/#teens-program" className="dropdown-item">Teens Program</Link>
+                      <Link href="/#fun-calistung" className="dropdown-item">Fun Calistung</Link>
+                    </div>
+                  </div>
+                );
+              }
+              const isPathActive = pathname === item.path || (item.path.startsWith("/#") && pathname === "/" && activeSection === item.path.substring(2));
+              return (
+                <Link key={idx} href={item.path} className={`nav-link ${isPathActive ? "active" : ""}`}>
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
           
           <div className="nav-right-group">
@@ -243,27 +265,32 @@ export default function Header({ theme, toggleTheme, hasMarquee }: HeaderProps) 
       >
         <div className="mobile-nav-content">
           <nav className="mobile-nav-links" aria-label="Navigasi Seluler">
-            <Link href="/#home" className={`mobile-link ${activeSection === "home" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link href="/about" className={`mobile-link ${activeSection === "about" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Tentang Kami</Link>
-            
-            <div className="mobile-dropdown-container" style={{ display: "flex", flexDirection: "column" }}>
-              <button 
-                className={`mobile-link mobile-dropdown-toggle ${activeSection === "programs" ? "active" : ""}`} 
-                onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
-              >
-                Program <span className="dropdown-chevron" style={{ transform: isMobileDropdownOpen ? "rotate(180deg)" : "none", transition: "transform 0.3s" }}>▼</span>
-              </button>
-              <div className={`mobile-dropdown-menu ${isMobileDropdownOpen ? "active" : ""}`}>
-                <Link href="/#programs" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Semua Program</Link>
-                <Link href="/#kids-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Kids Program</Link>
-                <Link href="/#teens-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Teens Program</Link>
-                <Link href="/#fun-calistung" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Fun Calistung</Link>
-              </div>
-            </div>
-
-            <Link href="/gallery" className={`mobile-link ${activeSection === "gallery" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Galeri</Link>
-            <Link href="/placement-test" className={`mobile-link ${activeSection === "placement-test" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>Tes Penempatan</Link>
-            <Link href="/#faq" className={`mobile-link ${activeSection === "faq" ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>FAQ</Link>
+            {navigationMenu.map((item, idx) => {
+              if (item.label.toLowerCase() === "program") {
+                return (
+                  <div className="mobile-dropdown-container" style={{ display: "flex", flexDirection: "column" }} key={idx}>
+                    <button 
+                      className={`mobile-link mobile-dropdown-toggle ${activeSection === "programs" ? "active" : ""}`} 
+                      onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
+                    >
+                      {item.label} <span className="dropdown-chevron" style={{ transform: isMobileDropdownOpen ? "rotate(180deg)" : "none", transition: "transform 0.3s" }}>▼</span>
+                    </button>
+                    <div className={`mobile-dropdown-menu ${isMobileDropdownOpen ? "active" : ""}`}>
+                      <Link href="/#programs" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Semua Program</Link>
+                      <Link href="/#kids-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Kids Program</Link>
+                      <Link href="/#teens-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Teens Program</Link>
+                      <Link href="/#fun-calistung" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Fun Calistung</Link>
+                    </div>
+                  </div>
+                );
+              }
+              const isPathActive = pathname === item.path || (item.path.startsWith("/#") && pathname === "/" && activeSection === item.path.substring(2));
+              return (
+                <Link key={idx} href={item.path} className={`mobile-link ${isPathActive ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}>
+                  {item.label}
+                </Link>
+              );
+            })}
             <Link href="/login" className="mobile-link" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary-dark)", fontWeight: "700" }}>Login Portal</Link>
           </nav>
           <Link href="/#contact" className="mobile-nav-btn mobile-link" onClick={() => setIsMenuOpen(false)}>Daftar Sekarang</Link>
