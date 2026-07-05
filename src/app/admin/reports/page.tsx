@@ -37,6 +37,7 @@ export default function ReportCardManagement() {
   const [tutorNotes, setTutorNotes] = useState<string>("");
 
   const [aiLoading, setAiLoading] = useState<boolean>(false);
+  const [aiProgressLoading, setAiProgressLoading] = useState<boolean>(false);
 
   const handleGenerateAiNotes = async () => {
     if (!studentId) {
@@ -76,6 +77,58 @@ export default function ReportCardManagement() {
       alert("Gagal menghubungi server AI.");
     } finally {
       setAiLoading(false);
+    }
+  };
+
+  const handleGenerateAiProgressReport = async () => {
+    if (!studentId) {
+      alert("Harap pilih siswa terlebih dahulu!");
+      return;
+    }
+    const studentObj = students.find(s => s.id === studentId);
+    const studentName = studentObj ? studentObj.name : "Siswa";
+    const studentProgram = studentObj ? studentObj.program : "General English";
+
+    // Kumpulkan input dari tutor via prompt ringan
+    const focus = prompt("Masukkan materi fokus bulan ini (contoh: Greetings, Daily Activities):", moduleName || "");
+    if (focus === null) return; // User cancel
+
+    const achievements = prompt("Masukkan pencapaian positif siswa (contoh: sangat aktif berdiskusi):");
+    if (achievements === null) return;
+
+    const challenges = prompt("Masukkan tantangan / aspek yang perlu ditingkatkan (contoh: rasa percaya diri berbicara):");
+    if (challenges === null) return;
+
+    const thisMonth = new Date().toLocaleString("id-ID", { month: "long" });
+
+    setAiProgressLoading(true);
+    try {
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "progress-report-draft",
+          payload: {
+            name: studentName,
+            program: studentProgram,
+            month: thisMonth,
+            focus_areas: focus || "Materi harian sesuai silabus",
+            achievements: achievements || "Mengikuti kelas dengan baik",
+            challenges: challenges || "Perlu latihan lebih mandiri di rumah"
+          }
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.reply) {
+        setTutorNotes(data.reply);
+        posthog.capture("admin_ai_progress_report_generated", { program: studentProgram });
+      } else {
+        alert(`Gagal membuat draf laporan: ${data.error || "Error tidak diketahui"}`);
+      }
+    } catch {
+      alert("Gagal menghubungi server AI.");
+    } finally {
+      setAiProgressLoading(false);
     }
   };
 
@@ -592,31 +645,58 @@ export default function ReportCardManagement() {
           <div className="form-group" style={{ marginBottom: "1.5rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
               <label className="form-label" style={{ marginBottom: 0 }}>Catatan Deskriptif & Masukan Orang Tua</label>
-              <button
-                type="button"
-                onClick={handleGenerateAiNotes}
-                disabled={aiLoading || !studentId}
-                className="btn-portal-outline"
-                style={{
-                  height: "auto",
-                  padding: "0.25rem 0.6rem",
-                  fontSize: "0.75rem",
-                  borderColor: "var(--color-primary)",
-                  color: "var(--color-primary)",
-                  fontWeight: "700",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.3rem"
-                }}
-              >
-                {aiLoading ? (
-                  <span>⏳ Sedang menyusun...</span>
-                ) : (
-                  <>
-                    <span>✨ Tulis Catatan Otomatis (AI)</span>
-                  </>
-                )}
-              </button>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <button
+                  type="button"
+                  onClick={handleGenerateAiNotes}
+                  disabled={aiLoading || aiProgressLoading || !studentId}
+                  className="btn-portal-outline"
+                  style={{
+                    height: "auto",
+                    padding: "0.25rem 0.6rem",
+                    fontSize: "0.75rem",
+                    borderColor: "var(--color-primary)",
+                    color: "var(--color-primary)",
+                    fontWeight: "700",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem"
+                  }}
+                >
+                  {aiLoading ? (
+                    <span>⏳ Sedang menyusun...</span>
+                  ) : (
+                    <>
+                      <span>✨ Tulis Catatan Otomatis (AI)</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGenerateAiProgressReport}
+                  disabled={aiLoading || aiProgressLoading || !studentId}
+                  className="btn-portal-outline"
+                  style={{
+                    height: "auto",
+                    padding: "0.25rem 0.6rem",
+                    fontSize: "0.75rem",
+                    borderColor: "var(--color-accent, #e28743)",
+                    color: "var(--color-accent, #e28743)",
+                    fontWeight: "700",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem"
+                  }}
+                >
+                  {aiProgressLoading ? (
+                    <span>⏳ Sedang menyusun Laporan...</span>
+                  ) : (
+                    <>
+                      <span>✨ Draf Laporan Bulanan (AI)</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
             <textarea
               className="form-input"
