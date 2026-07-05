@@ -166,9 +166,9 @@ header.scrolled .logo-text p {
 .nav-btn {
   background-color: var(--color-primary);
   color: #fff;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.25rem;
   border-radius: var(--radius-full);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: -0.01em;
   transition: background-color var(--transition-fast), transform var(--transition-fast);
@@ -177,6 +177,8 @@ header.scrolled .logo-text p {
   justify-content: center;
   height: 2.1rem;
   box-sizing: border-box;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-btn:hover {
@@ -188,9 +190,9 @@ header.scrolled .logo-text p {
   background-color: transparent;
   color: var(--color-primary);
   border: 1px solid rgba(33, 108, 126, 0.4);
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.25rem;
   border-radius: var(--radius-full);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: -0.01em;
   transition: background-color var(--transition-fast), border-color var(--transition-fast);
@@ -200,6 +202,8 @@ header.scrolled .logo-text p {
   height: 2.1rem;
   box-sizing: border-box;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-btn-outline:hover {
