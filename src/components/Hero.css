@@ -408,6 +408,16 @@
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 920px) {
+  .hero-content h1,
+  .hero-content h2 {
+    font-size: 2.85rem;
+  }
+  .hero-subtitle {
+    font-size: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .hero {
     padding-top: calc(40px + 6rem);
