@@ -6,24 +6,35 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-
-  @@map("users")
-}
-
-// RAG (Retrieval-Augmented Generation) — dokumen untuk basis pengetahuan AI
 model RagDocument {
   id        String   @id @default(uuid())
   title     String
   content   String
-  source    String   @default("manual") // manual, faq, course_material, website, other
+  source    String   @default("manual")
   metadata  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([source])
+  @@index([createdAt])
   @@map("rag_documents")
+}
+
+model Post {
+  id        String   @id
+  title     String
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  authorId  String
+  User      User     @relation(fields: [authorId], references: [id])
+}
+
+model User {
+  id        String   @id
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  Post      Post[]
 }
