@@ -35,26 +35,10 @@ export const POST = withAdminAuth(async (request: Request) => {
 
     const supabase = adminSupabase;
 
-    // Cek apakah baris sudah ada
-    const { data: existing } = await supabase
+    // Gunakan upsert langsung pada Primary Key 'key' untuk menghindari database column id error
+    const { error } = await supabase
       .from("landing_settings")
-      .select("id")
-      .eq("key", "maintenance_mode")
-      .maybeSingle();
-
-    let error;
-    if (existing) {
-      // Update baris yang sudah ada
-      ({ error } = await supabase
-        .from("landing_settings")
-        .update({ value: String(enabled) })
-        .eq("key", "maintenance_mode"));
-    } else {
-      // Insert baris baru
-      ({ error } = await supabase
-        .from("landing_settings")
-        .insert({ key: "maintenance_mode", value: String(enabled) }));
-    }
+      .upsert({ key: "maintenance_mode", value: String(enabled) });
 
     if (error) throw error;
 
