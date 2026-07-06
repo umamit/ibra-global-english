@@ -64,7 +64,7 @@ export default function ReceiptPrint({ printReceipt, selectedChild, parentName, 
             <div style={{ textAlign: "left" }}>
               <h1 style={{ fontSize: "1.35rem", fontWeight: "900", margin: "0", color: "var(--color-primary-dark)" }}>IBRA GLOBAL ENGLISH</h1>
               <p style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-accent)", margin: "0" }}>Belajar Seru, Lancar Bicara</p>
-              <p style={{ fontSize: "0.7rem", color: "#666", margin: "2px 0 0" }}>{paymentSettings.contact_address || "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah"}</p>
+              <p style={{ fontSize: "0.7rem", color: "#666", margin: "2px 0 0" }}>{paymentSettings.contact_address || "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794"}</p>
               <p style={{ fontSize: "0.65rem", color: "#888", margin: "0", fontWeight: "600" }}>Di bawah naungan PT Ibra Global English</p>
             </div>
           </div>

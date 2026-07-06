@@ -265,7 +265,7 @@ export default function AdminFinance() {
       <div className="finance-print-header">
         <h2>Ibra Global English — Laporan SPP Bulanan</h2>
         <p>Bulan Tagihan: <strong>{selectedMonth || "-"}</strong> &nbsp;|&nbsp; Dicetak: {printDateStr}</p>
-        <p style={{ marginTop: "4px" }}>Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Pulau Taliabu</p>
+        <p style={{ marginTop: "4px" }}>Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794</p>
       </div>
 
       {/* Top Header Section */}

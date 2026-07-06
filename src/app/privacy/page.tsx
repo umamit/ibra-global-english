@@ -123,7 +123,7 @@ export default function PrivacyPage() {
         </p>
         <p style={{ marginTop: "0.5rem" }}>
           📧 Email: <strong>admin@ibraglobalenglish.uk</strong><br />
-          📍 Alamat: <strong>Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Kab. Pulau Taliabu, Maluku Utara</strong>
+          📍 Alamat: <strong>Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794</strong>
         </p>
       </section>
     </LegalLayout>

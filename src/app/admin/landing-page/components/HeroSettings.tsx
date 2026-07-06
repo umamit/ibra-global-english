@@ -210,7 +210,7 @@ export default function HeroSettings({
               <textarea
                 className="form-input"
                 style={{ width: "100%", height: "80px", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-gray-300)" }}
-                placeholder="Contoh: Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah"
+                placeholder="Contoh: Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794"
                 value={contactAddress}
                 onChange={(e) => setContactAddress(e.target.value)}
                 required

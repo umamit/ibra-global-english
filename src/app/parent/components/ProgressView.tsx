@@ -96,7 +96,7 @@ export default function ProgressView({
     return (
       <PrintReportView
         printReport={reportWithStudent}
-        contactAddress="Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah"
+        contactAddress="Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794"
         onClose={() => setPrintReport(null)}
       />
     );

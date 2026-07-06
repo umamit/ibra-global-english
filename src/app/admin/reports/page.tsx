@@ -20,7 +20,7 @@ export default function ReportCardManagement() {
   const [reports, setReports] = useState<Report[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [printReport, setPrintReport] = useState<Report | null>(null);
-  const [contactAddress, setContactAddress] = useState<string>("Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
+  const [contactAddress, setContactAddress] = useState<string>("Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794");
   const [loading, setLoading] = useState<boolean>(true);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });

@@ -5,7 +5,7 @@ import { useState } from "react";
 import Button from "@/components/Button";
 
 export default function Contact({ form, setForm, honeypot, setHoneypot, initialSettings }: any) {
-  const [address] = useState(initialSettings?.contact_address || "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah");
+  const [address] = useState(initialSettings?.contact_address || "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794");
   const [phone] = useState(initialSettings?.contact_phone || "+62 813-5700-1357");
   const [rawPhone] = useState(() => {
     const p = initialSettings?.contact_phone || "6281357001357";

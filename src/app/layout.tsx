@@ -95,9 +95,10 @@ const educationalOrgSchema = {
   "email": "admin@ibraglobalenglish.uk",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah",
-    "addressLocality": "Bobong",
-    "addressRegion": "Pulau Taliabu, Maluku Utara",
+    "streetAddress": "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001",
+    "addressLocality": "Bobong, Taliabu Barat",
+    "addressRegion": "Kabupaten Pulau Taliabu, Maluku Utara",
+    "postalCode": "97794",
     "addressCountry": "ID"
   },
   "description": "Kursus Bahasa Inggris offline dan bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu dengan metode interaktif, fun, dan tutor berpengalaman.",

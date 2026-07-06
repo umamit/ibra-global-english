@@ -272,7 +272,7 @@ export const printReceiptHTML = (
           <div class="header">
             <div class="logo-text">
               <h1>IBRA GLOBAL ENGLISH</h1>
-              <p>Jl. TPU Bobong, Pulau Taliabu, Maluku Utara</p>
+              <p>Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794</p>
               <p>HP/WA: +62 813-5700-1357 | Email: admin@ibraglobalenglish.uk</p>
             </div>
             <div class="receipt-title">

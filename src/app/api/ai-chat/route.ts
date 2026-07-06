@@ -54,7 +54,7 @@ const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Glob
    - Cocok untuk persiapan masuk SD
 
 ### Kontak & Lokasi
-- **Alamat**: Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Bobong, Pulau Taliabu, Maluku Utara
+- **Alamat**: Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794
 - **WhatsApp**: +62 813-5700-1357
 - **Email**: admin@ibraglobalenglish.uk
 - **Website**: https://www.ibraglobalenglish.uk

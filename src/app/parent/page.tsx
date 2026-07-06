@@ -74,7 +74,7 @@ export default function ParentPortal() {
     payment_account_number: "137-00-1234567-8",
     payment_account_name: "Ibra Global English",
     payment_account_sub: "Bobong Learning Centre",
-    contact_address: "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah",
+    contact_address: "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794",
   });
   const [detailsLoading, setDetailsLoading] = useState<boolean>(true);
 
@@ -189,7 +189,7 @@ export default function ParentPortal() {
           payment_account_number: settingsObj.payment_account_number || "137-00-1234567-8",
           payment_account_name: settingsObj.payment_account_name || "Ibra Global English",
           payment_account_sub: settingsObj.payment_account_sub || "Bobong Learning Centre",
-          contact_address: settingsObj.contact_address || "Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah"
+          contact_address: settingsObj.contact_address || "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794"
         });
       }
 

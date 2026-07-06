@@ -487,7 +487,7 @@ export default function AdminRAGPage() {
                   <textarea 
                     className="form-input" 
                     style={{ height: "200px", padding: "0.75rem", fontFamily: "inherit", lineHeight: "1.6", borderRadius: "8px" }} 
-                    placeholder="Contoh:&#10;Kantor Ibra Global English Bobong berlokasi di Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah. Buka setiap hari Senin hingga Sabtu pukul 14:00 - 18:00 WIT. Hari Minggu libur." 
+                    placeholder="Contoh:&#10;Kantor Ibra Global English Bobong berlokasi di Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794. Buka setiap hari Senin hingga Sabtu pukul 14:00 - 18:00 WIT. Hari Minggu libur." 
                     value={content} 
                     onChange={e => setContent(e.target.value)} 
                     required 
