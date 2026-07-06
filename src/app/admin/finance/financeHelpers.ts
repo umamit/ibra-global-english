@@ -277,7 +277,7 @@ export const printReceiptHTML = (
             </div>
             <div class="receipt-title">
               <h2>Kuitansi</h2>
-              <p>No: \${receiptNo}</p>
+              <p>No: ${receiptNo}</p>
             </div>
           </div>
 
@@ -285,25 +285,25 @@ export const printReceiptHTML = (
             <tr>
               <td class="label">Diterima Dari</td>
               <td class="value">
-                <span class="dotted-underline"><strong>\${student.profiles?.full_name || "-"}</strong> (Orang Tua/Wali dari <strong>\${student.name}</strong>)</span>
+                <span class="dotted-underline"><strong>${student.profiles?.full_name || "-"}</strong> (Orang Tua/Wali dari <strong>${student.name}</strong>)</span>
               </td>
             </tr>
             <tr>
               <td class="label">Untuk Pembayaran</td>
               <td class="value">
-                <span class="dotted-underline">SPP Bimbingan Belajar Program <strong>\${student.program}</strong> - Bulan <strong>\${monthName}</strong></span>
+                <span class="dotted-underline">SPP Bimbingan Belajar Program <strong>${student.program}</strong> - Bulan <strong>${monthName}</strong></span>
               </td>
             </tr>
             <tr>
               <td class="label">Sejumlah Uang</td>
               <td class="value">
-                <span class="dotted-underline" style="font-style: italic; font-weight: 600;"># \${amountInWords} #</span>
+                <span class="dotted-underline" style="font-style: italic; font-weight: 600;"># ${amountInWords} #</span>
               </td>
             </tr>
             <tr>
               <td class="label">Metode Bayar</td>
               <td class="value">
-                <span class="dotted-underline">\${pay.payment_method || "Transfer Bank"}</span>
+                <span class="dotted-underline">${pay.payment_method || "Transfer Bank"}</span>
               </td>
             </tr>
           </table>
@@ -311,7 +311,7 @@ export const printReceiptHTML = (
           <div class="footer-section">
             <div>
               <p style="margin: 0; font-size: 0.85rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">Jumlah Nominal:</p>
-              <div class="amount-box">\${formattedAmount}</div>
+              <div class="amount-box">${formattedAmount}</div>
               <div class="note" style="margin-top: 15px;">
                 * Bukti pembayaran ini diterbitkan secara sah dan elektronik.<br/>
                 * Pembayaran yang telah lunas tidak dapat ditarik kembali.
@@ -319,7 +319,7 @@ export const printReceiptHTML = (
             </div>
 
             <div class="signature">
-              <p>Bobong, \${paymentDateStr}</p>
+              <p>Bobong, ${paymentDateStr}</p>
               <p style="margin-top: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Penerima / Admin,</p>
               <span class="name">Husnita Usman, M.Pd.</span>
               <p style="margin-top: 5px; font-size: 0.75rem; font-weight: 600; color: #64748b;">Ibra Global English</p>
