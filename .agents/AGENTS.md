@@ -35,7 +35,12 @@ You are an expert fullstack Next.js and Supabase AI engineer operating within An
 * **Database Query Efficiency**: Prevent expensive Supabase bandwidth consumption. Never select unnecessary columns (`SELECT *` is banned if specific fields are enough). Always enforce strict `.limit()` clauses or server-side pagination.
 * **Image Optimization Quota**: Use `next/image` with the `priority` property ONLY for above-the-fold LCP elements. All secondary, list, or below-the-fold images must use native HTML `<img>` tags with `loading="lazy"`.
 * **Layout Shift Prevention**: When using native HTML `<img>` tags, you MUST explicitly define `width` and `height` aspect-ratio attributes to avoid worsening the Cumulative Layout Shift (CLS) score.
-* **Codebase File-Length Boundary**: Application source files (`.js`, `.jsx`, `.css`) must NOT exceed **800 lines** to maintain compile speed and clean architecture. Database migration/schema files (`.sql`) are completely exempt from this rule.
+* **Codebase File-Length Boundary**: Application source files (`.js`, `.jsx`, `.ts`, `.tsx`, `.css`) must NOT exceed **800 lines** to maintain compile speed and clean architecture. Database migration/schema files (`.sql`) are completely exempt from this rule.
+  * **How to split**: If a file approaches 700 lines, the agent must proactively refactor by:
+    * Extracting static helpers/formatters/calculators into external utility files (e.g., `[name]Helpers.ts`).
+    * Extracting styling blocks into external stylesheets or CSS modules.
+    * Extracting complex states and data handlers into React Custom Hooks (e.g., `use[Name].ts`).
+    * Extracting large JSX segments into atomic sub-components under a local `components/` directory.
 
 ## 6. Supabase Client & Browser Authentication Rules
 * **Module-Level Singleton**: On the client side, initialize the Supabase client using a strict singleton pattern. Re-instantiating the client inside rendering lifecycles or hooks is strictly forbidden to prevent unexpected `useEffect` cleanups that trigger false `signOut` events.
