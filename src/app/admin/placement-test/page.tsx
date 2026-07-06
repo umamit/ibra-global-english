@@ -78,6 +78,10 @@ export default function AdminPlacementTest() {
   const [followUpMessage, setFollowUpMessage] = useState<string>("");
   const [followUpAiLoading, setFollowUpAiLoading] = useState<boolean>(false);
 
+  // AI Diagnostics State
+  const [aiConnectionStatus, setAiConnectionStatus] = useState<"idle" | "testing" | "success" | "failed">("idle");
+  const [aiDiagnosticMessage, setAiDiagnosticMessage] = useState<string>("");
+
   // Metrics
   const [metrics, setMetrics] = useState<Metrics>({
     total: 0,
@@ -131,6 +135,29 @@ export default function AdminPlacementTest() {
     setLoadingHistory(false);
   };
 
+  const testAiConnection = async () => {
+    setAiConnectionStatus("testing");
+    setAiDiagnosticMessage("");
+    try {
+      const res = await fetch("/api/admin/placement-test/regenerate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "ping" })
+      });
+      const data = await res.json();
+      if (res.ok && data.status === "success") {
+        setAiConnectionStatus("success");
+        setAiDiagnosticMessage(data.message || "Groq AI sukses terhubung.");
+      } else {
+        setAiConnectionStatus("failed");
+        setAiDiagnosticMessage(data.message || "Gagal menghubungi AI (Kunci tidak valid/Limit habis).");
+      }
+    } catch (err: any) {
+      setAiConnectionStatus("failed");
+      setAiDiagnosticMessage("Koneksi gagal: " + err.message);
+    }
+  };
+
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -138,6 +165,7 @@ export default function AdminPlacementTest() {
       await fetchData();
       await fetchCategories();
       await fetchHistory();
+      await testAiConnection();
     };
     load();
     return () => {
@@ -389,6 +417,189 @@ export default function AdminPlacementTest() {
           description="Sukses menjadi siswa Ibra"
           color="green"
         />
+      </div>
+
+      {/* Diagnostik & Analisis Visual Row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "2.5rem" }} className="report-detail-layout">
+        
+        {/* Panel Diagnostik AI */}
+        <div className="portal-card" style={{ padding: "1.5rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
+              🤖 Status Koneksi & Diagnostik Groq AI
+            </h3>
+            <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginBottom: "1.5rem" }}>
+              Verifikasi integrasi generator AI untuk tes penempatan secara real-time.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem 1rem", backgroundColor: "var(--color-gray-50)", borderRadius: "8px", border: "1px solid var(--color-gray-150)" }}>
+                <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Status API</span>
+                <span style={{ 
+                  padding: "0.25rem 0.75rem", 
+                  borderRadius: "50px", 
+                  fontSize: "0.75rem", 
+                  fontWeight: "800",
+                  backgroundColor: aiConnectionStatus === "success" ? "rgba(33, 108, 126, 0.1)" : aiConnectionStatus === "failed" ? "rgba(239, 68, 68, 0.1)" : "var(--color-gray-100)",
+                  color: aiConnectionStatus === "success" ? "var(--color-primary)" : aiConnectionStatus === "failed" ? "#ef4444" : "var(--color-gray-500)"
+                }}>
+                  {aiConnectionStatus === "success" ? "CONNECTED" : aiConnectionStatus === "failed" ? "DISCONNECTED" : aiConnectionStatus === "testing" ? "TESTING..." : "IDLE"}
+                </span>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem 1rem", backgroundColor: "var(--color-gray-50)", borderRadius: "8px", border: "1px solid var(--color-gray-150)" }}>
+                <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--color-gray-700)" }}>Model AI Aktif</span>
+                <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-600)", fontFamily: "monospace" }}>llama-3.3-70b-versatile</span>
+              </div>
+            </div>
+
+            {aiDiagnosticMessage && (
+              <div style={{ 
+                padding: "0.75rem 1rem", 
+                borderRadius: "8px", 
+                fontSize: "0.85rem", 
+                fontWeight: "600",
+                lineHeight: "1.5",
+                marginBottom: "1.5rem",
+                backgroundColor: aiConnectionStatus === "success" ? "rgba(33, 108, 126, 0.05)" : "rgba(239, 68, 68, 0.05)",
+                color: aiConnectionStatus === "success" ? "var(--color-primary-dark)" : "#991b1b",
+                border: aiConnectionStatus === "success" ? "1px solid rgba(33, 108, 126, 0.1)" : "1px solid rgba(239, 68, 68, 0.1)"
+              }}>
+                {aiDiagnosticMessage}
+              </div>
+            )}
+          </div>
+
+          <button 
+            className="btn-portal-outline" 
+            style={{ width: "100%", padding: "0.85rem", fontWeight: "800", borderRadius: "8px" }} 
+            onClick={testAiConnection}
+            disabled={aiConnectionStatus === "testing"}
+          >
+            {aiConnectionStatus === "testing" ? "Menguji Koneksi..." : "🔄 Cek Koneksi Groq AI"}
+          </button>
+        </div>
+
+        {/* SVG Donut Chart Distribusi CEFR */}
+        <div className="portal-card" style={{ padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between" }}>
+          <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", alignSelf: "flex-start", width: "100%", marginBottom: "0.25rem" }}>
+            🍩 Distribusi Level CEFR Siswa
+          </h3>
+          <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", alignSelf: "flex-start", width: "100%" }}>
+            Sebaran tingkat penguasaan bahasa Inggris pendaftar tes penempatan.
+          </p>
+
+          {submissions.length === 0 ? (
+            <div style={{ margin: "auto", padding: "2rem", color: "var(--color-gray-400)", fontWeight: "600", fontSize: "0.9rem" }}>
+              Belum ada data hasil tes penempatan.
+            </div>
+          ) : (() => {
+            const total = submissions.length || 1;
+            const countA1 = submissions.filter(s => s.level === 'A1').length;
+            const countA2 = submissions.filter(s => s.level === 'A2').length;
+            const countB1 = submissions.filter(s => s.level === 'B1').length;
+            const countB2 = submissions.filter(s => s.level === 'B2').length;
+            const countC1 = submissions.filter(s => s.level === 'C1').length;
+
+            const pA1 = Math.round((countA1 / total) * 100);
+            const pA2 = Math.round((countA2 / total) * 100);
+            const pB1 = Math.round((countB1 / total) * 100);
+            const pB2 = Math.round((countB2 / total) * 100);
+            const pC1 = Math.max(0, 100 - pA1 - pA2 - pB1 - pB2);
+
+            const strokeDashA1 = `${(pA1 / 100) * 314} 314`;
+            const strokeDashA2 = `${(pA2 / 100) * 314} 314`;
+            const strokeDashB1 = `${(pB1 / 100) * 314} 314`;
+            const strokeDashB2 = `${(pB2 / 100) * 314} 314`;
+            const strokeDashC1 = `${(pC1 / 100) * 314} 314`;
+
+            const offsetA2 = -((pA1 / 100) * 314);
+            const offsetB1 = -(((pA1 + pA2) / 100) * 314);
+            const offsetB2 = -(((pA1 + pA2 + pB1) / 100) * 314);
+            const offsetC1 = -(((pA1 + pA2 + pB1 + pB2) / 100) * 314);
+
+            return (
+              <>
+                <div style={{ position: "relative", width: "160px", height: "160px", margin: "1.5rem 0" }}>
+                  <svg width="160" height="160" viewBox="0 0 160 160" style={{ transform: "rotate(-90deg)" }}>
+                    <circle cx="80" cy="80" r="50" fill="none" stroke="#f1f5f9" strokeWidth="16" />
+
+                    {pA1 > 0 && (
+                      <circle cx="80" cy="80" r="50" fill="none" stroke="#216c7e" strokeWidth="16" strokeDasharray={strokeDashA1} strokeDashoffset="0" />
+                    )}
+                    {pA2 > 0 && (
+                      <circle cx="80" cy="80" r="50" fill="none" stroke="#164d57" strokeWidth="16" strokeDasharray={strokeDashA2} strokeDashoffset={offsetA2} />
+                    )}
+                    {pB1 > 0 && (
+                      <circle cx="80" cy="80" r="50" fill="none" stroke="#A68849" strokeWidth="16" strokeDasharray={strokeDashB1} strokeDashoffset={offsetB1} />
+                    )}
+                    {pB2 > 0 && (
+                      <circle cx="80" cy="80" r="50" fill="none" stroke="#8bb2bd" strokeWidth="16" strokeDasharray={strokeDashB2} strokeDashoffset={offsetB2} />
+                    )}
+                    {pC1 > 0 && (
+                      <circle cx="80" cy="80" r="50" fill="none" stroke="#C5A86B" strokeWidth="16" strokeDasharray={strokeDashC1} strokeDashoffset={offsetC1} />
+                    )}
+                  </svg>
+
+                  <div style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column"
+                  }}>
+                    <span style={{ fontSize: "1.35rem", fontWeight: "900", color: "var(--color-primary-dark)", lineHeight: 1 }}>{total}</span>
+                    <span style={{ fontSize: "0.65rem", fontWeight: "700", color: "var(--color-gray-400)", textTransform: "uppercase", marginTop: "2px" }}>Siswa</span>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem 1rem", width: "100%", fontSize: "0.8rem", fontWeight: "700", borderTop: "1px solid var(--color-gray-100)", paddingTop: "0.75rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#216c7e" }} />
+                      <span style={{ color: "var(--color-gray-600)" }}>A1 (Beginner)</span>
+                    </div>
+                    <span style={{ color: "var(--color-gray-800)" }}>{countA1} ({pA1}%)</span>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#164d57" }} />
+                      <span style={{ color: "var(--color-gray-600)" }}>A2 (Elementary)</span>
+                    </div>
+                    <span style={{ color: "var(--color-gray-800)" }}>{countA2} ({pA2}%)</span>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#A68849" }} />
+                      <span style={{ color: "var(--color-gray-600)" }}>B1 (Intermediate)</span>
+                    </div>
+                    <span style={{ color: "var(--color-gray-800)" }}>{countB1} ({pB1}%)</span>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#8bb2bd" }} />
+                      <span style={{ color: "var(--color-gray-600)" }}>B2 (Upper-Int)</span>
+                    </div>
+                    <span style={{ color: "var(--color-gray-800)" }}>{countB2} ({pB2}%)</span>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gridColumn: "span 2" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#C5A86B" }} />
+                      <span style={{ color: "var(--color-gray-600)" }}>C1 (Advanced)</span>
+                    </div>
+                    <span style={{ color: "var(--color-gray-800)" }}>{countC1} ({pC1}%)</span>
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+        </div>
       </div>
 
       {/* Filter and Search Bar */}
