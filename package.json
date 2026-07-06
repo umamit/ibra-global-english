@@ -1,6 +1,6 @@
 {
   "name": "next-app-temp",
-  "version": "3.3.66",
+  "version": "3.3.67",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -31,8 +31,8 @@
     "next": "^16.2.10",
     "pdf-lib": "^1.17.1",
     "pg": "^8.22.0",
-    "posthog-js": "^1.396.4",
-    "posthog-node": "^5.39.3",
+    "posthog-js": "^1.396.8",
+    "posthog-node": "^5.39.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "zod": "^4.4.3"
@@ -49,7 +49,7 @@
     "eslint-config-next": "^16.2.10",
     "prisma": "^7.8.0",
     "tailwindcss": "^4.3.2",
-    "tsx": "^4.22.5",
+    "tsx": "^4.23.0",
     "typescript": "^6.0.3"
   },
   "overrides": {
