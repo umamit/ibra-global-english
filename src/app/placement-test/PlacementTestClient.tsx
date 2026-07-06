@@ -363,6 +363,48 @@ export default function PlacementTestClient() {
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{__html: `
+        @media screen {
+          .print-only {
+            display: none !important;
+          }
+        }
+        @media print {
+          /* Hide everything on screen */
+          body *, html * {
+            visibility: hidden !important;
+          }
+          /* Show print-only */
+          .print-only, .print-only * {
+            visibility: visible !important;
+          }
+          .print-only {
+            display: block !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            background-color: white !important;
+            page-break-inside: avoid !important;
+            page-break-after: avoid !important;
+            page-break-before: avoid !important;
+          }
+          @page {
+            size: A4 portrait !important;
+            margin: 0 !important;
+          }
+          body, html {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            height: 297mm !important;
+          }
+        }
+      `}} />
       <main style={{ minHeight: "100vh", backgroundColor: "var(--color-gray-50)", padding: "3.5rem 1rem 6rem" }} className="placement-test-page">
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           
@@ -823,39 +865,54 @@ export default function PlacementTestClient() {
 
       {/* PRINT-ONLY VIEW FOR THE STATEMENT OF RESULT */}
       {step === 3 && finalResult && (
-        <div className="print-only">
-          <div style={{ backgroundColor: "white", padding: "2.5cm", border: "10px double #A68849", textAlign: "center", fontFamily: "Georgia, serif" }}>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
-              <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "60px", height: "64px" }} />
-              <div style={{ textAlign: "left" }}>
-                <h2 style={{ fontSize: "1.6rem", fontWeight: "900", margin: "0", letterSpacing: "1px", color: "black" }}>IBRA GLOBAL ENGLISH</h2>
-                <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "#A68849", margin: "0", letterSpacing: "2px" }}>BELAJAR SERU, LANCAR BICARA</p>
+        <div className="print-only" style={{ width: "210mm", height: "297mm", boxSizing: "border-box" }}>
+          <div style={{ backgroundColor: "white", padding: "2cm", border: "10px double #A68849", textAlign: "center", fontFamily: "Georgia, serif", height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            {/* Header */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
+                <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "60px", height: "64px" }} />
+                <div style={{ textAlign: "left" }}>
+                  <h2 style={{ fontSize: "1.6rem", fontWeight: "900", margin: "0", letterSpacing: "1px", color: "black" }}>IBRA GLOBAL ENGLISH</h2>
+                  <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "#A68849", margin: "0", letterSpacing: "2px" }}>BELAJAR SERU, LANCAR BICARA</p>
+                </div>
+              </div>
+              <hr style={{ borderColor: "#A68849", margin: "0 0 1rem" }} />
+              <h3 style={{ fontStyle: "italic", fontSize: "1.2rem", margin: "1rem 0", color: "black" }}>Placement Test Statement of Result</h3>
+            </div>
+
+            {/* Recipient info */}
+            <div>
+              <p style={{ margin: "1rem 0", color: "black" }}>Sertifikat digital ini diberikan secara resmi kepada:</p>
+              <h1 style={{ fontSize: "2.4rem", fontWeight: "900", color: "#216c7e", margin: "1rem 0" }}>{userData.fullName}</h1>
+              <p style={{ margin: "1rem 0", color: "black" }}>untuk menyelesaikan ujian evaluasi kompetensi Bahasa Inggris umum online.</p>
+            </div>
+
+            {/* Score display */}
+            <div style={{ display: "flex", justifyContent: "center", gap: "2.5cm", margin: "1.5rem 0" }}>
+              <div style={{ border: "1px solid #ddd", padding: "1rem", minWidth: "4cm" }}>
+                <p style={{ fontSize: "0.8rem", margin: "0 0 0.5rem", color: "black" }}>SKOR CAPAIAN</p>
+                <p style={{ fontSize: "1.8rem", fontWeight: "bold", margin: "0", color: "black" }}>{finalResult.score} / {QUESTIONS.length}</p>
+              </div>
+              <div style={{ border: "1px solid #ddd", padding: "1rem", minWidth: "4cm" }}>
+                <p style={{ fontSize: "0.8rem", margin: "0 0 0.5rem", color: "black" }}>REKOMENDASI TINGKAT</p>
+                <p style={{ fontSize: "1.8rem", fontWeight: "bold", margin: "0", color: "black" }}>{finalResult.level}</p>
               </div>
             </div>
-            <hr style={{ borderColor: "#A68849" }} />
-            <h3 style={{ fontStyle: "italic", fontSize: "1.2rem", margin: "1.5rem 0" }}>Placement Test Statement of Result</h3>
-            <p style={{ margin: "2rem 0" }}>Sertifikat digital ini diberikan secara resmi kepada:</p>
-            <h1 style={{ fontSize: "2.4rem", fontWeight: "900", color: "#216c7e", margin: "1.5rem 0" }}>{userData.fullName}</h1>
-            <p style={{ margin: "2rem 0" }}>untuk menyelesaikan ujian evaluasi kompetensi Bahasa Inggris umum online.</p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "3cm", margin: "2.5rem 0" }}>
-              <div style={{ border: "1px solid #ddd", padding: "1rem", minWidth: "4cm" }}>
-                <p style={{ fontSize: "0.8rem", margin: "0 0 0.5rem" }}>SKOR CAPAIAN</p>
-                <p style={{ fontSize: "1.8rem", fontWeight: "bold", margin: "0" }}>{finalResult.score} / {QUESTIONS.length}</p>
-              </div>
-              <div style={{ border: "1px solid #ddd", padding: "1rem", minWidth: "4cm" }}>
-                <p style={{ fontSize: "0.8rem", margin: "0 0 0.5rem" }}>REKOMENDASI TINGKAT</p>
-                <p style={{ fontSize: "1.8rem", fontWeight: "bold", margin: "0" }}>{finalResult.level}</p>
-              </div>
+
+            {/* Description advice */}
+            <div style={{ maxWidth: "85%", margin: "0 auto" }}>
+              <p style={{ fontStyle: "italic", margin: "1rem 0", lineHeight: "1.6", color: "black" }}>&ldquo;{finalResult.description}&rdquo;</p>
             </div>
-            <p style={{ fontStyle: "italic", margin: "2rem 0", lineHeight: "1.6" }}>&ldquo;{finalResult.description}&rdquo;</p>
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4cm" }}>
+
+            {/* Sign-off signatures */}
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2cm", padding: "0 1rem" }}>
               <div style={{ textAlign: "left" }}>
-                <p style={{ fontSize: "0.8rem", margin: "0" }}>Tanggal Terbit:</p>
-                <p style={{ fontSize: "0.9rem", fontWeight: "bold" }}>{issueDateStr}</p>
+                <p style={{ fontSize: "0.8rem", margin: "0", color: "black" }}>Tanggal Terbit:</p>
+                <p style={{ fontSize: "0.9rem", fontWeight: "bold", color: "black" }}>{issueDateStr}</p>
               </div>
               <div style={{ textAlign: "right" }}>
-                <p style={{ fontSize: "0.8rem", margin: "0" }}>Nomor Verifikasi:</p>
-                <p style={{ fontSize: "0.9rem", fontWeight: "bold" }}>IBRA-OPT-{finalResult.id.slice(0, 8).toUpperCase()}</p>
+                <p style={{ fontSize: "0.8rem", margin: "0", color: "black" }}>Nomor Verifikasi:</p>
+                <p style={{ fontSize: "0.9rem", fontWeight: "bold", color: "black" }}>IBRA-OPT-{finalResult.id.slice(0, 8).toUpperCase()}</p>
               </div>
             </div>
           </div>
