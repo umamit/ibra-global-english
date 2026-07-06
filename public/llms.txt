@@ -1,33 +1,33 @@
-# Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik di Pulau Taliabu
+# Ibra Global English Bobong
 
-Belajar Seru Lancar Bicara. Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu.
+> Belajar Seru, Lancar Bicara. Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu.
 
-## Tentang Kami
-Ibra Global English menawarkan kursus bahasa Inggris offline dengan metode pembelajaran yang menyenangkan dan efektif untuk anak-anak dan remaja. Kami fokus pada peningkatan kemampuan speaking secara aktif dan interaktif bersama tutor berpengalaman.
+Ibra Global English menawarkan kursus bahasa Inggris offline dengan metode pembelajaran yang menyenangkan (*fun learning*) dan efektif untuk anak-anak (*Kids*) dan remaja (*Teens*), serta bimbingan membaca, menulis, dan berhitung (*Fun Calistung*). Kami fokus pada peningkatan kemampuan berbicara (*speaking*) secara aktif dan percaya diri bersama tutor berpengalaman.
 
 ## Program Kursus
 
-### 1. Kids Program (Usia 5-12 tahun)
-Pembelajaran menyenangkan melalui lagu, permainan, dan visual untuk membangun kecintaan berbahasa Inggris sejak usia dini.
+- **Kids Program (Usia 5-12 tahun)** - Pembelajaran menyenangkan melalui lagu, permainan, dan visual untuk membangun kecintaan berbahasa Inggris sejak usia dini.
+- **Teens Program (Usia 13-17 tahun)** - Membantu siswa sekolah menguasai keterampilan speaking, tata bahasa (grammar), kosa kata (vocabulary), serta melatih rasa percaya diri untuk presentasi dan diskusi kelompok.
+- **Fun Calistung (Usia 5-7 tahun)** - Bimbingan membaca, menulis, dan berhitung dengan metode belajar sambil bermain yang ramah anak.
 
-### 2. Teens Program (Usia 13-17 tahun)
-Membantu siswa sekolah menguasai keterampilan speaking, tata bahasa (grammar), kosa kata (vocabulary), serta melatih rasa percaya diri untuk presentasi dan diskusi kelompok.
+## Keunggulan Utama
 
-### 3. Fun Calistung (Usia 5-7 tahun)
-Bimbingan membaca, menulis, dan berhitung dengan metode belajar sambil bermain yang ramah anak.
+- **Metode Interaktif**: Belajar sambil praktik langsung lewat percakapan aktif.
+- **Tutor Berpengalaman**: Didampingi tutor berpengalaman yang berdedikasi tinggi.
+- **Kelas Terbatas**: Maksimal 10 siswa per kelas untuk perhatian lebih personal.
+- **Fasilitas Nyaman**: Lingkungan belajar kondusif yang mendukung kreativitas.
 
-## Keunggulan
-* **Metode Interaktif**: Belajar sambil praktik langsung lewat percakapan aktif.
-* **Tutor Berpengalaman**: Didampingi tutor yang berdedikasi tinggi.
-* **Kelas Terbatas**: Maksimal 10 siswa per kelas untuk perhatian lebih personal.
-* **Fasilitas Nyaman**: Lingkungan belajar yang mendukung kreativitas.
+## Informasi Kontak & Lokasi Resmi
 
-## Hubungi Kami
-* **Alamat**: Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Kabupaten Pulau Taliabu, Maluku Utara.
-* **WhatsApp**: +62 813-5700-1357
-* **Email**: contact@ibraglobalenglish.uk
-* **Facebook**: https://www.facebook.com/IbraGlobalEnglish
-* **Instagram**: https://www.instagram.com/ibraglobalenglish/
+- **Alamat**: Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794
+- **WhatsApp**: [+62 813-5700-1357](https://wa.me/6281357001357)
+- **Email**: contact@ibraglobalenglish.uk
+- **Website Utama**: [https://ibraglobalenglish.uk](https://ibraglobalenglish.uk)
 
-## Pendaftaran & Konsultasi Gratis
-Silakan hubungi kontak kami di atas atau kunjungi langsung kantor kami untuk mendapatkan **Placement Test Gratis**!
+## Halaman Navigasi Utama (Links)
+
+- [Home](https://ibraglobalenglish.uk/) - Beranda utama informasi program, keunggulan, pendaftaran, dan biaya kursus.
+- [Gallery](https://ibraglobalenglish.uk/gallery) - Galeri foto dokumentasi ruang kelas, fasilitas, dan kegiatan belajar siswa.
+- [Privacy Policy](https://ibraglobalenglish.uk/privacy) - Halaman kebijakan privasi dan perlindungan data pribadi siswa.
+- [Terms of Service](https://ibraglobalenglish.uk/terms) - Syarat dan ketentuan pendaftaran serta aturan kursus.
+- [Full Documentation](/llms-full.txt) - Dokumen teks lengkap gabungan seluruh konten situs untuk konsumsi LLM secara menyeluruh.
