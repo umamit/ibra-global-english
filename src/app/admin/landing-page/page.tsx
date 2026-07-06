@@ -17,7 +17,7 @@ import FAQManager from "./components/FAQManager";
 import MaintenanceSettings from "./components/MaintenanceSettings";
 import ToastNotification from "../components/ToastNotification";
 import LandingTabs from "./components/LandingTabs";
-import { GalleryItem, Testimonial } from "@/types";
+import { GalleryItem } from "@/types";
 
 interface ToastState {
   show: boolean;
@@ -90,16 +90,7 @@ export default function LandingPageCMS() {
   const galleryFileRef = useRef<HTMLInputElement>(null);
 
   // ----------------------------------------------------
-  // LISTS & FORMS STATES: TESTIMONIALS
-  // ----------------------------------------------------
-  const [testimonialsList, setTestimonials] = useState<Testimonial[]>([]);
-  const [testimonialsLoading, setTestimonialsLoading] = useState<boolean>(false);
-  const [editingTestimonialId, setEditingTestimonialId] = useState<string | null>(null);
-  const [author, setAuthor] = useState<string>("");
-  const [role, setRole] = useState<string>("");
-  const [rating, setRating] = useState<number>(5);
-  const [testimonialText, setTestimonialText] = useState<string>("");
-  const [savingTestimonial, setSavingTestimonial] = useState<boolean>(false);
+
 
   const [programsList, setProgramsList] = useState<any[]>([]);
   const [benefitsList, setBenefitsList] = useState<any[]>([]);
@@ -328,27 +319,10 @@ export default function LandingPageCMS() {
     }
   };
 
-  const fetchTestimonials = async () => {
-    setTestimonialsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("testimonials")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      setTestimonials((data as Testimonial[]) || []);
-    } catch (err) {
-      console.error("Gagal mengambil testimoni:", err);
-    } finally {
-      setTestimonialsLoading(false);
-    }
-  };
-
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchHeroSettings();
       fetchGallery();
-      fetchTestimonials();
     }, 0);
     return () => clearTimeout(timer);
   }, []);
@@ -592,92 +566,7 @@ export default function LandingPageCMS() {
     }
   };
 
-  // ----------------------------------------------------
-  // TESTIMONIAL ACTIONS
-  // ----------------------------------------------------
-  const handleSaveTestimonial = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!author.trim() || !role.trim() || !testimonialText.trim()) {
-      showToast("Nama penulis, peran, dan teks ulasan wajib diisi.", "error");
-      return;
-    }
 
-    setSavingTestimonial(true);
-    try {
-      if (editingTestimonialId) {
-        // Update
-        const { error } = await supabase
-          .from("testimonials")
-          .update({
-            author: author.trim(),
-            role: role.trim(),
-            rating: parseInt(rating as any),
-            text: testimonialText.trim(),
-          })
-          .eq("id", editingTestimonialId);
-
-        if (error) throw error;
-        showToast("Testimonial berhasil disunting.");
-        setEditingTestimonialId(null);
-      } else {
-        // Create
-        const { error } = await supabase.from("testimonials").insert([
-          {
-            author: author.trim(),
-            role: role.trim(),
-            rating: parseInt(rating as any),
-            text: testimonialText.trim(),
-          },
-        ]);
-
-        if (error) throw error;
-        showToast("Testimonial ulasan baru berhasil ditambahkan!");
-      }
-
-      setAuthor("");
-      setRole("");
-      setRating(5);
-      setTestimonialText("");
-      fetchTestimonials();
-      await triggerRevalidation();
-    } catch (err) {
-      console.error("Kesalahan simpan testimoni:", err);
-      showToast("Gagal menyimpan data ulasan testimoni.", "error");
-    } finally {
-      setSavingTestimonial(false);
-    }
-  };
-
-  const handleEditTestimonialClick = (t: Testimonial) => {
-    setEditingTestimonialId(t.id);
-    setAuthor(t.author);
-    setRole(t.role);
-    setRating(t.rating);
-    setTestimonialText(t.text);
-  };
-
-  const handleCancelEditTestimonial = () => {
-    setEditingTestimonialId(null);
-    setAuthor("");
-    setRole("");
-    setRating(5);
-    setTestimonialText("");
-  };
-
-  const handleDeleteTestimonial = async (id: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus ulasan testimoni ini dari halaman utama?")) return;
-
-    try {
-      const { error } = await supabase.from("testimonials").delete().eq("id", id);
-      if (error) throw error;
-      showToast("Ulasan testimoni berhasil dihapus.");
-      fetchTestimonials();
-      await triggerRevalidation();
-    } catch (err) {
-      console.error("Kesalahan hapus testimoni:", err);
-      showToast("Gagal menghapus testimoni.", "error");
-    }
-  };
 
   const handleSaveMaintenance = async (enabled: boolean, message: string) => {
     setSavingMaintenance(true);
@@ -779,18 +668,8 @@ export default function LandingPageCMS() {
 
       {activeTab === "testimonials" && (
         <TestimonialManager
-          editingTestimonialId={editingTestimonialId} setEditingTestimonialId={setEditingTestimonialId}
-          author={author} setAuthor={setAuthor}
-          role={role} setRole={setRole}
-          rating={rating} setRating={setRating}
-          testimonialText={testimonialText} setTestimonialText={setTestimonialText}
-          savingTestimonial={savingTestimonial} setSavingTestimonial={setSavingTestimonial}
-          testimonialsList={testimonialsList} setTestimonialsList={setTestimonials}
-          testimonialsLoading={testimonialsLoading}
-          handleSaveTestimonial={handleSaveTestimonial}
-          handleCancelEditTestimonial={handleCancelEditTestimonial}
-          handleEditTestimonialClick={handleEditTestimonialClick}
-          handleDeleteTestimonial={handleDeleteTestimonial}
+          showToast={showToast}
+          triggerRevalidation={triggerRevalidation}
         />
       )}
 

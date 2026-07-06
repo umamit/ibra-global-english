@@ -11,6 +11,7 @@ import PrintReportView from "./components/PrintReportView";
 import posthog from "posthog-js";
 
 import { Student, Report, Certificate } from "@/types";
+import { exportReportsCSV } from "./reportHelpers";
 
 export default function ReportCardManagement() {
   const supabase = createClient();
@@ -206,53 +207,7 @@ export default function ReportCardManagement() {
     };
   }, []);
 
-  // A4: Export rapor ke CSV — bisa filter per-siswa
-  const exportReportsCSV = (filterStudentId = "") => {
-    const isCalistung = (program: string) => program?.toLowerCase().includes("calistung");
-    const filtered = filterStudentId
-      ? reports.filter(r => r.student_id === filterStudentId)
-      : reports;
 
-    if (filtered.length === 0) {
-      alert("Tidak ada data rapor untuk siswa yang dipilih.");
-      return;
-    }
-
-    const studentName = filterStudentId
-      ? (filtered[0]?.students?.name || "siswa").replace(/\s+/g, "_")
-      : "semua_siswa";
-
-    const headers = ["No", "Nama Siswa", "Program", "Modul", "Skor 1", "Skor 2", "Skor 3", "Skor 4", "Rata-rata", "Catatan Tutor", "Tanggal Terbit"];
-    const rows = filtered.map((r, idx) => {
-      const avg = Math.round((r.speaking_score + r.grammar_score + r.vocabulary_score + r.active_score) / 4);
-      const prog = r.students?.program || "";
-      const label = isCalistung(prog)
-        ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-        : ["Speaking", "Grammar", "Vocabulary", "Active"];
-      return [
-        idx + 1,
-        r.students?.name || "-",
-        prog || "-",
-        r.module_name || "-",
-        `${label[0]}: ${r.speaking_score}`,
-        `${label[1]}: ${r.grammar_score}`,
-        `${label[2]}: ${r.vocabulary_score}`,
-        `${label[3]}: ${r.active_score}`,
-        avg,
-        r.tutor_notes || "-",
-        new Date(r.created_at).toLocaleDateString("id-ID")
-      ];
-    });
-
-    const csvContent = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `rapor_${studentName}_${new Date().toISOString().split("T")[0]}.csv`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
 
   const handleCreateCertificate = async (report: Report) => {
     const certNumInput = prompt("Masukkan Nomor Sertifikat Resmi LKP Dinas Pendidikan:\n(Contoh: 001/IGE/VI/2026)");
@@ -495,7 +450,7 @@ export default function ReportCardManagement() {
             </select>
             <button
               className="btn-portal-outline"
-              onClick={() => exportReportsCSV(exportFilterId)}
+              onClick={() => exportReportsCSV(reports, exportFilterId)}
               style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.825rem" }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>

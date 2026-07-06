@@ -9,9 +9,10 @@ import FinanceStatsCards from "./components/FinanceStatsCards";
 import FinanceTable from "./components/FinanceTable";
 import FinanceModal from "./components/FinanceModal";
 import FinanceAnalytics from "./components/FinanceAnalytics";
+import FinanceWaModal from "./components/FinanceWaModal";
 import { getMonthName, terbilang, formatRupiah, getCurrentMonth } from "../utils";
 import ToastNotification from "../components/ToastNotification";
-import { getStudentPayment, exportPaymentsCSV } from "./financeHelpers";
+import { getStudentPayment, exportPaymentsCSV, printReceiptHTML } from "./financeHelpers";
 import { useFinanceModal } from "./hooks/useFinanceModal";
 
 import { Student, Payment } from "@/types";
@@ -42,11 +43,6 @@ export default function AdminFinance() {
   const [waModalOpen, setWaModalOpen] = useState<boolean>(false);
   const [waStudent, setWaStudent] = useState<Student | null>(null);
   const [waPayment, setWaPayment] = useState<any | null>(null);
-  const [waPhone, setWaPhone] = useState<string>("");
-  const [waMessage, setWaMessage] = useState<string>("");
-  const [waLoading, setWaLoading] = useState<boolean>(false);
-  const [waError, setWaError] = useState<string>("");
-  const [waDuplicityWarning, setWaDuplicityWarning] = useState<boolean>(false);
   const [sppPrices, setSppPrices] = useState<Record<string, number>>({
     "Kids Program": 300000,
     "Teens Program": 300000,
@@ -113,81 +109,10 @@ export default function AdminFinance() {
     }
   };
 
-  const handleOpenWaBillingModal = async (student: Student, pay: any) => {
+  const handleOpenWaBillingModal = (student: Student, pay: any) => {
     setWaStudent(student);
     setWaPayment(pay);
-    setWaPhone("");
-    setWaMessage("");
-    setWaError("");
-    setWaDuplicityWarning(false);
     setWaModalOpen(true);
-    setWaLoading(true);
-
-    try {
-      const { data: regData, error: errReg } = await supabase
-        .from("registrations")
-        .select("whatsapp, parent_name")
-        .eq("student_name", student.name);
-
-      if (!errReg && regData && regData.length > 0) {
-        setWaPhone(regData[0].whatsapp || "");
-        if (regData.length > 1) {
-          setWaDuplicityWarning(true);
-        }
-      }
-    } catch (err) {
-      console.warn("Gagal mengambil nomor whatsapp registrasi:", err);
-    } finally {
-      setWaLoading(false);
-    }
-  };
-
-  const handleGenerateWaBillingDraft = async () => {
-    if (!waStudent || !waPayment) return;
-    setWaLoading(true);
-    setWaError("");
-    try {
-      const res = await fetch("/api/admin/ai-assist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode: "spp-billing-draft",
-          payload: {
-            name: waStudent.name,
-            program: waStudent.program,
-            month: selectedMonth,
-            amount: waPayment.amount,
-            parent_name: waStudent.profiles?.full_name || ""
-          }
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Gagal membuat draf pesan.");
-
-      setWaMessage(data.reply || "");
-    } catch (err: any) {
-      console.error(err);
-      setWaError(err.message || "Gagal membuat draf pesan billing.");
-    } finally {
-      setWaLoading(false);
-    }
-  };
-
-  const handleSendWaBilling = () => {
-    if (!waPhone.trim() || !waMessage.trim()) return;
-    
-    let cleanPhone = waPhone.replace(/[^0-9]/g, "");
-    if (cleanPhone.startsWith("0")) {
-      cleanPhone = "62" + cleanPhone.slice(1);
-    }
-
-    const encodedMessage = encodeURIComponent(waMessage);
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
-    
-    window.open(waUrl, "_blank");
-    setWaModalOpen(false);
-    showToast("Membuka WhatsApp Web untuk mengirim pesan...");
   };
 
   // Use custom hook for modal logic
@@ -329,249 +254,7 @@ export default function AdminFinance() {
   })();
 
   const handlePrintReceipt = (student: Student, pay: any) => {
-    const amountVal = typeof pay.amount === "string" ? parseInt(pay.amount, 10) : (pay.amount || 0);
-    const formattedAmount = formatRupiah(amountVal);
-    const amountInWords = (terbilang(amountVal) || "Nol").trim() + " Rupiah";
-    const payMonth = pay.month || selectedMonth;
-    const receiptNo = `INV/${payMonth.replace("-", "")}/${student.id.substring(0, 6).toUpperCase()}`;
-    const paymentDateStr = pay.payment_date
-      ? new Date(pay.payment_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
-      : new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
-    const monthName = getMonthName(payMonth);
-
-    const printWindow = window.open("", "_blank", "width=850,height=650");
-    if (!printWindow) return;
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Kuitansi Pembayaran SPP - ${student.name}</title>
-          <style>
-            body {
-              font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-              color: #1e293b;
-              background-color: #fff;
-              margin: 0;
-              padding: 40px;
-            }
-            .receipt-container {
-              border: 2px solid #216c7e;
-              padding: 30px;
-              position: relative;
-              max-width: 700px;
-              margin: 0 auto;
-              background-color: #fff;
-            }
-            .header {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              border-bottom: 2px solid #216c7e;
-              padding-bottom: 15px;
-              margin-bottom: 25px;
-            }
-            .logo-text h1 {
-              font-size: 1.5rem;
-              font-weight: 800;
-              color: #216c7e;
-              margin: 0;
-              letter-spacing: 0.03em;
-            }
-            .logo-text p {
-              font-size: 0.8rem;
-              color: #64748b;
-              margin: 3px 0 0 0;
-              font-weight: 500;
-            }
-            .receipt-title {
-              text-align: right;
-            }
-            .receipt-title h2 {
-              font-size: 2rem;
-              font-weight: 800;
-              color: #216c7e;
-              margin: 0;
-              text-transform: uppercase;
-              letter-spacing: 0.1em;
-            }
-            .receipt-title p {
-              font-size: 0.85rem;
-              color: #475569;
-              margin: 5px 0 0 0;
-              font-weight: 700;
-              font-family: monospace;
-            }
-            .content-table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 30px;
-            }
-            .content-table td {
-              padding: 12px 0;
-              vertical-align: middle;
-              font-size: 0.95rem;
-            }
-            .content-table td.label {
-              width: 170px;
-              font-weight: 600;
-              color: #475569;
-              text-transform: uppercase;
-              font-size: 0.8rem;
-              letter-spacing: 0.05em;
-            }
-            .content-table td.value {
-              color: #0f172a;
-            }
-            .dotted-underline {
-              border-bottom: 1.5px dotted #cbd5e1;
-              display: block;
-              padding-bottom: 3px;
-            }
-            .amount-box {
-              background-color: #f8fafc;
-              border: 2.5px solid #216c7e;
-              padding: 12px 25px;
-              font-size: 1.4rem;
-              font-weight: 800;
-              color: #216c7e;
-              display: inline-block;
-              margin-top: 5px;
-              border-radius: 4px;
-              letter-spacing: 0.02em;
-            }
-            .footer-section {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-end;
-              margin-top: 40px;
-            }
-            .note {
-              font-size: 0.75rem;
-              color: #64748b;
-              max-width: 320px;
-              line-height: 1.4;
-            }
-            .signature {
-              text-align: center;
-              width: 220px;
-            }
-            .signature p {
-              margin: 0;
-              font-size: 0.85rem;
-              color: #475569;
-            }
-            .signature .name {
-              font-weight: 700;
-              color: #0f172a;
-              margin-top: 75px;
-              border-bottom: 1.5px solid #0f172a;
-              padding-bottom: 4px;
-              display: inline-block;
-              width: 100%;
-              text-transform: uppercase;
-              font-size: 0.9rem;
-              letter-spacing: 0.03em;
-            }
-            .watermark {
-              position: absolute;
-              top: 55%;
-              left: 50%;
-              transform: translate(-50%, -50%) rotate(-15deg);
-              font-size: 4.5rem;
-              font-weight: 900;
-              color: rgba(33, 108, 126, 0.04);
-              text-transform: uppercase;
-              letter-spacing: 0.15em;
-              white-space: nowrap;
-              pointer-events: none;
-              user-select: none;
-            }
-            @media print {
-              body {
-                padding: 0;
-              }
-              .receipt-container {
-                border: 2px solid #000;
-              }
-              .amount-box {
-                background-color: #fff !important;
-                border: 2px solid #000;
-              }
-              .watermark {
-                color: rgba(0, 0, 0, 0.02);
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="receipt-container">
-            <div class="watermark">IBRA GLOBAL</div>
-
-            <div class="header">
-              <div class="logo-text">
-                <h1>IBRA GLOBAL ENGLISH</h1>
-                <p>Jl. TPU Bobong, Pulau Taliabu, Maluku Utara</p>
-                <p>HP/WA: +62 813-5700-1357 | Email: admin@ibraglobalenglish.uk</p>
-              </div>
-              <div class="receipt-title">
-                <h2>Kuitansi</h2>
-                <p>No: ${receiptNo}</p>
-              </div>
-            </div>
-
-            <table class="content-table">
-              <tr>
-                <td class="label">Diterima Dari</td>
-                <td class="value">
-                  <span class="dotted-underline"><strong>${student.profiles?.full_name || "-"}</strong> (Orang Tua/Wali dari <strong>${student.name}</strong>)</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="label">Untuk Pembayaran</td>
-                <td class="value">
-                  <span class="dotted-underline">SPP Bimbingan Belajar Program <strong>${student.program}</strong> - Bulan <strong>${monthName}</strong></span>
-                </td>
-              </tr>
-              <tr>
-                <td class="label">Sejumlah Uang</td>
-                <td class="value">
-                  <span class="dotted-underline" style="font-style: italic; font-weight: 600;"># ${amountInWords} #</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="label">Metode Bayar</td>
-                <td class="value">
-                  <span class="dotted-underline">${pay.payment_method || "Transfer Bank"}</span>
-                </td>
-              </tr>
-            </table>
-
-            <div class="footer-section">
-              <div>
-                <p style="margin: 0; font-size: 0.85rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">Jumlah Nominal:</p>
-                <div class="amount-box">${formattedAmount}</div>
-                <div class="note" style="margin-top: 15px;">
-                  * Bukti pembayaran ini diterbitkan secara sah dan elektronik.<br/>
-                  * Pembayaran yang telah lunas tidak dapat ditarik kembali.
-                </div>
-              </div>
-
-              <div class="signature">
-                <p>Bobong, ${paymentDateStr}</p>
-                <p style="margin-top: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Penerima / Admin,</p>
-                <span class="name">Husnita Usman, M.Pd.</span>
-                <p style="margin-top: 5px; font-size: 0.75rem; font-weight: 600; color: #64748b;">Ibra Global English</p>
-              </div>
-            </div>
-          </div>
-          <script>
-            window.onload = function() {
-              window.print();
-            }
-          </script>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
+    printReceiptHTML(student, pay, selectedMonth, getMonthName, formatRupiah, terbilang);
   };
 
   return (
@@ -755,143 +438,19 @@ export default function AdminFinance() {
     />
 
     {/* WHATSAPP BILLING MODAL */}
-    {waModalOpen && (
-      <div className="portal-modal-overlay" onClick={() => { if (!waLoading) setWaModalOpen(false); }}>
-        <div className="portal-modal" style={{ maxWidth: "600px", padding: "2rem" }} onClick={(e) => e.stopPropagation()}>
-          
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-              💬 Kirim Tagihan SPP via AI (WhatsApp)
-            </h2>
-            <button 
-              type="button" 
-              onClick={() => setWaModalOpen(false)}
-              disabled={waLoading}
-              style={{ background: "transparent", border: "none", fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-400)", cursor: waLoading ? "not-allowed" : "pointer" }}
-            >
-              &times;
-            </button>
-          </div>
-
-          {waError && (
-            <div className="auth-error-banner" style={{ marginBottom: "1rem", padding: "0.75rem 1rem", fontSize: "0.85rem" }}>
-              <span>⚠️ {waError}</span>
-            </div>
-          )}
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", fontSize: "0.9rem" }}>
-            
-            <div style={{ backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "8px", border: "1px solid var(--color-gray-200)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-              <div>
-                <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "600" }}>Nama Siswa</p>
-                <p style={{ margin: 0, fontWeight: "800", color: "var(--color-gray-800)" }}>{waStudent?.name}</p>
-              </div>
-              <div>
-                <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "600" }}>Program</p>
-                <p style={{ margin: 0, fontWeight: "700" }}>{waStudent?.program}</p>
-              </div>
-              <div>
-                <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "600" }}>Bulan Tagihan</p>
-                <p style={{ margin: 0, fontWeight: "700" }}>{getMonthName(selectedMonth)}</p>
-              </div>
-              <div>
-                <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "600" }}>Nominal SPP</p>
-                <p style={{ margin: 0, fontWeight: "800", color: "var(--color-primary-dark)" }}>{formatRupiah(waPayment?.amount || 0)}</p>
-              </div>
-            </div>
-
-            {waDuplicityWarning && (
-              <div style={{
-                backgroundColor: "rgba(245, 158, 11, 0.1)",
-                border: "1px solid rgba(245, 158, 11, 0.3)",
-                padding: "0.75rem 1rem",
-                borderRadius: "8px",
-                color: "#d97706",
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                lineHeight: "1.4"
-              }}>
-                ⚠️ Peringatan: Ditemukan lebih dari 1 data pendaftaran dengan nama siswa &quot;{waStudent?.name}&quot;. Harap verifikasi nomor WhatsApp dan nama orang tua penerima di bawah ini dengan teliti.
-              </div>
-            )}
-
-            <div className="form-group">
-              <label className="form-label" style={{ fontWeight: "800" }}>Nomor WhatsApp Penerima (Orang Tua)</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                placeholder="Contoh: 081357001357 atau 6281357001357"
-                value={waPhone}
-                onChange={(e) => setWaPhone(e.target.value)}
-                disabled={waLoading}
-                required
-              />
-              <span style={{ fontSize: "0.75rem", color: "var(--color-gray-400)" }}>
-                *Sistem otomatis mencari nomor dari formulir pendaftaran. Jika tidak terisi, silakan ketik manual.
-              </span>
-            </div>
-
-            {!waMessage ? (
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
-                <button 
-                  type="button" 
-                  className="btn-portal-primary" 
-                  onClick={handleGenerateWaBillingDraft}
-                  disabled={waLoading || !waPhone.trim()}
-                >
-                  <span>{waLoading ? "🤖 Menghubungi Groq AI..." : "Draf Pesan dengan AI"}</span>
-                </button>
-              </div>
-            ) : (
-              <div className="form-group">
-                <label className="form-label" style={{ fontWeight: "800" }}>Draf Pesan Tagihan (Silakan Edit Jika Perlu)</label>
-                <textarea
-                  className="form-input"
-                  style={{ minHeight: "150px", fontFamily: "inherit", padding: "0.75rem", lineHeight: "1.5" }}
-                  value={waMessage}
-                  onChange={(e) => setWaMessage(e.target.value)}
-                  disabled={waLoading}
-                  required
-                />
-                
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.5rem" }}>
-                  <button 
-                    type="button" 
-                    className="btn-portal-outline" 
-                    onClick={() => setWaMessage("")}
-                    disabled={waLoading}
-                    style={{ color: "var(--color-danger)" }}
-                  >
-                    Hapus Draf / Ulangi
-                  </button>
-                  <div style={{ display: "flex", gap: "0.5rem" }}>
-                    <button 
-                      type="button" 
-                      className="btn-portal-outline" 
-                      onClick={() => setWaModalOpen(false)}
-                      disabled={waLoading}
-                    >
-                      Batal
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn-portal-primary" 
-                      onClick={handleSendWaBilling}
-                      disabled={waLoading || !waPhone.trim() || !waMessage.trim()}
-                      style={{ background: "#25d366", borderColor: "#25d366" }}
-                    >
-                      <span>💬 Kirim ke WhatsApp</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-          </div>
-
-        </div>
-      </div>
-    )}
+    <FinanceWaModal
+      isOpen={waModalOpen}
+      onClose={() => setWaModalOpen(false)}
+      student={waStudent}
+      payment={waPayment}
+      selectedMonth={selectedMonth}
+      getMonthName={getMonthName}
+      formatRupiah={formatRupiah}
+      onSuccess={(msg) => {
+        setWaModalOpen(false);
+        showToast(msg);
+      }}
+    />
 
   </div>
 );

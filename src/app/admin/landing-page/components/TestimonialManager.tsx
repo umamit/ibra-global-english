@@ -1,51 +1,139 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-
+import React, { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 import { Testimonial } from "@/types";
 
 interface TestimonialManagerProps {
-  editingTestimonialId: string | null;
-  setEditingTestimonialId: (id: string | null) => void;
-  author: string;
-  setAuthor: (val: string) => void;
-  role: string;
-  setRole: (val: string) => void;
-  rating: number;
-  setRating: (val: number) => void;
-  testimonialText: string;
-  setTestimonialText: (val: string) => void;
-  savingTestimonial: boolean;
-  setSavingTestimonial: (val: boolean) => void;
-  testimonialsList: Testimonial[];
-  setTestimonialsList: (list: Testimonial[]) => void;
-  testimonialsLoading: boolean;
-  handleSaveTestimonial: React.FormEventHandler<HTMLFormElement>;
-  handleCancelEditTestimonial: () => void;
-  handleEditTestimonialClick: (t: Testimonial) => void;
-  handleDeleteTestimonial: (id: string) => void;
+  showToast: (msg: string, type?: "success" | "error") => void;
+  triggerRevalidation: () => Promise<void>;
 }
 
 export default function TestimonialManager({
-  editingTestimonialId, setEditingTestimonialId,
-  author, setAuthor,
-  role, setRole,
-  rating, setRating,
-  testimonialText, setTestimonialText,
-  savingTestimonial, setSavingTestimonial,
-  testimonialsList, setTestimonialsList,
-  testimonialsLoading,
-  handleSaveTestimonial,
-  handleCancelEditTestimonial,
-  handleEditTestimonialClick,
-  handleDeleteTestimonial
+  showToast,
+  triggerRevalidation
 }: TestimonialManagerProps) {
+  const supabase = createClient();
+
+  // Testimonial Specific States
+  const [testimonialsList, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonialsLoading, setTestimonialsLoading] = useState<boolean>(false);
+  const [editingTestimonialId, setEditingTestimonialId] = useState<string | null>(null);
+  
+  // Form Fields
+  const [author, setAuthor] = useState<string>("");
+  const [role, setRole] = useState<string>("");
+  const [rating, setRating] = useState<number>(5);
+  const [testimonialText, setTestimonialText] = useState<string>("");
+  const [savingTestimonial, setSavingTestimonial] = useState<boolean>(false);
+
+  const fetchTestimonials = async () => {
+    setTestimonialsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setTestimonials(data || []);
+    } catch (err) {
+      console.error("Gagal mengambil data testimoni:", err);
+    } finally {
+      setTestimonialsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const handleSaveTestimonial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!author.trim() || !role.trim() || !testimonialText.trim()) {
+      showToast("Nama penulis, peran, dan teks ulasan wajib diisi.", "error");
+      return;
+    }
+
+    setSavingTestimonial(true);
+    try {
+      if (editingTestimonialId) {
+        // Update
+        const { error } = await supabase
+          .from("testimonials")
+          .update({
+            author: author.trim(),
+            role: role.trim(),
+            rating: parseInt(rating as any),
+            text: testimonialText.trim(),
+          })
+          .eq("id", editingTestimonialId);
+
+        if (error) throw error;
+        showToast("Testimonial berhasil disunting.");
+        setEditingTestimonialId(null);
+      } else {
+        // Create
+        const { error } = await supabase.from("testimonials").insert([
+          {
+            author: author.trim(),
+            role: role.trim(),
+            rating: parseInt(rating as any),
+            text: testimonialText.trim(),
+          },
+        ]);
+
+        if (error) throw error;
+        showToast("Testimonial ulasan baru berhasil ditambahkan!");
+      }
+
+      setAuthor("");
+      setRole("");
+      setRating(5);
+      setTestimonialText("");
+      fetchTestimonials();
+      await triggerRevalidation();
+    } catch (err) {
+      console.error("Kesalahan simpan testimoni:", err);
+      showToast("Gagal menyimpan data ulasan testimoni.", "error");
+    } finally {
+      setSavingTestimonial(false);
+    }
+  };
+
+  const handleEditTestimonialClick = (t: Testimonial) => {
+    setEditingTestimonialId(t.id);
+    setAuthor(t.author);
+    setRole(t.role);
+    setRating(t.rating);
+    setTestimonialText(t.text);
+  };
+
+  const handleCancelEditTestimonial = () => {
+    setEditingTestimonialId(null);
+    setAuthor("");
+    setRole("");
+    setRating(5);
+    setTestimonialText("");
+  };
+
+  const handleDeleteTestimonial = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus ulasan testimoni ini dari halaman utama?")) return;
+
+    try {
+      const { error } = await supabase.from("testimonials").delete().eq("id", id);
+      if (error) throw error;
+      showToast("Ulasan testimoni berhasil dihapus.");
+      fetchTestimonials();
+      await triggerRevalidation();
+    } catch (err) {
+      console.error("Kesalahan hapus testimoni:", err);
+      showToast("Gagal menghapus testimoni.", "error");
+    }
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-
-
-
       {/* Form Testimoni */}
       <div className="portal-card" style={{ padding: "2rem" }}>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-800)", marginBottom: "1.5rem" }}>
