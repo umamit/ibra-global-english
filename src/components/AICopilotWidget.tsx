@@ -73,8 +73,8 @@ export default function AICopilotWidget() {
       <div className={`ai-chat-window ${isOpen ? "open" : ""}`} style={{ left: "20px", right: "auto", border: "1px solid rgba(166, 136, 73, 0.2)", boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }} role="dialog" aria-label="Ibra AI Admin Copilot">
         <div className="ai-chat-header" style={{ backgroundColor: "var(--color-primary-dark)" }}>
           <div className="ai-chat-header-info">
-            <div className="ai-chat-avatar" style={{ backgroundColor: "var(--color-accent)", color: "white" }}>
-              <RobotIcon size={20} />
+            <div className="ai-chat-avatar" style={{ backgroundColor: "transparent", color: "white", padding: 0 }}>
+              <img src="/assets/copilot-logo.jpg" alt="Ibra AI Logo" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
             </div>
             <div>
               <div className="ai-chat-header-name">Ibra AI Admin Copilot</div>
@@ -95,8 +95,8 @@ export default function AICopilotWidget() {
           {messages.map((msg) => (
             <div key={msg.id} className={`ai-chat-msg ${msg.role === "user" ? "user" : "assistant"}`}>
               {msg.role === "assistant" && (
-                <div className="ai-msg-avatar" style={{ backgroundColor: "var(--color-primary)", color: "white" }}>
-                  <RobotIcon size={13} />
+                <div className="ai-msg-avatar" style={{ backgroundColor: "transparent", padding: 0 }}>
+                  <img src="/assets/copilot-logo.jpg" alt="Ibra AI Logo" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
                 </div>
               )}
               <div className="ai-msg-bubble-wrap">
@@ -112,7 +112,9 @@ export default function AICopilotWidget() {
 
           {isLoading && (
             <div className="ai-chat-msg assistant">
-              <div className="ai-msg-avatar" style={{ backgroundColor: "var(--color-primary)", color: "white" }}><RobotIcon size={13} /></div>
+              <div className="ai-msg-avatar" style={{ backgroundColor: "transparent", padding: 0 }}>
+                <img src="/assets/copilot-logo.jpg" alt="Ibra AI Logo" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+              </div>
               <div className="ai-msg-bubble-wrap">
                 <div className="ai-msg-bubble ai-typing"><span/><span/><span/></div>
               </div>
@@ -155,14 +157,14 @@ export default function AICopilotWidget() {
         onClick={isOpen ? handleClose : handleOpen}
         aria-label={isOpen ? "Tutup Ibra AI Admin Copilot" : "Buka Ibra AI Admin Copilot"}
         id="ai-copilot-fab-btn"
-        style={{ left: "20px", right: "auto", backgroundColor: "var(--color-primary-dark)", color: "white" }}
+        style={{ left: "20px", right: "auto", backgroundColor: "var(--color-primary-dark)", color: "white", padding: 0 }}
       >
         {isOpen ? (
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         ) : (
-          <RobotIcon size={26} />
+          <img src="/assets/copilot-logo.jpg" alt="Ibra AI Logo" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
         )}
       </button>
 
