@@ -6,6 +6,7 @@ import React from 'react';
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { DEFAULT_TAX_RECORDS, DEFAULT_TAX_ASSETS } from "@/utils/fallbackData";
+import { formatRupiah } from "../utils";
 import TaxCalculator from "./components/TaxCalculator";
 import TaxArchive from "./components/TaxArchive";
 import TaxAssets from "./components/TaxAssets";
@@ -449,9 +450,7 @@ export default function AdminTaxPage() {
     return Math.random().toString(36).substring(2, 9);
   };
 
-  const formatRupiah = (number: number): string => {
-    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(number);
-  };
+
 
   const handlePrintResult = () => {
     window.print();

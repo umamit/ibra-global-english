@@ -13,6 +13,7 @@ import TutorReports from "./components/TutorReports";
 import TutorLMS from "./components/TutorLMS";
 
 import { Student, LmsMaterial, LmsSubmission } from "@/types";
+import { formatRupiah } from "../admin/utils";
 
 interface AttendanceEntry {
   status: string;
@@ -496,9 +497,7 @@ export default function TutorPortal() {
     }
   };
 
-  const formatRupiah = (number: number): string => {
-    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(number);
-  };
+
 
   const handlePrintReport = () => {
     window.print();
