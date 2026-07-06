@@ -60,14 +60,6 @@ export default function AdminPlacementTest() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [statusMsg, setStatusMsg] = useState<StatusMsg>({ type: "", text: "" });
-  const [regenerating, setRegenerating] = useState<boolean>(false);
-
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [previewResult, setPreviewResult] = useState<PreviewResult[] | null>(null);
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
-  const [loadingHistory, setLoadingHistory] = useState<boolean>(false);
-
   // Filters State
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -120,21 +112,6 @@ export default function AdminPlacementTest() {
     setMetrics({ total, pending, contacted, enrolled });
   };
 
-  const fetchCategories = async (): Promise<void> => {
-    const { data, error } = await supabase.from("placement_test_questions").select("category").order("category");
-    if (error) return;
-    const unique = Array.from(new Set((data || []).map((r: { category: string }) => r.category).filter(Boolean)));
-    setCategories(unique);
-  };
-
-  const fetchHistory = async (): Promise<void> => {
-    setLoadingHistory(true);
-    const { data, error } = await supabase.from("placement_test_regenerate_logs").select("*").order("created_at", { ascending: false }).limit(20);
-    if (error) setStatusMsg({ type: "error", text: "Gagal memuat history regenerate." });
-    else setHistory(data || []);
-    setLoadingHistory(false);
-  };
-
   const testAiConnection = async () => {
     setAiConnectionStatus("testing");
     setAiDiagnosticMessage("");
@@ -163,8 +140,6 @@ export default function AdminPlacementTest() {
     const load = async () => {
       if (cancelled) return;
       await fetchData();
-      await fetchCategories();
-      await fetchHistory();
       await testAiConnection();
     };
     load();
@@ -304,89 +279,7 @@ export default function AdminPlacementTest() {
 
       <AlertBanner message={statusMsg.text} type={statusMsg.type} />
 
-      {/* Admin tabs / AI actions placeholder */}
-      <div className="portal-card" style={{ padding: "1.25rem", marginBottom: "2rem" }}>
-        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
-          <select className="form-input" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} style={{ minWidth: "220px" }}>
-            <option value="all">Semua Kategori</option>
-            {categories.map((c) => (<option key={c} value={c}>{c}</option>))}
-          </select>
-          <button className="btn-portal-outline" disabled={regenerating} onClick={async () => {
-            setRegenerating(true);
-            setStatusMsg({ type: "", text: "" });
-            setPreviewResult(null);
-            try {
-              const res = await fetch("/api/admin/placement-test/regenerate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ replaceAll: selectedCategory === "all", category: selectedCategory !== "all" ? selectedCategory : undefined, mode: "preview" })
-              });
-              const data = await res.json();
-              if (!res.ok) throw new Error(data.error || "Gagal preview");
-              setPreviewResult(data.results);
-              setStatusMsg({ type: "success", text: "Preview soalAI berhasil dimuat." });
-            } catch (err) {
-              const msg = err instanceof Error ? err.message : String(err);
-              setStatusMsg({ type: "error", text: msg });
-            } finally {
-              setRegenerating(false);
-            }
-          }}>{regenerating ? "Memproses..." : "Preview Soal AI"}</button>
-          <button className="btn-portal-primary" disabled={regenerating} onClick={async () => {
-            setRegenerating(true);
-            setStatusMsg({ type: "", text: "" });
-            try {
-              const res = await fetch("/api/admin/placement-test/regenerate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ replaceAll: selectedCategory === "all", category: selectedCategory !== "all" ? selectedCategory : undefined, mode: "apply" })
-              });
-              const data = await res.json();
-              if (!res.ok) throw new Error(data.error || "Gagal regenerate");
-              const successCount = data.results?.filter((r: { status: string }) => r.status === "success").length || 0;
-              setStatusMsg({ type: "success", text: `Regenerate selesai. ${successCount} soal berhasil diperbarui.` });
-              fetchHistory();
-            } catch (err) {
-              const msg = err instanceof Error ? err.message : String(err);
-              setStatusMsg({ type: "error", text: msg });
-            } finally {
-              setRegenerating(false);
-            }
-          }}>{regenerating ? "Memproses..." : "Regenerate Soal dengan AI"}</button>
-          <span style={{ fontSize: "0.85rem", color: "var(--color-gray-500)" }}>Soal mengikuti standar CEFR A1-C2 dan bisa diganti kapan saja.</span>
-        </div>
-      </div>
 
-      {/* Preview Modal */}
-      {previewResult && (
-        <div className="portal-card" style={{ padding: "1.5rem", marginBottom: "2rem", border: "2px dashed var(--color-accent)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-            <h3 style={{ margin: 0 }}>Preview Soal Hasil Generate AI</h3>
-            <button className="btn-portal-outline" onClick={() => setPreviewResult(null)}>Tutup</button>
-          </div>
-          <div style={{ display: "grid", gap: "1rem" }}>
-            {previewResult.map((r) => (
-              <div key={r.id} style={{ padding: "1rem", border: "1px solid #eee", borderRadius: "8px" }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", marginBottom: "0.5rem" }}>
-                  Status: <strong>{r.status}</strong> | ID: {r.id}
-                </div>
-                {r.message && <div>{r.message}</div>}
-                {r.preview && (
-                  <div>
-                    <div><strong>Kategori:</strong> {r.preview.category}</div>
-                    <div style={{ margin: "0.5rem 0" }}><strong>Soal:</strong> {r.preview.question}</div>
-                    <ul style={{ paddingLeft: "1.25rem" }}>
-                      {r.preview.options.map((opt, i) => (
-                        <li key={i}>{opt.text} {Number(opt.score) === 1 ? "✅ (jawaban benar)" : ""}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Metrics Summary Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem", marginBottom: "2.5rem" }}>
@@ -728,45 +621,7 @@ export default function AdminPlacementTest() {
           )}
         />
       )}
-      {/* History regenerate */}
-      <div className="portal-card" style={{ padding: "1.5rem", marginBottom: "2rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-          <h3 style={{ margin: 0 }}>History Regenerate Soal</h3>
-          <button className="btn-portal-outline" onClick={fetchHistory} disabled={loadingHistory}>{loadingHistory ? "Memuat..." : "Refresh"}</button>
-        </div>
-        {history.length === 0 ? (
-          <p style={{ color: "var(--color-gray-500)" }}>Belum ada riwayat regenerate soal.</p>
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ textAlign: "left", borderBottom: "2px solid #eee" }}>
-                  <th style={{ padding: "0.5rem" }}>Waktu</th>
-                  <th style={{ padding: "0.5rem" }}>Admin</th>
-                  <th style={{ padding: "0.5rem" }}>Kategori</th>
-                  <th style={{ padding: "0.5rem" }}>Aksi</th>
-                  <th style={{ padding: "0.5rem" }}>Status</th>
-                  <th style={{ padding: "0.5rem" }}>Soal Lama</th>
-                  <th style={{ padding: "0.5rem" }}>Soal Baru</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((h) => (
-                  <tr key={h.id} style={{ borderBottom: "1px solid #f5f5f5" }}>
-                    <td style={{ padding: "0.5rem", fontSize: "0.85rem" }}>{new Date(h.created_at).toLocaleString("id-ID")}</td>
-                    <td style={{ padding: "0.5rem", fontSize: "0.85rem" }}>{h.admin_email || "-"}</td>
-                    <td style={{ padding: "0.5rem", fontSize: "0.85rem" }}>{h.category}</td>
-                    <td style={{ padding: "0.5rem", fontSize: "0.85rem" }}>{h.action}</td>
-                    <td style={{ padding: "0.5rem", fontSize: "0.85rem" }}>{h.status}</td>
-                    <td style={{ padding: "0.5rem", fontSize: "0.85rem", maxWidth: "240px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.old_question}</td>
-                    <td style={{ padding: "0.5rem", fontSize: "0.85rem", maxWidth: "240px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.new_question || "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+
       {/* AI Follow-Up Modal */}
       {followUpStudent && (
         <div style={{
