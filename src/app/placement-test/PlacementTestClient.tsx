@@ -25,6 +25,7 @@ export default function PlacementTestClient() {
   const [userData, setUserData] = useState({ fullName: "", email: "", whatsapp: "" });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({}); // { questionId: chosenIndex }
+  const [secondsLeft, setSecondsLeft] = useState(30);
   const [submitting, setSubmitting] = useState(false);
   const [finalResult, setFinalResult] = useState<PlacementResult | null>(null);
 
@@ -205,6 +206,53 @@ export default function PlacementTestClient() {
       calculateAndSubmitResult();
     }
   };
+
+  const handleTimeOut = () => {
+    const currentQuestion = QUESTIONS[currentQuestionIndex];
+    if (!currentQuestion) return;
+
+    if (currentQuestion.is_speaking) {
+      if (answers[currentQuestion.id] === undefined) {
+        setAnswers((prev) => ({
+          ...prev,
+          [currentQuestion.id]: 0
+        }));
+      }
+    }
+
+    setTranscribedText("");
+    setSpeakingScore(null);
+    setRecognitionError("");
+
+    if (currentQuestionIndex < QUESTIONS.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    } else {
+      calculateAndSubmitResult();
+    }
+  };
+
+  // 1. Timer ticking effect
+  useEffect(() => {
+    if (step !== 1) return;
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [step]);
+
+  // 2. Reset timer when active question index changes
+  useEffect(() => {
+    if (step === 1) {
+      setSecondsLeft(30);
+    }
+  }, [currentQuestionIndex, step]);
+
+  // 3. Trigger auto-advance when timer hits 0
+  useEffect(() => {
+    if (step === 1 && secondsLeft === 0) {
+      handleTimeOut();
+    }
+  }, [secondsLeft, step]);
 
   const handlePrevQuestion = () => {
     setTranscribedText("");
@@ -431,18 +479,49 @@ export default function PlacementTestClient() {
           {/* STEP 2: QUIZ INTERACTIVE */}
           {step === 2 && (
             <div>
+              <style dangerouslySetInnerHTML={{__html: `
+                @keyframes pulse-red {
+                  0% { transform: scale(1); }
+                  100% { transform: scale(1.06); }
+                }
+              `}} />
               {/* Progress bar */}
               <div style={{ marginBottom: "1.5rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                  <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-primary-dark)", backgroundColor: "var(--color-primary-light)", padding: "0.25rem 0.75rem", borderRadius: "50px" }}>
-                    {QUESTIONS[currentQuestionIndex].category}
-                  </span>
+                  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-primary-dark)", backgroundColor: "var(--color-primary-light)", padding: "0.25rem 0.75rem", borderRadius: "50px" }}>
+                      {QUESTIONS[currentQuestionIndex].category}
+                    </span>
+                    <span style={{ 
+                      fontSize: "0.85rem", 
+                      fontWeight: "800", 
+                      color: secondsLeft <= 10 ? "#ef4444" : "var(--color-accent)", 
+                      backgroundColor: secondsLeft <= 10 ? "rgba(239, 68, 68, 0.1)" : "rgba(166, 136, 73, 0.08)", 
+                      padding: "0.25rem 0.75rem", 
+                      borderRadius: "50px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.3rem",
+                      animation: secondsLeft <= 10 ? "pulse-red 0.8s infinite alternate" : "none"
+                    }}>
+                      ⏱️ 00:{secondsLeft < 10 ? `0${secondsLeft}` : secondsLeft}
+                    </span>
+                  </div>
                   <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
                     Soal {currentQuestionIndex + 1} dari {QUESTIONS.length}
                   </span>
                 </div>
-                <div style={{ width: "100%", height: "8px", backgroundColor: "var(--color-gray-200)", borderRadius: "50px", overflow: "hidden" }}>
+                <div style={{ width: "100%", height: "8px", backgroundColor: "var(--color-gray-200)", borderRadius: "50px", overflow: "hidden", marginBottom: "0.5rem" }}>
                   <div style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS.length) * 100}%`, height: "100%", backgroundColor: "var(--color-primary)", transition: "width 0.3s ease" }}></div>
+                </div>
+                {/* Timer progress bar */}
+                <div style={{ width: "100%", height: "4px", backgroundColor: "var(--color-gray-150)", borderRadius: "50px", overflow: "hidden" }}>
+                  <div style={{ 
+                    width: `${(secondsLeft / 30) * 100}%`, 
+                    height: "100%", 
+                    backgroundColor: secondsLeft <= 10 ? "#ef4444" : "var(--color-accent)", 
+                    transition: "width 1s linear" 
+                  }}></div>
                 </div>
               </div>
 
