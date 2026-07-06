@@ -81,7 +81,7 @@ header.scrolled .logo-img {
   height: 3.2rem;
 }
 
-.logo-text h1 {
+.logo-text .logo-title {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-gray-900);
@@ -89,9 +89,10 @@ header.scrolled .logo-img {
   letter-spacing: -0.02em;
   transition: font-size var(--transition-normal);
   white-space: nowrap;
+  display: block;
 }
 
-header.scrolled .logo-text h1 {
+header.scrolled .logo-text .logo-title {
   font-size: 1.08rem;
 }
 
@@ -111,8 +112,8 @@ header.scrolled .logo-text p {
 @media (max-width: 480px) {
   .logo-img { width: 3.5rem; height: 3.5rem; }
   header.scrolled .logo-img { width: 2.75rem; height: 2.75rem; }
-  .logo-text h1 { font-size: 1.05rem; }
-  header.scrolled .logo-text h1 { font-size: 0.95rem; }
+  .logo-text .logo-title { font-size: 1.05rem; }
+  header.scrolled .logo-text .logo-title { font-size: 0.95rem; }
   .logo-text p { display: block; font-size: 0.65rem; }
   header.scrolled .logo-text p { display: block; font-size: 0.58rem; }
   .logo-link { gap: 0.45rem; }
@@ -120,7 +121,7 @@ header.scrolled .logo-text p {
 }
 
 @media (max-width: 360px) {
-  .logo-text h1 { font-size: 0.9rem; }
+  .logo-text .logo-title { font-size: 0.9rem; }
   .logo-text p { font-size: 0.58rem; }
   header.scrolled .logo-text p { font-size: 0.52rem; }
 }

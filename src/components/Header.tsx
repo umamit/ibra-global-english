@@ -132,7 +132,7 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
           <Link href="/#home" className="logo-link" id="logo-nav">
             <img src="/assets/logo.png" alt="Ibra Global English Logo" className="logo-img" />
             <div className="logo-text">
-              <h1>Ibra Global English</h1>
+              <span className="logo-title">Ibra Global English</span>
               <p>Belajar Seru Lancar Bicara</p>
             </div>
           </Link>
