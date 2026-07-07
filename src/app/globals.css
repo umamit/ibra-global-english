@@ -28,7 +28,7 @@
   --color-gray-250: #d1d1d1;
   --color-gray-300: #c7c7c7;
   --color-gray-400: #aeaeb2;   /* Apple secondary label */
-  --color-gray-500: #6e6e73;   /* Apple tertiary label */
+  --color-gray-500: #59616e;   /* Apple tertiary label - WCAG AA compliant */
   --color-gray-600: #48484a;   /* Apple secondary label dark */
   --color-gray-700: #3a3a3c;   /* Apple primary label slightly muted */
   --color-gray-900: #1d1d1f;   /* Apple primary label — exact match */
@@ -89,7 +89,7 @@
 
   /* Apple dark labels */
   --color-gray-400: #636366;       /* quaternaryLabel */
-  --color-gray-500: #8e8e93;       /* tertiaryLabel */
+  --color-gray-500: #8c95a0;       /* tertiaryLabel - WCAG AA compliant */
   --color-gray-600: #aeaeb2;       /* secondaryLabel */
   --color-gray-700: #e5e5ea;       /* label slightly muted */
   --color-gray-900: #ffffff;       /* primaryLabel */
