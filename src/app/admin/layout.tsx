@@ -349,7 +349,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <button
               type="button"
               onClick={() => toggleGroup("akademik")}
-              className={`sidebar-group-toggle ${["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/placement-test", "/admin/curriculum"].includes(pathname) ? "active-parent" : ""}`}
+              className={`sidebar-group-toggle ${["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/certificates", "/admin/placement-test", "/admin/curriculum"].includes(pathname) ? "active-parent" : ""}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
               <span>Akademik & Kelas</span>
@@ -384,6 +384,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link href="/admin/reports" className={`sidebar-sub-link ${isActive("/admin/reports") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
                 <span className="bullet"></span>
                 <span>Input Rapor</span>
+              </Link>
+              <Link href="/admin/certificates" className={`sidebar-sub-link ${isActive("/admin/certificates") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Kelola Sertifikat</span>
               </Link>
               <Link href="/admin/placement-test" className={`sidebar-sub-link ${isActive("/admin/placement-test") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
                 <span className="bullet"></span>
@@ -541,7 +545,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.86</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.87</span>
         </div>
       </aside>
 

@@ -6,11 +6,11 @@ import React from 'react';
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import ReportStatusBanner from "./components/ReportStatusBanner";
-import CertificateButton from "./components/CertificateButton";
+import Link from "next/link";
 import PrintReportView from "./components/PrintReportView";
 import posthog from "posthog-js";
 
-import { Student, Report, Certificate } from "@/types";
+import { Student, Report } from "@/types";
 import { exportReportsCSV } from "./reportHelpers";
 
 export default function ReportCardManagement() {
@@ -18,7 +18,7 @@ export default function ReportCardManagement() {
 
   const [students, setStudents] = useState<Student[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
+
   const [printReport, setPrintReport] = useState<Report | null>(null);
   const [contactAddress, setContactAddress] = useState<string>("Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794");
   const [loading, setLoading] = useState<boolean>(true);
@@ -180,13 +180,7 @@ export default function ReportCardManagement() {
         setContactAddress(settingsData.value);
       }
 
-      // 4. Ambil semua sertifikat
-      const { data: certData, error: errC } = await supabase
-        .from("certificates")
-        .select("*");
-      if (!errC) {
-        setCertificates((certData as Certificate[]) || []);
-      }
+      // 4. (Sertifikat dikelola di halaman /admin/certificates)
     } catch (err: any) {
       console.error("Gagal mengambil data rapor:", err);
       setStatusMsg({ type: "error", text: "Gagal memuat data: " + err.message });
@@ -209,107 +203,7 @@ export default function ReportCardManagement() {
 
 
 
-  const handleCreateCertificate = async (report: Report) => {
-    const certNumInput = prompt("Masukkan Nomor Sertifikat Resmi LKP Dinas Pendidikan:\n(Contoh: 001/IGE/VI/2026)");
-    if (certNumInput === null) return; // Cancelled
-    const certNumber = certNumInput.trim();
-    if (!certNumber) {
-      alert("Nomor sertifikat wajib diisi!");
-      return;
-    }
 
-    const defaultTutor = "Husnita Usman, M.Pd";
-    const tutorNameInput = prompt("Masukkan nama tutor pendamping untuk tanda tangan sertifikat:", defaultTutor);
-    if (tutorNameInput === null) return; // Cancelled
-    const tutorSignature = tutorNameInput.trim() || defaultTutor;
-
-    const canvaUrlInput = prompt("Masukkan URL Gambar Sertifikat hasil ekspor Canva:\n(Contoh: https://example.com/sertifikat-canva.png)");
-    if (canvaUrlInput === null) return; // Cancelled
-    const customImageUrl = canvaUrlInput.trim();
-    if (!customImageUrl) {
-      alert("URL Gambar sertifikat wajib diisi!");
-      return;
-    }
-
-    try {
-      const avg = Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);
-      const grade = avg >= 85 ? "Excellent (A)" : avg >= 75 ? "Good (B)" : "Satisfactory (C)";
-
-      const payload = {
-        student_id: report.student_id,
-        module_name: report.module_name,
-        grade,
-        tutor_name: tutorSignature,
-        cert_number: certNumber,
-        custom_image_url: customImageUrl,
-        report_id: report.id,
-        issue_date: new Date().toISOString().split("T")[0]
-      };
-
-      const { data, error } = await supabase
-        .from("certificates")
-        .insert(payload)
-        .select("id")
-        .single();
-
-      if (error) throw error;
-
-      // Send simulated WhatsApp notification
-      try {
-        await fetch("/api/whatsapp-simulator", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            phone: "6281357001357",
-            message: `Yth. Orang Tua dari *${report.students?.name || "Siswa"}*, sertifikat resmi kelulusan untuk *${report.module_name}* dengan Predikat *${grade}* telah berhasil diterbitkan. Silakan verifikasi keaslian dokumen secara online di: ${window.location.origin}/verify/${data.id}`,
-            type: "Sertifikat Kelulusan"
-          })
-        });
-      } catch (waErr) {
-        console.error("Gagal mengirim notifikasi WhatsApp simulasi:", waErr);
-      }
-
-      posthog.capture("admin_certificate_issued", { module_name: report.module_name, grade });
-      alert("Sertifikat berhasil diterbitkan!");
-
-      // Reload certificates
-      const { data: certData } = await supabase
-        .from("certificates")
-        .select("*");
-      setCertificates((certData as Certificate[]) || []);
-      
-      // Open verification page in a new tab
-      if (data && data.id) {
-        window.open(`/verify/${data.id}`, "_blank");
-      }
-    } catch (err: any) {
-      console.error("Gagal menerbitkan sertifikat:", err);
-      alert("Gagal menerbitkan sertifikat: " + err.message);
-    }
-  };
-
-  const handleDeleteCertificate = async (id: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus sertifikat ini?")) return;
-    try {
-      const { error } = await supabase
-        .from("certificates")
-        .delete()
-        .eq("id", id);
-      if (error) throw error;
-      alert("Sertifikat berhasil dihapus!");
-      
-      // Reload certificates
-      const { data: certData } = await supabase
-        .from("certificates")
-        .select("*");
-      setCertificates((certData as Certificate[]) || []);
-    } catch (err: any) {
-      console.error("Gagal menghapus sertifikat:", err);
-      alert("Gagal menghapus sertifikat: " + err.message);
-    }
-  };
 
   const triggerPrint = (report: Report) => {
     setPrintReport(report);
@@ -712,7 +606,6 @@ export default function ReportCardManagement() {
                     : ["Speaking", "Grammar", "Vocab", "Active"];
                   
                   const avg = Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);
-                  const linkedCert = certificates.find(c => c.report_id === report.id);
 
                   return (
                     <tr key={report.id}>
@@ -740,12 +633,12 @@ export default function ReportCardManagement() {
                         </p>
                       </td>
                       <td>
-                        <CertificateButton 
-                          report={report}
-                          certificates={certificates}
-                          onCreate={handleCreateCertificate}
-                          onDelete={handleDeleteCertificate}
-                        />
+                        <Link
+                          href="/admin/certificates"
+                          style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--color-primary)", textDecoration: "none" }}
+                        >
+                          🏅 Sertifikat →
+                        </Link>
                       </td>
                       <td style={{ textAlign: "right" }}>
                         <div style={{ display: "inline-flex", gap: "0.4rem" }}>
