@@ -91,21 +91,25 @@ export default function AdminLettersPage() {
     return "GEN";
   };
 
-  const generateNumber = (cat: string, listLength: number) => {
+  const generateNumber = (cat: string, allLetters: Letter[]) => {
     const romanMonths = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const now = new Date();
     const month = romanMonths[now.getMonth()];
     const year = now.getFullYear();
-    const count = listLength + 1;
-    const paddedCount = String(count).padStart(3, "0");
-    
     const suffix = cat === "GEN" ? "IGE" : `IGE-${cat}`;
+
+    // Hitung surat dalam kategori yang sama
+    const countInCategory = allLetters.filter(l =>
+      getCategoryFromNumber(l.letter_number) === cat
+    ).length;
+    const nextCount = countInCategory + 1;
+    const paddedCount = String(nextCount).padStart(3, "0");
     return `${paddedCount}/${suffix}/${month}/${year}`;
   };
 
   const handleCategoryChange = (newCat: string) => {
     setCategory(newCat);
-    setLetterNumber(generateNumber(newCat, letters.length));
+    setLetterNumber(generateNumber(newCat, letters));
   };
 
   const initDefaultDateAndNumber = () => {
@@ -118,7 +122,7 @@ export default function AdminLettersPage() {
     const monthText = monthNames[now.getMonth()];
     const year = now.getFullYear();
     
-    setLetterNumber(generateNumber("PER", letters.length));
+    setLetterNumber(generateNumber("PER", letters));
     setLetterDate(`Bobong, ${day} ${monthText} ${year}`);
   };
 
@@ -143,7 +147,7 @@ export default function AdminLettersPage() {
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
     
-    setLetterNumber(generateNumber("PER", letters.length));
+    setLetterNumber(generateNumber("PER", letters));
     setLetterDate(`Bobong, ${day} ${monthNames[now.getMonth()]} ${now.getFullYear()}`);
   };
 
