@@ -6,7 +6,7 @@ const adminSupabase = getAdminSupabase();
 
 // Fungsi self-migration mandiri untuk memastikan tabel official_letters ada di database
 async function ensureLettersTableExists() {
-  const sql = `
+  const sqlCreate = `
     CREATE TABLE IF NOT EXISTS public.official_letters (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         title TEXT NOT NULL,
@@ -20,8 +20,14 @@ async function ensureLettersTableExists() {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
     );
   `;
+  const sqlAlter = `
+    ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS lampiran TEXT NOT NULL DEFAULT '-';
+    ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS attachment TEXT NOT NULL DEFAULT '';
+    ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS letter_date TEXT NOT NULL DEFAULT '';
+  `;
   try {
-    await adminSupabase.rpc("exec_sql", { sql });
+    await adminSupabase.rpc("exec_sql", { sql: sqlCreate });
+    await adminSupabase.rpc("exec_sql", { sql: sqlAlter });
   } catch (err: any) {
     console.warn("Self-migration warning (non-blocking):", err.message);
   }
@@ -50,7 +56,7 @@ const createLetterHandler = async (request: NextRequest) => {
   await ensureLettersTableExists();
   try {
     const body = await request.json();
-    const { title, letter_number, recipient, subject, content, sender_name, sender_role } = body;
+    const { title, letter_number, recipient, subject, content, sender_name, sender_role, lampiran, attachment, letter_date } = body;
 
     if (!title || !letter_number || !recipient || !subject || !content) {
       return NextResponse.json({ error: "Mohon isi semua bidang wajib." }, { status: 400 });
@@ -66,6 +72,9 @@ const createLetterHandler = async (request: NextRequest) => {
         content,
         sender_name: sender_name || "Husnita Usman",
         sender_role: sender_role || "Direktur Utama",
+        lampiran: lampiran || "-",
+        attachment: attachment || "",
+        letter_date: letter_date || "",
         updated_at: new Date().toISOString()
       })
       .select()
@@ -85,7 +94,7 @@ const updateLetterHandler = async (request: NextRequest) => {
   await ensureLettersTableExists();
   try {
     const body = await request.json();
-    const { id, title, letter_number, recipient, subject, content, sender_name, sender_role } = body;
+    const { id, title, letter_number, recipient, subject, content, sender_name, sender_role, lampiran, attachment, letter_date } = body;
 
     if (!id || !title || !letter_number || !recipient || !subject || !content) {
       return NextResponse.json({ error: "Mohon lengkapi data yang akan diupdate." }, { status: 400 });
@@ -101,6 +110,9 @@ const updateLetterHandler = async (request: NextRequest) => {
         content,
         sender_name: sender_name || "Husnita Usman",
         sender_role: sender_role || "Direktur Utama",
+        lampiran: lampiran || "-",
+        attachment: attachment || "",
+        letter_date: letter_date || "",
         updated_at: new Date().toISOString()
       })
       .eq("id", id)

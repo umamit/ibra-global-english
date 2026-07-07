@@ -14,6 +14,9 @@ interface Letter {
   content: string;
   sender_name: string;
   sender_role: string;
+  lampiran: string;
+  attachment: string;
+  letter_date: string;
   created_at?: string;
 }
 
@@ -30,8 +33,11 @@ export default function AdminLettersPage() {
   const [recipient, setRecipient] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [senderName, setSenderName] = useState<string>("Husnita Usman");
-  const [senderRole, setSenderRole] = useState<string>("Direktur Utama");
+  const [senderName, setSenderName] = useState<string>("Husnita Usman, M.Pd.");
+  const [senderRole, setSenderRole] = useState<string>("Direktur");
+  const [lampiran, setLampiran] = useState<string>("-");
+  const [attachment, setAttachment] = useState<string>("");
+  const [letterDate, setLetterDate] = useState<string>("");
 
   // AI Prompt Assistant Field
   const [aiPrompt, setAiPrompt] = useState<string>("");
@@ -71,39 +77,59 @@ export default function AdminLettersPage() {
 
   useEffect(() => {
     fetchLetters();
-    generateSuggestedNumber();
+    initDefaultDateAndNumber();
   }, []);
 
-  const generateSuggestedNumber = () => {
+  const initDefaultDateAndNumber = () => {
     const romanMonths = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const now = new Date();
     const month = romanMonths[now.getMonth()];
     const year = now.getFullYear();
+    const day = now.getDate();
+    
+    const monthNames = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    const monthText = monthNames[now.getMonth()];
+
+    // Suggested Number
     const count = letters.length + 1;
     const paddedCount = String(count).padStart(3, "0");
-    setLetterNumber(`${paddedCount}/IGE-B/${month}/${year}`);
+    setLetterNumber(`${paddedCount}/IGE/${month}/${year}`);
+    
+    // Suggested Date (Bobong, DD Month YYYY)
+    setLetterDate(`Bobong, ${day} ${monthText} ${year}`);
   };
 
-  // Autocomplete suggested letter number when creating new
   const handleResetForm = () => {
     setId("");
     setTitle("");
     setRecipient("");
     setSubject("");
     setContent("");
-    setSenderName("Husnita Usman");
-    setSenderRole("Direktur Utama");
+    setSenderName("Husnita Usman, M.Pd.");
+    setSenderRole("Direktur");
+    setLampiran("-");
+    setAttachment("");
     setAiPrompt("");
     setIsEditing(false);
     
-    // Auto calculate letter number
+    // Recalculate suggested date & number
     const romanMonths = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const now = new Date();
     const month = romanMonths[now.getMonth()];
     const year = now.getFullYear();
+    const day = now.getDate();
+    const monthNames = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
     const count = letters.length + 1;
     const paddedCount = String(count).padStart(3, "0");
-    setLetterNumber(`${paddedCount}/IGE-B/${month}/${year}`);
+    
+    setLetterNumber(`${paddedCount}/IGE/${month}/${year}`);
+    setLetterDate(`Bobong, ${day} ${monthNames[now.getMonth()]} ${year}`);
   };
 
   // Memanggil Groq via ai-assist route
@@ -143,6 +169,38 @@ export default function AdminLettersPage() {
     }
   };
 
+  // Menyisipkan template tabel lampiran
+  const handleInsertTableTemplate = () => {
+    const tableTemplate = `<p>Sehubungan dengan surat <strong>${subject || "Permohonan Izin"}</strong>, berikut kami sampaikan daftar peserta didik.</p>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 50px; text-align: center;">No.</th>
+      <th>Nama Siswa</th>
+      <th>Asal Sekolah</th>
+      <th style="width: 80px; text-align: center;">Kelas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center;">1.</td>
+      <td>Teresa Margareth Wandan</td>
+      <td>SMA Negeri 1 Pulau Taliabu</td>
+      <td style="text-align: center;">X</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">2.</td>
+      <td>Nurul Mutia Dg Pabila</td>
+      <td>SMA Negeri 1 Pulau Taliabu</td>
+      <td style="text-align: center;">X</td>
+    </tr>
+  </tbody>
+</table>`;
+    setAttachment(tableTemplate);
+    setLampiran("1 Lembar");
+    triggerToast("Template tabel lampiran disisipkan!");
+  };
+
   // Simpan data ke database
   const handleSaveLetter = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,7 +218,10 @@ export default function AdminLettersPage() {
       subject,
       content,
       sender_name: senderName,
-      sender_role: senderRole
+      sender_role: senderRole,
+      lampiran,
+      attachment,
+      letter_date: letterDate
     };
 
     try {
@@ -197,6 +258,9 @@ export default function AdminLettersPage() {
     setContent(letter.content);
     setSenderName(letter.sender_name);
     setSenderRole(letter.sender_role);
+    setLampiran(letter.lampiran || "-");
+    setAttachment(letter.attachment || "");
+    setLetterDate(letter.letter_date || "");
     setIsEditing(true);
   };
 
@@ -234,14 +298,6 @@ export default function AdminLettersPage() {
     l.letter_number.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const getLocalDateString = () => {
-    return new Date().toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    });
-  };
-
   return (
     <div className="letters-container">
       {/* Toast Notification */}
@@ -270,7 +326,7 @@ export default function AdminLettersPage() {
         <div>
           <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>Kelola Surat Resmi & AI</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-            Tulis, draf dengan asisten AI Groq, dan cetak surat resmi ber-kop lembaga secara instan.
+            Buat draf surat menggunakan Groq AI dan cetak dengan Kop Surat Resmi Ibra Global English.
           </p>
         </div>
       </div>
@@ -285,13 +341,13 @@ export default function AdminLettersPage() {
               🪄 Groq AI Letter Assistant
             </h2>
             <p style={{ fontSize: "0.85rem", color: "var(--color-gray-600)", marginBottom: "1rem" }}>
-              Tulis instruksi dalam bahasa sehari-hari. Asisten AI akan otomatis memformat paragraf isi surat yang baku dan formal.
+              Ketik instruksi surat (misal: *"Surat izin siswa mengikuti program Tour Guide tanggal 7-8 Juli"*). Groq akan menyusun isinya secara otomatis.
             </p>
             <div className="form-group">
               <textarea
                 className="form-textarea"
                 rows={3}
-                placeholder="Contoh: Buat surat undangan rapat komite wali murid hari Sabtu depan membahas persiapan Ujian Akhir Semester."
+                placeholder="Tulis instruksi surat di sini..."
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
               />
@@ -304,16 +360,12 @@ export default function AdminLettersPage() {
                 color: "#ffffff",
                 border: "none",
                 fontWeight: "700",
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "0.5rem"
+                cursor: "pointer"
               }}
               onClick={handleGenerateLetterWithAI}
               disabled={aiLoading}
             >
-              {aiLoading ? "Sedang Menyusun Draf..." : "🪄 Buat Draf Surat Resmi"}
+              {aiLoading ? "Sedang Menyusun Draf..." : "🪄 Buat Draf Surat"}
             </button>
           </div>
 
@@ -328,7 +380,7 @@ export default function AdminLettersPage() {
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="e.g., Undangan Rapor Semester Ganjil"
+                  placeholder="e.g., Surat Permohonan Izin Tour Guide"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
@@ -337,7 +389,7 @@ export default function AdminLettersPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div className="form-group">
-                  <label>Nomor Surat Resmi *</label>
+                  <label>Nomor Surat *</label>
                   <input
                     type="text"
                     className="form-input"
@@ -347,26 +399,48 @@ export default function AdminLettersPage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Penerima *</label>
+                  <label>Lampiran</label>
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="e.g., Wali Murid IGE Bobong"
-                    value={recipient}
-                    onChange={(e) => setRecipient(e.target.value)}
+                    value={lampiran}
+                    onChange={(e) => setLampiran(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="form-group">
+                  <label>Perihal *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g., Permohonan Izin"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Tanggal Surat (Bobong, DD/MM/YYYY) *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={letterDate}
+                    onChange={(e) => setLetterDate(e.target.value)}
                     required
                   />
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Perihal / Hal *</label>
+                <label>Penerima Surat (Yth...) *</label>
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="e.g., Undangan Rapat Evaluasi Belajar"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="e.g., Bapak/Ibu Kepala SMA Negeri 1 Pulau Taliabu"
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
                   required
                 />
               </div>
@@ -375,15 +449,41 @@ export default function AdminLettersPage() {
                 <label>Isi Surat (HTML/Teks) *</label>
                 <textarea
                   className="form-textarea"
-                  rows={10}
-                  placeholder="Tulis pembuka, paragraf isi, dan penutup di sini..."
+                  rows={8}
+                  placeholder="Tulis paragraf isi surat di sini..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   required
                 />
-                <span style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", marginTop: "4px", display: "block" }}>
-                  Mendukung tag HTML dasar (seperti &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, dll) jika Anda ingin memformat draf secara detail.
-                </span>
+              </div>
+
+              <div className="form-group" style={{ borderTop: "1px solid var(--color-gray-100)", paddingTop: "1rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                  <label style={{ margin: 0 }}>Isi Lampiran (Opsional - Tabel/Daftar Siswa)</label>
+                  <button
+                    type="button"
+                    style={{
+                      background: "var(--color-primary-light)",
+                      color: "var(--color-primary-dark)",
+                      border: "1px solid var(--color-primary-light)",
+                      fontSize: "0.75rem",
+                      fontWeight: "700",
+                      padding: "0.25rem 0.5rem",
+                      borderRadius: "var(--radius-xs)",
+                      cursor: "pointer"
+                    }}
+                    onClick={handleInsertTableTemplate}
+                  >
+                    ➕ Sisipkan Tabel Lampiran
+                  </button>
+                </div>
+                <textarea
+                  className="form-textarea"
+                  rows={6}
+                  placeholder="Tulis detail lampiran di sini (Mendukung HTML Table)..."
+                  value={attachment}
+                  onChange={(e) => setAttachment(e.target.value)}
+                />
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
@@ -448,7 +548,7 @@ export default function AdminLettersPage() {
               <input
                 type="text"
                 className="form-input"
-                placeholder="Cari surat berdasarkan judul/nomor..."
+                placeholder="Cari surat..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -512,9 +612,6 @@ export default function AdminLettersPage() {
                 border: "none",
                 fontWeight: "700",
                 cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
                 boxShadow: "var(--shadow-sm)"
               }}
               onClick={handlePrint}
@@ -525,7 +622,7 @@ export default function AdminLettersPage() {
           </div>
 
           {/* Letterhead and Sheet Visual */}
-          <div className="letter-preview-sheet">
+          <div className="letter-preview-sheet" id="print-area">
             {/* Kop Resmi Surat IGE */}
             <div className="official-letterhead">
               <img
@@ -534,53 +631,79 @@ export default function AdminLettersPage() {
                 className="letterhead-logo"
               />
               <div className="letterhead-info">
-                <h2>PT. IBRA GLOBAL ENGLISH BOBONG</h2>
-                <div className="sub-tagline">Kursus Bahasa Inggris & Bimbingan Belajar Calistung</div>
-                <p className="address-line">
-                  Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong,<br />
-                  Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794<br />
-                  Email: ibraglobalenglish@gmail.com | Kontak: +62 822-1323-4482
+                <h2>IBRA GLOBAL ENGLISH</h2>
+                <p className="address-line" style={{ fontSize: "0.78rem" }}>
+                  Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001,<br />
+                  Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794<br />
+                  HP/WA: +62 813-5700-1357 | Email: <span style={{ textDecoration: "underline", color: "var(--color-primary)" }}>admin@ibraglobalenglish.uk</span>
                 </p>
               </div>
             </div>
 
-            {/* Letter Meta Details */}
-            <div className="letter-meta-row">
-              <div className="letter-meta-left">
-                <div>Nomor : {letterNumber || "___/IGE-B/___/2026"}</div>
-                <div>Perihal: {subject || "________________________"}</div>
+            {/* Letter Meta Details (Precisely Aligned Colons) */}
+            <div className="letter-meta-block">
+              <div className="meta-item">
+                <span className="meta-label">Nomor</span>
+                <span className="meta-colon">:</span>
+                <span className="meta-value">{letterNumber || "___/IGE-B/___/2026"}</span>
               </div>
-              <div className="letter-meta-right">
-                <div>Bobong, {getLocalDateString()}</div>
-                <div>Kepada Yth:</div>
-                <div style={{ fontWeight: "bold" }}>{recipient || "________________________"}</div>
-                <div>di Tempat</div>
+              <div className="meta-item">
+                <span className="meta-label">Lampiran</span>
+                <span className="meta-colon">:</span>
+                <span className="meta-value">{lampiran}</span>
+              </div>
+              <div className="meta-item">
+                <span className="meta-label">Perihal</span>
+                <span className="meta-colon">:</span>
+                <span className="meta-value" style={{ fontWeight: "500" }}>{subject || "________________________"}</span>
               </div>
             </div>
 
-            {/* Letter Title / Subject */}
-            <div className="letter-title-subject">
-              <h3>{subject || "PEMBERITAHUAN"}</h3>
+            {/* Recipient Block */}
+            <div className="letter-recipient-block">
+              <div>Kepada Yth.</div>
+              <div style={{ fontWeight: "bold" }}>{recipient || "________________________"}</div>
+              <div>di Tempat</div>
+            </div>
+
+            {/* Salutation */}
+            <div className="letter-salutation">
+              Dengan hormat,
             </div>
 
             {/* Main Content Body */}
             <div
               className="letter-body"
               dangerouslySetInnerHTML={{
-                __html: content || "<p style='color:#777; text-align:center;'>Isi draf surat masih kosong. Silakan gunakan <strong>Groq AI Assistant</strong> di sebelah kiri untuk menyusun teks draf secara otomatis atau ketik isi surat Anda langsung di formulir.</p>"
+                __html: content || "<p style='color:#777; text-align:center;'>Isi draf surat masih kosong. Silakan gunakan <strong>Groq AI Assistant</strong> untuk menyusun draf secara otomatis.</p>"
               }}
             />
 
             {/* Signature Block */}
             <div className="letter-signature-block">
               <div className="letter-signature-wrap">
-                <div>Hormat Kami,</div>
-                <div style={{ fontWeight: "bold" }}>PT. Ibra Global English</div>
+                <div>{letterDate || "Bobong, ___ ___________ 2026"}</div>
+                <div>Hormat kami,</div>
+                <div style={{ fontWeight: "bold" }}>IBRA GLOBAL ENGLISH</div>
                 <div className="signature-space"></div>
                 <div className="signature-name">{senderName}</div>
-                <div style={{ fontSize: "0.85rem", color: "#555" }}>{senderRole}</div>
+                <div style={{ fontSize: "0.9rem", color: "#333333" }}>{senderRole}</div>
               </div>
             </div>
+
+            {/* Double-page Attachment Block (Renders if attachment is not empty) */}
+            {attachment && (
+              <div className="letter-attachment-page">
+                <div className="no-print" style={{ borderBottom: "1px dashed #ccc", paddingBottom: "0.5rem", marginBottom: "1.5rem", color: "var(--color-primary-dark)", fontWeight: "bold" }}>
+                  📄 Halaman 2: Lampiran Surat
+                </div>
+                <h3 className="attachment-title">LAMPIRAN</h3>
+                <div
+                  className="attachment-body"
+                  dangerouslySetInnerHTML={{ __html: attachment }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
