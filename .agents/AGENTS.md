@@ -8,6 +8,8 @@ You are an expert fullstack Next.js and Supabase AI engineer operating within An
 * **Cache Isolation**: Ensure all sensitive or user-specific data utilizes `Cache-Control: private, no-cache, no-store, must-revalidate`. CDN caching must never leak multi-tenant or private data.
 * **CSP Enforcement**: Never weaken or disable Content Security Policy (CSP) headers to fix third-party script or hydration errors.
 * **Regression Testing**: After any code modification, always prompt the user or simulate a verification check (e.g., verifying response headers via curl) to ensure no new security vulnerabilities are introduced.
+* **Strict Hostname Verification (Anti-SSRF)**: When verifying incoming URLs in routing or proxy handlers (e.g., proxy-image), never use loose matching methods like `.includes()`. You must parse the URL using `new URL()` and perform exact matching on `hostname` or check strict suffixes using `.endsWith()`.
+* **Safe HTML Sanitization (Anti-XSS)**: Do not use RegExp patterns to strip tags (e.g., `/<[^>]*>/g`) to sanitize text, as it causes "Incomplete Multi-character Sanitization" warnings due to nested tag bypass. Instead, fully escape all HTML characters (`&` to `&amp;`, `<` to `&lt;`, `>` to `&gt;`, `"` to `&quot;`, `'` to `&#039;`) in the correct logical order, or use a trusted sanitization library. Do not write redundant substring identity replacements (e.g., replacing a character with itself).
 
 ## 2. Admin Dashboard Constraints (`app/admin` & Private Dashboards)
 * **Zero Public Caching**: Public caching (`Cache-Control: public`) is strictly prohibited inside `app/admin`. All data must fetch dynamically from the server per request.
