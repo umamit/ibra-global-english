@@ -24,6 +24,7 @@ async function ensureLettersTableExists() {
     ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS lampiran TEXT NOT NULL DEFAULT '-';
     ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS attachment TEXT NOT NULL DEFAULT '';
     ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS letter_date TEXT NOT NULL DEFAULT '';
+    NOTIFY pgrst, 'reload schema';
   `;
   try {
     await adminSupabase.rpc("exec_sql", { sql: sqlCreate });
