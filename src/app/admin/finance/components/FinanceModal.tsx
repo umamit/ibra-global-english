@@ -16,6 +16,8 @@ interface FinanceModalProps {
   setModalMethod: (val: string) => void;
   modalReceiptUrl: string;
   setModalReceiptUrl: (val: string) => void;
+  modalPaymentDate: string;
+  setModalPaymentDate: (val: string) => void;
   savingPayment: boolean;
   getMonthName: (month: string) => string;
   getStudentPayment: (
@@ -44,6 +46,8 @@ export default function FinanceModal({
   setModalMethod,
   modalReceiptUrl,
   setModalReceiptUrl,
+  modalPaymentDate,
+  setModalPaymentDate,
   savingPayment,
   getMonthName,
   getStudentPayment,
@@ -59,7 +63,7 @@ export default function FinanceModal({
     amount: modalAmount,
     month: selectedMonth,
     payment_method: modalMethod,
-    payment_date: getStudentPayment(modalStudent.id, [], [], selectedMonth, {}).payment_date
+    payment_date: modalPaymentDate
   };
 
   return (
@@ -163,7 +167,15 @@ export default function FinanceModal({
                   className="form-input"
                   style={{ width: "100%", padding: "0.6rem" }}
                   value={modalStatus}
-                  onChange={(e) => setModalStatus(e.target.value)}
+                  onChange={(e) => {
+                    const status = e.target.value;
+                    setModalStatus(status);
+                    if (status === "lunas" && !modalPaymentDate) {
+                      setModalPaymentDate(new Date().toISOString().split("T")[0]);
+                    } else if (status === "belum_bayar") {
+                      setModalPaymentDate("");
+                    }
+                  }}
                 >
                   <option value="belum_bayar">Belum Membayar</option>
                   <option value="menunggu_konfirmasi">Menunggu Konfirmasi</option>
@@ -171,6 +183,26 @@ export default function FinanceModal({
                 </select>
               </div>
             </div>
+
+            {/* Tanggal Pembayaran (Hanya tampil jika lunas) */}
+            {modalStatus === "lunas" && (
+              <div style={{ borderTop: "1px solid var(--color-gray-100)", paddingTop: "1rem" }}>
+                <label style={{ fontWeight: "600", fontSize: "0.85rem", color: "var(--color-gray-700)", display: "block", marginBottom: "0.5rem" }}>
+                  Tanggal Pembayaran
+                </label>
+                <input
+                  type="date"
+                  className="form-input"
+                  style={{ width: "100%", padding: "0.6rem" }}
+                  value={modalPaymentDate}
+                  onChange={(e) => setModalPaymentDate(e.target.value)}
+                  required={modalStatus === "lunas"}
+                />
+                <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "4px" }}>
+                  Diisi otomatis dengan tanggal hari ini, silakan ubah jika tanggal bayar berbeda.
+                </p>
+              </div>
+            )}
 
             {/* Bukti Transfer */}
             <div style={{ borderTop: "1px solid var(--color-gray-100)", paddingTop: "1rem" }}>

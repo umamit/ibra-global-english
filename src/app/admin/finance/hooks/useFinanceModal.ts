@@ -23,6 +23,7 @@ export const useFinanceModal = (
   const [modalStatus, setModalStatus] = useState<string>("belum_bayar");
   const [modalMethod, setModalMethod] = useState<string>("Transfer Bank");
   const [modalReceiptUrl, setModalReceiptUrl] = useState<string>("");
+  const [modalPaymentDate, setModalPaymentDate] = useState<string>("");
   const [savingPayment, setSavingPayment] = useState<boolean>(false);
 
   const handleUploadReceipt = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -65,6 +66,7 @@ export const useFinanceModal = (
     setModalStatus(pay.status || "belum_bayar");
     setModalMethod(pay.payment_method || "Transfer Bank");
     setModalReceiptUrl(pay.receipt_url || "");
+    setModalPaymentDate(pay.payment_date || (pay.status === "lunas" ? new Date().toISOString().split("T")[0] : ""));
     setIsModalOpen(true);
   };
 
@@ -87,6 +89,7 @@ export const useFinanceModal = (
         status: modalStatus,
         payment_method: modalMethod,
         receipt_url: modalReceiptUrl || null,
+        payment_date: modalPaymentDate || null,
         updated_at: new Date().toISOString()
       };
 
@@ -123,6 +126,7 @@ export const useFinanceModal = (
         status: "lunas",
         payment_method: pay.payment_method || "Transfer Bank",
         receipt_url: pay.receipt_url || null,
+        payment_date: pay.payment_date || new Date().toISOString().split("T")[0],
         updated_at: new Date().toISOString()
       };
 
@@ -156,6 +160,8 @@ export const useFinanceModal = (
     setModalMethod,
     modalReceiptUrl,
     setModalReceiptUrl,
+    modalPaymentDate,
+    setModalPaymentDate,
     savingPayment,
     fileInputRef,
     handleUploadReceipt,

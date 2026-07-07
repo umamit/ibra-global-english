@@ -128,6 +128,8 @@ export default function AdminFinance() {
     setModalMethod,
     modalReceiptUrl,
     setModalReceiptUrl,
+    modalPaymentDate,
+    setModalPaymentDate,
     savingPayment,
     fileInputRef,
     handleUploadReceipt,
@@ -427,6 +429,8 @@ export default function AdminFinance() {
       setModalMethod={setModalMethod}
       modalReceiptUrl={modalReceiptUrl}
       setModalReceiptUrl={setModalReceiptUrl}
+      modalPaymentDate={modalPaymentDate}
+      setModalPaymentDate={setModalPaymentDate}
       savingPayment={savingPayment}
       getMonthName={getMonthName}
       getStudentPayment={getStudentPayment}
