@@ -127,12 +127,11 @@ export default function AdminDashboard() {
     if (!text) return null;
     // Strip HTML tags for safety, preserve line breaks
     const safeText = text
-      .replace(/<[^>]*>/g, "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
-      .replace(/&#039;/g, "'");
+      .replace(/'/g, "&#039;");
 
     return safeText.split("\n").map((line, i) => (
       <p key={i} style={{ margin: "0.25rem 0" }}>
