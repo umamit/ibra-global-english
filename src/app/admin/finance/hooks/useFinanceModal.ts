@@ -1,6 +1,7 @@
 "use client";
 
 import { getStudentPayment } from "../financeHelpers";
+import { getWitDateString } from "../../utils";
 import { useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import posthog from "posthog-js";
@@ -66,7 +67,7 @@ export const useFinanceModal = (
     setModalStatus(pay.status || "belum_bayar");
     setModalMethod(pay.payment_method || "Transfer Bank");
     setModalReceiptUrl(pay.receipt_url || "");
-    setModalPaymentDate(pay.payment_date || (pay.status === "lunas" ? new Date().toISOString().split("T")[0] : ""));
+    setModalPaymentDate(pay.payment_date || (pay.status === "lunas" ? getWitDateString() : ""));
     setIsModalOpen(true);
   };
 
@@ -126,7 +127,7 @@ export const useFinanceModal = (
         status: "lunas",
         payment_method: pay.payment_method || "Transfer Bank",
         receipt_url: pay.receipt_url || null,
-        payment_date: pay.payment_date || new Date().toISOString().split("T")[0],
+        payment_date: pay.payment_date || getWitDateString(),
         updated_at: new Date().toISOString()
       };
 

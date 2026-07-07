@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-
+import { getWitDateString } from "../../utils";
 import { Student, Payment, PaymentResult, PayObject } from "@/types";
 
 interface FinanceModalProps {
@@ -171,7 +171,7 @@ export default function FinanceModal({
                     const status = e.target.value;
                     setModalStatus(status);
                     if (status === "lunas" && !modalPaymentDate) {
-                      setModalPaymentDate(new Date().toISOString().split("T")[0]);
+                      setModalPaymentDate(getWitDateString());
                     } else if (status === "belum_bayar") {
                       setModalPaymentDate("");
                     }

@@ -46,6 +46,16 @@ export const getCurrentMonth = (): string => {
   return `${d.getFullYear()}-${mm}`;
 };
 
+export const getWitDateString = (): string => {
+  const d = new Date();
+  const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  const witDate = new Date(utc + (3600000 * 9));
+  const yyyy = witDate.getFullYear();
+  const mm = String(witDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(witDate.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 export const handleApiError = (error: unknown, defaultMessage = "Terjadi kesalahan.") => {
   console.error(defaultMessage, error);
   const msg = error instanceof Error ? error.message : String(error);
