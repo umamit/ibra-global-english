@@ -537,7 +537,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.77</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.78</span>
         </div>
       </aside>
 

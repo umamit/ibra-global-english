@@ -405,3 +405,37 @@
 [data-theme='dark'] .reg-success-card p {
   color: rgba(255, 255, 255, 0.55);
 }
+
+/* ── Google Map Container ── */
+.contact-map-container {
+  margin-top: 3.5rem;
+}
+
+.contact-map-card {
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+  background-color: var(--color-bg-card, #ffffff);
+  padding: 6px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.contact-map-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.contact-map-iframe {
+  border: 0;
+  border-radius: 10px;
+  display: block;
+  width: 100%;
+  height: 380px;
+}
+
+[data-theme='dark'] .contact-map-card {
+  background-color: #2c2c2e;
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}

@@ -471,6 +471,20 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
           </div>
         </div>
       </div>
+
+      {/* Google Map Section */}
+      <div className="container contact-map-container" data-aos="fade-up">
+        <div className="contact-map-card">
+          <iframe
+            title="Google Maps Lokasi Ibra Global English Bobong"
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+            className="contact-map-iframe"
+            allowFullScreen={true}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
     </section>
   );
 }
