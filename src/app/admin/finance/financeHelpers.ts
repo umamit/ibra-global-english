@@ -101,15 +101,28 @@ export const printReceiptHTML = (
   formatRupiah: (n: number) => string,
   terbilang: (n: number) => string
 ): void => {
+  const escapeHtml = (unsafe: string): string => {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  };
+
   const amountVal = typeof pay.amount === "string" ? parseInt(pay.amount, 10) : (pay.amount || 0);
-  const formattedAmount = formatRupiah(amountVal);
-  const amountInWords = (terbilang(amountVal) || "Nol").trim() + " Rupiah";
+  const formattedAmount = escapeHtml(formatRupiah(amountVal));
+  const amountInWords = escapeHtml(((terbilang(amountVal) || "Nol").trim() + " Rupiah"));
   const payMonth = pay.month || selectedMonth;
-  const receiptNo = `INV/${payMonth.replace("-", "")}/${student.id.substring(0, 6).toUpperCase()}`;
-  const paymentDateStr = pay.payment_date
+  const receiptNo = escapeHtml(`INV/${payMonth.replace("-", "")}/${student.id.substring(0, 6).toUpperCase()}`);
+  const paymentDateStr = escapeHtml(pay.payment_date
     ? new Date(pay.payment_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
-    : new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
-  const monthName = getMonthName(payMonth);
+    : new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
+  const monthName = escapeHtml(getMonthName(payMonth));
+  const studentNameSafe = escapeHtml(student.name);
+  const parentNameSafe = escapeHtml(student.profiles?.full_name || "-");
+  const programSafe = escapeHtml(student.program);
+  const payMethodSafe = escapeHtml(pay.payment_method || "Transfer Bank");
 
   const printWindow = window.open("", "_blank", "width=850,height=650");
   if (!printWindow) return;
@@ -285,13 +298,13 @@ export const printReceiptHTML = (
             <tr>
               <td class="label">Diterima Dari</td>
               <td class="value">
-                <span class="dotted-underline"><strong>${student.profiles?.full_name || "-"}</strong> (Orang Tua/Wali dari <strong>${student.name}</strong>)</span>
+                <span class="dotted-underline"><strong>${parentNameSafe}</strong> (Orang Tua/Wali dari <strong>${studentNameSafe}</strong>)</span>
               </td>
             </tr>
             <tr>
               <td class="label">Untuk Pembayaran</td>
               <td class="value">
-                <span class="dotted-underline">SPP Bimbingan Belajar Program <strong>${student.program}</strong> - Bulan <strong>${monthName}</strong></span>
+                <span class="dotted-underline">SPP Bimbingan Belajar Program <strong>${programSafe}</strong> - Bulan <strong>${monthName}</strong></span>
               </td>
             </tr>
             <tr>
@@ -303,7 +316,7 @@ export const printReceiptHTML = (
             <tr>
               <td class="label">Metode Bayar</td>
               <td class="value">
-                <span class="dotted-underline">${pay.payment_method || "Transfer Bank"}</span>
+                <span class="dotted-underline">${payMethodSafe}</span>
               </td>
             </tr>
           </table>

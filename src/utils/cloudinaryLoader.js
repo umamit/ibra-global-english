@@ -8,7 +8,8 @@ export default function cloudinaryLoader({ src, width, quality }) {
     src.startsWith('/') ||
     src.startsWith('data:') ||
     src.startsWith('blob:') ||
-    src.includes('res.cloudinary.com')
+    src.startsWith('https://res.cloudinary.com/') ||
+    src.startsWith('http://res.cloudinary.com/')
   ) {
     return src;
   }

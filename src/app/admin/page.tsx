@@ -128,10 +128,10 @@ export default function AdminDashboard() {
     // Strip HTML tags for safety, preserve line breaks
     const safeText = text
       .replace(/<[^>]*>/g, "")
-      .replace(/&/g, "&")
-      .replace(/</g, "<")
-      .replace(/>/g, ">")
-      .replace(/"/g, '"')
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
       .replace(/&#039;/g, "'");
 
     return safeText.split("\n").map((line, i) => (

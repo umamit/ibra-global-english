@@ -10,11 +10,12 @@ export async function GET(request: NextRequest) {
 
   try {
     const urlObj = new URL(imageUrl);
-    // Secure it to only allow Supabase and QR server domains
-    if (
-      !urlObj.hostname.includes("supabase.co") &&
-      !urlObj.hostname.includes("qrserver.com")
-    ) {
+    // Secure it to only allow Supabase and QR server domains using strict suffix/exact checks
+    const hostname = urlObj.hostname;
+    const isSupabase = hostname.endsWith(".supabase.co") || hostname === "supabase.co";
+    const isQrServer = hostname === "api.qrserver.com" || hostname === "qrserver.com";
+
+    if (!isSupabase && !isQrServer) {
       return new NextResponse("Forbidden domain", { status: 403 });
     }
 
