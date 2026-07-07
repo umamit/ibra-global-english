@@ -36,7 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     const isAkademik = ["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/placement-test", "/admin/curriculum"].includes(pathname);
     const isKeuangan = ["/admin/finance", "/admin/tax"].includes(pathname);
-    const isKomunikasi = ["/admin/whatsapp", "/admin/announcements", "/admin/rag", "/admin/landing-page"].includes(pathname);
+    const isKomunikasi = ["/admin/whatsapp", "/admin/announcements", "/admin/rag", "/admin/landing-page", "/admin/letters"].includes(pathname);
     const isPengguna = ["/admin/students", "/admin/tutors"].includes(pathname);
 
     const timer = setTimeout(() => {
@@ -437,7 +437,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <button
               type="button"
               onClick={() => toggleGroup("komunikasi")}
-              className={`sidebar-group-toggle ${["/admin/whatsapp", "/admin/announcements", "/admin/rag", "/admin/landing-page"].includes(pathname) ? "active-parent" : ""}`}
+              className={`sidebar-group-toggle ${["/admin/whatsapp", "/admin/announcements", "/admin/rag", "/admin/landing-page", "/admin/letters"].includes(pathname) ? "active-parent" : ""}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
               <span>Komunikasi & Konten</span>
@@ -464,6 +464,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link href="/admin/announcements" className={`sidebar-sub-link ${isActive("/admin/announcements") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
                 <span className="bullet"></span>
                 <span>Pengumuman</span>
+              </Link>
+              <Link href="/admin/letters" className={`sidebar-sub-link ${isActive("/admin/letters") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Kelola Surat & AI</span>
               </Link>
               <Link href="/admin/promo" className={`sidebar-sub-link ${isActive("/admin/promo") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
                 <span className="bullet"></span>
@@ -537,7 +541,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.82</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.83</span>
         </div>
       </aside>
 

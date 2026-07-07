@@ -1,0 +1,276 @@
+/* ==========================================================================
+   IBRA GLOBAL ENGLISH — AI Letter Generator & Print Stylesheet (Apple HIG)
+   ========================================================================== */
+
+/* Main Container Layout */
+.letters-container {
+  padding: 1.5rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.letters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 992px) {
+  .letters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card Styles */
+.letters-card {
+  background: var(--color-white);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.32s ease;
+}
+
+.letters-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin-bottom: 0.5rem;
+}
+
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-250);
+  background: var(--color-gray-25);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-gray-900);
+  transition: all 0.2s ease;
+}
+
+.form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(33, 108, 126, 0.15);
+}
+
+/* AI Prompt Assistant Area */
+.ai-box {
+  background: var(--color-primary-light);
+  border: 1px dashed var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Custom Letterhead Layout (Visual representation & print) */
+.official-letterhead {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 4px double var(--color-gray-900);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+}
+
+.letterhead-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.letterhead-info {
+  text-align: center;
+  flex: 1;
+}
+
+.letterhead-info h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.letterhead-info .sub-tagline {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin: 2px 0 6px 0;
+}
+
+.letterhead-info .address-line {
+  font-size: 0.75rem;
+  color: var(--color-gray-600);
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* Official Letter Content Preview */
+.letter-preview-sheet {
+  background: #ffffff; /* Clean white sheet always */
+  color: #000000;      /* Contrast text */
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  padding: 2.5rem;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  min-height: 500px;
+}
+
+.letter-meta-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.letter-meta-left {
+  text-align: left;
+}
+
+.letter-meta-right {
+  text-align: right;
+}
+
+.letter-title-subject {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.letter-title-subject h3 {
+  font-size: 13pt;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+}
+
+.letter-body {
+  text-align: justify;
+  margin-bottom: 2.5rem;
+}
+
+.letter-body p {
+  margin-bottom: 1rem;
+  text-indent: 10mm;
+}
+
+.letter-signature-block {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 3rem;
+}
+
+.letter-signature-wrap {
+  text-align: center;
+  width: 200px;
+}
+
+.signature-space {
+  height: 70px;
+}
+
+.signature-name {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* History List Layout */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 580px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-gray-50);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.history-item:hover {
+  background: var(--color-primary-light);
+  border-color: rgba(33, 108, 126, 0.15);
+}
+
+/* Active status indicator */
+.history-item.active {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+/* ==========================================================================
+   PRINT LAYOUT STYLESHEET
+   ========================================================================== */
+@media print {
+  /* Hide the rest of the application layout */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show only the letter preview sheet */
+  .letter-preview-sheet,
+  .letter-preview-sheet * {
+    visibility: visible;
+  }
+
+  .letter-preview-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide print trigger elements inside */
+  .no-print {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+}

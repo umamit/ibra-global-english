@@ -449,6 +449,22 @@ Tugasmu adalah menyusun laporan perkembangan bulanan (Monthly Progress Report) s
 
 Tulis laporan dalam Bahasa Indonesia yang hangat, ramah, dan sopan kepada orang tua murid (gunakan sapaan hangat kepada Ayah/Bunda dari siswa). Laporan harus mengalir lancar dalam 1-2 paragraf pendek dan memotivasi siswa untuk terus belajar di bulan depan.`;
     }
+    // 4d. MODE: LETTER-DRAFT (Pembuat Surat Resmi AI)
+    else if (mode === "letter-draft") {
+      const { instruction, recipient, subject, letter_number } = payload || {};
+      systemPrompt = `Kamu adalah Asisten AI Administrasi / Sekretaris Eksekutif di PT. Ibra Global English Bobong.
+Tugasmu adalah menyusun draf surat resmi lembaga yang formal, profesional, baku, dan sesuai format surat resmi Indonesia.
+Format surat harus lengkap dan terstruktur, tetapi HANYA kembalikan ISI SURATNYA SAJA (mulai dari pembuka, paragraf isi, hingga penutup) dalam format HTML bersih (menggunakan tag <p>, <ul>, <li>, <strong>, dll. tanpa menyertakan Kop Surat, Nomor Surat, Penerima, Perihal, atau tanda tangan di bawah, karena bagian-bagian tersebut sudah diatur secara dinamis oleh sistem UI cetak kami).
+Gunakan bahasa resmi (EYD) yang sopan, formal, dan jelas.`;
+
+      userPrompt = `Buat draf surat resmi berdasarkan instruksi berikut:
+Instruksi Konten: "${instruction || "Undangan rapat resmi"}"
+Penerima: ${recipient || "Pihak Terkait"}
+Perihal: ${subject || "Pemberitahuan"}
+Nomor Surat: ${letter_number || "-"}
+
+Isi surat harus formal, lengkap, dan langsung siap pakai tanpa placeholder teks yang kosong.`;
+    }
     // 5. MODE: CHAT (Asisten Copilot Interaktif)
     else if (mode === "chat") {
       const dbContext = await getRealtimeDatabaseContext();
