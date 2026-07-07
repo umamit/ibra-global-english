@@ -13,6 +13,7 @@ export interface Student {
   age?: number;
   parent_id?: string | null;
   profiles?: StudentProfile | null;
+  created_at?: string;
 }
 
 export interface Payment {

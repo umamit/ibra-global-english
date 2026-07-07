@@ -66,6 +66,7 @@ export default function AdminFinance() {
           name,
           program,
           parent_id,
+          created_at,
           profiles:parent_id (
             full_name
           )
@@ -95,6 +96,7 @@ export default function AdminFinance() {
         name: s.name,
         program: s.program,
         parent_id: s.parent_id,
+        created_at: s.created_at,
         profiles: Array.isArray(s.profiles) ? s.profiles[0] : s.profiles,
       }));
 
@@ -224,6 +226,13 @@ export default function AdminFinance() {
 
   // Filters
   const filteredStudents = students.filter(student => {
+    // Siswa yang bergabung setelah selectedMonth tidak boleh masuk tagihan bulan ini
+    if (student.created_at) {
+      const joinMonth = student.created_at.substring(0, 7); // "YYYY-MM"
+      if (joinMonth > selectedMonth) {
+        return false; // Skip siswa yang baru masuk bulan depan/setelah bulan terpilih
+      }
+    }
     const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (student.profiles?.full_name || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesProgram = programFilter === "All" || student.program === programFilter;
@@ -239,6 +248,11 @@ export default function AdminFinance() {
     let paidCount = 0;
 
     students.forEach(student => {
+      // Skip siswa yang belum bergabung di bulan ini dari hitungan ekspektasi tagihan
+      if (student.created_at) {
+        const joinMonth = student.created_at.substring(0, 7);
+        if (joinMonth > selectedMonth) return;
+      }
       const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
       const baseAmount = sppPrices[student.program] || 300000;
       expected += pay.amount || baseAmount;
