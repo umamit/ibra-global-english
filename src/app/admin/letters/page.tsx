@@ -38,6 +38,7 @@ export default function AdminLettersPage() {
   const [lampiran, setLampiran] = useState<string>("-");
   const [attachment, setAttachment] = useState<string>("");
   const [letterDate, setLetterDate] = useState<string>("");
+  const [category, setCategory] = useState<string>("PER"); // Default category: PER (Permohonan)
 
   // AI Prompt Assistant Field
   const [aiPrompt, setAiPrompt] = useState<string>("");
@@ -80,25 +81,44 @@ export default function AdminLettersPage() {
     initDefaultDateAndNumber();
   }, []);
 
-  const initDefaultDateAndNumber = () => {
+  const getCategoryFromNumber = (num: string) => {
+    if (num.includes("IGE-PER")) return "PER";
+    if (num.includes("IGE-UND")) return "UND";
+    if (num.includes("IGE-PEM")) return "PEM";
+    if (num.includes("IGE-KET")) return "KET";
+    if (num.includes("IGE-SK")) return "SK";
+    if (num.includes("IGE-ST")) return "ST";
+    return "GEN";
+  };
+
+  const generateNumber = (cat: string, listLength: number) => {
     const romanMonths = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const now = new Date();
     const month = romanMonths[now.getMonth()];
     const year = now.getFullYear();
-    const day = now.getDate();
+    const count = listLength + 1;
+    const paddedCount = String(count).padStart(3, "0");
     
+    const suffix = cat === "GEN" ? "IGE" : `IGE-${cat}`;
+    return `${paddedCount}/${suffix}/${month}/${year}`;
+  };
+
+  const handleCategoryChange = (newCat: string) => {
+    setCategory(newCat);
+    setLetterNumber(generateNumber(newCat, letters.length));
+  };
+
+  const initDefaultDateAndNumber = () => {
+    const now = new Date();
+    const day = now.getDate();
     const monthNames = [
       "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
     const monthText = monthNames[now.getMonth()];
-
-    // Suggested Number
-    const count = letters.length + 1;
-    const paddedCount = String(count).padStart(3, "0");
-    setLetterNumber(`${paddedCount}/IGE/${month}/${year}`);
+    const year = now.getFullYear();
     
-    // Suggested Date (Bobong, DD Month YYYY)
+    setLetterNumber(generateNumber("PER", letters.length));
     setLetterDate(`Bobong, ${day} ${monthText} ${year}`);
   };
 
@@ -113,23 +133,18 @@ export default function AdminLettersPage() {
     setLampiran("-");
     setAttachment("");
     setAiPrompt("");
+    setCategory("PER");
     setIsEditing(false);
     
-    // Recalculate suggested date & number
-    const romanMonths = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const now = new Date();
-    const month = romanMonths[now.getMonth()];
-    const year = now.getFullYear();
     const day = now.getDate();
     const monthNames = [
       "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
-    const count = letters.length + 1;
-    const paddedCount = String(count).padStart(3, "0");
     
-    setLetterNumber(`${paddedCount}/IGE/${month}/${year}`);
-    setLetterDate(`Bobong, ${day} ${monthNames[now.getMonth()]} ${year}`);
+    setLetterNumber(generateNumber("PER", letters.length));
+    setLetterDate(`Bobong, ${day} ${monthNames[now.getMonth()]} ${now.getFullYear()}`);
   };
 
   // Memanggil Groq via ai-assist route
@@ -261,6 +276,7 @@ export default function AdminLettersPage() {
     setLampiran(letter.lampiran || "-");
     setAttachment(letter.attachment || "");
     setLetterDate(letter.letter_date || "");
+    setCategory(getCategoryFromNumber(letter.letter_number));
     setIsEditing(true);
   };
 
@@ -389,6 +405,22 @@ export default function AdminLettersPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div className="form-group">
+                  <label>Kategori Surat</label>
+                  <select
+                    className="form-input"
+                    value={category}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
+                  >
+                    <option value="GEN">Umum (IGE)</option>
+                    <option value="PER">Permohonan (IGE-PER)</option>
+                    <option value="UND">Undangan (IGE-UND)</option>
+                    <option value="PEM">Pemberitahuan (IGE-PEM)</option>
+                    <option value="KET">Keterangan (IGE-KET)</option>
+                    <option value="SK">Keputusan (IGE-SK)</option>
+                    <option value="ST">Surat Tugas (IGE-ST)</option>
+                  </select>
+                </div>
+                <div className="form-group">
                   <label>Nomor Surat *</label>
                   <input
                     type="text"
@@ -396,15 +428,6 @@ export default function AdminLettersPage() {
                     value={letterNumber}
                     onChange={(e) => setLetterNumber(e.target.value)}
                     required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Lampiran</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={lampiran}
-                    onChange={(e) => setLampiran(e.target.value)}
                   />
                 </div>
               </div>
@@ -422,7 +445,7 @@ export default function AdminLettersPage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Tanggal Surat (Bobong, DD/MM/YYYY) *</label>
+                  <label>Tanggal Surat *</label>
                   <input
                     type="text"
                     className="form-input"
@@ -433,16 +456,27 @@ export default function AdminLettersPage() {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label>Penerima Surat (Yth...) *</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="e.g., Bapak/Ibu Kepala SMA Negeri 1 Pulau Taliabu"
-                  value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
-                  required
-                />
+              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem" }}>
+                <div className="form-group">
+                  <label>Penerima Surat (Yth...) *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g., Bapak/Ibu Kepala SMA Negeri 1 Pulau Taliabu"
+                    value={recipient}
+                    onChange={(e) => setRecipient(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Lampiran</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={lampiran}
+                    onChange={(e) => setLampiran(e.target.value)}
+                  />
+                </div>
               </div>
 
               <div className="form-group">
