@@ -477,61 +477,36 @@ export default function DailyAttendance() {
                             </span>
                           </td>
                           <td>
-                            <div style={{ display: "flex", gap: "1rem" }}>
-                              <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", cursor: "pointer", fontWeight: "600", fontSize: "0.85rem" }}>
-                                <input
-                                  type="radio"
-                                  name={`attendance-${student.id}`}
-                                  checked={localData.status === "hadir"}
-                                  onChange={() => handleStatusChange(student.id, "hadir")}
-                                  style={{ accentColor: "var(--color-primary)" }}
-                                />
-                                <span className={localData.status === "hadir" ? "badge-hadir" : ""} style={{ padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)" }}>Hadir</span>
-                              </label>
-
-                              <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", cursor: "pointer", fontWeight: "600", fontSize: "0.85rem" }}>
-                                <input
-                                  type="radio"
-                                  name={`attendance-${student.id}`}
-                                  checked={localData.status === "sakit"}
-                                  onChange={() => handleStatusChange(student.id, "sakit")}
-                                  style={{ accentColor: "var(--color-yellow)" }}
-                                />
-                                <span className={localData.status === "sakit" ? "badge-sakit" : ""} style={{ padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)" }}>Sakit</span>
-                              </label>
-
-                              <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", cursor: "pointer", fontWeight: "600", fontSize: "0.85rem" }}>
-                                <input
-                                  type="radio"
-                                  name={`attendance-${student.id}`}
-                                  checked={localData.status === "izin"}
-                                  onChange={() => handleStatusChange(student.id, "izin")}
-                                  style={{ accentColor: "var(--color-primary)" }}
-                                />
-                                <span className={localData.status === "izin" ? "badge-izin" : ""} style={{ padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)" }}>Izin</span>
-                              </label>
-
-                              <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", cursor: "pointer", fontWeight: "600", fontSize: "0.85rem" }}>
-                                <input
-                                  type="radio"
-                                  name={`attendance-${student.id}`}
-                                  checked={localData.status === "alfa"}
-                                  onChange={() => handleStatusChange(student.id, "alfa")}
-                                  style={{ accentColor: "#ef4444" }}
-                                />
-                                <span className={localData.status === "alfa" ? "badge-alfa" : ""} style={{ padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)" }}>Alfa</span>
-                              </label>
-
-                              <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", cursor: "pointer", fontWeight: "600", fontSize: "0.85rem" }}>
-                                <input
-                                  type="radio"
-                                  name={`attendance-${student.id}`}
-                                  checked={localData.status === "tidak_ada_kelas"}
-                                  onChange={() => handleStatusChange(student.id, "tidak_ada_kelas")}
-                                  style={{ accentColor: "var(--color-gray-400)" }}
-                                />
-                                <span className={localData.status === "tidak_ada_kelas" ? "badge-tidak_ada_kelas" : ""} style={{ padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)" }}>Tidak ada Kelas</span>
-                              </label>
+                            <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+                              {[
+                                { status: "hadir", label: "Hadir", activeBg: "#e6f4ea", activeColor: "#137333", border: "1px solid rgba(19, 115, 51, 0.15)" },
+                                { status: "sakit", label: "Sakit", activeBg: "#fef7e0", activeColor: "#b06000", border: "1px solid rgba(176, 96, 0, 0.15)" },
+                                { status: "izin", label: "Izin", activeBg: "#eef6f8", activeColor: "var(--color-primary-dark, #164d57)", border: "1px solid rgba(33, 108, 126, 0.15)" },
+                                { status: "alfa", label: "Alfa", activeBg: "#fce8e6", activeColor: "#c5221f", border: "1px solid rgba(197, 34, 31, 0.15)" },
+                                { status: "tidak_ada_kelas", label: "Tidak ada Kelas", activeBg: "#f1f3f4", activeColor: "#5f6368", border: "1px solid rgba(95, 99, 104, 0.15)" }
+                              ].map(opt => {
+                                const isActive = localData.status === opt.status;
+                                return (
+                                  <button
+                                    key={opt.status}
+                                    type="button"
+                                    onClick={() => handleStatusChange(student.id, opt.status)}
+                                    style={{
+                                      padding: "0.3rem 0.65rem",
+                                      borderRadius: "8px",
+                                      fontSize: "0.78rem",
+                                      fontWeight: 700,
+                                      cursor: "pointer",
+                                      border: isActive ? opt.border : "1px solid rgba(0, 0, 0, 0.05)",
+                                      backgroundColor: isActive ? opt.activeBg : "#f5f5f7",
+                                      color: isActive ? opt.activeColor : "var(--color-gray-500, #59616e)",
+                                      transition: "all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)"
+                                    }}
+                                  >
+                                    {opt.label}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </td>
                           <td>

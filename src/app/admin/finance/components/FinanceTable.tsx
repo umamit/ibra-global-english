@@ -91,11 +91,11 @@ export default function FinanceTable({
                 </td>
                 <td style={{ padding: "12px", textAlign: "center" }} data-label="Status">
                   {pay.status === "lunas" ? (
-                    <span className="badge-status-present" style={{ display: "inline-block", width: "120px" }}>LUNAS</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "110px", padding: "0.3rem 0.5rem", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 800, backgroundColor: "#e6f4ea", color: "#137333", border: "1px solid rgba(19, 115, 51, 0.15)" }}>LUNAS</span>
                   ) : pay.status === "menunggu_konfirmasi" ? (
-                    <span className="badge-status-sick" style={{ display: "inline-block", width: "120px", color: "#b45309", borderColor: "#fef3c7", background: "#fef3c7" }}>KONFIRMASI</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "110px", padding: "0.3rem 0.5rem", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 800, backgroundColor: "#fef7e0", color: "#b06000", border: "1px solid rgba(176, 96, 0, 0.15)" }}>KONFIRMASI</span>
                   ) : (
-                    <span className="badge-status-absent" style={{ display: "inline-block", width: "120px" }}>BELUM BAYAR</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "110px", padding: "0.3rem 0.5rem", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 800, backgroundColor: "#fce8e6", color: "#c5221f", border: "1px solid rgba(197, 34, 31, 0.15)" }}>BELUM BAYAR</span>
                   )}
                 </td>
                 <td style={{ padding: "12px", textAlign: "right" }} data-label="Aksi">

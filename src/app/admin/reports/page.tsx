@@ -40,6 +40,12 @@ export default function ReportCardManagement() {
   const [aiLoading, setAiLoading] = useState<boolean>(false);
   const [aiProgressLoading, setAiProgressLoading] = useState<boolean>(false);
 
+  // AI Modal States
+  const [isAiModalOpen, setIsAiModalOpen] = useState<boolean>(false);
+  const [aiFocus, setAiFocus] = useState<string>("");
+  const [aiAchievements, setAiAchievements] = useState<string>("");
+  const [aiChallenges, setAiChallenges] = useState<string>("");
+
   const handleGenerateAiNotes = async () => {
     if (!studentId) {
       alert("Harap pilih siswa terlebih dahulu!");
@@ -81,24 +87,24 @@ export default function ReportCardManagement() {
     }
   };
 
-  const handleGenerateAiProgressReport = async () => {
+  const handleOpenAiModal = () => {
     if (!studentId) {
       alert("Harap pilih siswa terlebih dahulu!");
       return;
     }
+    setAiFocus(moduleName || "");
+    setAiAchievements("");
+    setAiChallenges("");
+    setIsAiModalOpen(true);
+  };
+
+  const handleGenerateAiProgressReport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!studentId) return;
+
     const studentObj = students.find(s => s.id === studentId);
     const studentName = studentObj ? studentObj.name : "Siswa";
     const studentProgram = studentObj ? studentObj.program : "General English";
-
-    // Kumpulkan input dari tutor via prompt ringan
-    const focus = prompt("Masukkan materi fokus bulan ini (contoh: Greetings, Daily Activities):", moduleName || "");
-    if (focus === null) return; // User cancel
-
-    const achievements = prompt("Masukkan pencapaian positif siswa (contoh: sangat aktif berdiskusi):");
-    if (achievements === null) return;
-
-    const challenges = prompt("Masukkan tantangan / aspek yang perlu ditingkatkan (contoh: rasa percaya diri berbicara):");
-    if (challenges === null) return;
 
     const thisMonth = new Date().toLocaleString("id-ID", { month: "long" });
 
@@ -113,9 +119,9 @@ export default function ReportCardManagement() {
             name: studentName,
             program: studentProgram,
             month: thisMonth,
-            focus_areas: focus || "Materi harian sesuai silabus",
-            achievements: achievements || "Mengikuti kelas dengan baik",
-            challenges: challenges || "Perlu latihan lebih mandiri di rumah"
+            focus_areas: aiFocus.trim() || "Materi harian sesuai silabus",
+            achievements: aiAchievements.trim() || "Mengikuti kelas dengan baik",
+            challenges: aiChallenges.trim() || "Perlu latihan lebih mandiri di rumah"
           }
         })
       });
@@ -123,6 +129,7 @@ export default function ReportCardManagement() {
       if (res.ok && data.reply) {
         setTutorNotes(data.reply);
         posthog.capture("admin_ai_progress_report_generated", { program: studentProgram });
+        setIsAiModalOpen(false);
       } else {
         alert(`Gagal membuat draf laporan: ${data.error || "Error tidak diketahui"}`);
       }
@@ -522,7 +529,7 @@ export default function ReportCardManagement() {
                 </button>
                 <button
                   type="button"
-                  onClick={handleGenerateAiProgressReport}
+                  onClick={handleOpenAiModal}
                   disabled={aiLoading || aiProgressLoading || !studentId}
                   className="btn-portal-outline"
                   style={{
@@ -666,6 +673,119 @@ export default function ReportCardManagement() {
           </div>
         )}
       </div>
+
+      {/* AI Draft Prompt Modal */}
+      {isAiModalOpen && (
+        <div className="modal-backdrop" style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          animation: "fadeIn 0.2s ease"
+        }}>
+          <div className="modal-container" style={{
+            backgroundColor: "white",
+            borderRadius: "14px",
+            width: "100%",
+            maxWidth: "500px",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
+            border: "1px solid rgba(0, 0, 0, 0.05)",
+            overflow: "hidden",
+            animation: "slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
+          }}>
+            <div style={{
+              padding: "1.25rem 1.5rem",
+              borderBottom: "1px solid rgba(0,0,0,0.06)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "var(--color-bg-teal-50, #eef6f8)"
+            }}>
+              <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "var(--color-primary-dark)" }}>
+                ✨ Panduan Draf Rapor AI
+              </h3>
+              <button 
+                type="button"
+                onClick={() => setIsAiModalOpen(false)}
+                style={{
+                  background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "var(--color-gray-500)"
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            
+            <form onSubmit={handleGenerateAiProgressReport} style={{ padding: "1.5rem" }}>
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, marginBottom: "0.35rem", color: "var(--color-gray-700)" }}>
+                  Materi Fokus Bulan Ini
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={aiFocus}
+                  onChange={e => setAiFocus(e.target.value)}
+                  placeholder="Contoh: Greetings, Daily Activities, Reading..."
+                  required
+                />
+              </div>
+
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, marginBottom: "0.35rem", color: "var(--color-gray-700)" }}>
+                  Pencapaian Positif Siswa
+                </label>
+                <textarea
+                  className="form-input"
+                  rows={2}
+                  value={aiAchievements}
+                  onChange={e => setAiAchievements(e.target.value)}
+                  placeholder="Contoh: sangat aktif berdiskusi dan pelafalan membaik..."
+                  style={{ resize: "vertical", minHeight: "60px" }}
+                  required
+                />
+              </div>
+
+              <div style={{ marginBottom: "1.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, marginBottom: "0.35rem", color: "var(--color-gray-700)" }}>
+                  Tantangan / Aspek yang Perlu Ditingkatkan
+                </label>
+                <textarea
+                  className="form-input"
+                  rows={2}
+                  value={aiChallenges}
+                  onChange={e => setAiChallenges(e.target.value)}
+                  placeholder="Contoh: rasa percaya diri berbicara perlu ditingkatkan..."
+                  style={{ resize: "vertical", minHeight: "60px" }}
+                  required
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
+                <button
+                  type="button"
+                  onClick={() => setIsAiModalOpen(false)}
+                  className="btn-portal-outline"
+                  style={{ padding: "0.5rem 1.25rem", height: "auto" }}
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="btn-portal-primary"
+                  style={{ padding: "0.5rem 1.5rem", height: "auto" }}
+                  disabled={aiProgressLoading}
+                >
+                  {aiProgressLoading ? "⏳ Membuat Draf..." : "✨ Buat Draf AI"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
