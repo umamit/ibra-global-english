@@ -477,7 +477,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
         <div className="contact-map-card">
           <iframe
             title="Google Maps Lokasi Ibra Global English Bobong"
-            src={`https://maps.google.com/maps?q=-1.9389989,124.3773298&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.586616458514!2d124.37475487570889!3d-1.9389935367069792!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d82af33f6c6e6b5%3A0x332ca8e07224c054!2sPT.%20IBRA%20GLOBAL%20ENGLISH%20--%20Kursus%20Bahasa%20Inggris%20dan%20CALISTUNG%20di%20Bobong!5e0!3m2!1sid!2sid!4v1717820000000!5m2!1sid!2sid"
             className="contact-map-iframe"
             allowFullScreen={true}
             loading="lazy"
