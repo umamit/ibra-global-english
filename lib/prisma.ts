@@ -1,4 +1,11 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import fs from "fs";
+
+if (fs.existsSync(".env.local")) {
+  dotenv.config({ path: ".env.local" });
+} else {
+  dotenv.config();
+}
 import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
