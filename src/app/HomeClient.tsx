@@ -68,63 +68,78 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
 
   // Register WebMCP Agent Tools
   useEffect(() => {
-    if (typeof window !== "undefined" && window.navigator && (window.navigator as any).modelContext && (window.navigator as any).modelContext.registerTool) {
+    if (typeof window !== "undefined" && window.navigator && (window.navigator as any).modelContext) {
+      const mc = (window.navigator as any).modelContext;
+      
+      const getProgramDetailsTool = {
+        name: "get_program_details",
+        description: "Get details about kids, teens and Calistung programs at Ibra Global English.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            program: {
+              type: "string",
+              description: "Name of the program (Kids Program, Teens Program, Fun Calistung)"
+            }
+          }
+        },
+        execute: async (args: Record<string, string>): Promise<string> => {
+          const program = args.program ? args.program.toLowerCase() : "";
+          if (program.includes("kids")) {
+            return "Kids Program (5-12 tahun): Pembelajaran interaktif dengan menyanyi, bermain, dan mewarnai untuk membangun kecintaan berbahasa Inggris sejak dini.";
+          } else if (program.includes("teen")) {
+            return "Teens Program (13-17 tahun): Fokus pada speaking, diskusi kelompok, presentasi, dan tata bahasa (grammar) untuk membantu sekolah dan masa depan.";
+          } else if (program.includes("calistung")) {
+            return "Fun Calistung (5-7 tahun): Bimbingan membaca, menulis, dan berhitung yang dikemas secara seru dan ramah anak.";
+          }
+          return "Pilihan program: Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun).";
+        }
+      };
+
+      const registerCourseTool = {
+        name: "register_course",
+        description: "Register a new student for a course at Ibra Global English.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            name: { type: "string", description: "Full name of the student" },
+            whatsapp: { type: "string", description: "WhatsApp contact number" },
+            program: { type: "string", description: "Selected course program (Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun))" }
+          },
+          required: ["name", "whatsapp"]
+        },
+        execute: async (args: Record<string, string>): Promise<string> => {
+          setForm({
+            name: args.name,
+            whatsapp: args.whatsapp,
+            program: args.program || "Kids Program (5-12 tahun)"
+          });
+
+          // Submit WhatsApp redirect after tiny delay
+          setTimeout(() => {
+            const targetPhone = "6281357001357";
+            const message = `Halo Ibra Global English, saya ingin mendaftar kursus.\n\n*Nama Lengkap:* ${args.name}\n*Nomor WhatsApp:* ${args.whatsapp}\n*Program yang Diminati:* ${args.program || "Kids Program (5-12 tahun)"}`;
+            const encodedMessage = encodeURIComponent(message);
+            window.location.href = `https://wa.me/${targetPhone}?text=${encodedMessage}`;
+          }, 300);
+
+          return `Pendaftaran untuk ${args.name} berhasil diisi dan diarahkan ke WhatsApp.`;
+        }
+      };
+
       try {
-        (window.navigator as any).modelContext.registerTool({
-          name: "get_program_details",
-          description: "Get details about kids, teens and Calistung programs at Ibra Global English.",
-          inputSchema: {
-            type: "object",
-            properties: {
-              program: {
-                type: "string",
-                description: "Name of the program (Kids Program, Teens Program, Fun Calistung)"
-              }
-            }
-          },
-          execute: async (args: Record<string, string>): Promise<string> => {
-            const program = args.program ? args.program.toLowerCase() : "";
-            if (program.includes("kids")) {
-              return "Kids Program (5-12 tahun): Pembelajaran interaktif dengan menyanyi, bermain, dan mewarnai untuk membangun kecintaan berbahasa Inggris sejak dini.";
-            } else if (program.includes("teen")) {
-              return "Teens Program (13-17 tahun): Fokus pada speaking, diskusi kelompok, presentasi, dan tata bahasa (grammar) untuk membantu sekolah dan masa depan.";
-            } else if (program.includes("calistung")) {
-              return "Fun Calistung (5-7 tahun): Bimbingan membaca, menulis, dan berhitung yang dikemas secara seru dan ramah anak.";
-            }
-            return "Pilihan program: Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun).";
-          }
-        });
-
-        (window.navigator as any).modelContext.registerTool({
-          name: "register_course",
-          description: "Register a new student for a course at Ibra Global English.",
-          inputSchema: {
-            type: "object",
-            properties: {
-              name: { type: "string", description: "Full name of the student" },
-              whatsapp: { type: "string", description: "WhatsApp contact number" },
-              program: { type: "string", description: "Selected course program (Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun))" }
-            },
-            required: ["name", "whatsapp"]
-          },
-          execute: async (args: Record<string, string>): Promise<string> => {
-            setForm({
-              name: args.name,
-              whatsapp: args.whatsapp,
-              program: args.program || "Kids Program (5-12 tahun)"
-            });
-
-            // Submit WhatsApp redirect after tiny delay
-            setTimeout(() => {
-              const targetPhone = "6281357001357";
-              const message = `Halo Ibra Global English, saya ingin mendaftar kursus.\n\n*Nama Lengkap:* ${args.name}\n*Nomor WhatsApp:* ${args.whatsapp}\n*Program yang Diminati:* ${args.program || "Kids Program (5-12 tahun)"}`;
-              const encodedMessage = encodeURIComponent(message);
-              window.location.href = `https://wa.me/${targetPhone}?text=${encodedMessage}`;
-            }, 300);
-
-            return `Pendaftaran untuk ${args.name} berhasil diisi dan diarahkan ke WhatsApp.`;
-          }
-        });
+        // Panggil provideContext sesuai spesifikasi pengujian/scanner yang diminta user
+        if (mc.provideContext) {
+          mc.provideContext({
+            tools: [getProgramDetailsTool, registerCourseTool]
+          });
+        }
+        
+        // Panggil juga registerTool individual sebagai fallback standar terkini
+        if (mc.registerTool) {
+          mc.registerTool(getProgramDetailsTool);
+          mc.registerTool(registerCourseTool);
+        }
       } catch (err) {
         console.error("Failed to register WebMCP tools:", err);
       }
