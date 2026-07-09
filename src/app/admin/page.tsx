@@ -125,8 +125,17 @@ export default function AdminDashboard() {
    */
   const renderSafeInsights = (text: string): React.ReactElement[] | null => {
     if (!text) return null;
-    // Strip HTML tags for safety, preserve line breaks
-    const safeText = text
+    
+    // Bersihkan tag HTML buatan AI agar tidak tampil mentah di UI
+    const cleanText = text
+      .replace(/<p>/gi, "")
+      .replace(/<\/p>/gi, "\n")
+      .replace(/<ul>/gi, "")
+      .replace(/<\/ul>/gi, "")
+      .replace(/<li>/gi, "- ")
+      .replace(/<\/li>/gi, "\n");
+
+    const safeText = cleanText
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")

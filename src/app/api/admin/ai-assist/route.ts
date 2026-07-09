@@ -329,7 +329,7 @@ Tulis analisis keuangan dalam format Bahasa Indonesia yang jelas, profesional, d
 - Persentase Kehadiran Kumulatif: ${attendanceRate}% hadir dari total catatan presensi
 - Status SPP: ${paidCount} lunas, ${pendingCount} menunggu konfirmasi admin, ${unpaidCount} belum bayar.
 
-Berikan analisis performa operasional saat ini dalam Bahasa Indonesia yang singkat dan padat (maksimal 3 poin bullet ulasan utama, dan 1 poin saran tindakan taktis yang jelas). Gunakan format HTML paragraf atau bullet biasa.`;
+Berikan analisis performa operasional saat ini dalam Bahasa Indonesia yang singkat dan padat (maksimal 3 poin bullet ulasan utama, dan 1 poin saran tindakan taktis yang jelas). Gunakan format teks biasa dengan baris baru (newline) dan gunakan tanda minus (-) untuk poin bullet. DILARANG KERAS menggunakan tag HTML seperti <p>, <ul>, <li>, atau format HTML lainnya.`;
     } 
     // 4a. MODE: CALENDAR-DRAFT (Penyusun Jadwal AI)
     else if (mode === "calendar-draft") {
