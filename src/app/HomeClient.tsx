@@ -133,10 +133,8 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
           mc.provideContext({
             tools: [getProgramDetailsTool, registerCourseTool]
           });
-        }
-        
-        // Panggil juga registerTool individual sebagai fallback standar terkini
-        if (mc.registerTool) {
+        } else if (mc.registerTool) {
+          // Panggil juga registerTool individual sebagai fallback standar terkini
           mc.registerTool(getProgramDetailsTool);
           mc.registerTool(registerCourseTool);
         }
