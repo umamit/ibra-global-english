@@ -50,7 +50,10 @@ const nextConfig = {
       {
         source: '/:path*',
         headers: [
-
+          {
+            key: 'Link',
+            value: '</.well-known/api-catalog>; rel="api-catalog"'
+          },
           {
             key: 'Cross-Origin-Opener-Policy',
             value: 'same-origin-allow-popups'
