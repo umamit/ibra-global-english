@@ -21,7 +21,7 @@ export const placementSchema = z.object({
     .int()
     .min(0, "Skor minimal adalah 0")
     .max(20, "Skor maksimal adalah 20"),
-  level: z.enum(["Beginner", "Intermediate", "Advanced"]),
+  level: z.enum(["A1", "A2", "B1", "B2", "C1", "Beginner", "Intermediate", "Advanced"]),
   status: z.enum(["pending", "contacted", "enrolled"]).optional().default("pending"),
   created_at: z.string().optional(),
 });

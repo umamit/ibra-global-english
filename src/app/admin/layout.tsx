@@ -114,7 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { event: "INSERT", schema: "public", table: "placement_test_submissions" },
         (payload) => {
           // Ada peserta placement test baru!
-          const name = payload.new?.name || "Seseorang";
+          const name = payload.new?.full_name || payload.new?.name || "Seseorang";
           const level = payload.new?.level || payload.new?.result_level || "";
           const levelText = level ? ` — Level: ${level}` : "";
           setNewTestToast(`📝 Placement test selesai: ${name}${levelText}`);
@@ -545,7 +545,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.98</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.3.99</span>
         </div>
       </aside>
 

@@ -207,11 +207,11 @@ export default function AdminPlacementTest() {
 
   // WhatsApp follow-up link generation
   const triggerWhatsAppFollowUp = (sub: Submission) => {
-    const courseRecommendation = sub.level === "Beginner"
-      ? "Kids Program atau Basic Teens"
-      : sub.level === "Intermediate"
-        ? "Teens Program (Intermediate)"
-        : "Teens Program (Advanced / TOEFL Prep)";
+    const courseRecommendation = ["Beginner", "A1", "A2"].includes(sub.level)
+      ? "Kids Program atau Fun Calistung"
+      : ["Intermediate", "B1", "B2"].includes(sub.level)
+        ? "Teens Program (Intermediate Class)"
+        : "Teens Program (Advanced Class / TOEFL Prep)";
 
     const message = `Halo Kak ${sub.full_name}!\n\nKami dari *Ibra Global English Bobong* ingin mengucapkan selamat atas penyelesaian *Tes Penempatan Bahasa Inggris Online* Anda.\n\nBerikut hasil ringkasan tes Anda:\n📌 *Rekomendasi Level:* ${sub.level}\n📌 *Skor Tes:* ${sub.score} / 20\n📌 *Program Belajar:* ${courseRecommendation}\n\nTutor kami sangat merekomendasikan Anda untuk bergabung bersama kami di tingkat ini guna mengembangkan kompetensi secara optimal. Apakah Kak ${sub.full_name} berminat berkonsultasi mengenai jadwal kelas dan penawaran biaya khusus? \n\nKami tunggu kehadirannya! 😊`;
 
@@ -223,11 +223,11 @@ export default function AdminPlacementTest() {
     if (!followUpStudent) return;
     setFollowUpAiLoading(true);
     try {
-      const courseRecommendation = followUpStudent.level === "Beginner"
-        ? "Kids Program atau Basic Teens"
-        : followUpStudent.level === "Intermediate"
-          ? "Teens Program (Intermediate)"
-          : "Teens Program (Advanced / TOEFL Prep)";
+      const courseRecommendation = ["Beginner", "A1", "A2"].includes(followUpStudent.level)
+        ? "Kids Program atau Fun Calistung"
+        : ["Intermediate", "B1", "B2"].includes(followUpStudent.level)
+          ? "Teens Program (Intermediate Class)"
+          : "Teens Program (Advanced Class / TOEFL Prep)";
 
       const res = await fetch("/api/admin/ai-assist", {
         method: "POST",
@@ -573,8 +573,8 @@ export default function AdminPlacementTest() {
               </td>
               <td>
                 <span className="user-badge" style={{
-                  backgroundColor: sub.level === "Advanced" ? "var(--color-green-light)" : sub.level === "Intermediate" ? "var(--color-primary-light)" : "var(--color-accent-light)",
-                  color: sub.level === "Advanced" ? "var(--color-green-dark)" : sub.level === "Intermediate" ? "var(--color-primary-dark)" : "var(--color-accent)",
+                  backgroundColor: ["Advanced", "C1"].includes(sub.level) ? "var(--color-green-light)" : ["Intermediate", "B1", "B2"].includes(sub.level) ? "var(--color-primary-light)" : "var(--color-accent-light)",
+                  color: ["Advanced", "C1"].includes(sub.level) ? "var(--color-green-dark)" : ["Intermediate", "B1", "B2"].includes(sub.level) ? "var(--color-primary-dark)" : "var(--color-accent)",
                   fontWeight: "800",
                   fontSize: "0.8rem",
                   padding: "0.3rem 0.75rem"
