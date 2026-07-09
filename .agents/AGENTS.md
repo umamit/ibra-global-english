@@ -142,6 +142,18 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
     - AI dilarang keras mengubah alur verifikasi status pembayaran SPP (`pending` -> `verified` / `rejected`) tanpa persetujuan tertulis dari pengguna.
     - Semua mutasi pada tabel `tuition_payments` wajib melewati otorisasi keamanan server-side yang memastikan hanya admin terotentikasi yang dapat mengubah status pembayaran, sedangkan orang tua hanya dapat mengunggah bukti pembayaran untuk siswa mereka sendiri.
 
+21e. **Kunci Aturan Fitur Penerimaan Siswa (Strict Student Admission Locking):**
+    - AI dilarang keras mengubah alur persetujuan pendaftaran (Approve/Reject) pada berkas `src/app/api/register/route.ts` tanpa persetujuan tertulis dari pengguna.
+    - Proses approval wajib menyaring duplikasi nama siswa terlebih dahulu sebelum memasukkan data ke tabel `students`, dan secara otomatis menolak program di luar: 'Kids Program', 'Teens Program', dan 'Fun Calistung'.
+
+21f. **Kunci Aturan Fitur Keamanan Absensi (Strict Attendance Security Locking):**
+    - AI dilarang keras memodifikasi logika pengisian absensi kelas pada tabel `attendance` tanpa persetujuan tertulis dari pengguna.
+    - Logika absensi harus selalu mematuhi batasan keunikan data (`unique_student_attendance_per_day`) dan hanya boleh ditulis oleh tutor terotentikasi yang diizinkan mengajar kelas tersebut.
+
+21g. **Kunci Aturan Fitur Pengelolaan Jadwal Kelas (Strict Class Scheduling Locking):**
+    - AI dilarang memodifikasi logika pencegahan bentrok jadwal belajar pada tabel `academic_schedules` atau `online_schedules` tanpa izin pengguna.
+    - Setiap entri jadwal baru wajib divalidasi ketersediaan waktu dan ruangannya di sisi server sebelum disimpan.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
