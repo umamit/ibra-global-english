@@ -131,13 +131,23 @@ export default function LightboxModal({
         )}
 
         {/* Rounded Image Container */}
-        <div style={{ width: "100%", overflow: "hidden", borderRadius: "18px", boxShadow: "0 30px 60px rgba(0,0,0,0.5)", border: "1px solid rgba(255, 255, 255, 0.15)" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "auto" }}>
           <img 
             src={src} 
             alt={caption} 
             className="lightbox-img" 
             id="lightbox-img" 
-            style={{ width: "100%", maxHeight: "70vh", objectFit: "contain", display: "block", backgroundColor: "#000" }} 
+            style={{ 
+              maxWidth: "100%", 
+              maxHeight: "75vh", 
+              height: "auto", 
+              width: "auto", 
+              display: "block", 
+              borderRadius: "14px", 
+              boxShadow: "0 20px 40px rgba(0,0,0,0.4)", 
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              objectFit: "contain" 
+            }} 
           />
         </div>
 
