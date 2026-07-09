@@ -154,6 +154,14 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
     - AI dilarang memodifikasi logika pencegahan bentrok jadwal belajar pada tabel `academic_schedules` atau `online_schedules` tanpa izin pengguna.
     - Setiap entri jadwal baru wajib divalidasi ketersediaan waktu dan ruangannya di sisi server sebelum disimpan.
 
+21h. **Kunci Aturan Fitur Negosiasi Konten Markdown (Strict Markdown Negotiation Locking):**
+    - AI dilarang keras mengubah, merusak, atau menghapus logika perutean negosiasi konten markdown (`Accept: text/markdown`) di dalam `src/proxy.ts` atau middleware routing utama.
+    - Pemuatan konten markdown statis wajib mempertahankan fallback aman menggunakan string tersemat (*inline fallback*) agar terhindar dari pemblokiran loop Edge Vercel/Cloudflare.
+    - Header respons wajib selalu menyertakan `Content-Type: text/markdown; charset=utf-8` dan `x-markdown-tokens`.
+
+21i. **Kunci Aturan Fitur Integrasi WebMCP (Strict WebMCP Integration Locking):**
+    - AI wajib mempertahankan pendaftaran alat agen di `src/app/HomeClient.tsx` menggunakan pemanggilan ganda `provideContext()` dan `registerTool()` untuk kompatibilitas perayapan agen AI.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
