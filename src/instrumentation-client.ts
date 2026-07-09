@@ -13,7 +13,7 @@ if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && !(posthog as any).__loaded)
     person_profiles: "identified_only",
     capture_pageview: false,
     capture_pageleave: true,
-    capture_exceptions: true,
+    capture_exceptions: false,
     debug: process.env.NODE_ENV === "development",
   });
 }
