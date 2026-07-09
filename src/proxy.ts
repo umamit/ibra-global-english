@@ -100,6 +100,23 @@ export async function proxy(request: NextRequest) {
       } catch (err) {
         console.error("Gagal melakukan negosiasi markdown di proxy:", err);
       }
+
+      // Fallback ke inlined markdown content jika fetch gagal (misal karena batasan network/loopback Vercel)
+      const fallbackMd = `# Ibra Global English Bobong - Kursus Bahasa Inggris Terbaik di Pulau Taliabu\n\nBelajar Seru Lancar Bicara. Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu.\n\n## Tentang Kami\nIbra Global English menawarkan kursus bahasa Inggris offline dengan metode pembelajaran yang menyenangkan dan efektif untuk anak-anak dan remaja. Kami fokus pada peningkatan kemampuan speaking secara aktif dan interaktif bersama tutor berpengalaman.\n\n## Program Kursus\n\n### 1. Kids Program (Usia 5-12 tahun)\nPembelajaran menyenangkan melalui lagu, permainan, dan visual untuk membangun kecintaan berbahasa Inggris sejak usia dini.\n\n### 2. Teens Program (Usia 13-17 tahun)\nMembantu siswa sekolah menguasai keterampilan speaking, tata bahasa (grammar), kosa kata (vocabulary), serta melatih rasa percaya diri untuk presentasi dan diskusi kelompok.\n\n### 3. Fun Calistung (Usia 5-7 tahun)\nBimbingan membaca, menulis, dan berhitung dengan metode belajar sambil bermain yang ramah anak.\n\n## Keunggulan\n* **Metode Interaktif**: Belajar sambil praktik langsung lewat percakapan aktif.\n* **Tutor Berpengalaman**: Didampingi tutor yang berdedikasi tinggi.\n* **Kelas Terbatas**: Maksimal 10 siswa per kelas untuk perhatian lebih personal.\n* **Fasilitas Nyaman**: Lingkungan belajar yang mendukung kreativitas.\n\n## Hubungi Kami\n* **Alamat**: Jl. TPU Bobong Komp. Fangahu, Lantai 1 Kost Fitrah, Kabupaten Pulau Taliabu, Maluku Utara.\n* **WhatsApp**: +62 813-5700-1357\n* **Email**: contact@ibraglobalenglish.uk\n* **Facebook**: https://www.facebook.com/IbraGlobalEnglish\n* **Instagram**: https://www.instagram.com/ibraglobalenglish/\n\n## Pendaftaran & Konsultasi Gratis\nSilakan hubungi kontak kami di atas atau kunjungi langsung kantor kami untuk mendapatkan **Placement Test Gratis**!`;
+      
+      const fallbackTokens = Math.ceil(fallbackMd.length / 4.0).toString();
+      return new Response(fallbackMd, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/markdown; charset=utf-8",
+          "x-markdown-tokens": fallbackTokens,
+          "Link": [
+            "</.well-known/api-catalog>; rel=\"api-catalog\"",
+            "</.well-known/agent-skills/index.json>; rel=\"agent-skills\"",
+            "</.well-known/mcp/server-card.json>; rel=\"mcp-server-card\""
+          ].join(", ")
+        }
+      });
     }
   }
 
