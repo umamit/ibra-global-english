@@ -234,7 +234,7 @@ export default function PlacementTestClient() {
 
   // 1. Timer ticking effect
   useEffect(() => {
-    if (step !== 1) return;
+    if (step !== 2) return;
     const interval = setInterval(() => {
       setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
@@ -243,14 +243,14 @@ export default function PlacementTestClient() {
 
   // 2. Reset timer when active question index changes
   useEffect(() => {
-    if (step === 1) {
+    if (step === 2) {
       setSecondsLeft(30);
     }
   }, [currentQuestionIndex, step]);
 
   // 3. Trigger auto-advance when timer hits 0
   useEffect(() => {
-    if (step === 1 && secondsLeft === 0) {
+    if (step === 2 && secondsLeft === 0) {
       handleTimeOut();
     }
   }, [secondsLeft, step]);
