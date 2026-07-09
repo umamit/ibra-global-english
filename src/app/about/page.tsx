@@ -186,10 +186,6 @@ export default function AboutPage() {
                   <p style={{ margin: "2px 0 0", fontSize: "1rem", color: "var(--color-gray-800)", fontWeight: "600" }}>2806230044842</p>
                 </div>
                 <div>
-                  <p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Nomor Pokok Wajib Pajak (NPWP)</p>
-                  <p style={{ margin: "2px 0 0", fontSize: "1rem", color: "var(--color-gray-800)", fontWeight: "600" }}>1000 0000 0996 6538</p>
-                </div>
-                <div>
                   <p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Status Verifikasi</p>
                   <p style={{ margin: "2px 0 0", fontSize: "1rem", color: "#10b981", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }}>
                     <span>✓</span> Terdaftar & Terverifikasi Resmi
