@@ -56,10 +56,19 @@ export default function ParentSidebar({ mobileOpen, setMobileOpen, activeView, s
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V3.5A2.5 2.5 0 0 1 6.5 1H20v21H6.5a2.5 2.5 0 0 1-2.5-2.5z"/></svg>
           <span>LMS & Tugas Anak</span>
         </button>
+
+        <button
+          onClick={() => { setActiveView("feedback"); setMobileOpen(false); }}
+          className={`sidebar-nav-link ${activeView === "feedback" ? "active" : ""}`}
+          type="button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span>Umpan Balik Kelas</span>
+        </button>
       </div>
 
       <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Orang Tua Dashboard v3.4.3</span>
+        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Orang Tua Dashboard v3.5.0</span>
       </div>
     </aside>
   );

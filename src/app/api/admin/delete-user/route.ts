@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 import { getAdminOrTutorUser } from "@/utils/supabase/adminAuth";
+import { logActivity } from "@/utils/auditLogger";
 
 export const DELETE = withAdminAuth(async (request: any) => {
   try {
@@ -23,6 +24,14 @@ export const DELETE = withAdminAuth(async (request: any) => {
 
     const adminSupabase = getAdminSupabase();
 
+    // Dapatkan info target sebelum dihapus
+    const { data: targetProfile } = await adminSupabase
+      .from("profiles")
+      .select("full_name, email, role")
+      .eq("id", userId)
+      .single();
+    const targetName = targetProfile ? `${targetProfile.full_name} (${targetProfile.role})` : userId;
+
     // Putus koneksi semua siswa yang terhubung ke akun ini (set parent_id = NULL)
     // agar data siswa tidak ikut terhapus karena foreign key constraint
     const { error: unlinkError } = await adminSupabase
@@ -40,6 +49,11 @@ export const DELETE = withAdminAuth(async (request: any) => {
     if (deleteError) {
       return NextResponse.json({ error: deleteError.message }, { status: 500 });
     }
+
+    await logActivity(
+      "Hapus Pengguna",
+      `Menghapus akun pengguna ${targetName} dari sistem`
+    );
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

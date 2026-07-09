@@ -344,12 +344,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span>Ringkasan</span>
           </Link>
 
-          {/* Akademik & Kelas */}
           <div className="sidebar-group">
             <button
               type="button"
               onClick={() => toggleGroup("akademik")}
-              className={`sidebar-group-toggle ${["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/certificates", "/admin/placement-test", "/admin/curriculum"].includes(pathname) ? "active-parent" : ""}`}
+              className={`sidebar-group-toggle ${["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/certificates", "/admin/placement-test", "/admin/curriculum", "/admin/feedback"].includes(pathname) ? "active-parent" : ""}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
               <span>Akademik & Kelas</span>
@@ -396,6 +395,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link href="/admin/curriculum" className={`sidebar-sub-link ${isActive("/admin/curriculum") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
                 <span className="bullet"></span>
                 <span>Kelola Kurikulum</span>
+              </Link>
+              <Link href="/admin/feedback" className={`sidebar-sub-link ${isActive("/admin/feedback") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Umpan Balik Tutor</span>
               </Link>
             </div>
           </div>
@@ -488,12 +491,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
 
-          {/* Manajemen Pengguna */}
           <div className="sidebar-group">
             <button
               type="button"
               onClick={() => toggleGroup("pengguna")}
-              className={`sidebar-group-toggle ${["/admin/students", "/admin/tutors"].includes(pathname) ? "active-parent" : ""}`}
+              className={`sidebar-group-toggle ${["/admin/students", "/admin/tutors", "/admin/audit-logs"].includes(pathname) ? "active-parent" : ""}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               <span>Manajemen Pengguna</span>
@@ -540,12 +542,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span className="bullet"></span>
                 <span>Kelola Tutor & Staf</span>
               </Link>
+              <Link href="/admin/audit-logs" className={`sidebar-sub-link ${isActive("/admin/audit-logs") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <span className="bullet"></span>
+                <span>Log Aktivitas Sistem</span>
+              </Link>
             </div>
           </div>
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.4.3</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.5.0</span>
         </div>
       </aside>
 

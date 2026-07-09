@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
 import { registrationSchema, registrationUpdateSchema } from "@/lib/schemas";
+import { logActivity } from "@/utils/auditLogger";
 
 export const dynamic = "force-dynamic";
 
@@ -217,6 +218,11 @@ export const PATCH = withAdminAuth(async (req) => {
 
       if (deleteError) throw deleteError;
 
+      await logActivity(
+        "Tolak Pendaftaran",
+        `Menolak & menghapus pendaftaran siswa: ${reg.student_name} (Program: ${reg.program})`
+      );
+
       return NextResponse.json(
         {
           success: true,
@@ -231,6 +237,11 @@ export const PATCH = withAdminAuth(async (req) => {
         .eq("id", id);
 
       if (updateError) throw updateError;
+
+      await logActivity(
+        "Setujui Pendaftaran",
+        `Menyetujui pendaftaran siswa: ${reg.student_name} (Program: ${reg.program})`
+      );
 
       return NextResponse.json(
         {

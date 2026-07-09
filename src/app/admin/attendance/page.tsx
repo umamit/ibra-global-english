@@ -60,12 +60,29 @@ export default function DailyAttendance() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [programFilter, setProgramFilter] = useState<string>("");
 
+  const [selectedMonth, setSelectedMonth] = useState<string>(() => {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    return `${y}-${m}`;
+  });
+
   const loadRecapData = async (): Promise<void> => {
     setRecapLoading(true);
     try {
+      const [yearStr, monthStr] = selectedMonth.split("-");
+      const year = parseInt(yearStr);
+      const month = parseInt(monthStr);
+      
+      const firstDay = `${year}-${String(month).padStart(2, "0")}-01`;
+      const lastDayDate = new Date(year, month, 0);
+      const lastDay = `${year}-${String(month).padStart(2, "0")}-${String(lastDayDate.getDate()).padStart(2, "0")}`;
+
       const { data: attendanceList, error: errA } = await supabase
         .from("attendance")
-        .select("student_id, status");
+        .select("student_id, status")
+        .gte("date", firstDay)
+        .lte("date", lastDay);
 
       if (errA) throw errA;
 
@@ -125,7 +142,7 @@ export default function DailyAttendance() {
     return () => {
       cancelled = true;
     };
-  }, [activeTab]);
+  }, [activeTab, selectedMonth]);
 
   const filteredRecap = recapData.filter((row) => {
     const matchName = row.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -157,7 +174,7 @@ export default function DailyAttendance() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `rekapitulasi_absensi_${new Date().toISOString().split("T")[0]}.csv`;
+    link.download = `rekapitulasi_absensi_${selectedMonth}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -361,22 +378,48 @@ export default function DailyAttendance() {
             />
           </div>
         )}
-        {activeTab === "rekap" && filteredRecap.length > 0 && (
-          <div className="topbar-user">
-            <button
-              className="btn-portal-outline"
-              onClick={exportRecapCSV}
-              style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem" }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>Export CSV</span>
-            </button>
+        {activeTab === "rekap" && (
+          <div className="topbar-user" style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }} className="no-print">
+              <label htmlFor="recap-month" style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--color-gray-700)" }}>
+                Bulan:
+              </label>
+              <input
+                type="month"
+                id="recap-month"
+                className="form-input"
+                style={{ width: "160px", padding: "0.45rem 1rem", fontSize: "0.85rem" }}
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                disabled={recapLoading}
+              />
+            </div>
+            {filteredRecap.length > 0 && (
+              <div style={{ display: "flex", gap: "0.5rem" }} className="no-print">
+                <button
+                  className="btn-portal-outline"
+                  onClick={exportRecapCSV}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Export CSV</span>
+                </button>
+                <button
+                  className="btn-portal"
+                  onClick={() => window.print()}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  <span>Cetak PDF</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Tab Switcher */}
-      <div style={{
+      <div className="no-print" style={{
         display: "flex",
         borderBottom: "2px solid var(--color-gray-100)",
         marginBottom: "1.75rem",
@@ -558,7 +601,7 @@ export default function DailyAttendance() {
       ) : (
         <div>
           {/* Search & Filter Controls */}
-          <div style={{
+          <div className="no-print" style={{
             display: "flex",
             gap: "1rem",
             marginBottom: "1.5rem",
@@ -600,6 +643,44 @@ export default function DailyAttendance() {
             </div>
           ) : (
             <div className="table-wrapper">
+              <style dangerouslySetInnerHTML={{__html: `
+                .print-only-header {
+                  display: none;
+                }
+                @media print {
+                  .print-only-header {
+                    display: block !important;
+                  }
+                  /* Gunakan full-width dan bersihkan latar belakang untuk cetakan */
+                  .attendance-recap-table {
+                    width: 100% !important;
+                    border-collapse: collapse !important;
+                  }
+                  .attendance-recap-table th, .attendance-recap-table td {
+                    border: 1px solid #ddd !important;
+                    padding: 8px !important;
+                    color: black !important;
+                  }
+                }
+              `}} />
+              
+              {/* Header Cetak (Hanya tampil saat di-print) */}
+              <div className="print-only-header" style={{ marginBottom: "1.5rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", borderBottom: "3px double #000000", paddingBottom: "1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                    <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "50px", height: "54px" }} />
+                    <div style={{ textAlign: "left" }}>
+                      <h2 style={{ fontSize: "1.2rem", fontWeight: "900", margin: "0", color: "#000000" }}>IBRA GLOBAL ENGLISH</h2>
+                      <p style={{ fontSize: "0.75rem", fontWeight: "800", color: "#A68849", margin: "0", letterSpacing: "1px" }}>BELAJAR SERU, LANCAR BICARA</p>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <h3 style={{ fontSize: "1rem", fontWeight: "800", margin: "0", color: "#000000" }}>LAPORAN REKAPITULASI KEHADIRAN SISWA</h3>
+                    <p style={{ fontSize: "0.8rem", color: "#555555", margin: "2px 0 0" }}>Periode Bulan: {selectedMonth}</p>
+                  </div>
+                </div>
+              </div>
+
               <table className="portal-table attendance-recap-table">
                 <thead>
                   <tr>

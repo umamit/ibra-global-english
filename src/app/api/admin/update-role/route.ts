@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
+import { logActivity } from "@/utils/auditLogger";
 
 export const PATCH = withAdminAuth(async (request: any) => {
   try {
@@ -21,6 +22,14 @@ export const PATCH = withAdminAuth(async (request: any) => {
         { status: 400 }
       );
     }
+
+    // Dapatkan nama profil yang diubah terlebih dahulu
+    const { data: targetProfile } = await adminSupabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", userId)
+      .single();
+    const targetName = targetProfile?.full_name || userId;
 
     // Update di tabel profiles
     const { error: profileError } = await adminSupabase
@@ -48,6 +57,11 @@ export const PATCH = withAdminAuth(async (request: any) => {
         { status: 500 }
       );
     }
+
+    await logActivity(
+      "Ubah Peran Pengguna",
+      `Mengubah peran pengguna ${targetName} menjadi ${role}`
+    );
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

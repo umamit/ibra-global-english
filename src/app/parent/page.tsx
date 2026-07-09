@@ -12,6 +12,7 @@ import ProgressView from "./components/ProgressView";
 import CalendarView from "./components/CalendarView";
 import FinanceView from "./components/FinanceView";
 import LMSView from "./components/LMSView";
+import FeedbackView from "./components/FeedbackView";
 import ReceiptPrint from "./components/ReceiptPrint";
 import "@/app/dashboard.css";
 import "@/app/dashboard-print.css";
@@ -589,6 +590,15 @@ export default function ParentPortal() {
                   selectedChild={selectedChild}
                   lmsMaterials={lmsMaterials}
                   lmsSubmissions={lmsSubmissions}
+                  detailsLoading={detailsLoading}
+                />
+              </div>
+            )}
+
+            {activeView === "feedback" && (
+              <div className="view-fade-in">
+                <FeedbackView
+                  selectedChild={selectedChild}
                   detailsLoading={detailsLoading}
                 />
               </div>
