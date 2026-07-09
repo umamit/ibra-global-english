@@ -138,6 +138,10 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
     - AI dilarang keras memodifikasi logika langkah kuis (`step === 2` untuk timer aktif), rentang penilaian kuis, maupun format level CEFR (`A1`, `A2`, `B1`, `B2`, `C1`) pada berkas `PlacementTestClient.tsx` dan `placementHelpers.ts` tanpa persetujuan tertulis eksplisit dari pengguna.
     - Setiap refaktorisasi pada API `api/placement-test` wajib menjaga kompatibilitas dengan format level CEFR tersebut.
 
+21d. **Kunci Aturan Fitur Pengelolaan SPP / Keuangan (Strict Tuition Payment Locking):**
+    - AI dilarang keras mengubah alur verifikasi status pembayaran SPP (`pending` -> `verified` / `rejected`) tanpa persetujuan tertulis dari pengguna.
+    - Semua mutasi pada tabel `tuition_payments` wajib melewati otorisasi keamanan server-side yang memastikan hanya admin terotentikasi yang dapat mengubah status pembayaran, sedangkan orang tua hanya dapat mengunggah bukti pembayaran untuk siswa mereka sendiri.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
