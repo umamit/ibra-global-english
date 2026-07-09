@@ -134,6 +134,10 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
       * Batas Elemen (Borders): Gunakan garis pembatas tipis yang transparan/semi-transparan (1px solid rgba(0, 0, 0, 0.05)) untuk membatasi kartu dan elemen masukan.
       * Transisi & Easing: Gunakan transisi spring dinamis (cubic-bezier(0.34, 1.56, 0.64, 1)) untuk interaksi hover/active agar antarmuka terasa hidup dan lancar.
 
+21c. **Kunci Aturan Fitur Placement Test & Timer (Strict Placement Test Locking):**
+    - AI dilarang keras memodifikasi logika langkah kuis (`step === 2` untuk timer aktif), rentang penilaian kuis, maupun format level CEFR (`A1`, `A2`, `B1`, `B2`, `C1`) pada berkas `PlacementTestClient.tsx` dan `placementHelpers.ts` tanpa persetujuan tertulis eksplisit dari pengguna.
+    - Setiap refaktorisasi pada API `api/placement-test` wajib menjaga kompatibilitas dengan format level CEFR tersebut.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
