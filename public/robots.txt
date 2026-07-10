@@ -12,6 +12,23 @@ Disallow: /onboarding/
 Disallow: /posthog-test
 Content-Signal: ai-train=no, search=yes, ai-input=no
 
+# Prevent AI scrapers from crawling/training on site content
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
 Sitemap: https://www.ibraglobalenglish.uk/sitemap.xml
-
-
