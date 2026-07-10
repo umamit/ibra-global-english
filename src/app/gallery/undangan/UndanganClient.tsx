@@ -75,7 +75,19 @@ export default function UndanganClient() {
   useEffect(() => {
     const initPlayer = () => {
       if ((window as any).YT && (window as any).YT.Player) {
-        playerRef.current = new (window as any).YT.Player("yt-player", {
+        playerRef.current = new (window as any).YT.Player("yt-player-container", {
+          height: "200",
+          width: "200",
+          videoId: "hXb7p6s4C3U",
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            rel: 0,
+            loop: 1,
+            playlist: "hXb7p6s4C3U",
+            enablejsapi: 1,
+            origin: window.location.origin
+          },
           events: {
             onStateChange: (event: any) => {
               if (event.data === (window as any).YT.PlayerState.PLAYING) {
@@ -169,15 +181,19 @@ export default function UndanganClient() {
 
   return (
     <div className="undangan-wrapper">
-      {/* Invisible YouTube Iframe */}
-      <div style={{ position: "absolute", width: "1px", height: "1px", opacity: 0, pointerEvents: "none", overflow: "hidden" }}>
-        <iframe
-          id="yt-player"
-          src="https://www.youtube-nocookie.com/embed/hXb7p6s4C3U?enablejsapi=1&controls=0&rel=0&loop=1&playlist=hXb7p6s4C3U"
-          allow="autoplay; encrypted-media"
-          title="Bermuara Music Stream"
-        />
-      </div>
+      {/* Invisible YouTube Iframe Container (rendered dynamically with a visible size off-screen to bypass mobile browser background/autoplay blockages) */}
+      <div 
+        id="yt-player-container" 
+        style={{ 
+          position: "fixed", 
+          bottom: "-500px", 
+          left: "-500px", 
+          width: "200px", 
+          height: "200px", 
+          pointerEvents: "none", 
+          zIndex: -9999 
+        }} 
+      />
 
       {/* Cover Overlay Screen */}
       {!isOpen && (
