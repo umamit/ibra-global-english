@@ -83,18 +83,8 @@ export default function Hero({ initialSettings }: HeroProps) {
 
           <div className="hero-trilogy">
             <div className="hero-trilogy-item">
-              <span className="hero-trilogy-icon">🎉</span>
-              <span className="hero-trilogy-label">Belajar Seru</span>
-            </div>
-            <span className="hero-trilogy-sep">•</span>
-            <div className="hero-trilogy-item">
-              <span className="hero-trilogy-icon">🗣️</span>
-              <span className="hero-trilogy-label">Berani Bicara</span>
-            </div>
-            <span className="hero-trilogy-sep">•</span>
-            <div className="hero-trilogy-item">
-              <span className="hero-trilogy-icon">🌍</span>
-              <span className="hero-trilogy-label">Siap Mendunia</span>
+              <span className="hero-trilogy-icon">✨</span>
+              <span className="hero-trilogy-label">Building Confident English Communicators.</span>
             </div>
           </div>
         </div>

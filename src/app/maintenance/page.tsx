@@ -259,13 +259,9 @@ export default function MaintenancePage() {
             Kami akan kembali online sebentar lagi. Terima kasih atas kesabarannya! 🙏
           </p>
 
-          {/* Trilogy */}
+          {/* Tagline */}
           <div className="maint-trilogy">
-            <span>🎉 Belajar Seru</span>
-            <span className="maint-trilogy-sep">•</span>
-            <span>🗣️ Berani Bicara</span>
-            <span className="maint-trilogy-sep">•</span>
-            <span>🌍 Siap Mendunia</span>
+            <span>✨ Building Confident English Communicators.</span>
           </div>
 
           {/* WhatsApp CTA */}
