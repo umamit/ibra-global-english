@@ -120,10 +120,10 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 
 21a. **Kunci Skema Warna Brand Paten (Strict Brand Color Locking):**
     - AI dilarang keras mengubah, mengganti, atau memodifikasi palet warna identitas paten Ibra Global English Bobong berikut pada tugas-tugas mendatang tanpa persetujuan eksplisit:
-      * Teal Utama: `#216c7e` / `var(--color-primary)`
-      * Teal Gelap: `#164d57` / `var(--color-primary-dark)`
+      * Teal Utama: `#216c7e` / `var(--color-primary)` (Padanan Pantone Terdekat: **PANTONE 302 C / 548 C**)
+      * Teal Gelap: `#164d57` / `var(--color-primary-dark)` (Padanan Pantone Terdekat: **PANTONE 547 C / 303 C**)
       * Tonal Teal Muda: `#eef6f8` / `var(--color-bg-teal-50)` / `rgba(33, 108, 126, 0.06)`
-      * Emas Aksen (Gold): `#A68849` / `var(--color-accent)`
+      * Emas Aksen (Gold): `#A68849` / `var(--color-accent)` (Padanan Pantone Terdekat: **PANTONE 7557 C / 7556 C**)
       * Background Light: `#f5f5f7` / `var(--color-gray-50)` (Apple Off-White)
       * Background Dark: `#000000` (True Black)
 
