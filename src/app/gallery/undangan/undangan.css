@@ -141,7 +141,7 @@
 
 .form-input, .form-select, .form-textarea {
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: 1rem; /* 16px to prevent iOS Safari auto-zoom-on-focus */
   padding: 0.875rem 1rem;
   background-color: #f5f5f7;
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -169,9 +169,11 @@
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
 }
 
-.rsvp-submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(33, 108, 126, 0.25);
+@media (hover: hover) {
+  .rsvp-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 108, 126, 0.25);
+  }
 }
 
 .rsvp-submit-btn:active {
@@ -262,8 +264,10 @@
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.floating-music-btn:hover {
-  transform: scale(1.1);
+@media (hover: hover) {
+  .floating-music-btn:hover {
+    transform: scale(1.1);
+  }
 }
 
 .music-wave {
@@ -293,13 +297,33 @@
 }
 
 @media (max-width: 576px) {
+  .undangan-container {
+    margin-top: 2rem;
+    padding-inline: 1rem;
+  }
   .undangan-card {
     padding: 1.75rem 1.25rem;
+    margin-bottom: 1.75rem;
+    border-radius: 14px; /* Slightly tighter curves on mobile */
+  }
+  .countdown-grid {
+    gap: 0.5rem;
+  }
+  .countdown-box {
+    padding: 0.75rem 0.25rem;
+    border-radius: 8px;
+  }
+  .countdown-num {
+    font-size: 1.5rem;
+  }
+  .countdown-label {
+    font-size: 0.6rem;
+    letter-spacing: 0;
   }
   .floating-music-btn {
-    bottom: 1.25rem;
-    right: 1.25rem;
-    width: 3rem;
-    height: 3rem;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 3.25rem;
+    height: 3.25rem;
   }
 }
