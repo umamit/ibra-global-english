@@ -34,7 +34,7 @@ export async function proxy(request: NextRequest) {
   // Define strict Content Security Policy
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'report-sample' blob: ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.cloudflareinsights.com https://connect.facebook.net;
+    script-src 'self' 'unsafe-inline' 'report-sample' blob: ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.cloudflareinsights.com https://connect.facebook.net https://www.youtube.com https://s.ytimg.com;
     style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     font-src 'self' https://cdn.jsdelivr.net;
     img-src 'self' data: blob: https://images.unsplash.com https://uszukipvrvjrgrikxfwh.supabase.co https://res.cloudinary.com https://*.canva.com https://www.canva.com https://api.qrserver.com https://www.facebook.com;
