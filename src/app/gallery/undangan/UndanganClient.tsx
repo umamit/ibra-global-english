@@ -27,7 +27,14 @@ export default function UndanganClient() {
   const [submitMessage, setSubmitMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const [guestName, setGuestName] = useState<string>("");
+  const [copiedBank, setCopiedBank] = useState(false);
   const playerRef = useRef<any>(null);
+
+  const handleCopyAccount = (number: string) => {
+    navigator.clipboard.writeText(number);
+    setCopiedBank(true);
+    setTimeout(() => setCopiedBank(false), 2000);
+  };
 
   // Read guest name parameter from URL (safely on client side only to avoid Next.js build bailouts)
   useEffect(() => {
@@ -292,16 +299,53 @@ export default function UndanganClient() {
           </div>
 
           <div className="undangan-container">
-            {/* 2. Quote */}
-            <div className="undangan-card">
-              <p style={{ fontStyle: "italic", fontSize: "0.9375rem", color: "var(--color-gray-600)", lineHeight: "1.7", margin: 0 }}>
-                "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang."<br />
-                <strong style={{ display: "block", marginTop: "1rem", color: "var(--color-primary-dark)", fontSize: "0.875rem" }}>— QS. Ar-Rum: 21</strong>
+            {/* 2. Opening & Quote */}
+            <div className="undangan-card text-center">
+              <span className="ornament-floral">🌸</span>
+              <h2 className="section-greeting-title">Assalamualaikum Wr. Wb.</h2>
+              <p className="section-greeting-intro">
+                Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri hari bahagia pernikahan kami:
               </p>
+              
+              <div className="quote-divider" />
+              
+              <p className="quote-text">
+                "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda bagi kaum yang berpikir."
+              </p>
+              <strong className="quote-ref">— QS. Ar-Rum: 21</strong>
             </div>
 
-            {/* 3. Countdown Timer */}
-            <div className="undangan-card">
+            {/* 3. Mempelai / Groom & Bride Details */}
+            <div className="mempelai-grid">
+              {/* Mempelai Pria */}
+              <div className="undangan-card mempelai-card">
+                <div className="avatar-frame">
+                  <div className="avatar-initials">M</div>
+                </div>
+                <h3 className="mempelai-name">Mike Peterson</h3>
+                <span className="mempelai-role">Mempelai Pria</span>
+                <div className="mempelai-parent">
+                  <p>Putra dari:</p>
+                  <strong>Bapak Peterson &amp; Ibu Peterson</strong>
+                </div>
+              </div>
+
+              {/* Mempelai Wanita */}
+              <div className="undangan-card mempelai-card">
+                <div className="avatar-frame">
+                  <div className="avatar-initials">L</div>
+                </div>
+                <h3 className="mempelai-name">Lila Safitri</h3>
+                <span className="mempelai-role">Mempelai Wanita</span>
+                <div className="mempelai-parent">
+                  <p>Putri dari:</p>
+                  <strong>Bapak Safitri &amp; Ibu Safitri</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Countdown Timer */}
+            <div className="undangan-card text-center">
               <h3 className="card-title">Menuju Hari Bahagia</h3>
               <div className="countdown-grid">
                 <div className="countdown-box">
@@ -323,49 +367,122 @@ export default function UndanganClient() {
               </div>
             </div>
 
-            {/* 4. Event Info */}
+            {/* 5. Detail Acara (Akad & Resepsi) */}
             <div className="undangan-card">
-              <h3 className="card-title">Detail Acara</h3>
-              <div style={{ marginBottom: "2rem" }}>
-                <span style={{ fontSize: "1.125rem", fontWeight: "800", color: "var(--color-accent)", display: "block", marginBottom: "0.5rem" }}>💍 Akad Nikah</span>
-                <p style={{ margin: "0.25rem 0", fontSize: "0.9375rem", fontWeight: "700" }}>Pukul 09:00 WITA - Selesai</p>
+              <h3 className="card-title text-center">Detail Acara</h3>
+              <div className="event-item">
+                <span className="event-icon">💍</span>
+                <div className="event-info">
+                  <h4 className="event-name">Akad Nikah</h4>
+                  <p className="event-detail">Kamis, 20 Agustus 2026</p>
+                  <p className="event-detail font-bold">Pukul 09:00 WITA - Selesai</p>
+                </div>
               </div>
-              <div style={{ marginBottom: "2rem" }}>
-                <span style={{ fontSize: "1.125rem", fontWeight: "800", color: "var(--color-accent)", display: "block", marginBottom: "0.5rem" }}>🎉 Resepsi Pernikahan</span>
-                <p style={{ margin: "0.25rem 0", fontSize: "0.9375rem", fontWeight: "700" }}>Pukul 11:00 WITA - Selesai</p>
+
+              <div className="event-item">
+                <span className="event-icon">🎉</span>
+                <div className="event-info">
+                  <h4 className="event-name">Resepsi Pernikahan</h4>
+                  <p className="event-detail">Kamis, 20 Agustus 2026</p>
+                  <p className="event-detail font-bold">Pukul 11:00 WITA - Selesai</p>
+                </div>
               </div>
-              <div>
-                <span style={{ fontSize: "1.125rem", fontWeight: "800", color: "var(--color-primary)", display: "block", marginBottom: "0.5rem" }}>📍 Lokasi Acara</span>
-                <p style={{ margin: "0.25rem 0", fontSize: "0.9375rem" }}>Waibau, Kecamatan Sanana</p>
-                <p style={{ margin: "0.25rem 0", fontSize: "0.875rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Kabupaten Kepulauan Sula, Maluku Utara</p>
+
+              <div className="venue-section">
+                <h4 className="venue-title">📍 Lokasi Acara</h4>
+                <p className="venue-address font-bold">Kediaman Mempelai Wanita</p>
+                <p className="venue-address-details">Waibau, Kecamatan Sanana, Kabupaten Kepulauan Sula, Maluku Utara</p>
                 <a
                   href="https://maps.google.com/?q=Waibau,+Sanana,+Kepulauan+Sula,+Maluku+Utara"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    display: "inline-block",
-                    marginTop: "1.5rem",
-                    background: "rgba(166, 136, 73, 0.1)",
-                    color: "var(--color-accent)",
-                    border: "1px solid rgba(166, 136, 73, 0.2)",
-                    borderRadius: "20px",
-                    padding: "0.6rem 1.5rem",
-                    fontSize: "0.875rem",
-                    fontWeight: "700",
-                    textDecoration: "none",
-                    transition: "all 0.3s ease"
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(166, 136, 73, 0.15)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(166, 136, 73, 0.1)")}
+                  className="maps-button"
                 >
                   🗺️ Buka Google Maps
                 </a>
               </div>
             </div>
 
-            {/* 5. RSVP Form */}
+            {/* 6. Perjalanan Cinta / Love Story */}
             <div className="undangan-card">
-              <h3 className="card-title">Konfirmasi Kehadiran</h3>
+              <h3 className="card-title text-center">Cerita Cinta</h3>
+              <div className="timeline-container">
+                <div className="timeline-item">
+                  <div className="timeline-badge">2023</div>
+                  <div className="timeline-panel">
+                    <h4 className="timeline-title">Awal Pertemuan</h4>
+                    <p className="timeline-body">Tuhan mempertemukan kami dalam sebuah kesempatan yang tidak terduga, menumbuhkan awal rasa saling percaya.</p>
+                  </div>
+                </div>
+
+                <div className="timeline-item">
+                  <div className="timeline-badge">2025</div>
+                  <div className="timeline-panel">
+                    <h4 className="timeline-title">Ikatan Suci (Lamaran)</h4>
+                    <p className="timeline-body">Dengan restu kedua orang tua, kami memantapkan niat untuk melangkah lebih jauh menuju jenjang ikatan pernikahan.</p>
+                  </div>
+                </div>
+
+                <div className="timeline-item">
+                  <div className="timeline-badge">2026</div>
+                  <div className="timeline-panel">
+                    <h4 className="timeline-title">Pernikahan</h4>
+                    <p className="timeline-body">Hari bersejarah di mana kami berjanji untuk saling setia mendampingi dalam suka maupun duka selamanya.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 7. Galeri Foto */}
+            <div className="undangan-card">
+              <h3 className="card-title text-center">Galeri Momen Indah</h3>
+              <div className="gallery-grid">
+                <div className="gallery-item-placeholder bg-teal-50">
+                  <span>📸 Momen Kebersamaan</span>
+                </div>
+                <div className="gallery-item-placeholder bg-teal-50">
+                  <span>💍 Cincin Janji Suci</span>
+                </div>
+                <div className="gallery-item-placeholder bg-teal-50">
+                  <span>🌸 Dekorasi Walimah</span>
+                </div>
+                <div className="gallery-item-placeholder bg-teal-50">
+                  <span>🕊️ Meniti Masa Depan</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 8. Kado Online / Amplop Digital */}
+            <div className="undangan-card text-center">
+              <h3 className="card-title">Kado Digital</h3>
+              <p className="gift-intro">
+                Tanpa mengurangi rasa hormat, bagi Bapak/Ibu/Saudara/i yang ingin memberikan tanda kasih untuk kami, dapat melalui rekening berikut:
+              </p>
+
+              <div className="atm-card">
+                <div className="atm-card-header">
+                  <span className="bank-logo">BANK MANDIRI</span>
+                  <span className="chip-logo">📠</span>
+                </div>
+                <div className="atm-card-number">
+                  186-00-0216402-4
+                </div>
+                <div className="atm-card-holder">
+                  AN. LILA SAFITRI
+                </div>
+              </div>
+
+              <button
+                className="copy-btn"
+                onClick={() => handleCopyAccount("1860002164024")}
+              >
+                {copiedBank ? "✓ Nomor Rekening Tersalin!" : "📋 Salin Nomor Rekening"}
+              </button>
+            </div>
+
+            {/* 9. RSVP Form */}
+            <div className="undangan-card">
+              <h3 className="card-title text-center">Konfirmasi Kehadiran</h3>
               <form className="rsvp-form" onSubmit={handleRSVPSubmit}>
                 <div className="form-group">
                   <label className="form-label" htmlFor="rsvp-name">Nama Tamu</label>
@@ -447,9 +564,9 @@ export default function UndanganClient() {
               </form>
             </div>
 
-            {/* 6. Guest Book Wishes Wall */}
+            {/* 10. Guest Book Wishes Wall */}
             <div className="undangan-card">
-              <h3 className="card-title">Doa Restu &amp; Ucapan</h3>
+              <h3 className="card-title text-center">Doa Restu &amp; Ucapan</h3>
               {loadingWishes ? (
                 <p style={{ fontSize: "0.875rem", color: "var(--color-gray-400)" }}>Memuat ucapan...</p>
               ) : wishes.length === 0 ? (
