@@ -58,8 +58,8 @@ Mohon hubungi saya kembali. Terima kasih!`;
             <img 
               src="/assets/ide-logo.png" 
               alt="Ibra Digital Engineering Logo" 
-              width={81} 
-              height={44} 
+              width={110} 
+              height={60} 
               className={styles.logoImg} 
             />
           </a>
@@ -388,8 +388,8 @@ Mohon hubungi saya kembali. Terima kasih!`;
           <img 
             src="/assets/ide-logo.png" 
             alt="Ibra Digital Engineering Logo" 
-            width={64} 
-            height={35} 
+            width={120} 
+            height={65} 
             loading="lazy"
           />
         </div>
