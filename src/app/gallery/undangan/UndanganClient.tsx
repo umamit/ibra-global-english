@@ -229,7 +229,7 @@ export default function UndanganClient() {
       gsap.fromTo(
         ".undangan-left-overlay",
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.2 }
+        { opacity: 1, y: 0, duration: 1.8, ease: "power3.out", delay: 0.2 }
       );
 
       // 1b. Left overlay split title characters stagger
@@ -239,8 +239,8 @@ export default function UndanganClient() {
         {
           opacity: 1,
           y: 0,
-          stagger: 0.06,
-          duration: 0.8,
+          stagger: 0.08,
+          duration: 1.4,
           ease: "back.out(1.7)",
           delay: 0.4
         }
@@ -272,7 +272,7 @@ export default function UndanganClient() {
           {
             opacity: 1,
             y: 0,
-            duration: 1,
+            duration: 1.6,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
@@ -292,7 +292,7 @@ export default function UndanganClient() {
           {
             opacity: 1,
             x: 0,
-            duration: 1.2,
+            duration: 1.8,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
@@ -311,7 +311,7 @@ export default function UndanganClient() {
           {
             opacity: 1,
             x: 0,
-            duration: 1.2,
+            duration: 1.8,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
@@ -331,7 +331,7 @@ export default function UndanganClient() {
           {
             opacity: 1,
             scale: 1,
-            duration: 1.2,
+            duration: 1.8,
             ease: "back.out(1.2)",
             scrollTrigger: {
               trigger: card,
@@ -350,7 +350,7 @@ export default function UndanganClient() {
           { strokeDashoffset: 200 },
           {
             strokeDashoffset: 0,
-            duration: 1.5,
+            duration: 2.2,
             ease: "power2.inOut",
             scrollTrigger: {
               trigger: path.ownerSVGElement || path,
@@ -369,8 +369,8 @@ export default function UndanganClient() {
         {
           opacity: 1,
           x: 0,
-          duration: 0.8,
-          stagger: 0.2,
+          duration: 1.4,
+          stagger: 0.25,
           ease: "power2.out",
           scrollTrigger: {
             trigger: ".timeline-container",
@@ -387,8 +387,8 @@ export default function UndanganClient() {
         {
           opacity: 1,
           scale: 1,
-          duration: 0.8,
-          stagger: 0.15,
+          duration: 1.4,
+          stagger: 0.2,
           ease: "power2.out",
           scrollTrigger: {
             trigger: ".gallery-grid",
