@@ -26,7 +26,20 @@ export default function UndanganClient() {
   const [submitting, setSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+  const [guestName, setGuestName] = useState<string>("");
   const playerRef = useRef<any>(null);
+
+  // Read guest name parameter from URL (safely on client side only to avoid Next.js build bailouts)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const toParam = params.get("to");
+      if (toParam) {
+        setGuestName(toParam);
+        setName(toParam); // Auto-fill RSVP name input
+      }
+    }
+  }, []);
 
   // Initialize Countdown
   useEffect(() => {
@@ -217,9 +230,21 @@ export default function UndanganClient() {
           <div style={{ maxWidth: "480px" }}>
             <span style={{ fontSize: "0.875rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#A68849", fontWeight: "700" }}>The Wedding Invitation of</span>
             <h1 style={{ fontSize: "3rem", fontWeight: "800", margin: "1.5rem 0", fontFamily: "var(--font-outfit)" }}>Mike & Lila</h1>
-            <p style={{ fontSize: "0.9375rem", color: "#eef6f8", opacity: 0.85, marginBottom: "2.5rem" }}>
-              Kepada Bapak/Ibu/Saudara/i,<br />Kami mengundang Anda untuk merayakan momen bahagia pernikahan kami.
+            <p style={{ fontSize: "0.9375rem", color: "#eef6f8", opacity: 0.85, marginBottom: "0.5rem" }}>
+              Kepada Yth. Bapak/Ibu/Saudara/i:
             </p>
+            {guestName ? (
+              <div style={{ margin: "1rem 0 2.5rem 0" }}>
+                <h2 style={{ fontSize: "1.75rem", fontWeight: "700", color: "#A68849", margin: "0 0 0.5rem 0", fontFamily: "var(--font-outfit)" }}>
+                  {guestName}
+                </h2>
+                <span style={{ fontSize: "0.85rem", color: "#eef6f8", opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.05em" }}>Di Tempat</span>
+              </div>
+            ) : (
+              <p style={{ fontSize: "0.9375rem", color: "#eef6f8", opacity: 0.85, marginBottom: "2.5rem" }}>
+                Kami mengundang Anda untuk merayakan momen bahagia pernikahan kami.
+              </p>
+            )}
             <button
               onClick={handleOpenInvitation}
               style={{
