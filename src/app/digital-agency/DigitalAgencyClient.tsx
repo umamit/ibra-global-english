@@ -189,6 +189,51 @@ Mohon hubungi saya kembali. Terima kasih!`;
               </div>
             </div>
           </div>
+
+          <div className={styles.showcase} style={{ marginTop: "40px" }}>
+            <div className={styles.showcaseContent}>
+              <span className={styles.showcaseTag}>School Web Portal</span>
+              <h3 className={styles.showcaseTitle}>Website Resmi SD Negeri Bobong</h3>
+              <p className={styles.showcaseDesc}>
+                Website profil sekolah dasar negeri pertama di Bobong, Kabupaten Pulau Taliabu. Menyediakan media informasi 
+                akademik resmi, kegiatan sekolah, galeri aktivitas siswa, data pendidik, serta alur pendaftaran siswa baru secara online.
+              </p>
+              <div className={styles.techTags}>
+                <span className={styles.techTag}>Next.js</span>
+                <span className={styles.techTag}>Cloudflare Pages</span>
+                <span className={styles.techTag}>Tailwind CSS</span>
+                <span className={styles.techTag}>Apple HIG Theme</span>
+                <span className={styles.techTag}>SEO Optimized</span>
+              </div>
+              <div style={{ marginTop: "32px" }}>
+                <a href="https://www.sdnegeribobong.sch.id" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                  Kunjungi Website Sekolah
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div className={styles.showcaseCard}>
+              <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)" }}>🖥️ LIVE SYSTEM VIEW</span>
+                <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
+              </div>
+              <ul className={styles.featuresList}>
+                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Official Academic Profiles</li>
+                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Interactive Student Activity Gallery</li>
+                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Online Enrollment Information</li>
+                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Search Engine Optimized (.id domain)</li>
+              </ul>
+              <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+                <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
+                  "Hadir sebagai pelopor portal digitalisasi sekolah dasar pertama di Pulau Taliabu."
+                </span>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* ── Paket Harga Section ── */}
