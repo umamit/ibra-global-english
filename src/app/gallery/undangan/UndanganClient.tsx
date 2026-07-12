@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import "./undangan.css";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface WishItem {
   name: string;
@@ -137,31 +143,106 @@ export default function UndanganClient() {
     }
   };
 
-  // Intersection Observer for scroll reveal animations
+  // GSAP animations for premium transitions
   useEffect(() => {
     if (!isOpen) return;
 
+    // Small delay to ensure browser has rendered DOM
     const timer = setTimeout(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("active");
-              observer.unobserve(entry.target);
+      const isMobile = window.innerWidth <= 991;
+      const scroller = isMobile ? window : ".undangan-right-pane";
+
+      // Reset ScrollTrigger instances to prevent duplicates
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+
+      // 1. Left overlay fade-in-up (Desktop sticky pane)
+      gsap.fromTo(
+        ".undangan-left-overlay",
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.2 }
+      );
+
+      // 2. Card transitions (.scroll-reveal)
+      gsap.utils.toArray(".scroll-reveal").forEach((card: any) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              scroller: scroller,
+              start: "top 90%",
+              toggleActions: "play none none none"
             }
-          });
-        },
+          }
+        );
+      });
+
+      // 3. Zoom transition (.reveal-zoom)
+      gsap.utils.toArray(".reveal-zoom").forEach((card: any) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, scale: 0.93 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 1.2,
+            ease: "back.out(1.2)",
+            scrollTrigger: {
+              trigger: card,
+              scroller: scroller,
+              start: "top 90%",
+              toggleActions: "play none none none"
+            }
+          }
+        );
+      });
+
+      // 4. Staggered timeline items
+      gsap.fromTo(
+        ".timeline-item",
+        { opacity: 0, x: -30 },
         {
-          threshold: 0.05,
-          rootMargin: "0px 0px -40px 0px"
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".timeline-container",
+            scroller: scroller,
+            start: "top 80%"
+          }
         }
       );
 
-      const elements = document.querySelectorAll(".scroll-reveal, .reveal-zoom");
-      elements.forEach((el) => observer.observe(el));
-    }, 100);
+      // 5. Staggered gallery photos
+      gsap.fromTo(
+        ".gallery-item",
+        { opacity: 0, scale: 0.9 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".gallery-grid",
+            scroller: scroller,
+            start: "top 85%"
+          }
+        }
+      );
+    }, 150);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
   }, [isOpen]);
 
   const handleRSVPSubmit = async (e: React.FormEvent) => {
