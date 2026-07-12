@@ -278,17 +278,26 @@ export default function UndanganClient() {
 
       {/* Main Invitation Layout */}
       {isOpen && (
-        <>
-          {/* 1. Hero / Cover */}
-          <div className="undangan-hero">
-            <span className="undangan-subtitle">Walimatul 'Ursy</span>
-            <h1 className="undangan-title">Mike</h1>
-            <div className="undangan-ampersand">&amp;</div>
-            <h1 className="undangan-title">Lila</h1>
-            <div className="undangan-date-badge">Kamis, 20 Agustus 2026</div>
+        <div className="undangan-split-layout">
+          {/* Left Panel: Static Hero Image */}
+          <div className="undangan-left-pane">
+            <img 
+              src="/assets/wedding_couple_cover.jpg" 
+              alt="Mike & Lila" 
+              className="undangan-static-img" 
+              loading="eager"
+            />
+            <div className="undangan-left-overlay">
+              <span className="left-subtitle">Walimatul 'Ursy</span>
+              <h1 className="left-title">Mike &amp; Lila</h1>
+              <div className="quote-divider" style={{ margin: "1rem auto", background: "var(--color-accent)" }} />
+              <p className="left-date">Kamis, 20 Agustus 2026</p>
+            </div>
           </div>
 
-          <div className="undangan-container">
+          {/* Right Panel: Scrollable Content */}
+          <div className="undangan-right-pane">
+            <div className="undangan-container">
             {/* 2. Opening & Quote */}
             <div className="undangan-card text-center scroll-reveal">
               <span className="ornament-floral">🌸</span>
@@ -597,8 +606,9 @@ export default function UndanganClient() {
                 ← Kembali ke Galeri Utama
               </Link>
             </div>
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
