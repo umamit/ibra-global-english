@@ -436,17 +436,49 @@ export default function UndanganClient() {
             <div className="undangan-card scroll-reveal">
               <h3 className="card-title text-center">Galeri Momen Indah</h3>
               <div className="gallery-grid">
-                <div className="gallery-item-placeholder bg-teal-50">
-                  <span>📸 Momen Kebersamaan</span>
+                <div className="gallery-item">
+                  <img 
+                    src="/assets/prewedding_1.jpg" 
+                    alt="Mike & Lila Momen Indah" 
+                    className="gallery-img" 
+                    loading="lazy" 
+                    width={400}
+                    height={300}
+                    style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%", height: "auto", borderRadius: "10px" }}
+                  />
                 </div>
-                <div className="gallery-item-placeholder bg-teal-50">
-                  <span>💍 Cincin Janji Suci</span>
+                <div className="gallery-item">
+                  <img 
+                    src="/assets/prewedding_2.jpg" 
+                    alt="Mike & Lila Kebersamaan" 
+                    className="gallery-img" 
+                    loading="lazy" 
+                    width={400}
+                    height={300}
+                    style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%", height: "auto", borderRadius: "10px" }}
+                  />
                 </div>
-                <div className="gallery-item-placeholder bg-teal-50">
-                  <span>🌸 Dekorasi Walimah</span>
+                <div className="gallery-item">
+                  <img 
+                    src="/assets/prewedding_3.jpg" 
+                    alt="Cincin Pernikahan Mike & Lila" 
+                    className="gallery-img" 
+                    loading="lazy" 
+                    width={400}
+                    height={300}
+                    style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%", height: "auto", borderRadius: "10px" }}
+                  />
                 </div>
-                <div className="gallery-item-placeholder bg-teal-50">
-                  <span>🕊️ Meniti Masa Depan</span>
+                <div className="gallery-item">
+                  <img 
+                    src="/assets/prewedding_4.jpg" 
+                    alt="Mike & Lila Senja Bahagia" 
+                    className="gallery-img" 
+                    loading="lazy" 
+                    width={400}
+                    height={300}
+                    style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%", height: "auto", borderRadius: "10px" }}
+                  />
                 </div>
               </div>
             </div>
