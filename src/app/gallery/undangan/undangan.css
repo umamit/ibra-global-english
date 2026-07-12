@@ -607,46 +607,79 @@
   }
 }
 
-/* ── Mobile Media Query Overrides ── */
+/* ── Mobile Media Query Overrides (Optimized for Smartphones) ── */
 @media (max-width: 576px) {
   .undangan-container {
-    margin-top: 2rem;
-    padding-inline: 1rem;
+    margin-top: 1.5rem;
+    padding-inline: 0.75rem; /* Maximize screen width usage */
   }
   .undangan-card {
-    padding: 1.75rem 1.25rem;
-    margin-bottom: 1.75rem;
-    border-radius: 14px; /* Slightly tighter curves on mobile */
+    padding: 1.5rem 1.125rem; /* Tighter padding for text breathability */
+    margin-bottom: 1.25rem;
+    border-radius: 14px; /* Soft Apple HIG corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Subtle soft ambient shadow */
   }
   .mempelai-grid {
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: 1rem;
+  }
+  .avatar-frame {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .mempelai-name {
+    font-size: 1.15rem;
   }
   .gallery-grid {
-    grid-template-columns: 1fr;
-  }
-  .gallery-item {
-    aspect-ratio: 1.33;
-  }
-  .countdown-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile is much cleaner and shorter than 1 column */
     gap: 0.5rem;
   }
+  .gallery-item {
+    aspect-ratio: 1.1;
+    border-radius: 8px;
+  }
+  .countdown-grid {
+    gap: 0.35rem;
+  }
   .countdown-box {
-    padding: 0.75rem 0.25rem;
+    padding: 0.6rem 0.2rem;
     border-radius: 8px;
   }
   .countdown-num {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
   .countdown-label {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     letter-spacing: 0;
   }
+  .atm-card {
+    max-width: 290px;
+    height: 170px;
+    padding: 1.25rem;
+  }
+  .atm-card-number {
+    font-size: 1.1rem;
+    margin-block: 0.75rem;
+  }
+  .copy-btn, .rsvp-submit-btn, .maps-button {
+    min-height: 48px; /* Safe Apple touch target sizes */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Make action buttons full-width on mobile for easy tapping */
+    box-sizing: border-box;
+  }
+  .copy-btn, .rsvp-submit-btn {
+    font-size: 0.9rem;
+    border-radius: 24px;
+  }
   .floating-music-btn {
-    bottom: 1.5rem;
-    right: 1.5rem;
-    width: 3.25rem;
-    height: 3.25rem;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    box-shadow: 0 4px 15px rgba(22, 77, 87, 0.3);
   }
 }
 
@@ -760,8 +793,23 @@
   .undangan-left-pane {
     position: relative;
     width: 100%;
-    height: 55vh;
-    padding: 2rem 1.5rem;
+    height: 45vh; /* Optimized smartphone banner height */
+    padding: 1.5rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .undangan-left-overlay {
+    padding: 1.25rem;
+    max-width: 280px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  .left-title {
+    font-size: 1.75rem;
+  }
+  .left-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
   }
   .undangan-right-pane {
     width: 100%;
