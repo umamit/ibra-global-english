@@ -28,7 +28,7 @@ export default function UndanganClient() {
 
   const [guestName, setGuestName] = useState<string>("");
   const [copiedBank, setCopiedBank] = useState(false);
-  const playerRef = useRef<any>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleCopyAccount = (number: string) => {
     navigator.clipboard.writeText(number);
@@ -91,74 +91,49 @@ export default function UndanganClient() {
     fetchWishes();
   }, []);
 
-  // Initialize YouTube Iframe Player
+  // Initialize HTML5 Audio Player
   useEffect(() => {
-    const initPlayer = () => {
-      if ((window as any).YT && (window as any).YT.Player) {
-        playerRef.current = new (window as any).YT.Player("yt-player-container", {
-          height: "200",
-          width: "200",
-          videoId: "hXb7p6s4C3U",
-          playerVars: {
-            autoplay: 0,
-            controls: 0,
-            rel: 0,
-            loop: 1,
-            playlist: "hXb7p6s4C3U",
-            enablejsapi: 1,
-            origin: window.location.origin
-          },
-          events: {
-            onStateChange: (event: any) => {
-              if (event.data === (window as any).YT.PlayerState.PLAYING) {
-                setIsPlaying(true);
-              } else {
-                setIsPlaying(false);
-              }
-            }
-          }
-        });
-      }
-    };
+    const audio = new Audio("/audio/bermuara.mp3");
+    audio.loop = true;
+    audio.volume = 0.5;
+    audioRef.current = audio;
 
-    if (!(window as any).onYouTubeIframeAPIReady) {
-      (window as any).onYouTubeIframeAPIReady = initPlayer;
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-    } else {
-      initPlayer();
-    }
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+
+    return () => {
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      audio.pause();
+      audioRef.current = null;
+    };
   }, []);
 
   const handleOpenInvitation = () => {
     setIsOpen(true);
-    // Play YouTube music after user interaction to bypass autoplay restrictions
-    try {
-      if (playerRef.current && typeof playerRef.current.playVideo === "function") {
-        playerRef.current.playVideo();
+    // Play HTML5 background music after user interaction
+    if (audioRef.current) {
+      audioRef.current.play().then(() => {
         setIsPlaying(true);
-      }
-    } catch (e) {
-      console.warn("Gagal memutar musik otomatis:", e);
+      }).catch((e) => {
+        console.warn("Autoplay blocked or failed:", e);
+      });
     }
   };
 
   const toggleMusic = () => {
-    try {
-      if (playerRef.current && typeof playerRef.current.getPlayerState === "function") {
-        const state = playerRef.current.getPlayerState();
-        if (state === (window as any).YT.PlayerState.PLAYING) {
-          playerRef.current.pauseVideo();
-          setIsPlaying(false);
-        } else {
-          playerRef.current.playVideo();
-          setIsPlaying(true);
-        }
-      }
-    } catch (e) {
-      console.warn("Gagal mengubah status musik:", e);
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch((e) => {
+        console.warn("Gagal memutar musik:", e);
+      });
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
     }
   };
 
@@ -201,19 +176,7 @@ export default function UndanganClient() {
 
   return (
     <div className="undangan-wrapper">
-      {/* Invisible YouTube Iframe Container (rendered dynamically with a visible size off-screen to bypass mobile browser background/autoplay blockages) */}
-      <div 
-        id="yt-player-container" 
-        style={{ 
-          position: "fixed", 
-          bottom: "-500px", 
-          left: "-500px", 
-          width: "200px", 
-          height: "200px", 
-          pointerEvents: "none", 
-          zIndex: -9999 
-        }} 
-      />
+
 
       {/* Cover Overlay Screen */}
       {!isOpen && (
