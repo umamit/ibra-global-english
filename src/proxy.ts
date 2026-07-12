@@ -52,6 +52,17 @@ export async function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   const { pathname } = request.nextUrl;
   const acceptHeader = request.headers.get("accept") || "";
+  const hostname = request.headers.get("host") || "";
+
+  // A. SUBDOMAIN ROUTING (digital.ibraglobalenglish.uk -> /digital-agency)
+  // Exclude static assets, Next.js internal paths, and API routes from rewriting
+  const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt)$/);
+  const isApiOrNext = pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.startsWith("/ingest");
+
+  // Avoid infinite loops by checking !pathname.startsWith("/digital-agency")
+  if (hostname.startsWith("digital.") && !isStaticAsset && !isApiOrNext && !pathname.startsWith("/digital-agency")) {
+    return NextResponse.rewrite(new URL(`/digital-agency${pathname}`, request.url));
+  }
 
   const addSecurityHeaders = (res: NextResponse) => {
     res.headers.set("Content-Security-Policy", cspHeader);
@@ -69,6 +80,13 @@ export async function proxy(request: NextRequest) {
       res.headers.set("X-Robots-Tag", "noindex, nofollow");
     }
   };
+
+  // B. BYPASS SUPABASE AUTH & DB QUERIES FOR REWRITTEN DIGITAL AGENCY PAGES
+  if (pathname.startsWith("/digital-agency")) {
+    const res = NextResponse.next();
+    addSecurityHeaders(res);
+    return res;
+  }
 
   // =====================================================================
   // 1. NEGOSIASI KONTEN MARKDOWN UNTUK AGEN AI (Accept: text/markdown)
@@ -154,7 +172,6 @@ export async function proxy(request: NextRequest) {
   }
 
   // Lewati pemeriksaan sesi cookie Supabase untuk aset-aset statis biasa
-  const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt)$/);
   if (isStaticAsset) {
     return NextResponse.next();
   }
