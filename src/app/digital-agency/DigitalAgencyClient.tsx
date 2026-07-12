@@ -202,7 +202,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
             <div className={styles.card + " " + styles.pricingCard}>
               <h3 className={styles.cardTitle}>Landing Page Premium</h3>
               <p className={styles.cardText}>Ideal untuk portofolio, profil perusahaan, promosi event, atau bisnis lokal.</p>
-              <div className={styles.price}>Mulai Rp 2.5jt</div>
+              <div className={styles.price}>Mulai Rp 899.000</div>
               <ul className={styles.featuresList}>
                 <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> 1 Halaman Desain Berkelas</li>
                 <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Integrasi Kontak & WhatsApp</li>
@@ -218,7 +218,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
               <span className={styles.badge}>Populer</span>
               <h3 className={styles.cardTitle}>Portal Bisnis / Custom Web App</h3>
               <p className={styles.cardText}>Sistem web terintegrasi dengan database, dasbor admin, dan autentikasi multi-user.</p>
-              <div className={styles.price}>Mulai Rp 7.5jt</div>
+              <div className={styles.price}>Mulai Rp 1.999.000</div>
               <ul className={styles.featuresList}>
                 <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Desain Apple HIG Terkustomisasi</li>
                 <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Database Supabase / PostgreSQL</li>
@@ -233,7 +233,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
             <div className={styles.card + " " + styles.pricingCard}>
               <h3 className={styles.cardTitle}>LMS & Sistem Edukasi</h3>
               <p className={styles.cardText}>Platform digital komplit untuk bimbingan belajar, sekolah formal, atau pelatihan mandiri.</p>
-              <div className={styles.price}>Mulai Rp 12.5jt</div>
+              <div className={styles.price}>Mulai Rp 2.999.000</div>
               <ul className={styles.featuresList}>
                 <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Semua Fitur Portal Bisnis</li>
                 <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Ujian Online / Placement Test</li>
