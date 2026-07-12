@@ -119,6 +119,7 @@ export default function UndanganClient() {
 
   const handleOpenInvitation = () => {
     setIsOpen(true);
+    
     // Play HTML5 background music after user interaction
     if (audioRef.current) {
       audioRef.current.play().then(() => {
@@ -127,6 +128,17 @@ export default function UndanganClient() {
         console.warn("Autoplay blocked or failed:", e);
       });
     }
+
+    // Play cinematic slide-up animation
+    const tl = gsap.timeline({
+      onComplete: () => {
+        const cover = document.querySelector(".cover-overlay") as HTMLElement;
+        if (cover) cover.style.display = "none";
+      }
+    });
+
+    tl.to(".cover-content", { opacity: 0, y: -40, duration: 0.5, ease: "power2.in" })
+      .to(".cover-overlay", { yPercent: -100, duration: 1.4, ease: "power4.inOut" }, "-=0.1");
   };
 
   const toggleMusic = () => {
@@ -272,6 +284,45 @@ export default function UndanganClient() {
         );
       });
 
+      // 2b. Mempelai Groom & Bride side-reveal
+      gsap.utils.toArray(".mempelai-left").forEach((card: any) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, x: -60 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              scroller: scroller,
+              start: "top 92%",
+              toggleActions: "play none none none"
+            }
+          }
+        );
+      });
+
+      gsap.utils.toArray(".mempelai-right").forEach((card: any) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, x: 60 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              scroller: scroller,
+              start: "top 92%",
+              toggleActions: "play none none none"
+            }
+          }
+        );
+      });
+
       // 3. Zoom transition (.reveal-zoom)
       gsap.utils.toArray(".reveal-zoom").forEach((card: any) => {
         gsap.fromTo(
@@ -396,78 +447,83 @@ export default function UndanganClient() {
 
 
       {/* Cover Overlay Screen */}
-      {!isOpen && (
-        <div 
-          className="cover-overlay" 
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 1000,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-            background: "linear-gradient(135deg, #164d57 0%, #216c7e 100%)",
-            color: "#ffffff",
-            padding: "2rem",
-            fontFamily: "var(--font-outfit), sans-serif"
-          }}
-        >
-          <div style={{ maxWidth: "480px" }}>
-            <span style={{ fontSize: "0.875rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#A68849", fontWeight: "700" }}>The Wedding Invitation of</span>
-            <h1 style={{ fontSize: "3rem", fontWeight: "800", margin: "1.5rem 0", fontFamily: "var(--font-outfit)" }}>Mike & Lila</h1>
-            <p style={{ fontSize: "0.9375rem", color: "#eef6f8", opacity: 0.85, marginBottom: "0.5rem" }}>
-              Kepada Yth. Bapak/Ibu/Saudara/i:
+      <div 
+        className="cover-overlay" 
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 1000,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          background: "linear-gradient(135deg, #164d57 0%, #216c7e 100%)",
+          color: "#ffffff",
+          padding: "2rem",
+          fontFamily: "var(--font-outfit), sans-serif",
+          willChange: "transform"
+        }}
+      >
+        <div className="cover-content" style={{ maxWidth: "480px" }}>
+          <span style={{ fontSize: "0.875rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#A68849", fontWeight: "700" }}>The Wedding Invitation of</span>
+          <h1 style={{ fontSize: "3rem", fontWeight: "800", margin: "1.5rem 0", fontFamily: "var(--font-outfit)" }}>Mike & Lila</h1>
+          <p style={{ fontSize: "0.9375rem", color: "#eef6f8", opacity: 0.85, marginBottom: "0.5rem" }}>
+            Kepada Yth. Bapak/Ibu/Saudara/i:
+          </p>
+          {guestName ? (
+            <div style={{ margin: "1rem 0 2.5rem 0" }}>
+              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", color: "#A68849", margin: "0 0 0.5rem 0", fontFamily: "var(--font-outfit)" }}>
+                {guestName}
+              </h2>
+              <span style={{ fontSize: "0.85rem", color: "#eef6f8", opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.05em" }}>Di Tempat</span>
+            </div>
+          ) : (
+            <p style={{ fontSize: "0.9375rem", color: "#eef6f8", opacity: 0.85, marginBottom: "2.5rem" }}>
+              Kami mengundang Anda untuk merayakan momen bahagia pernikahan kami.
             </p>
-            {guestName ? (
-              <div style={{ margin: "1rem 0 2.5rem 0" }}>
-                <h2 style={{ fontSize: "1.75rem", fontWeight: "700", color: "#A68849", margin: "0 0 0.5rem 0", fontFamily: "var(--font-outfit)" }}>
-                  {guestName}
-                </h2>
-                <span style={{ fontSize: "0.85rem", color: "#eef6f8", opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.05em" }}>Di Tempat</span>
-              </div>
-            ) : (
-              <p style={{ fontSize: "0.9375rem", color: "#eef6f8", opacity: 0.85, marginBottom: "2.5rem" }}>
-                Kami mengundang Anda untuk merayakan momen bahagia pernikahan kami.
-              </p>
-            )}
-            <button
-              onClick={handleOpenInvitation}
-              style={{
-                background: "#A68849",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "30px",
-                padding: "1rem 2.25rem",
-                fontWeight: "700",
-                fontSize: "0.9375rem",
-                cursor: "pointer",
-                boxShadow: "0 6px 20px rgba(166, 136, 73, 0.3)",
-                transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
-            >
-              ✉️ Buka Undangan
-            </button>
-          </div>
+          )}
+          <button
+            onClick={handleOpenInvitation}
+            style={{
+              background: "#A68849",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "30px",
+              padding: "1rem 2.25rem",
+              fontWeight: "700",
+              fontSize: "0.9375rem",
+              cursor: "pointer",
+              boxShadow: "0 6px 20px rgba(166, 136, 73, 0.3)",
+              transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)"
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+          >
+            ✉️ Buka Undangan
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Floating Music Button */}
-      {isOpen && (
-        <button className="floating-music-btn" onClick={toggleMusic} aria-label="Kontrol Musik Latar">
-          <div className="music-wave">
-            <span className={`music-bar ${isPlaying ? "playing" : ""}`} />
-            <span className={`music-bar ${isPlaying ? "playing" : ""}`} />
-            <span className={`music-bar ${isPlaying ? "playing" : ""}`} />
-          </div>
-        </button>
-      )}
+      <button 
+        className="floating-music-btn" 
+        onClick={toggleMusic} 
+        aria-label="Kontrol Musik Latar"
+        style={{ 
+          opacity: isOpen ? 1 : 0, 
+          pointerEvents: isOpen ? "auto" : "none",
+          transition: "opacity 0.5s ease" 
+        }}
+      >
+        <div className="music-wave">
+          <span className={`music-bar ${isPlaying ? "playing" : ""}`} />
+          <span className={`music-bar ${isPlaying ? "playing" : ""}`} />
+          <span className={`music-bar ${isPlaying ? "playing" : ""}`} />
+        </div>
+      </button>
 
       {/* Main Invitation Layout */}
-      {isOpen && (
         <div className="undangan-split-layout">
           {/* Left Panel: Static Hero Image */}
           <div className="undangan-left-pane">
@@ -521,9 +577,9 @@ export default function UndanganClient() {
             </div>
 
             {/* 3. Mempelai / Groom & Bride Details */}
-            <div className="mempelai-grid scroll-reveal">
+            <div className="mempelai-grid">
               {/* Mempelai Pria */}
-              <div className="undangan-card mempelai-card">
+              <div className="undangan-card mempelai-card mempelai-left">
                 <div className="avatar-frame">
                   <div className="avatar-initials">M</div>
                 </div>
@@ -536,7 +592,7 @@ export default function UndanganClient() {
               </div>
 
               {/* Mempelai Wanita */}
-              <div className="undangan-card mempelai-card">
+              <div className="undangan-card mempelai-card mempelai-right">
                 <div className="avatar-frame">
                   <div className="avatar-initials">L</div>
                 </div>
@@ -851,7 +907,6 @@ export default function UndanganClient() {
             </div>
           </div>
         </div>
-      )}
     </div>
   );
 }
