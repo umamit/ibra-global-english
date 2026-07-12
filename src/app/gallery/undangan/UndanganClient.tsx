@@ -143,6 +143,64 @@ export default function UndanganClient() {
     }
   };
 
+  // Split Text and Card Tilt Helpers
+  const renderSplitText = (text: string, className: string) => {
+    return text.split("").map((char, index) => (
+      <span
+        key={index}
+        className={`${className}-char`}
+        style={{ display: "inline-block", opacity: 0, transform: "translateY(20px)" }}
+      >
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ));
+  };
+
+  const handleCardTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    
+    const tiltX = (y / (rect.height / 2)) * -12;
+    const tiltY = (x / (rect.width / 2)) * 12;
+    
+    gsap.to(card, {
+      rotateX: tiltX,
+      rotateY: tiltY,
+      transformPerspective: 500,
+      ease: "power1.out",
+      duration: 0.3
+    });
+  };
+
+  const handleCardLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    gsap.to(e.currentTarget, {
+      rotateX: 0,
+      rotateY: 0,
+      ease: "power3.out",
+      duration: 0.5
+    });
+  };
+
+  // Vinyl-like slowly spinning music button when playing
+  useEffect(() => {
+    let musicSpin: any;
+    if (isPlaying) {
+      musicSpin = gsap.to(".floating-music-btn", {
+        rotation: 360,
+        duration: 8,
+        repeat: -1,
+        ease: "linear"
+      });
+    } else {
+      gsap.to(".floating-music-btn", { rotation: 0, duration: 0.5 });
+    }
+    return () => {
+      if (musicSpin) musicSpin.kill();
+    };
+  }, [isPlaying]);
+
   // GSAP animations for premium transitions
   useEffect(() => {
     if (!isOpen) return;
@@ -162,6 +220,38 @@ export default function UndanganClient() {
         { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.2 }
       );
 
+      // 1b. Left overlay split title characters stagger
+      gsap.fromTo(
+        ".left-title-char",
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.06,
+          duration: 0.8,
+          ease: "back.out(1.7)",
+          delay: 0.4
+        }
+      );
+
+      // 1c. Left static background image parallax scroll
+      gsap.fromTo(
+        ".undangan-static-img",
+        { yPercent: 0, scale: 1 },
+        {
+          yPercent: 12,
+          scale: 1.05,
+          ease: "none",
+          scrollTrigger: {
+            trigger: isMobile ? ".undangan-left-pane" : ".undangan-right-pane",
+            scroller: scroller,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true
+          }
+        }
+      );
+
       // 2. Card transitions (.scroll-reveal)
       gsap.utils.toArray(".scroll-reveal").forEach((card: any) => {
         gsap.fromTo(
@@ -175,7 +265,7 @@ export default function UndanganClient() {
             scrollTrigger: {
               trigger: card,
               scroller: scroller,
-              start: "top 90%",
+              start: "top 92%",
               toggleActions: "play none none none"
             }
           }
@@ -195,7 +285,26 @@ export default function UndanganClient() {
             scrollTrigger: {
               trigger: card,
               scroller: scroller,
-              start: "top 90%",
+              start: "top 92%",
+              toggleActions: "play none none none"
+            }
+          }
+        );
+      });
+
+      // 3b. SVG Line drawing for ornaments
+      gsap.utils.toArray(".svg-path").forEach((path: any) => {
+        gsap.fromTo(
+          path,
+          { strokeDashoffset: 200 },
+          {
+            strokeDashoffset: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            scrollTrigger: {
+              trigger: path.ownerSVGElement || path,
+              scroller: scroller,
+              start: "top 92%",
               toggleActions: "play none none none"
             }
           }
@@ -370,8 +479,16 @@ export default function UndanganClient() {
             />
             <div className="undangan-left-overlay">
               <span className="left-subtitle">Walimatul 'Ursy</span>
-              <h1 className="left-title">Mike &amp; Lila</h1>
-              <div className="quote-divider" style={{ margin: "1rem auto", background: "var(--color-accent)" }} />
+              <h1 className="left-title">{renderSplitText("Mike & Lila", "left-title")}</h1>
+              <svg className="svg-divider" width="120" height="24" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: "1rem auto", display: "block" }}>
+                <path 
+                  className="svg-path"
+                  d="M10 12 Q 35 2, 60 12 T 110 12" 
+                  stroke="var(--color-accent)" 
+                  strokeWidth="2" 
+                  strokeLinecap="round"
+                />
+              </svg>
               <p className="left-date">Kamis, 20 Agustus 2026</p>
             </div>
           </div>
@@ -387,7 +504,15 @@ export default function UndanganClient() {
                 Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri hari bahagia pernikahan kami:
               </p>
               
-              <div className="quote-divider" />
+              <svg className="svg-divider" width="120" height="24" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: "1.5rem auto", display: "block" }}>
+                <path 
+                  className="svg-path"
+                  d="M10 12 Q 35 2, 60 12 T 110 12" 
+                  stroke="var(--color-accent)" 
+                  strokeWidth="2" 
+                  strokeLinecap="round"
+                />
+              </svg>
               
               <p className="quote-text">
                 "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda bagi kaum yang berpikir."
@@ -571,7 +696,11 @@ export default function UndanganClient() {
                 Tanpa mengurangi rasa hormat, bagi Bapak/Ibu/Saudara/i yang ingin memberikan tanda kasih untuk kami, dapat melalui rekening berikut:
               </p>
 
-              <div className="atm-card">
+              <div 
+                className="atm-card"
+                onMouseMove={handleCardTilt}
+                onMouseLeave={handleCardLeave}
+              >
                 <div className="atm-card-header">
                   <span className="bank-logo">BANK MANDIRI</span>
                   <span className="chip-logo">📠</span>

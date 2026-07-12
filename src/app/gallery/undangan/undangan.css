@@ -817,3 +817,21 @@
     overflow-y: visible;
   }
 }
+
+/* ── Premium GSAP Animation Helper Styles ── */
+.left-title-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+.svg-divider {
+  overflow: visible;
+}
+.svg-path {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  will-change: stroke-dashoffset;
+}
+.atm-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
