@@ -1,28 +1,19 @@
 import { NextResponse } from "next/server";
-import { getAdminSupabase } from "@/app/api/_middleware";
+import { Pool } from "pg";
 
 export const dynamic = "force-dynamic";
-const adminSupabase = getAdminSupabase();
 
-// Helper to ensure the wedding_rsvps table exists
-async function ensureTableExists() {
-  const sql = `
-    CREATE TABLE IF NOT EXISTS public.wedding_rsvps (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      wedding_id VARCHAR(50) NOT NULL,
-      name VARCHAR(100) NOT NULL,
-      attendance VARCHAR(20) NOT NULL,
-      guests INTEGER DEFAULT 1,
-      wish TEXT,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-    );
-  `;
-  try {
-    await adminSupabase.rpc("exec_sql", { sql });
-  } catch (e) {
-    console.warn("exec_sql RPC not available or failed, proceeding assuming table exists.");
-  }
+// Initialize a global pool singleton for Serverless environment (respecting Supabase Free Tier quotas)
+let pool: Pool;
+if (!(globalThis as any).rsvp_pg_pool) {
+  (globalThis as any).rsvp_pg_pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 2, // Rule 5: Keep connection count minimal to protect free-tier databases
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
 }
+pool = (globalThis as any).rsvp_pg_pool;
 
 // GET: Fetch wishes for a specific wedding
 export async function GET(request: Request) {
@@ -30,21 +21,20 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const weddingId = searchParams.get("weddingId") || "mike-lila";
 
-    await ensureTableExists();
+    // Select latest 50 records to conserve bandwidth (Rule 5 compliance)
+    const query = {
+      text: `
+        SELECT name, wish, attendance, created_at 
+        FROM wedding_rsvps 
+        WHERE wedding_id = $1 AND wish IS NOT NULL AND wish != '' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+      `,
+      values: [weddingId],
+    };
 
-    // Select only required columns, limit to latest 50 records to conserve bandwidth (Rule 5 compliance)
-    const { data, error } = await adminSupabase
-      .from("wedding_rsvps")
-      .select("name, wish, attendance, created_at")
-      .eq("wedding_id", weddingId)
-      .not("wish", "is", null)
-      .neq("wish", "")
-      .order("created_at", { ascending: false })
-      .limit(50);
-
-    if (error) {
-      throw error;
-    }
+    const res = await pool.query(query);
+    const data = res.rows;
 
     return NextResponse.json({ data }, { status: 200 });
   } catch (err: any) {
@@ -59,8 +49,6 @@ export async function GET(request: Request) {
 // POST: Submit a new RSVP/wish
 export async function POST(request: Request) {
   try {
-    await ensureTableExists();
-
     const body = await request.json();
     const { weddingId, name, attendance, guests, wish } = body;
 
@@ -73,20 +61,22 @@ export async function POST(request: Request) {
 
     const guestCount = parseInt(guests) || 1;
 
-    const { error } = await adminSupabase
-      .from("wedding_rsvps")
-      .insert({
-        wedding_id: weddingId || "mike-lila",
-        name: name.trim(),
+    const query = {
+      text: `
+        INSERT INTO wedding_rsvps (wedding_id, name, attendance, guests, wish, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6)
+      `,
+      values: [
+        weddingId || "mike-lila",
+        name.trim(),
         attendance,
-        guests: guestCount,
-        wish: wish ? wish.trim() : null,
-        created_at: new Date().toISOString()
-      });
+        guestCount,
+        wish ? wish.trim() : null,
+        new Date().toISOString()
+      ]
+    };
 
-    if (error) {
-      throw error;
-    }
+    await pool.query(query);
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (err: any) {
