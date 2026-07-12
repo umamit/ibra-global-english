@@ -137,6 +137,33 @@ export default function UndanganClient() {
     }
   };
 
+  // Intersection Observer for scroll reveal animations
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.05,
+          rootMargin: "0px 0px -40px 0px"
+        }
+      );
+
+      const elements = document.querySelectorAll(".scroll-reveal, .reveal-zoom");
+      elements.forEach((el) => observer.observe(el));
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
   const handleRSVPSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
@@ -263,7 +290,7 @@ export default function UndanganClient() {
 
           <div className="undangan-container">
             {/* 2. Opening & Quote */}
-            <div className="undangan-card text-center">
+            <div className="undangan-card text-center scroll-reveal">
               <span className="ornament-floral">🌸</span>
               <h2 className="section-greeting-title">Assalamualaikum Wr. Wb.</h2>
               <p className="section-greeting-intro">
@@ -279,7 +306,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 3. Mempelai / Groom & Bride Details */}
-            <div className="mempelai-grid">
+            <div className="mempelai-grid scroll-reveal">
               {/* Mempelai Pria */}
               <div className="undangan-card mempelai-card">
                 <div className="avatar-frame">
@@ -308,7 +335,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 4. Countdown Timer */}
-            <div className="undangan-card text-center">
+            <div className="undangan-card text-center reveal-zoom">
               <h3 className="card-title">Menuju Hari Bahagia</h3>
               <div className="countdown-grid">
                 <div className="countdown-box">
@@ -331,7 +358,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 5. Detail Acara (Akad & Resepsi) */}
-            <div className="undangan-card">
+            <div className="undangan-card scroll-reveal">
               <h3 className="card-title text-center">Detail Acara</h3>
               <div className="event-item">
                 <span className="event-icon">💍</span>
@@ -367,7 +394,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 6. Perjalanan Cinta / Love Story */}
-            <div className="undangan-card">
+            <div className="undangan-card scroll-reveal">
               <h3 className="card-title text-center">Cerita Cinta</h3>
               <div className="timeline-container">
                 <div className="timeline-item">
@@ -397,7 +424,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 7. Galeri Foto */}
-            <div className="undangan-card">
+            <div className="undangan-card scroll-reveal">
               <h3 className="card-title text-center">Galeri Momen Indah</h3>
               <div className="gallery-grid">
                 <div className="gallery-item-placeholder bg-teal-50">
@@ -416,7 +443,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 8. Kado Online / Amplop Digital */}
-            <div className="undangan-card text-center">
+            <div className="undangan-card text-center scroll-reveal">
               <h3 className="card-title">Kado Digital</h3>
               <p className="gift-intro">
                 Tanpa mengurangi rasa hormat, bagi Bapak/Ibu/Saudara/i yang ingin memberikan tanda kasih untuk kami, dapat melalui rekening berikut:
@@ -444,7 +471,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 9. RSVP Form */}
-            <div className="undangan-card">
+            <div className="undangan-card scroll-reveal">
               <h3 className="card-title text-center">Konfirmasi Kehadiran</h3>
               <form className="rsvp-form" onSubmit={handleRSVPSubmit}>
                 <div className="form-group">
@@ -528,7 +555,7 @@ export default function UndanganClient() {
             </div>
 
             {/* 10. Guest Book Wishes Wall */}
-            <div className="undangan-card">
+            <div className="undangan-card scroll-reveal">
               <h3 className="card-title text-center">Doa Restu &amp; Ucapan</h3>
               {loadingWishes ? (
                 <p style={{ fontSize: "0.875rem", color: "var(--color-gray-400)" }}>Memuat ucapan...</p>
