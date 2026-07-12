@@ -378,7 +378,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
 
       {/* ── Footer ── */}
       <footer className={styles.footer}>
-        <p>&copy; {new Date().getFullYear()} Ibra Digital Agency. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Ibra Digital Tech. All rights reserved.</p>
         <p style={{ fontSize: "0.8rem", color: "var(--color-gray-400)", marginTop: "8px" }}>
           Mitra resmi pengembangan teknologi <a href="https://www.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "bold" }}>Ibra Global English Bobong</a>.
         </p>
