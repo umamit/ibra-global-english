@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 // Halaman yang tidak menampilkan popup
-const EXCLUDED_PATHS = ["/admin", "/student", "/parent", "/tutor", "/login", "/auth"];
+const EXCLUDED_PATHS = ["/admin", "/student", "/parent", "/tutor", "/login", "/auth", "/digital-agency"];
 
 interface PromoBanner {
   id: string;
@@ -21,8 +21,15 @@ export default function PromoPopup() {
   const pathname = usePathname();
   const [banner, setBanner] = useState<PromoBanner | null>(null);
   const [visible, setVisible] = useState(false);
+  const [isExcluded, setIsExcluded] = useState(true);
 
-  const isExcluded = EXCLUDED_PATHS.some((p) => pathname.startsWith(p));
+  useEffect(() => {
+    const isExcludedPath = EXCLUDED_PATHS.some((p) => pathname.startsWith(p));
+    const isDigitalSubdomain = typeof window !== "undefined" && (
+      window.location.hostname.startsWith("digital.")
+    );
+    setIsExcluded(isExcludedPath || isDigitalSubdomain);
+  }, [pathname]);
 
   useEffect(() => {
     if (isExcluded) return;
