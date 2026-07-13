@@ -56,7 +56,7 @@ export async function proxy(request: NextRequest) {
 
   // A. SUBDOMAIN ROUTING (digital.ibraglobalenglish.uk -> /digital-agency)
   // Exclude static assets, Next.js internal paths, and API routes from rewriting
-  const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt)$/);
+  const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt|xml|webmanifest)$/);
   const isApiOrNext = pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.startsWith("/ingest");
 
   // Subdomain digital rewrite
