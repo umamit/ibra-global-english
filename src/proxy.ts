@@ -199,6 +199,20 @@ export async function proxy(request: NextRequest) {
   // Dapatkan URL dan anonKey dari sanitizer config helper
   const { url, anonKey } = getSupabaseConfig();
 
+  let domain = "";
+  if (hostname.includes("localhost")) {
+    domain = "localhost";
+  } else if (hostname.endsWith("ibraglobalenglish.uk")) {
+    domain = ".ibraglobalenglish.uk";
+  }
+
+  const cookieOptions = {
+    domain,
+    path: "/",
+    sameSite: "lax" as const,
+    secure: !hostname.includes("localhost"),
+  };
+
   // Buat klien Supabase khusus proxy (middleware)
   const supabase = createServerClient(
     url,
@@ -209,7 +223,9 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value, options }) =>
+            request.cookies.set({ name, value, ...options, ...cookieOptions })
+          );
           response = NextResponse.next({
             request: {
               headers: requestHeaders,
@@ -217,7 +233,7 @@ export async function proxy(request: NextRequest) {
           });
           addSecurityHeaders(response);
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, { ...options, ...cookieOptions })
           );
         },
       },

@@ -12,7 +12,22 @@ export function createClient() {
   }
 
   if (!clientInstance) {
-    clientInstance = createBrowserClient(url, anonKey);
+    const hostname = window.location.hostname;
+    let domain = "";
+    if (hostname.includes("localhost")) {
+      domain = "localhost";
+    } else if (hostname.endsWith("ibraglobalenglish.uk")) {
+      domain = ".ibraglobalenglish.uk";
+    }
+
+    clientInstance = createBrowserClient(url, anonKey, {
+      cookieOptions: {
+        domain,
+        path: "/",
+        sameSite: "lax",
+        secure: !hostname.includes("localhost"),
+      },
+    });
   }
 
   return clientInstance;
