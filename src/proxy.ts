@@ -59,9 +59,25 @@ export async function proxy(request: NextRequest) {
   const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt)$/);
   const isApiOrNext = pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.startsWith("/ingest");
 
-  // Avoid infinite loops by checking !pathname.startsWith("/digital-agency")
+  // Subdomain digital rewrite
   if (hostname.startsWith("digital.") && !isStaticAsset && !isApiOrNext && !pathname.startsWith("/digital-agency")) {
     return NextResponse.rewrite(new URL(`/digital-agency${pathname}`, request.url));
+  }
+
+  // Subdomain admin rewrite & redirect
+  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/auth") || pathname.startsWith("/onboarding") || pathname.startsWith("/verify");
+
+  if (hostname.startsWith("admin.") && !isStaticAsset && !isApiOrNext && !isAuthPage && !pathname.startsWith("/admin")) {
+    return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
+  }
+
+  if (!hostname.startsWith("admin.") && !hostname.startsWith("digital.") && pathname.startsWith("/admin")) {
+    const targetHost = hostname.includes("localhost") 
+      ? `admin.localhost:${hostname.split(":")[1] || 3000}` 
+      : "admin.ibraglobalenglish.uk";
+    
+    const newPath = pathname.replace(/^\/admin/, "") || "/";
+    return NextResponse.redirect(new URL(`${request.nextUrl.protocol}//${targetHost}${newPath}`, request.url));
   }
 
   const addSecurityHeaders = (res: NextResponse) => {
