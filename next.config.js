@@ -1,4 +1,3 @@
-const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -92,25 +91,4 @@ const nextConfig = {
   },
 };
 
-// Wrap with Sentry
-module.exports = withSentryConfig(nextConfig, {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-
-  // Source map upload auth token
-  authToken: process.env.SENTRY_AUTH_TOKEN,
-
-  // Upload wider set of client source files for better stack trace resolution
-  widenClientFileUpload: true,
-
-  // Create a proxy API route to bypass ad-blockers
-  tunnelRoute: "/monitoring",
-
-  // Suppress non-CI output
-  silent: !process.env.CI,
-
-  // Upload source maps only in production
-  sourcemaps: {
-    disable: process.env.NODE_ENV !== "production",
-  },
-});
+module.exports = nextConfig;

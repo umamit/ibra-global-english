@@ -26,6 +26,18 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "posthog-js": [
+        "./src/lib/mocks/posthog-mock.tsx"
+      ],
+      "posthog-js/react": [
+        "./src/lib/mocks/posthog-mock.tsx"
+      ],
+      "posthog-node": [
+        "./src/lib/mocks/posthog-node-mock.ts"
+      ],
+      "@sentry/nextjs": [
+        "./src/lib/mocks/sentry-mock.ts"
       ]
     }
   },

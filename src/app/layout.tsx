@@ -8,7 +8,6 @@ import { getLandingSettings } from "@/utils/getLandingSettings";
 import PromoPopup from "@/components/PromoPopup";
 import CloudflareAnalytics from "@/components/CloudflareAnalytics";
 import QueryProvider from "./QueryProvider";
-import { PostHogProviderWrapper } from "./PostHogProvider";
 import "./globals.css";
 // landing.css di-import di HomeClient.jsx agar hanya aktif di halaman landing
 
@@ -235,11 +234,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <WebVitals />
-        <PostHogProviderWrapper>
-          <QueryProvider>
-            {children}
-          </QueryProvider>
-        </PostHogProviderWrapper>
+        <QueryProvider>
+          {children}
+        </QueryProvider>
         <PromoPopup />
         <Analytics />
       </body>
