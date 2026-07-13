@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { WebVitals } from "@/components/WebVitals";
 import { getLandingSettings } from "@/utils/getLandingSettings";
 import PromoPopup from "@/components/PromoPopup";
+import CloudflareAnalytics from "@/components/CloudflareAnalytics";
 import QueryProvider from "./QueryProvider";
 import { PostHogProviderWrapper } from "./PostHogProvider";
 import "./globals.css";
@@ -193,12 +194,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </Script>
 
         {/* Cloudflare Web Analytics */}
-        <Script
-          src="https://static.cloudflareinsights.com/beacon.min.js"
-          data-cf-beacon='{"token": "30b277bf69f4494d94550e9771fe8aa0"}'
-          strategy="afterInteractive"
-          nonce={nonce}
-        />
+        <CloudflareAnalytics nonce={nonce} />
 
         {/* Facebook SDK */}
         {process.env.NEXT_PUBLIC_FACEBOOK_APP_ID && (
