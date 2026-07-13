@@ -32,6 +32,7 @@ export default function LoginPage() {
   const [successMsg, setSuccessBanner] = useState<string>("");
   const [theme, setTheme] = useState<string>("light");
   const [role, setRole] = useState<string>("parent");
+  const [homeUrl, setHomeUrl] = useState<string>("/");
 
   // Deteksi dan inisialisasi tema otomatis saat halaman dimuat
   useEffect(() => {
@@ -48,6 +49,18 @@ export default function LoginPage() {
     setTheme(initialTheme);
     document.documentElement.setAttribute("data-theme", initialTheme);
 
+      // Set dynamic home URL to point back to the main domain if on a subdomain
+      const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
+      const port = window.location.port;
+
+      if (hostname.startsWith("admin.") || hostname.startsWith("digital.")) {
+        const mainHost = hostname.replace(/^(admin\.|digital\.)/, "");
+        const portSuffix = port ? `:${port}` : "";
+        setHomeUrl(`${protocol}//${mainHost}${portSuffix}`);
+      } else {
+        setHomeUrl("/");
+      }
     };
 
     load();
@@ -559,7 +572,7 @@ export default function LoginPage() {
         </button>
 
         <div className="auth-back-link">
-          <Link href="/">
+          <Link href={homeUrl}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="back-arrow-icon"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Kembali ke Beranda Utama
           </Link>
