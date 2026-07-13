@@ -64,12 +64,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(new URL(`/digital-agency${pathname}`, request.url));
   }
 
-  // Subdomain admin rewrite & redirect
+  // Subdomain admin redirect jika diakses dari domain utama
   const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/auth") || pathname.startsWith("/onboarding") || pathname.startsWith("/verify");
-
-  if (hostname.startsWith("admin.") && !isStaticAsset && !isApiOrNext && !isAuthPage && !pathname.startsWith("/admin")) {
-    return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
-  }
 
   if (!hostname.startsWith("admin.") && !hostname.startsWith("digital.") && pathname.startsWith("/admin")) {
     const targetHost = hostname.includes("localhost") 
@@ -271,8 +267,9 @@ export async function proxy(request: NextRequest) {
   }
   // ----------------------------------------------
 
-  // Proteksi rute Admin (/admin*)
-  if (pathname.startsWith("/admin")) {
+  // Proteksi rute Admin (/admin* atau subdomain admin)
+  const isTargetingAdmin = pathname.startsWith("/admin") || hostname.startsWith("admin.");
+  if (isTargetingAdmin && !isStaticAsset && !isApiOrNext && !isAuthPage) {
     if (!user) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
@@ -379,6 +376,15 @@ export async function proxy(request: NextRequest) {
         "</.well-known/mcp/server-card.json>; rel=\"mcp-server-card\""
       ].join(", ")
     );
+  }
+
+  // Lakukan internal rewrite ke /admin untuk subdomain admin setelah seluruh pemeriksaan autentikasi sukses
+  if (hostname.startsWith("admin.") && !isStaticAsset && !isApiOrNext && !isAuthPage && !pathname.startsWith("/admin")) {
+    const rewriteRes = NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
+    response.headers.forEach((value, key) => {
+      rewriteRes.headers.set(key, value);
+    });
+    return rewriteRes;
   }
 
   return response;
