@@ -91,8 +91,10 @@
 .hero {
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 80px 24px 100px;
+  padding: 80px 24px 60px;
   text-align: center;
+  position: relative;
+  background: radial-gradient(circle at 50% 30%, rgba(33, 108, 126, 0.08) 0%, transparent 60%);
 }
 
 .heroTagline {
@@ -530,3 +532,144 @@
   font-size: 0.95rem;
   line-height: 1.65;
 }
+
+/* ── Premium Extensions ── */
+
+.statsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin: 48px auto 0;
+  max-width: 800px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-normal);
+}
+
+.statsContainer:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+  .statsContainer {
+    flex-direction: column;
+    gap: 20px;
+    margin: 32px 16px 0;
+    padding: 20px;
+  }
+}
+
+.statCard {
+  flex: 1;
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--color-gray-500);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+  .statDivider {
+    display: none;
+  }
+}
+
+.macOSHeader {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding-bottom: 12px;
+}
+
+.macOSDot {
+  width: 11px;
+  height: 11px;
+  border-radius: var(--radius-full);
+}
+
+.macOSDotRed {
+  background-color: var(--color-red);
+}
+
+.macOSDotYellow {
+  background-color: var(--color-yellow);
+}
+
+.macOSDotGreen {
+  background-color: var(--color-green);
+}
+
+.techShowcaseSection {
+  background-color: var(--color-white);
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 50px 24px;
+  text-align: center;
+}
+
+.techShowcaseTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 28px;
+}
+
+.techLogoGrid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.techLogoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-gray-500);
+  font-weight: 700;
+  font-size: 1rem;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.techLogoItem:hover {
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.techLogoIcon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-primary);
+}
+
