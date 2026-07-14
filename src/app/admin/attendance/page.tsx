@@ -536,7 +536,7 @@ export default function DailyAttendance() {
                                     onClick={() => handleStatusChange(student.id, opt.status)}
                                     style={{
                                       padding: "0.3rem 0.65rem",
-                                      borderRadius: "8px",
+                                      borderRadius: "var(--radius-full)",
                                       fontSize: "0.78rem",
                                       fontWeight: 700,
                                       cursor: "pointer",
