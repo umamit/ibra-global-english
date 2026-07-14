@@ -26,7 +26,7 @@ export default function PlacementTestClient() {
   const [userData, setUserData] = useState({ fullName: "", email: "", whatsapp: "" });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({}); // { questionId: chosenIndex }
-  const [secondsLeft, setSecondsLeft] = useState(30);
+  const [secondsLeft, setSecondsLeft] = useState(15);
   const [submitting, setSubmitting] = useState(false);
   const [finalResult, setFinalResult] = useState<PlacementResult | null>(null);
 
@@ -244,7 +244,7 @@ export default function PlacementTestClient() {
   // 2. Reset timer when active question index changes
   useEffect(() => {
     if (step === 2) {
-      setSecondsLeft(30);
+      setSecondsLeft(15);
     }
   }, [currentQuestionIndex, step]);
 
@@ -497,14 +497,14 @@ export default function PlacementTestClient() {
                     <span style={{ 
                       fontSize: "0.85rem", 
                       fontWeight: "800", 
-                      color: secondsLeft <= 10 ? "#ef4444" : "var(--color-accent)", 
-                      backgroundColor: secondsLeft <= 10 ? "rgba(239, 68, 68, 0.1)" : "rgba(166, 136, 73, 0.08)", 
+                      color: secondsLeft <= 5 ? "#ef4444" : "var(--color-accent)", 
+                      backgroundColor: secondsLeft <= 5 ? "rgba(239, 68, 68, 0.1)" : "rgba(166, 136, 73, 0.08)", 
                       padding: "0.25rem 0.75rem", 
                       borderRadius: "50px",
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "0.3rem",
-                      animation: secondsLeft <= 10 ? "pulse-red 0.8s infinite alternate" : "none"
+                      animation: secondsLeft <= 5 ? "pulse-red 0.8s infinite alternate" : "none"
                     }}>
                       ⏱️ 00:{secondsLeft < 10 ? `0${secondsLeft}` : secondsLeft}
                     </span>
@@ -519,9 +519,9 @@ export default function PlacementTestClient() {
                 {/* Timer progress bar */}
                 <div style={{ width: "100%", height: "4px", backgroundColor: "var(--color-gray-150)", borderRadius: "50px", overflow: "hidden" }}>
                   <div style={{ 
-                    width: `${(secondsLeft / 30) * 100}%`, 
+                    width: `${(secondsLeft / 15) * 100}%`, 
                     height: "100%", 
-                    backgroundColor: secondsLeft <= 10 ? "#ef4444" : "var(--color-accent)", 
+                    backgroundColor: secondsLeft <= 5 ? "#ef4444" : "var(--color-accent)", 
                     transition: "width 1s linear" 
                   }}></div>
                 </div>
