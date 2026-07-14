@@ -569,7 +569,7 @@ export default function AdminPlacementTest() {
               </td>
               <td style={{ fontWeight: "600" }}>{sub.whatsapp_number}</td>
               <td style={{ fontWeight: "800", color: "var(--color-primary-dark)", fontSize: "1.1rem" }}>
-                {sub.score} <span style={{ fontSize: "0.8rem", color: "var(--color-gray-400)" }}>/ 15</span>
+                {sub.score} <span style={{ fontSize: "0.8rem", color: "var(--color-gray-400)" }}>/ 20</span>
               </td>
               <td>
                 <span className="user-badge" style={{
@@ -658,7 +658,7 @@ export default function AdminPlacementTest() {
               <div style={{ fontSize: "0.85rem", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "6px", border: "1px solid var(--color-gray-200)" }}>
                 <div><strong>Nama:</strong> {followUpStudent.full_name}</div>
                 <div><strong>WhatsApp:</strong> {followUpStudent.whatsapp_number}</div>
-                <div><strong>Hasil Tes:</strong> Level {followUpStudent.level} (Skor {followUpStudent.score} / 15)</div>
+                <div><strong>Hasil Tes:</strong> Level {followUpStudent.level} (Skor {followUpStudent.score} / 20)</div>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
