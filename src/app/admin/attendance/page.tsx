@@ -522,11 +522,11 @@ export default function DailyAttendance() {
                           <td>
                             <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
                               {[
-                                { status: "hadir", label: "Hadir", activeBg: "#e6f4ea", activeColor: "#137333", border: "1px solid rgba(19, 115, 51, 0.15)" },
-                                { status: "sakit", label: "Sakit", activeBg: "#fef7e0", activeColor: "#b06000", border: "1px solid rgba(176, 96, 0, 0.15)" },
-                                { status: "izin", label: "Izin", activeBg: "#eef6f8", activeColor: "var(--color-primary-dark, #164d57)", border: "1px solid rgba(33, 108, 126, 0.15)" },
-                                { status: "alfa", label: "Alfa", activeBg: "#fce8e6", activeColor: "#c5221f", border: "1px solid rgba(197, 34, 31, 0.15)" },
-                                { status: "tidak_ada_kelas", label: "Tidak ada Kelas", activeBg: "#f1f3f4", activeColor: "#5f6368", border: "1px solid rgba(95, 99, 104, 0.15)" }
+                                { status: "hadir", label: "Hadir", activeBg: "#d1f2d9", activeColor: "#0f5132", border: "1px solid #198754" },
+                                { status: "sakit", label: "Sakit", activeBg: "#fdeace", activeColor: "#664d03", border: "1px solid #ffc107" },
+                                { status: "izin", label: "Izin", activeBg: "#c2e7ff", activeColor: "#004a77", border: "1px solid #007aff" },
+                                { status: "alfa", label: "Alfa", activeBg: "#f8d7da", activeColor: "#842029", border: "1px solid #dc3545" },
+                                { status: "tidak_ada_kelas", label: "Tidak ada Kelas", activeBg: "#e2e3e5", activeColor: "#41464b", border: "1px solid #6c757d" }
                               ].map(opt => {
                                 const isActive = localData.status === opt.status;
                                 return (

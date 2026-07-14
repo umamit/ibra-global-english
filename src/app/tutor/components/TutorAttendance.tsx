@@ -92,25 +92,36 @@ export default function TutorAttendance({
                     <span className="user-badge" style={{ fontSize: "0.75rem" }}>{s.program}</span>
                   </td>
                   <td>
-                    <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
                       {[
-                        { value: "hadir", label: "Hadir" },
-                        { value: "sakit", label: "Sakit" },
-                        { value: "izin", label: "Izin" },
-                        { value: "alfa", label: "Alfa" },
-                        { value: "tidak_ada_kelas", label: "Tidak ada Kelas" }
-                      ].map((option) => (
-                        <label key={option.value} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>
-                          <input
-                            type="radio"
-                            name={`attendance-${s.id}`}
-                            checked={data.status === option.value}
-                            onChange={() => handleStatusChange(s.id, option.value)}
-                            style={{ accentColor: option.value === "tidak_ada_kelas" ? "var(--color-gray-400)" : "var(--color-primary)" }}
-                          />
-                          <span>{option.label}</span>
-                        </label>
-                      ))}
+                        { value: "hadir", label: "Hadir", activeBg: "#d1f2d9", activeColor: "#0f5132", border: "1px solid #198754" },
+                        { value: "sakit", label: "Sakit", activeBg: "#fdeace", activeColor: "#664d03", border: "1px solid #ffc107" },
+                        { value: "izin", label: "Izin", activeBg: "#c2e7ff", activeColor: "#004a77", border: "1px solid #007aff" },
+                        { value: "alfa", label: "Alfa", activeBg: "#f8d7da", activeColor: "#842029", border: "1px solid #dc3545" },
+                        { value: "tidak_ada_kelas", label: "Tidak ada Kelas", activeBg: "#e2e3e5", activeColor: "#41464b", border: "1px solid #6c757d" }
+                      ].map(opt => {
+                        const isActive = data.status === opt.value;
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => handleStatusChange(s.id, opt.value)}
+                            style={{
+                              padding: "0.3rem 0.65rem",
+                              borderRadius: "8px",
+                              fontSize: "0.78rem",
+                              fontWeight: 700,
+                              cursor: "pointer",
+                              border: isActive ? opt.border : "1px solid rgba(0, 0, 0, 0.05)",
+                              backgroundColor: isActive ? opt.activeBg : "#f5f5f7",
+                              color: isActive ? opt.activeColor : "var(--color-gray-500, #59616e)",
+                              transition: "all 0.15s ease"
+                            }}
+                          >
+                            {opt.label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </td>
                   <td>
