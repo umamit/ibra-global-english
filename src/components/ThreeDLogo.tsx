@@ -37,43 +37,69 @@ export default function ThreeDLogo() {
       setLoaded(true);
     });
 
-    // Group to hold the double-layer planes
+    // Group to hold the volumetric stack layers
     const group = new THREE.Group();
 
-    // Plane geometry
+    // Common Plane geometry for all layers
     const geometry = new THREE.PlaneGeometry(1.6, 1.6);
 
-    // Front layer material - uses FrontSide for culling backface
+    // Front-most material (faces camera)
     const frontMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
+      alphaTest: 0.08,
       side: THREE.FrontSide,
       roughness: 0.15,
-      metalness: 0.1,
+      metalness: 0.15,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
     });
 
-    // Back layer material - uses FrontSide (will face backwards via Y-rotation)
+    // Back-most material (faces away from camera)
     const backMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
+      alphaTest: 0.08,
       side: THREE.FrontSide,
       roughness: 0.15,
-      metalness: 0.1,
+      metalness: 0.15,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
     });
 
-    const frontMesh = new THREE.Mesh(geometry, frontMaterial);
-    frontMesh.position.z = 0.05; // Gap offset forward
+    // Inner materials (fill the volumetric depth)
+    const innerMaterial = new THREE.MeshPhysicalMaterial({
+      map: texture,
+      transparent: true,
+      alphaTest: 0.08,
+      side: THREE.DoubleSide,
+      roughness: 0.25,
+      metalness: 0.1,
+    });
 
-    const backMesh = new THREE.Mesh(geometry, backMaterial);
-    backMesh.position.z = -0.05; // Gap offset backward
-    backMesh.rotation.y = Math.PI; // Face backwards
+    // Generate 13 tightly stacked layers to create a solid 3D extrusion effect
+    const layersCount = 13;
+    const step = 0.01;
+    const startZ = -((layersCount - 1) * step) / 2; // -0.06 to 0.06
 
-    group.add(frontMesh);
-    group.add(backMesh);
+    for (let i = 0; i < layersCount; i++) {
+      const z = startZ + i * step;
+      let mesh;
+      if (i === 0) {
+        // Back-most layer
+        mesh = new THREE.Mesh(geometry, backMaterial);
+        mesh.rotation.y = Math.PI; // Face backward
+      } else if (i === layersCount - 1) {
+        // Front-most layer
+        mesh = new THREE.Mesh(geometry, frontMaterial);
+      } else {
+        // Inner layers
+        mesh = new THREE.Mesh(geometry, innerMaterial);
+      }
+      mesh.position.z = z;
+      group.add(mesh);
+    }
+
     scene.add(group);
 
     // Warm ambient lighting
@@ -148,6 +174,7 @@ export default function ThreeDLogo() {
       geometry.dispose();
       frontMaterial.dispose();
       backMaterial.dispose();
+      innerMaterial.dispose();
       renderer.dispose();
     };
   }, []);
