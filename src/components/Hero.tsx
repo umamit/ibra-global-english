@@ -93,12 +93,16 @@ export default function Hero({ initialSettings }: HeroProps) {
           <div className="hero-card">
             <Image 
                src={heroImage} 
-               alt="Siswa belajar Bahasa Inggris di Ibra Global English Bobong, Pulau Taliabu" 
+               alt="Husnita Usman, M.Pd., Direktur & Pendiri Ibra Global English Bobong" 
                className="hero-img" 
                width={600}
                height={400}
                priority
             />
+            <div className="hero-director-overlay">
+              <span className="hero-director-name">Husnita Usman, M.Pd.</span>
+              <span className="hero-director-title">Direktur & Pendiri Ibra Global English</span>
+            </div>
           </div>
           <div className="hero-stats-badge">
             <div className="badge-icon">

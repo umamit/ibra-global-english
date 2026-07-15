@@ -514,3 +514,57 @@
     font-size: 1.375rem;
   }
 }
+
+/* Director's Name & Title Overlay inside Hero Card */
+.hero-director-overlay {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  right: 1.25rem;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 14px;
+  padding: 0.75rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+  z-index: 5;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-director-name {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  letter-spacing: -0.01em;
+}
+
+.hero-director-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+[data-theme='dark'] .hero-director-overlay {
+  background: rgba(28, 28, 30, 0.78);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .hero-director-name {
+  color: #f5f5f7;
+}
+
+[data-theme='dark'] .hero-director-title {
+  color: #7ecfdb;
+}
+
+.hero-card:hover .hero-director-overlay {
+  transform: translateY(-2px);
+}
+
