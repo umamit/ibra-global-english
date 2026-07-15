@@ -37,21 +37,44 @@ export default function ThreeDLogo() {
       setLoaded(true);
     });
 
-    // Create a flat double-sided transparent plane to show only the logo letters/graphics
+    // Group to hold the double-layer planes
+    const group = new THREE.Group();
+
+    // Plane geometry
     const geometry = new THREE.PlaneGeometry(1.6, 1.6);
 
-    const logoMaterial = new THREE.MeshPhysicalMaterial({
+    // Front layer material - uses FrontSide for culling backface
+    const frontMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
-      side: THREE.DoubleSide,
+      side: THREE.FrontSide,
       roughness: 0.15,
       metalness: 0.1,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
     });
 
-    const mesh = new THREE.Mesh(geometry, logoMaterial);
-    scene.add(mesh);
+    // Back layer material - uses FrontSide (will face backwards via Y-rotation)
+    const backMaterial = new THREE.MeshPhysicalMaterial({
+      map: texture,
+      transparent: true,
+      side: THREE.FrontSide,
+      roughness: 0.15,
+      metalness: 0.1,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1,
+    });
+
+    const frontMesh = new THREE.Mesh(geometry, frontMaterial);
+    frontMesh.position.z = 0.05; // Gap offset forward
+
+    const backMesh = new THREE.Mesh(geometry, backMaterial);
+    backMesh.position.z = -0.05; // Gap offset backward
+    backMesh.rotation.y = Math.PI; // Face backwards
+
+    group.add(frontMesh);
+    group.add(backMesh);
+    scene.add(group);
 
     // Warm ambient lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
@@ -72,11 +95,11 @@ export default function ThreeDLogo() {
     const animate = () => {
       const time = clock.getElapsedTime();
 
-      // 1. Soft vertical floating motion (always active)
-      mesh.position.y = Math.sin(time * 1.5) * 0.05;
+      // 1. Soft vertical floating motion applied to the entire group
+      group.position.y = Math.sin(time * 1.5) * 0.05;
       
       // 2. Subtle organic Z-axis tilt
-      mesh.rotation.z = Math.sin(time * 0.5) * 0.02;
+      group.rotation.z = Math.sin(time * 0.5) * 0.02;
 
       // 3. Periodic Y-axis spin every 5 seconds (lasts 1.8 seconds)
       const spinDuration = 1.8;
@@ -87,13 +110,13 @@ export default function ThreeDLogo() {
         const t = progress / spinDuration;
         // Ease-in-out smooth transition curve
         const ease = t * t * (3 - 2 * t);
-        mesh.rotation.y = ease * Math.PI * 2;
+        group.rotation.y = ease * Math.PI * 2;
 
-        // Dynamic light sweep to simulate high-end glass glare reflections
+        // Dynamic light sweep to simulate reflection shine glares
         dirLight1.position.x = -4 + ease * 8;
         dirLight2.position.x = 4 - ease * 8;
       } else {
-        mesh.rotation.y = 0;
+        group.rotation.y = 0;
         dirLight1.position.x = 3;
         dirLight2.position.x = -3;
       }
@@ -123,7 +146,8 @@ export default function ThreeDLogo() {
       window.removeEventListener("resize", handleResize);
       clearInterval(sizeSyncInterval);
       geometry.dispose();
-      logoMaterial.dispose();
+      frontMaterial.dispose();
+      backMaterial.dispose();
       renderer.dispose();
     };
   }, []);
