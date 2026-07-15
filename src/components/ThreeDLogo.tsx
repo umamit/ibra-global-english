@@ -31,9 +31,16 @@ export default function ThreeDLogo() {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+    const backTexture = new THREE.Texture();
+
     // Load brand logo PNG (supports transparency)
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load("/assets/logo.png", () => {
+    const texture = textureLoader.load("/assets/logo.png", (loadedTexture) => {
+      // Configure back texture with flipped horizontal mapping to offset 180deg Y-rotation mirroring
+      backTexture.image = loadedTexture.image;
+      backTexture.wrapS = THREE.RepeatWrapping;
+      backTexture.repeat.x = -1;
+      backTexture.needsUpdate = true;
       setLoaded(true);
     });
 
@@ -43,11 +50,12 @@ export default function ThreeDLogo() {
     // Common Plane geometry for all layers
     const geometry = new THREE.PlaneGeometry(1.6, 1.6);
 
-    // Front-most material (faces camera)
+    // Front-most material (faces camera, normal reading)
     const frontMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
-      alphaTest: 0.08,
+      alphaTest: 0.15,
+      depthWrite: false,
       side: THREE.FrontSide,
       roughness: 0.15,
       metalness: 0.15,
@@ -55,11 +63,12 @@ export default function ThreeDLogo() {
       clearcoatRoughness: 0.1,
     });
 
-    // Back-most material (faces away from camera)
+    // Back-most material (faces away from camera, flipped mapping)
     const backMaterial = new THREE.MeshPhysicalMaterial({
-      map: texture,
+      map: backTexture,
       transparent: true,
-      alphaTest: 0.08,
+      alphaTest: 0.15,
+      depthWrite: false,
       side: THREE.FrontSide,
       roughness: 0.15,
       metalness: 0.15,
@@ -67,35 +76,56 @@ export default function ThreeDLogo() {
       clearcoatRoughness: 0.1,
     });
 
-    // Inner materials (fill the volumetric depth)
-    const innerMaterial = new THREE.MeshPhysicalMaterial({
+    // Inner materials for front block (z > 0, normal texture, FrontSide)
+    const innerFrontMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
-      alphaTest: 0.08,
-      side: THREE.DoubleSide,
+      alphaTest: 0.15,
+      depthWrite: false,
+      side: THREE.FrontSide,
       roughness: 0.25,
       metalness: 0.1,
     });
 
-    // Generate 13 tightly stacked layers to create a solid 3D extrusion effect
-    const layersCount = 13;
+    // Inner materials for back block (z < 0, flipped texture, FrontSide)
+    const innerBackMaterial = new THREE.MeshPhysicalMaterial({
+      map: backTexture,
+      transparent: true,
+      alphaTest: 0.15,
+      depthWrite: false,
+      side: THREE.FrontSide,
+      roughness: 0.25,
+      metalness: 0.1,
+    });
+
+    // Generate 12 tightly stacked layers divided into front block and back block
+    const layersCount = 12;
     const step = 0.01;
-    const startZ = -((layersCount - 1) * step) / 2; // -0.06 to 0.06
+    const startZ = -((layersCount - 1) * step) / 2; // -0.055 to 0.055
 
     for (let i = 0; i < layersCount; i++) {
       const z = startZ + i * step;
       let mesh;
-      if (i === 0) {
-        // Back-most layer
-        mesh = new THREE.Mesh(geometry, backMaterial);
+      
+      if (i < 6) {
+        // Sisi Belakang (Back block: i = 0..5, z = -0.055 s.d. -0.005)
+        // Diputar 180 derajat (Math.PI) dengan tekstur terbalik agar terbaca normal dari arah belakang
+        if (i === 0) {
+          mesh = new THREE.Mesh(geometry, backMaterial);
+        } else {
+          mesh = new THREE.Mesh(geometry, innerBackMaterial);
+        }
         mesh.rotation.y = Math.PI; // Face backward
-      } else if (i === layersCount - 1) {
-        // Front-most layer
-        mesh = new THREE.Mesh(geometry, frontMaterial);
       } else {
-        // Inner layers
-        mesh = new THREE.Mesh(geometry, innerMaterial);
+        // Sisi Depan (Front block: i = 6..11, z = 0.005 s.d. 0.055)
+        // Menghadap normal dengan tekstur normal
+        if (i === layersCount - 1) {
+          mesh = new THREE.Mesh(geometry, frontMaterial);
+        } else {
+          mesh = new THREE.Mesh(geometry, innerFrontMaterial);
+        }
       }
+      
       mesh.position.z = z;
       group.add(mesh);
     }
@@ -174,7 +204,8 @@ export default function ThreeDLogo() {
       geometry.dispose();
       frontMaterial.dispose();
       backMaterial.dispose();
-      innerMaterial.dispose();
+      innerFrontMaterial.dispose();
+      innerBackMaterial.dispose();
       renderer.dispose();
     };
   }, []);
