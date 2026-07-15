@@ -31,18 +31,30 @@ export default function ThreeDLogo() {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    const backTexture = new THREE.Texture();
-
-    // Load brand logo PNG (supports transparency)
+    // Synchronous texture loading initialization to prevent WebGL shader compilation issues
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load("/assets/logo.png", (loadedTexture) => {
-      // Configure back texture with flipped horizontal mapping to offset 180deg Y-rotation mirroring
-      backTexture.image = loadedTexture.image;
-      backTexture.wrapS = THREE.RepeatWrapping;
-      backTexture.repeat.x = -1;
-      backTexture.needsUpdate = true;
-      setLoaded(true);
+    let textureLoaded = false;
+    let backTextureLoaded = false;
+
+    const checkLoaded = () => {
+      if (textureLoaded && backTextureLoaded) {
+        setLoaded(true);
+      }
+    };
+
+    const texture = textureLoader.load("/assets/logo.png", () => {
+      textureLoaded = true;
+      checkLoaded();
     });
+
+    const backTexture = textureLoader.load("/assets/logo.png", () => {
+      backTextureLoaded = true;
+      checkLoaded();
+    });
+
+    // Configure back texture with flipped horizontal mapping to offset 180deg Y-rotation mirroring
+    backTexture.wrapS = THREE.RepeatWrapping;
+    backTexture.repeat.x = -1;
 
     // Group to hold the volumetric stack layers
     const group = new THREE.Group();
@@ -109,7 +121,6 @@ export default function ThreeDLogo() {
       
       if (i < 6) {
         // Sisi Belakang (Back block: i = 0..5, z = -0.055 s.d. -0.005)
-        // Diputar 180 derajat (Math.PI) dengan tekstur terbalik agar terbaca normal dari arah belakang
         if (i === 0) {
           mesh = new THREE.Mesh(geometry, backMaterial);
         } else {
@@ -118,7 +129,6 @@ export default function ThreeDLogo() {
         mesh.rotation.y = Math.PI; // Face backward
       } else {
         // Sisi Depan (Front block: i = 6..11, z = 0.005 s.d. 0.055)
-        // Menghadap normal dengan tekstur normal
         if (i === layersCount - 1) {
           mesh = new THREE.Mesh(geometry, frontMaterial);
         } else {
