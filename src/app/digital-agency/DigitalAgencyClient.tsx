@@ -538,6 +538,11 @@ Mohon hubungi saya kembali. Terima kasih!`;
           />
         </div>
         <p>&copy; {new Date().getFullYear()} Ibra Digital Engineering. All rights reserved.</p>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "8px", fontSize: "0.85rem" }}>
+          <a href="/digital-agency/terms" style={{ color: "var(--color-gray-500)", textDecoration: "none", fontWeight: "500" }}>Syarat & Ketentuan</a>
+          <span style={{ color: "var(--color-gray-300)" }}>|</span>
+          <a href="/digital-agency/privacy" style={{ color: "var(--color-gray-500)", textDecoration: "none", fontWeight: "500" }}>Kebijakan Privasi</a>
+        </div>
         <p style={{ fontSize: "0.8rem", color: "var(--color-gray-400)", marginTop: "8px" }}>
           Mitra resmi pengembangan teknologi <a href="https://www.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "bold" }}>Ibra Global English Bobong</a>.
         </p>
