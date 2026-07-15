@@ -158,7 +158,20 @@ export default function ThreeDLogo() {
     let animId: number;
     const clock = new THREE.Clock();
 
+    // IntersectionObserver to pause rendering when the element is off-screen (saves visitor CPU/battery)
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
+
     const animate = () => {
+      animId = requestAnimationFrame(animate);
+      if (!isVisible) return; // Pause draw/render calls when off-screen
+
       const time = clock.getElapsedTime();
 
       // 1. Soft vertical floating motion applied to the entire group
@@ -188,7 +201,6 @@ export default function ThreeDLogo() {
       }
 
       renderer.render(scene, camera);
-      animId = requestAnimationFrame(animate);
     };
 
     animate();
@@ -210,6 +222,7 @@ export default function ThreeDLogo() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", handleResize);
+      observer.disconnect();
       clearInterval(sizeSyncInterval);
       geometry.dispose();
       frontMaterial.dispose();

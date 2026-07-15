@@ -108,7 +108,20 @@ export default function FluidCanvas() {
     let animationFrameId: number;
     const clock = new THREE.Clock();
 
+    // IntersectionObserver to pause rendering when the element is off-screen (saves visitor CPU/battery)
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.01 }
+    );
+    observer.observe(container);
+
     const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+      if (!isVisible) return; // Pause draw/render calls when off-screen
+
       const elapsedTime = clock.getElapsedTime();
       
       // Update shader uniforms
@@ -119,7 +132,6 @@ export default function FluidCanvas() {
       mesh.rotation.x = elapsedTime * 0.05;
 
       renderer.render(scene, camera);
-      animationFrameId = requestAnimationFrame(animate);
     };
 
     // Initialize animation loop
@@ -143,6 +155,7 @@ export default function FluidCanvas() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      observer.disconnect();
       
       // Dispose materials & geometries
       geometry.dispose();
