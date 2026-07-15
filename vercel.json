@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "git": {
+    "ignoreBuildStep": "bash vercel-ignore-build.sh"
+  },
   "headers": [
     {
       "source": "/assets/(.*)",
