@@ -27,9 +27,10 @@ export default function LandingTabs({ activeTab, setActiveTab, maintenanceMode }
           onClick={() => setActiveTab(tab.key)}
           className={`btn-portal-outline ${activeTab === tab.key ? "active" : ""}`}
           style={{
-            padding: "0.6rem 1.2rem",
+            padding: "0.6rem 1.25rem",
             fontWeight: "600",
             whiteSpace: "nowrap",
+            borderRadius: "var(--radius-full)",
             ...(tab.key === "maintenance" && maintenanceMode ? { borderColor: "#ef4444", color: "#ef4444" } : {}),
           }}
         >
