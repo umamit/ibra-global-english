@@ -200,6 +200,34 @@ export default function AdminCalendar() {
     fetchData();
   };
 
+  const handleDeleteAllSchedules = async (): Promise<void> => {
+    const confirm1 = confirm("Apakah Anda yakin ingin menghapus SELURUH agenda akademik yang ada di database?");
+    if (!confirm1) return;
+
+    const confirm2 = confirm("PERINGATAN: Tindakan ini akan menghapus semua jadwal kelas, kegiatan, dan hari libur secara permanen. Apakah Anda benar-benar yakin?");
+    if (!confirm2) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("academic_schedules")
+        .delete()
+        .neq("id", "00000000-0000-0000-0000-000000000000");
+
+      if (error) throw error;
+
+      setStatusMsg({ type: "success", text: "Berhasil menghapus seluruh agenda akademik." });
+      setTimeout(() => setStatusMsg({ type: "", text: "" }), 3000);
+      fetchData();
+    } catch (err: any) {
+      console.error("Gagal menghapus seluruh agenda:", err);
+      setStatusMsg({ type: "error", text: "Gagal menghapus agenda: " + (err.message || String(err)) });
+      setTimeout(() => setStatusMsg({ type: "", text: "" }), 4000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Helper to filter events occurring on a specific date string (YYYY-MM-DD)
   const getSchedulesForDay = (dateStr: string): AcademicSchedule[] => {
     return schedules.filter((s) => {
@@ -263,6 +291,9 @@ export default function AdminCalendar() {
           </button>
           <button type="button" className="btn-portal-outline" onClick={() => setSyncModalOpen(true)}>
             <span>🔗 Sinkronkan ke HP</span>
+          </button>
+          <button type="button" className="btn-portal-outline" onClick={handleDeleteAllSchedules} style={{ borderColor: "#ef4444", color: "#ef4444" }}>
+            <span>🗑️ Hapus Semua</span>
           </button>
           <button className="btn-portal-primary" onClick={() => handleOpenAddModal(selectedDate)}>
             <span>+ Tambah Agenda</span>
