@@ -1,12 +1,14 @@
 "use client";
 import "./Header.css";
-
+import dynamic from "next/dynamic";
 import { z } from "zod";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/Button";
 import { DEFAULT_NAVIGATION_MENU, NavigationItem } from "../utils/fallbackData";
+
+const ThreeDLogo = dynamic(() => import("./ThreeDLogo"), { ssr: false });
 
 const headerPropsSchema = z.object({
   theme: z.enum(["light", "dark"]),
@@ -130,7 +132,9 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
       <header id="header" className={`${isScrolled ? "scrolled" : ""} ${hasMarquee ? "has-marquee" : ""}`}>
         <div className="container nav-container">
           <Link href="/#home" className="logo-link" id="logo-nav">
-            <img src="/assets/logo.png" alt="Ibra Global English Logo" className="logo-img" />
+            <div className="logo-img">
+              <ThreeDLogo />
+            </div>
             <div className="logo-text">
               <span className="logo-title">Ibra Global English</span>
               <p>Belajar Seru Lancar Bicara</p>
