@@ -515,11 +515,9 @@
   }
 }
 
-/* Director's Name & Title Overlay inside Hero Card */
 .hero-director-overlay {
   position: absolute;
   bottom: 1.25rem;
-  left: 1.25rem;
   right: 1.25rem;
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(16px) saturate(180%);
