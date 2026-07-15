@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import styles from "./digital-agency.module.css";
+
+const FluidCanvas = dynamic(() => import("./components/FluidCanvas"), { ssr: false });
 
 export default function DigitalAgencyClient() {
   const [formData, setFormData] = useState({
@@ -105,6 +108,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
       <main>
         {/* ── Hero Section ── */}
         <section className={styles.hero}>
+          <FluidCanvas />
           <span className={styles.heroTagline}>Professional Web Development</span>
           <h1 className={styles.heroTitle}>
             Desain Website <span className={styles.gradientText}>Premium & Berperforma Tinggi</span> Untuk Bisnis Anda

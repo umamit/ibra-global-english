@@ -108,6 +108,8 @@
   margin-bottom: 24px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
 }
 
 .heroTitle {
@@ -119,6 +121,8 @@
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .gradientText {
@@ -134,12 +138,16 @@
   line-height: 1.6;
   max-width: 680px;
   margin: 0 auto 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .heroActions {
   display: flex;
   justify-content: center;
   gap: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .btnPrimary {
@@ -550,6 +558,8 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
   transition: transform var(--transition-normal);
+  position: relative;
+  z-index: 1;
 }
 
 .statsContainer:hover {
