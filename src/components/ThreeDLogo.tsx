@@ -13,7 +13,6 @@ export default function ThreeDLogo() {
     const container = containerRef.current;
     const canvas = canvasRef.current;
 
-    // Get current container size (which matches .logo-img classes dynamically)
     let width = container.clientWidth || 50;
     let height = container.clientHeight || 50;
 
@@ -32,85 +31,72 @@ export default function ThreeDLogo() {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Load brand logo PNG
+    // Load brand logo PNG (supports transparency)
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load("/assets/logo.png", () => {
       setLoaded(true);
     });
 
-    // Create a thin premium 3D plate
-    const geometry = new THREE.BoxGeometry(1.6, 1.6, 0.08);
+    // Create a flat double-sided transparent plane to show only the logo letters/graphics
+    const geometry = new THREE.PlaneGeometry(1.6, 1.6);
 
-    // Glass material for the edges & back
-    const glassMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.35,
-      roughness: 0.15,
-      metalness: 0.1,
-      transmission: 0.9,
-      ior: 1.5,
-      thickness: 0.1,
-    });
-
-    // Logo material on the front face
     const logoMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
-      roughness: 0.1,
+      side: THREE.DoubleSide,
+      roughness: 0.15,
+      metalness: 0.1,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
     });
 
-    const materials = [
-      glassMaterial, // Right
-      glassMaterial, // Left
-      glassMaterial, // Top
-      glassMaterial, // Bottom
-      logoMaterial,  // Front
-      glassMaterial, // Back
-    ];
-
-    const mesh = new THREE.Mesh(geometry, materials);
+    const mesh = new THREE.Mesh(geometry, logoMaterial);
     scene.add(mesh);
 
     // Warm ambient lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
-    // Dynamic specular directional light
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
-    dirLight.position.set(3, 3, 5);
-    scene.add(dirLight);
+    // Dual specular directional lights (front & back) to sweep reflection shine
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight1.position.set(3, 3, 5);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.1);
+    dirLight2.position.set(-3, -3, -5);
+    scene.add(dirLight2);
 
     let animId: number;
-    let mouseX = 0;
-    let mouseY = 0;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      mouseX = (e.clientX - centerX) / window.innerWidth;
-      mouseY = (e.clientY - centerY) / window.innerHeight;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
     const clock = new THREE.Clock();
+
     const animate = () => {
       const time = clock.getElapsedTime();
 
-      // Soft vertical floating motion
-      mesh.position.y = Math.sin(time * 1.5) * 0.06;
+      // 1. Soft vertical floating motion (always active)
+      mesh.position.y = Math.sin(time * 1.5) * 0.05;
+      
+      // 2. Subtle organic Z-axis tilt
+      mesh.rotation.z = Math.sin(time * 0.5) * 0.02;
 
-      // Parallax mouse tilt
-      const targetRotX = -mouseY * 1.6;
-      const targetRotY = mouseX * 1.6;
+      // 3. Periodic Y-axis spin every 5 seconds (lasts 1.8 seconds)
+      const spinDuration = 1.8;
+      const cycleDuration = 5.0;
+      const progress = time % cycleDuration;
 
-      mesh.rotation.x += (targetRotX - mesh.rotation.x) * 0.1;
-      mesh.rotation.y += (targetRotY - mesh.rotation.y) * 0.1;
-      mesh.rotation.z = Math.sin(time * 0.5) * 0.03;
+      if (progress < spinDuration) {
+        const t = progress / spinDuration;
+        // Ease-in-out smooth transition curve
+        const ease = t * t * (3 - 2 * t);
+        mesh.rotation.y = ease * Math.PI * 2;
+
+        // Dynamic light sweep to simulate high-end glass glare reflections
+        dirLight1.position.x = -4 + ease * 8;
+        dirLight2.position.x = 4 - ease * 8;
+      } else {
+        mesh.rotation.y = 0;
+        dirLight1.position.x = 3;
+        dirLight2.position.x = -3;
+      }
 
       renderer.render(scene, camera);
       animId = requestAnimationFrame(animate);
@@ -128,17 +114,15 @@ export default function ThreeDLogo() {
       renderer.setSize(newWidth, newHeight);
     };
 
-    // Periodically sync size in case parent header class changes dimensions on scroll
+    // Keep size in sync when parent header dimensions scale on scroll
     const sizeSyncInterval = setInterval(handleResize, 200);
     window.addEventListener("resize", handleResize);
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       clearInterval(sizeSyncInterval);
       geometry.dispose();
-      glassMaterial.dispose();
       logoMaterial.dispose();
       renderer.dispose();
     };
