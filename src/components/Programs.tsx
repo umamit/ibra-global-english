@@ -40,27 +40,30 @@ export default function Programs({ initialSettings }: any) {
             <div 
               key={idx} 
               id={prog.title.toLowerCase().replace(/\s+/g, "-")}
-              className="program-card glowing-card" 
+              className={`program-card glowing-card bento-card-${idx}`} 
               data-aos="fade-up" 
               data-aos-delay={idx * 150}
-              style={{ 
-                transform: `translateY(${idx % 2 === 1 ? '20px' : '0'})`,
-              }}
             >
-              <div className="program-icon-box">
-                {ICON_MAP[prog.iconKey as keyof typeof ICON_MAP] || ICON_MAP.book}
+              <div className="bento-content-wrapper">
+                <div className="bento-main-info">
+                  <div className="program-icon-box">
+                    {ICON_MAP[prog.iconKey as keyof typeof ICON_MAP] || ICON_MAP.book}
+                  </div>
+                  <h3>{prog.title}</h3>
+                  <p className="program-age">{prog.age}</p>
+                  <p className="program-desc">{prog.desc}</p>
+                </div>
+                <div className="bento-features-info">
+                  <ul className="program-features">
+                    {(prog.features || []).map((feature: any, fIdx: number) => (
+                      <li key={fIdx}>
+                        <i className="fi fi-rr-check-circle" style={{ color: "var(--color-green)", fontSize: "1.25rem", flexShrink: 0 }}></i>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <h3>{prog.title}</h3>
-              <p className="program-age">{prog.age}</p>
-              <p className="program-desc">{prog.desc}</p>
-              <ul className="program-features">
-                {(prog.features || []).map((feature: any, fIdx: number) => (
-                  <li key={fIdx}>
-                    <i className="fi fi-rr-check-circle" style={{ color: "var(--color-green)", fontSize: "1.25rem", flexShrink: 0 }}></i>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
           ))}
         </div>
