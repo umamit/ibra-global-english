@@ -58,7 +58,7 @@ export default function AdminCalendar() {
   // Form / Modal State
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedSchedule, setSelectedChildSchedule] = useState<AcademicSchedule | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(() => getLocalDateString(new Date()));
   const [viewAllDate, setViewAllDate] = useState<string | null>(null);
   const [syncModalOpen, setSyncModalOpen] = useState<boolean>(false);
   
@@ -210,6 +210,46 @@ export default function AdminCalendar() {
 
   return (
     <div>
+      <style>{`
+        .calendar-layout-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+        }
+        @media (min-width: 1024px) {
+          .calendar-layout-grid {
+            grid-template-columns: 7.2fr 2.8fr;
+          }
+        }
+        .calendar-cell-hover {
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+        .calendar-cell-hover:hover {
+          transform: translateY(-2px) scale(1.01);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          border-color: var(--color-primary) !important;
+          z-index: 2;
+        }
+        .timeline-item-hover {
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+        .timeline-item-hover:hover {
+          transform: translateX(4px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+        .btn-text-hover:hover {
+          background-color: rgba(33, 108, 126, 0.08) !important;
+        }
+        .month-list-item {
+          transition: all 0.15s ease !important;
+        }
+        .month-list-item:hover {
+          background-color: rgba(0, 0, 0, 0.03) !important;
+          transform: translateX(2px);
+        }
+      `}</style>
+
       <div className="dashboard-topbar">
         <div className="topbar-title">
           <h1>Kelola Jadwal & Kalender Akademik</h1>
@@ -224,7 +264,7 @@ export default function AdminCalendar() {
           <button type="button" className="btn-portal-outline" onClick={() => setSyncModalOpen(true)}>
             <span>🔗 Sinkronkan ke HP</span>
           </button>
-          <button className="btn-portal-primary" onClick={() => handleOpenAddModal()}>
+          <button className="btn-portal-primary" onClick={() => handleOpenAddModal(selectedDate)}>
             <span>+ Tambah Agenda</span>
           </button>
         </div>
@@ -240,14 +280,14 @@ export default function AdminCalendar() {
       )}
 
       {/* Monthly Navigation Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem", backgroundColor: "white", padding: "1rem 1.5rem", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", backgroundColor: "white", padding: "1rem 1.5rem", borderRadius: "16px", border: "1px solid rgba(0, 0, 0, 0.05)", boxShadow: "0 2px 8px rgba(0,0,0,0.01)" }}>
         <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "var(--color-gray-900)" }}>
           {getMonthNameIndonesian(viewMonth)} {viewYear}
         </h2>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button 
             className="btn-portal-outline" 
-            style={{ padding: "0.45rem 1rem" }} 
+            style={{ padding: "0.45rem 1rem", borderRadius: "8px" }} 
             onClick={() => navigateMonth("prev")}
             aria-label="Tampilkan bulan sebelumnya"
           >
@@ -255,7 +295,7 @@ export default function AdminCalendar() {
           </button>
           <button 
             className="btn-portal-outline" 
-            style={{ padding: "0.45rem 1rem" }} 
+            style={{ padding: "0.45rem 1rem", borderRadius: "8px" }} 
             onClick={() => setCurrentDate(new Date())}
             aria-label="Kembali ke hari ini"
           >
@@ -263,7 +303,7 @@ export default function AdminCalendar() {
           </button>
           <button 
             className="btn-portal-outline" 
-            style={{ padding: "0.45rem 1rem" }} 
+            style={{ padding: "0.45rem 1rem", borderRadius: "8px" }} 
             onClick={() => navigateMonth("next")}
             aria-label="Tampilkan bulan berikutnya"
           >
@@ -272,193 +312,209 @@ export default function AdminCalendar() {
         </div>
       </div>
 
-      {/* Main Calendar Month Grid */}
+      {/* Main Calendar Content Grid */}
       {loading || !mounted ? (
         <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--color-gray-500)" }}>
           <p>Memuat kalender akademik...</p>
         </div>
       ) : (
-        <>
-          <div style={{ backgroundColor: "white", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-md)", padding: "1.5rem", overflowX: "auto" }}>
-          <div style={{ minWidth: "700px" }}>
-            
-            {/* Calendar Grid Container */}
-            <div style={{ 
-              display: "grid", 
-              gridTemplateColumns: "repeat(7, 1fr)", 
-              gap: "4px", 
-              backgroundColor: "var(--color-gray-100)", 
-              borderRadius: "12px",
-              padding: "6px"
-            }}>
-              {/* Weekdays Row */}
-              {["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map((day, idx) => (
-                <div 
-                  key={day} 
-                  style={{ 
-                    textAlign: "center", 
-                    fontWeight: "800", 
-                    color: idx === 0 || idx === 6 ? "var(--color-accent)" : "var(--color-gray-600)", 
-                    fontSize: "0.9rem", 
-                    padding: "0.6rem 0.25rem",
-                    backgroundColor: "var(--color-gray-200)",
-                    borderRadius: "6px",
-                    marginBottom: "4px"
-                  }}
-                >
-                  {day}
-                </div>
-              ))}
-
-              {/* Grid Cells */}
-              {calendarDays.map((cell, idx) => {
-                const daySchedules = getSchedulesForDay(cell.dateString);
-                const isToday = cell.dateString === getLocalDateString(new Date());
-
-                return (
-                  <div
-                    key={idx}
-                    onClick={() => handleOpenAddModal(cell.dateString)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Tambah agenda untuk tanggal ${cell.day} ${getMonthNameIndonesian(cell.month)} ${cell.year}`}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleOpenAddModal(cell.dateString);
-                      }
-                    }}
-                    style={{
-                      minHeight: "120px",
-                      backgroundColor: cell.isCurrentMonth ? "white" : "var(--color-gray-50)",
-                      padding: "0.5rem",
-                      border: isToday ? "2px solid var(--color-primary)" : "1px solid var(--color-gray-200)",
+        <div className="calendar-layout-grid">
+          {/* LEFT COLUMN: Month Grid */}
+          <div style={{ backgroundColor: "white", borderRadius: "16px", border: "1px solid rgba(0, 0, 0, 0.05)", boxShadow: "0 4px 20px rgba(0, 0, 0, 0.02)", padding: "1.25rem", overflowX: "auto" }}>
+            <div style={{ minWidth: "650px" }}>
+              
+              {/* Calendar Grid Container */}
+              <div style={{ 
+                display: "grid", 
+                gridTemplateColumns: "repeat(7, 1fr)", 
+                gap: "4px", 
+                backgroundColor: "var(--color-gray-50)", 
+                borderRadius: "10px",
+                padding: "4px"
+              }}>
+                {/* Weekdays Row */}
+                {["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map((day, idx) => (
+                  <div 
+                    key={day} 
+                    style={{ 
+                      textAlign: "center", 
+                      fontWeight: "800", 
+                      color: idx === 0 || idx === 6 ? "var(--color-accent)" : "var(--color-gray-600)", 
+                      fontSize: "0.82rem", 
+                      padding: "0.5rem 0.25rem",
+                      backgroundColor: "rgba(0, 0, 0, 0.02)",
                       borderRadius: "6px",
-                      cursor: "pointer",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      transition: "transform 0.15s ease",
-                      position: "relative"
+                      marginBottom: "4px"
                     }}
-                    className="calendar-cell-hover"
                   >
-                    {/* Day Number */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                      <span style={{
-                        fontSize: "0.9rem",
-                        fontWeight: "800",
-                        color: isToday 
-                          ? "white" 
-                          : cell.isCurrentMonth 
-                            ? "var(--color-gray-800)" 
-                            : "var(--color-gray-400)",
-                        backgroundColor: isToday ? "var(--color-primary)" : "transparent",
-                        width: isToday ? "26px" : "auto",
-                        height: isToday ? "26px" : "auto",
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}>
-                        {cell.day}
-                      </span>
-                      {isToday && (
-                        <span style={{ fontSize: "0.65rem", color: "var(--color-primary)", fontWeight: "800" }}>Kini</span>
-                      )}
-                    </div>
-
-                    {/* Schedules inside day cell */}
-                    <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: "4px", overflow: "hidden" }}>
-                      {daySchedules.slice(0, 3).map((s) => {
-                        let badgeBg = "var(--color-primary-light)";
-                        let badgeColor = "var(--color-primary-dark)";
-
-                        if (s.type === "holiday") {
-                          badgeBg = "#fee2e2";
-                          badgeColor = "#ef4444";
-                        } else if (s.type === "event") {
-                          badgeBg = "var(--color-accent-light)";
-                          badgeColor = "var(--color-accent)";
-                        }
-
-                        const cleanTimeStr = new Date(s.start_time).toTimeString().slice(0, 5);
-
-                        return (
-                          <div
-                            key={s.id}
-                            onClick={(e) => handleOpenEditModal(s, e)}
-                            role="button"
-                            tabIndex={0}
-                            aria-label={`Agenda: ${s.title}, Jam: ${cleanTimeStr}. Tekan Enter untuk mengubah.`}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault();
-                                handleOpenEditModal(s, e);
-                              }
-                            }}
-                            style={{
-                              backgroundColor: badgeBg,
-                              color: badgeColor,
-                              padding: "0.25rem 0.5rem",
-                              borderRadius: "4px",
-                              fontSize: "0.72rem",
-                              fontWeight: "700",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              boxShadow: "var(--shadow-sm)",
-                              cursor: "pointer"
-                            }}
-                            title={`${s.title} (${cleanTimeStr})`}
-                          >
-                            <span style={{ opacity: 0.85, marginRight: "4px" }}>{cleanTimeStr}</span>
-                            <span>{s.title}</span>
-                          </div>
-                        );
-                      })}
-                      {daySchedules.length > 3 && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setViewAllDate(cell.dateString);
-                          }}
-                          style={{ 
-                            fontSize: "0.68rem", 
-                            fontWeight: "800", 
-                            color: "var(--color-primary-dark)", 
-                            backgroundColor: "var(--color-primary-light)",
-                            borderRadius: "4px",
-                            padding: "0.25rem 0.25rem",
-                            textAlign: "center",
-                            border: "1px dashed var(--color-primary)",
-                            cursor: "pointer",
-                            width: "100%",
-                            display: "block",
-                            boxShadow: "var(--shadow-sm)"
-                          }}
-                        >
-                          + {daySchedules.length - 3} agenda lagi
-                        </button>
-                      )}
-                    </div>
+                    {day}
                   </div>
-                );
-              })}
-            </div>
+                ))}
 
+                {/* Grid Cells */}
+                {calendarDays.map((cell, idx) => {
+                  const daySchedules = getSchedulesForDay(cell.dateString);
+                  const isToday = cell.dateString === getLocalDateString(new Date());
+                  const isSelected = cell.dateString === selectedDate;
+
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => setSelectedDate(cell.dateString)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Pilih tanggal ${cell.day} ${getMonthNameIndonesian(cell.month)} ${cell.year}`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedDate(cell.dateString);
+                        }
+                      }}
+                      style={{
+                        minHeight: "110px",
+                        backgroundColor: cell.isCurrentMonth 
+                          ? (isSelected ? "rgba(33, 108, 126, 0.02)" : "white") 
+                          : "var(--color-gray-50)",
+                        padding: "0.5rem",
+                        border: isSelected 
+                          ? "2px solid var(--color-primary)" 
+                          : isToday 
+                            ? "2px dashed var(--color-primary-light)" 
+                            : "1px solid rgba(0, 0, 0, 0.04)",
+                        boxShadow: isSelected ? "0 0 0 3px rgba(33, 108, 126, 0.12)" : "none",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        position: "relative"
+                      }}
+                      className="calendar-cell-hover"
+                    >
+                      {/* Day Number */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
+                        <span style={{
+                          fontSize: "0.85rem",
+                          fontWeight: "800",
+                          color: isToday 
+                            ? "white" 
+                            : cell.isCurrentMonth 
+                              ? (isSelected ? "var(--color-primary)" : "var(--color-gray-800)") 
+                              : "var(--color-gray-400)",
+                          backgroundColor: isToday ? "var(--color-primary)" : "transparent",
+                          width: isToday ? "24px" : "auto",
+                          height: isToday ? "24px" : "auto",
+                          borderRadius: "50%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
+                        }}>
+                          {cell.day}
+                        </span>
+                        {isToday && (
+                          <span style={{ fontSize: "0.6rem", color: "var(--color-primary)", fontWeight: "800" }}>Kini</span>
+                        )}
+                      </div>
+
+                      {/* Schedules inside day cell */}
+                      <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: "2px", overflow: "hidden" }}>
+                        {daySchedules.slice(0, 3).map((s) => {
+                          let color = "var(--color-primary)";
+                          let bg = "rgba(33, 108, 126, 0.04)";
+
+                          if (s.type === "holiday") {
+                            color = "#ef4444";
+                            bg = "rgba(239, 68, 68, 0.04)";
+                          } else if (s.type === "event") {
+                            color = "var(--color-accent)";
+                            bg = "rgba(166, 136, 73, 0.04)";
+                          }
+
+                          const cleanTimeStr = new Date(s.start_time).toTimeString().slice(0, 5);
+
+                          return (
+                            <div
+                              key={s.id}
+                              onClick={(e) => handleOpenEditModal(s, e)}
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`Agenda: ${s.title}, Jam: ${cleanTimeStr}. Tekan Enter untuk mengubah.`}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  handleOpenEditModal(s, e);
+                                }
+                              }}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                backgroundColor: bg,
+                                color: "var(--color-gray-800)",
+                                borderLeft: `3px solid ${color}`,
+                                padding: "0.2rem 0.4rem",
+                                borderRadius: "0 4px 4px 0",
+                                fontSize: "0.7rem",
+                                fontWeight: "700",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                cursor: "pointer",
+                                margin: "1px 0"
+                              }}
+                              title={`${s.title} (${cleanTimeStr})`}
+                            >
+                              <span style={{ color: color, fontSize: "0.65rem", fontWeight: "800" }}>{cleanTimeStr}</span>
+                              <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{s.title}</span>
+                            </div>
+                          );
+                        })}
+                        {daySchedules.length > 3 && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setViewAllDate(cell.dateString);
+                            }}
+                            style={{ 
+                              fontSize: "0.65rem", 
+                              fontWeight: "800", 
+                              color: "var(--color-primary-dark)", 
+                              backgroundColor: "rgba(33, 108, 126, 0.05)",
+                              borderRadius: "4px",
+                              padding: "0.15rem 0.25rem",
+                              textAlign: "center",
+                              border: "1px dashed var(--color-primary)",
+                              cursor: "pointer",
+                              width: "100%",
+                              display: "block",
+                              marginTop: "2px"
+                            }}
+                          >
+                            + {daySchedules.length - 3} lagi
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+          </div>
+          
+          {/* RIGHT COLUMN: Sidebar Day/Month Timeline Agenda */}
+          <div>
+            <ScheduleList 
+              schedules={schedules}
+              viewYear={viewYear}
+              viewMonth={viewMonth}
+              selectedDate={selectedDate}
+              onEdit={handleOpenEditModal}
+              onAddEvent={handleOpenAddModal}
+            />
           </div>
         </div>
-        
-        {/* LIST VIEW FOR EASY MANUAL EDIT/DELETE */}
-        <ScheduleList 
-          schedules={schedules}
-          viewYear={viewYear}
-          viewMonth={viewMonth}
-          onEdit={handleOpenEditModal}
-        />
-        </>
       )}
 
       {/* VIEW ALL AGENDA FOR SPECIFIC DAY MODAL */}

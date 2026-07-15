@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface AcademicSchedule {
   id: string;
@@ -17,14 +17,39 @@ interface ScheduleListProps {
   schedules: AcademicSchedule[];
   viewYear: number;
   viewMonth: number;
+  selectedDate: string;
   onEdit: (sched: AcademicSchedule, e: React.MouseEvent) => void;
+  onAddEvent: (dateStr: string) => void;
 }
 
-export default function ScheduleList({ schedules, viewYear, viewMonth, onEdit }: ScheduleListProps) {
-  const filtered = schedules.filter(s => {
+export default function ScheduleList({ 
+  schedules, 
+  viewYear, 
+  viewMonth, 
+  selectedDate, 
+  onEdit,
+  onAddEvent
+}: ScheduleListProps) {
+  const [activeTab, setActiveTab] = useState<'day' | 'month'>('day');
+
+  const getLocalDateString = (dateObj: Date): string => {
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const d = String(dateObj.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+
+  // 1. Filter schedules for selected date
+  const daySchedules = schedules.filter(s => {
+    const sDateStr = getLocalDateString(new Date(s.start_time));
+    return sDateStr === selectedDate;
+  }).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+  // 2. Filter schedules for current calendar view month
+  const monthSchedules = schedules.filter(s => {
     const sDate = new Date(s.start_time);
     return sDate.getFullYear() === viewYear && sDate.getMonth() === viewMonth;
-  });
+  }).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
   const getMonthNameIndonesian = (monthIdx: number): string => {
     const months = [
@@ -34,142 +59,314 @@ export default function ScheduleList({ schedules, viewYear, viewMonth, onEdit }:
     return months[monthIdx];
   };
 
-  return (
-    <div style={{ 
-      marginTop: "2rem", 
-      backgroundColor: "white", 
-      borderRadius: "var(--radius-lg)", 
-      boxShadow: "var(--shadow-md)", 
-      padding: "1.5rem",
-      border: "1px solid var(--color-gray-200)"
-    }}>
-      <h2 style={{ 
-        fontSize: "1.2rem", 
-        fontWeight: "900", 
-        color: "var(--color-gray-900)", 
-        marginBottom: "1rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }}>
-        <span>📋 Daftar Agenda ({getMonthNameIndonesian(viewMonth)} {viewYear})</span>
-        <span style={{ 
-          fontSize: "0.85rem", 
-          fontWeight: "600", 
-          backgroundColor: "var(--color-gray-100)", 
-          color: "var(--color-gray-600)", 
-          padding: "0.25rem 0.6rem", 
-          borderRadius: "12px" 
-        }}>
-          {filtered.length} Agenda
-        </span>
-      </h2>
+  // Format header dates
+  const selectedDateObj = new Date(selectedDate);
+  const formattedSelectedDate = selectedDateObj.toLocaleDateString('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  });
 
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "2.5rem 0", color: "var(--color-gray-400)" }}>
-          <p style={{ fontSize: "0.95rem" }}>Tidak ada agenda belajar mengajar untuk bulan ini.</p>
+  const getEventStyles = (type: string) => {
+    switch (type) {
+      case 'holiday':
+        return {
+          borderLeft: '4px solid #ef4444',
+          bg: 'rgba(239, 68, 68, 0.05)',
+          color: '#ef4444',
+          label: 'Libur'
+        };
+      case 'event':
+        return {
+          borderLeft: '4px solid #A68849',
+          bg: 'rgba(166, 136, 73, 0.05)',
+          color: '#A68849',
+          label: 'Kegiatan'
+        };
+      case 'class':
+      default:
+        return {
+          borderLeft: '4px solid #216c7e',
+          bg: 'rgba(33, 108, 126, 0.05)',
+          color: '#216c7e',
+          label: 'Kelas'
+        };
+    }
+  };
+
+  return (
+    <div style={{
+      backgroundColor: "white",
+      borderRadius: "16px",
+      border: "1px solid rgba(0, 0, 0, 0.05)",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.02)",
+      display: "flex",
+      flexDirection: "column",
+      height: "100%",
+      minHeight: "500px",
+      overflow: "hidden"
+    }}>
+      {/* Sidebar Header & Tab Switcher */}
+      <div style={{
+        padding: "1.25rem",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+        backgroundColor: "#fcfcfd"
+      }}>
+        <div style={{
+          display: "flex",
+          backgroundColor: "rgba(0, 0, 0, 0.03)",
+          borderRadius: "9px",
+          padding: "2px",
+          marginBottom: "1rem"
+        }}>
+          <button
+            type="button"
+            onClick={() => setActiveTab('day')}
+            style={{
+              flex: 1,
+              padding: "0.5rem 0.25rem",
+              borderRadius: "7px",
+              border: "none",
+              fontSize: "0.8rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              backgroundColor: activeTab === 'day' ? "white" : "transparent",
+              color: activeTab === 'day' ? "var(--color-primary-dark)" : "var(--color-gray-500)",
+              boxShadow: activeTab === 'day' ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+              transition: "all 0.15s ease"
+            }}
+          >
+            Hari Ini
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('month')}
+            style={{
+              flex: 1,
+              padding: "0.5rem 0.25rem",
+              borderRadius: "7px",
+              border: "none",
+              fontSize: "0.8rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              backgroundColor: activeTab === 'month' ? "white" : "transparent",
+              color: activeTab === 'month' ? "var(--color-primary-dark)" : "var(--color-gray-500)",
+              boxShadow: activeTab === 'month' ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+              transition: "all 0.15s ease"
+            }}
+          >
+            Bulan Ini
+          </button>
         </div>
-      ) : (
-        <div style={{ overflowX: "auto", maxHeight: "400px", overflowY: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem", textAlign: "left" }}>
-            <thead>
-              <tr style={{ 
-                borderBottom: "2px solid var(--color-gray-200)", 
-                color: "var(--color-gray-600)", 
-                fontWeight: "800",
-                position: "sticky",
-                top: 0,
-                backgroundColor: "white",
-                zIndex: 10
-              }}>
-                <th style={{ padding: "0.75rem 0.5rem" }}>Hari & Tanggal</th>
-                <th style={{ padding: "0.75rem 0.5rem" }}>Jam (Local)</th>
-                <th style={{ padding: "0.75rem 0.5rem" }}>Nama Kelas / Agenda</th>
-                <th style={{ padding: "0.75rem 0.5rem" }}>Program</th>
-                <th style={{ padding: "0.75rem 0.5rem" }}>Tutor</th>
-                <th style={{ padding: "0.75rem 0.5rem" }}>Tipe</th>
-                <th style={{ padding: "0.75rem 0.5rem", textAlign: "right" }}>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((s) => {
-                const startDateObj = new Date(s.start_time);
-                const endDateObj = new Date(s.end_time);
-                
-                // Format Hari & Tanggal (Senin, 6 Jul)
-                const dateStr = startDateObj.toLocaleDateString('id-ID', { 
-                  weekday: 'short', 
-                  day: 'numeric', 
-                  month: 'short' 
-                });
-                
-                // Format Jam (10:00 - 11:15)
-                const timeStr = `${startDateObj.toTimeString().slice(0, 5)} - ${endDateObj.toTimeString().slice(0, 5)}`;
-                
-                // Tipe badge color
-                let typeBg = "var(--color-primary-light)";
-                let typeColor = "var(--color-primary-dark)";
-                if (s.type === "holiday") {
-                  typeBg = "#fee2e2";
-                  typeColor = "#ef4444";
-                } else if (s.type === "event") {
-                  typeBg = "var(--color-accent-light)";
-                  typeColor = "var(--color-accent)";
-                }
+
+        {activeTab === 'day' ? (
+          <div>
+            <h3 style={{ margin: 0, fontSize: "0.8rem", fontWeight: "800", color: "var(--color-gray-400)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              Agenda Terpilih
+            </h3>
+            <p style={{ margin: "2px 0 0 0", fontSize: "1.05rem", fontWeight: "900", color: "var(--color-gray-900)" }}>
+              {formattedSelectedDate}
+            </p>
+          </div>
+        ) : (
+          <div>
+            <h3 style={{ margin: 0, fontSize: "0.8rem", fontWeight: "800", color: "var(--color-gray-400)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              Rangkuman Bulan
+            </h3>
+            <p style={{ margin: "2px 0 0 0", fontSize: "1.05rem", fontWeight: "900", color: "var(--color-gray-900)" }}>
+              {getMonthNameIndonesian(viewMonth)} {viewYear}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Agenda content list */}
+      <div style={{
+        flexGrow: 1,
+        padding: "1.25rem",
+        overflowY: "auto",
+        backgroundColor: "#ffffff",
+        maxHeight: "650px"
+      }}>
+        {activeTab === 'day' ? (
+          daySchedules.length === 0 ? (
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "4rem 1rem",
+              textAlign: "center"
+            }}>
+              <span style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📅</span>
+              <p style={{ fontSize: "0.9rem", color: "var(--color-gray-400)", fontWeight: "600", margin: "0 0 1rem 0" }}>
+                Tidak ada agenda terdaftar untuk tanggal ini.
+              </p>
+              <button
+                type="button"
+                className="btn-portal-outline"
+                style={{
+                  fontSize: "0.8rem",
+                  padding: "0.4rem 1rem",
+                  borderColor: "var(--color-primary)",
+                  color: "var(--color-primary)"
+                }}
+                onClick={() => onAddEvent(selectedDate)}
+              >
+                + Tambah Agenda
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {daySchedules.map((s) => {
+                const styles = getEventStyles(s.type);
+                const startObj = new Date(s.start_time);
+                const endObj = new Date(s.end_time);
+                const timeStr = `${startObj.toTimeString().slice(0, 5)} - ${endObj.toTimeString().slice(0, 5)}`;
 
                 return (
-                  <tr key={s.id} style={{ borderBottom: "1px solid var(--color-gray-100)" }} className="table-row-hover">
-                    <td style={{ padding: "0.75rem 0.5rem", fontWeight: "800", color: "var(--color-gray-800)" }}>{dateStr}</td>
-                    <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-gray-600)" }}>{timeStr}</td>
-                    <td style={{ padding: "0.75rem 0.5rem", fontWeight: "900", color: "var(--color-gray-900)" }}>{s.title}</td>
-                    <td style={{ padding: "0.75rem 0.5rem" }}>
-                      <span style={{ 
-                        fontSize: "0.75rem", 
-                        fontWeight: "800", 
-                        backgroundColor: "var(--color-primary-light)", 
-                        color: "var(--color-primary-dark)", 
-                        padding: "0.2rem 0.5rem", 
-                        borderRadius: "4px" 
-                      }}>
-                        {s.program}
+                  <div
+                    key={s.id}
+                    style={{
+                      borderLeft: styles.borderLeft,
+                      backgroundColor: styles.bg,
+                      borderRadius: "0 10px 10px 0",
+                      padding: "0.85rem 1rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      position: "relative",
+                      transition: "transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.01)"
+                    }}
+                    className="timeline-item-hover"
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
+                      <span style={{ fontSize: "0.78rem", fontWeight: "800", color: styles.color }}>
+                        ⏰ {timeStr}
                       </span>
-                    </td>
-                    <td style={{ padding: "0.75rem 0.5rem", color: "var(--color-gray-700)" }}>{s.instructor || "-"}</td>
-                    <td style={{ padding: "0.75rem 0.5rem" }}>
-                      <span style={{ 
-                        fontSize: "0.75rem", 
-                        fontWeight: "800", 
-                        backgroundColor: typeBg, 
-                        color: typeColor, 
-                        padding: "0.2rem 0.5rem", 
+                      <span style={{
+                        fontSize: "0.68rem",
+                        fontWeight: "800",
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        border: `1px solid ${styles.color}`,
+                        color: styles.color,
+                        padding: "1px 5px",
                         borderRadius: "4px",
-                        textTransform: "capitalize"
+                        textTransform: "uppercase"
                       }}>
-                        {s.type === 'class' ? 'Kelas' : s.type === 'event' ? 'Kegiatan' : 'Libur'}
+                        {styles.label}
                       </span>
-                    </td>
-                    <td style={{ padding: "0.75rem 0.5rem", textAlign: "right" }}>
+                    </div>
+
+                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "900", color: "var(--color-gray-900)", lineHeight: "1.3" }}>
+                      {s.title}
+                    </h4>
+
+                    {s.program !== "All" && (
+                      <div style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
+                        📚 Program: <span style={{ color: "var(--color-primary-dark)" }}>{s.program}</span>
+                      </div>
+                    )}
+
+                    {s.instructor && (
+                      <div style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
+                        👤 Tutor: <span style={{ color: "var(--color-gray-700)" }}>{s.instructor}</span>
+                      </div>
+                    )}
+
+                    {s.description && (
+                      <p style={{ margin: "2px 0 0 0", fontSize: "0.78rem", color: "#59616e", lineHeight: "1.4" }}>
+                        📝 {s.description}
+                      </p>
+                    )}
+
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
                       <button
                         type="button"
                         onClick={(e) => onEdit(s, e)}
-                        className="btn-portal-outline"
-                        style={{ 
-                          padding: "0.25rem 0.6rem", 
-                          fontSize: "0.75rem", 
-                          fontWeight: "700",
-                          borderRadius: "6px" 
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          fontSize: "0.78rem",
+                          fontWeight: "800",
+                          color: "var(--color-primary)",
+                          cursor: "pointer",
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                          transition: "background-color 0.15s"
                         }}
+                        className="btn-text-hover"
                       >
                         ⚙️ Ubah / Hapus
                       </button>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </div>
+          )
+        ) : (
+          monthSchedules.length === 0 ? (
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "4rem 1rem",
+              textAlign: "center"
+            }}>
+              <p style={{ fontSize: "0.9rem", color: "var(--color-gray-400)", fontWeight: "600", margin: 0 }}>
+                Tidak ada agenda untuk bulan ini.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {monthSchedules.map((s) => {
+                const styles = getEventStyles(s.type);
+                const startObj = new Date(s.start_time);
+                const dateStr = startObj.toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'short'
+                });
+                const timeStr = startObj.toTimeString().slice(0, 5);
+
+                return (
+                  <div
+                    key={s.id}
+                    onClick={(e) => onEdit(s, e)}
+                    style={{
+                      borderLeft: styles.borderLeft,
+                      backgroundColor: "rgba(0, 0, 0, 0.01)",
+                      borderRadius: "0 8px 8px 0",
+                      padding: "0.65rem 0.85rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "10px",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease"
+                    }}
+                    className="month-list-item"
+                  >
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <h4 style={{ margin: 0, fontSize: "0.85rem", fontWeight: "900", color: "var(--color-gray-900)" }}>
+                        {s.title}
+                      </h4>
+                      <span style={{ fontSize: "0.72rem", color: "var(--color-gray-500)", fontWeight: "700" }}>
+                        {dateStr} pukul {timeStr} • {s.program}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: "0.72rem", color: styles.color, fontWeight: "800", textTransform: "uppercase" }}>
+                      {styles.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        )}
+      </div>
     </div>
   );
 }
