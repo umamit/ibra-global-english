@@ -62,6 +62,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => window.removeEventListener("keydown", handleEscape);
   }, [mobileOpen]);
 
+  // Auto-logout setelah 1 jam tidak ada aktivitas (Inactivity Idle Timeout)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const IDLE_LIMIT = 60 * 60 * 1000; // 1 jam dalam milidetik
+
+    const handleAutoLogout = async () => {
+      console.log("Sesi admin inaktif selama 1 jam. Mengeluarkan otomatis...");
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.error("Gagal melakukan auto-logout:", err);
+      }
+      window.location.href = "/login?reason=idle";
+    };
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleAutoLogout, IDLE_LIMIT);
+    };
+
+    // Sensor interaksi pengguna
+    const activityEvents = ["mousemove", "mousedown", "keypress", "scroll", "touchstart"];
+
+    activityEvents.forEach((event) => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Mulai hitung mundur sejak komponen dimuat
+    resetTimer();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      activityEvents.forEach((event) => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [supabase]);
+
   const [newRegToast, setNewRegToast] = useState<string>("");
   const [newTestToast, setNewTestToast] = useState<string>("");
 
@@ -551,7 +591,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.5.60</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.5.61</span>
         </div>
       </aside>
 

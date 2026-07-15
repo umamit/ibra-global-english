@@ -61,6 +61,12 @@ export default function LoginPage() {
       } else {
         setHomeUrl("/");
       }
+
+      // Periksa apakah dikeluarkan otomatis karena inaktif (idle)
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("reason") === "idle") {
+        setErrorBanner("Sesi Anda telah berakhir karena tidak ada aktivitas selama 1 jam. Silakan masuk kembali.");
+      }
     };
 
     load();
