@@ -409,7 +409,7 @@ export default function AdminCalendar() {
                           ? "2px solid var(--color-primary)" 
                           : isToday 
                             ? "2px dashed var(--color-primary-light)" 
-                            : "1px solid rgba(0, 0, 0, 0.04)",
+                            : "1px solid rgba(0, 0, 0, 0.09)",
                         boxShadow: isSelected ? "0 0 0 3px rgba(33, 108, 126, 0.12)" : "none",
                         borderRadius: "8px",
                         cursor: "pointer",
