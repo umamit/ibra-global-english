@@ -65,6 +65,8 @@ export default function AdminCalendar() {
   // AI Scheduler States
   const [aiPromptModalOpen, setAiPromptModalOpen] = useState<boolean>(false);
   const [filterProgram, setFilterProgram] = useState<string>("All");
+  const [hoveredSchedule, setHoveredSchedule] = useState<AcademicSchedule | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const fetchData = async (): Promise<void> => {
     setLoading(true);
@@ -341,6 +343,25 @@ export default function AdminCalendar() {
           background-color: rgba(0, 0, 0, 0.03) !important;
           transform: translateX(2px);
         }
+        .schedule-pill {
+          transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+        .schedule-pill:hover {
+          transform: translateX(2px) scale(1.02);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+          filter: brightness(0.97);
+        }
+        @keyframes calendarGridFade {
+          from { opacity: 0.6; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .calendar-animate-change {
+          animation: calendarGridFade 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes tooltipFade {
+          from { opacity: 0; transform: translate(-50%, -95%) scale(0.96); }
+          to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+        }
         @media print {
           .no-print,
           .dashboard-sidebar,
@@ -531,7 +552,7 @@ export default function AdminCalendar() {
           <p>Memuat kalender akademik...</p>
         </div>
       ) : (
-        <div className="calendar-layout-grid">
+        <div className="calendar-layout-grid calendar-animate-change" key={`${viewMonth}-${viewYear}`}>
           {/* LEFT COLUMN: Month Grid */}
           <div style={{ backgroundColor: "white", borderRadius: "16px", border: "1px solid rgba(0, 0, 0, 0.05)", boxShadow: "0 4px 20px rgba(0, 0, 0, 0.02)", padding: "1.25rem", overflowX: "auto" }}>
             <div style={{ minWidth: "650px" }}>
@@ -647,6 +668,15 @@ export default function AdminCalendar() {
                             <div
                               key={s.id}
                               onClick={(e) => handleOpenEditModal(s, e)}
+                              onMouseEnter={(e) => {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                setTooltipPos({
+                                  x: rect.left + rect.width / 2 + window.scrollX,
+                                  y: rect.top + window.scrollY - 8
+                                });
+                                setHoveredSchedule(s);
+                              }}
+                              onMouseLeave={() => setHoveredSchedule(null)}
                               role="button"
                               tabIndex={0}
                               aria-label={`Agenda: ${s.title}, Jam: ${cleanTimeStr}. Tekan Enter untuk mengubah.`}
@@ -659,21 +689,21 @@ export default function AdminCalendar() {
                               style={{
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "4px",
+                                gap: "6px",
                                 backgroundColor: bg,
                                 color: "var(--color-gray-800)",
-                                borderLeft: `3px solid ${color}`,
-                                padding: "0.2rem 0.4rem",
-                                borderRadius: "0 4px 4px 0",
-                                fontSize: "0.7rem",
+                                borderLeft: `4px solid ${color}`,
+                                padding: "0.25rem 0.5rem",
+                                borderRadius: "4px",
+                                fontSize: "0.72rem",
                                 fontWeight: "700",
                                 whiteSpace: "nowrap",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 cursor: "pointer",
-                                margin: "1px 0"
+                                margin: "2px 0"
                               }}
-                              title={`${s.title} (${cleanTimeStr})`}
+                              className="schedule-pill"
                             >
                               <span style={{ color: color, fontSize: "0.65rem", fontWeight: "800" }}>{cleanTimeStr}</span>
                               <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{s.title}</span>
@@ -828,6 +858,74 @@ export default function AdminCalendar() {
         onClose={() => setAiPromptModalOpen(false)}
         onSuccess={handleSuccess}
       />
+
+      {/* Premium Floating Tooltip Popover (Apple HIG style) */}
+      {hoveredSchedule && (
+        <div 
+          style={{
+            position: "absolute",
+            left: `${tooltipPos.x}px`,
+            top: `${tooltipPos.y}px`,
+            transform: "translate(-50%, -100%)",
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(0, 0, 0, 0.08)",
+            borderRadius: "12px",
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)",
+            padding: "0.75rem 1rem",
+            width: "260px",
+            zIndex: 9999,
+            pointerEvents: "none",
+            transition: "all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            animation: "tooltipFade 0.12s ease-out"
+          }}
+          className="no-print"
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
+            <span style={{ 
+              fontSize: "0.68rem", 
+              fontWeight: "800", 
+              textTransform: "uppercase", 
+              color: hoveredSchedule.type === "holiday" ? "#ef4444" : hoveredSchedule.type === "event" ? "var(--color-accent)" : "var(--color-primary-dark)",
+              backgroundColor: hoveredSchedule.type === "holiday" ? "rgba(239, 68, 68, 0.06)" : hoveredSchedule.type === "event" ? "rgba(166, 136, 73, 0.06)" : "rgba(33, 108, 126, 0.06)",
+              padding: "0.15rem 0.4rem",
+              borderRadius: "9999px"
+            }}>
+              {hoveredSchedule.type === "holiday" ? "Libur" : hoveredSchedule.type === "event" ? "Kegiatan" : "Kelas"}
+            </span>
+            <span style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
+              🕒 {new Date(hoveredSchedule.start_time).toTimeString().slice(0, 5)} - {new Date(hoveredSchedule.end_time).toTimeString().slice(0, 5)}
+            </span>
+          </div>
+          <h4 style={{ margin: "0 0 0.25rem 0", fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-900)", lineHeight: "1.25" }}>
+            {hoveredSchedule.title}
+          </h4>
+          {hoveredSchedule.instructor && (
+            <p style={{ margin: "0 0 0.25rem 0", fontSize: "0.72rem", color: "var(--color-gray-600)", display: "flex", alignItems: "center", gap: "3px" }}>
+              🧑‍🏫 <strong>Pengajar:</strong> {hoveredSchedule.instructor}
+            </p>
+          )}
+          {hoveredSchedule.description && (
+            <p style={{ margin: 0, fontSize: "0.7rem", color: "var(--color-gray-500)", borderTop: "1px dashed rgba(0,0,0,0.06)", paddingTop: "0.25rem", marginTop: "0.25rem", lineHeight: "1.3" }}>
+              {hoveredSchedule.description}
+            </p>
+          )}
+          
+          {/* Small tooltip arrow */}
+          <div style={{
+            position: "absolute",
+            bottom: "-6px",
+            left: "50%",
+            transform: "translateX(-50%) rotate(45deg)",
+            width: "12px",
+            height: "12px",
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            borderRight: "1px solid rgba(0, 0, 0, 0.08)",
+            borderBottom: "1px solid rgba(0, 0, 0, 0.08)"
+          }} />
+        </div>
+      )}
     </div>
   );
 }
