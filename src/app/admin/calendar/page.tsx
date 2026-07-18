@@ -373,8 +373,6 @@ export default function AdminCalendar() {
                       color: idx === 0 || idx === 6 ? "var(--color-accent)" : "var(--color-gray-600)", 
                       fontSize: "0.82rem", 
                       padding: "0.5rem 0.25rem",
-                      backgroundColor: "rgba(0, 0, 0, 0.02)",
-                      borderRadius: "6px",
                       marginBottom: "4px"
                     }}
                   >
