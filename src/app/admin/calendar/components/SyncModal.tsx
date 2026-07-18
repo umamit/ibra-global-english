@@ -41,7 +41,7 @@ export default function SyncModal({ isOpen, onClose }: SyncModalProps) {
                 type="text" 
                 className="form-input" 
                 readOnly 
-                value={typeof window !== "undefined" ? `${window.location.origin}/api/calendar/export?program=All` : ""} 
+                value="https://www.ibraglobalenglish.uk/api/calendar/export?program=All"
                 style={{ fontSize: "0.8rem", backgroundColor: "var(--color-gray-50)", cursor: "text" }}
                 onClick={(e) => (e.target as HTMLInputElement).select()}
                 id="ical-link-input"
