@@ -64,6 +64,7 @@ export default function AdminCalendar() {
   
   // AI Scheduler States
   const [aiPromptModalOpen, setAiPromptModalOpen] = useState<boolean>(false);
+  const [filterProgram, setFilterProgram] = useState<string>("All");
 
   const fetchData = async (): Promise<void> => {
     setLoading(true);
@@ -232,7 +233,11 @@ export default function AdminCalendar() {
   const getSchedulesForDay = (dateStr: string): AcademicSchedule[] => {
     return schedules.filter((s) => {
       const sDateStr = getLocalDateString(new Date(s.start_time));
-      return sDateStr === dateStr;
+      if (sDateStr !== dateStr) return false;
+      if (filterProgram !== "All") {
+        return s.title === filterProgram || s.program === filterProgram;
+      }
+      return true;
     });
   };
 
@@ -276,7 +281,51 @@ export default function AdminCalendar() {
           background-color: rgba(0, 0, 0, 0.03) !important;
           transform: translateX(2px);
         }
+        @media print {
+          .no-print,
+          .dashboard-sidebar,
+          .dashboard-topbar,
+          .sidebar-footer,
+          .btn-portal-outline,
+          .btn-portal-primary,
+          .portal-modal-overlay,
+          .portal-modal {
+            display: none !important;
+          }
+          body, .dashboard-container, .dashboard-main, .calendar-layout-grid {
+            background-color: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          .calendar-layout-grid > div:last-child {
+            display: none !important;
+          }
+          .calendar-layout-grid > div:first-child {
+            width: 100% !important;
+            max-width: 100% !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+          .printable-calendar-header {
+            display: block !important;
+            margin-bottom: 2rem !important;
+          }
+        }
       `}</style>
+
+      {/* Printable Title (Only visible in print mode) */}
+      <div className="printable-calendar-header" style={{ display: "none" }}>
+        <h2 style={{ fontSize: "1.45rem", fontWeight: "900", textAlign: "center", color: "#1f2937", margin: "0 0 0.5rem 0", textTransform: "uppercase" }}>
+          JADWAL KEGIATAN BELAJAR - IBRA GLOBAL ENGLISH
+        </h2>
+        <h3 style={{ fontSize: "1.2rem", fontWeight: "700", textAlign: "center", color: "#4b5563", margin: "0 0 1.5rem 0" }}>
+          Program/Level: {filterProgram === "All" ? "Semua Program" : filterProgram} ({getMonthNameIndonesian(viewMonth)} {viewYear})
+        </h3>
+      </div>
 
       <div className="dashboard-topbar">
         <div className="topbar-title">
@@ -309,6 +358,61 @@ export default function AdminCalendar() {
           <span>{statusMsg.text}</span>
         </div>
       )}
+
+      {/* Filter & Print Bar */}
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center", 
+        marginBottom: "1.5rem", 
+        backgroundColor: "white", 
+        padding: "1rem 1.5rem", 
+        borderRadius: "16px", 
+        border: "1px solid rgba(0, 0, 0, 0.05)", 
+        boxShadow: "0 2px 8px rgba(0,0,0,0.01)" 
+      }} className="no-print">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <span style={{ fontWeight: "700", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Pilih Level / Kelas:</span>
+          <select 
+            value={filterProgram} 
+            onChange={(e) => setFilterProgram(e.target.value)}
+            style={{ 
+              padding: "0.5rem 2rem 0.5rem 1rem", 
+              borderRadius: "8px", 
+              border: "1px solid var(--color-gray-200)", 
+              fontSize: "0.9rem", 
+              fontWeight: "600",
+              color: "var(--color-gray-800)",
+              backgroundColor: "#f9fafb",
+              cursor: "pointer"
+            }}
+          >
+            <option value="All">Semua Program</option>
+            <option value="Kids Program Level 1">Kids Program Level 1</option>
+            <option value="Kids Program Level 2">Kids Program Level 2</option>
+            <option value="Kids Program Level 4">Kids Program Level 4</option>
+            <option value="Kids Program Level 5">Kids Program Level 5</option>
+            <option value="Teens Program">Teens Program</option>
+            <option value="Fun Calistung A">Fun Calistung A</option>
+            <option value="Fun Calistung B">Fun Calistung B</option>
+          </select>
+        </div>
+        <button 
+          type="button"
+          onClick={() => window.print()}
+          className="btn-portal-outline"
+          style={{ 
+            borderColor: "var(--color-primary)", 
+            color: "var(--color-primary)",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.5rem 1rem"
+          }}
+        >
+          <span>🖨️ Cetak Jadwal ({filterProgram === 'All' ? 'Semua' : filterProgram})</span>
+        </button>
+      </div>
 
       {/* Monthly Navigation Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", backgroundColor: "white", padding: "1rem 1.5rem", borderRadius: "16px", border: "1px solid rgba(0, 0, 0, 0.05)", boxShadow: "0 2px 8px rgba(0,0,0,0.01)" }}>
@@ -535,7 +639,11 @@ export default function AdminCalendar() {
           {/* RIGHT COLUMN: Sidebar Day/Month Timeline Agenda */}
           <div>
             <ScheduleList 
-              schedules={schedules}
+              schedules={
+                filterProgram === "All"
+                  ? schedules
+                  : schedules.filter(s => s.title === filterProgram || s.program === filterProgram)
+              }
               viewYear={viewYear}
               viewMonth={viewMonth}
               selectedDate={selectedDate}
