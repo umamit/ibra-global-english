@@ -229,6 +229,66 @@ export default function AdminCalendar() {
     }
   };
 
+  const handleDownloadCSV = () => {
+    // 1. Dapatkan jadwal yang terfilter untuk bulan dan tahun yang sedang dilihat
+    const filtered = schedules.filter((s) => {
+      const sDate = new Date(s.start_time);
+      const isSameMonth = sDate.getFullYear() === viewYear && sDate.getMonth() === viewMonth;
+      if (!isSameMonth) return false;
+      if (filterProgram !== "All") {
+        return s.title === filterProgram || s.program === filterProgram;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      alert("Tidak ada jadwal untuk program/bulan ini yang bisa diunduh.");
+      return;
+    }
+
+    // 2. Format baris CSV (dengan UTF-8 BOM agar kompatibel dengan Excel langsung)
+    const headers = ["Hari", "Tanggal", "Jam Mulai", "Jam Selesai", "Nama Agenda/Kelas", "Program", "Keterangan", "Pengajar"];
+    const rows = filtered.map((s) => {
+      const date = new Date(s.start_time);
+      const dateEnd = new Date(s.end_time);
+      
+      const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const dayName = dayNames[date.getDay()];
+      
+      const dateStr = date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+      const startTime = date.toTimeString().slice(0, 5);
+      const endTime = dateEnd.toTimeString().slice(0, 5);
+      
+      return [
+        dayName,
+        `"${dateStr}"`,
+        startTime,
+        endTime,
+        `"${s.title.replace(/"/g, '""')}"`,
+        `"${s.program.replace(/"/g, '""')}"`,
+        `"${(s.description || "").replace(/"/g, '""')}"`,
+        `"${(s.instructor || "").replace(/"/g, '""')}"`
+      ];
+    });
+
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+
+    // 3. Trigger unduhan file .csv
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    
+    const formattedProgramName = filterProgram.replace(/[^a-zA-Z0-9]/g, "_");
+    const monthName = getMonthNameIndonesian(viewMonth);
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `jadwal_ibra_${formattedProgramName}_${monthName}_${viewYear}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Helper to filter events occurring on a specific date string (YYYY-MM-DD)
   const getSchedulesForDay = (dateStr: string): AcademicSchedule[] => {
     return schedules.filter((s) => {
@@ -397,21 +457,38 @@ export default function AdminCalendar() {
             <option value="Fun Calistung B">Fun Calistung B</option>
           </select>
         </div>
-        <button 
-          type="button"
-          onClick={() => window.print()}
-          className="btn-portal-outline"
-          style={{ 
-            borderColor: "var(--color-primary)", 
-            color: "var(--color-primary)",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.5rem 1rem"
-          }}
-        >
-          <span>🖨️ Cetak Jadwal ({filterProgram === 'All' ? 'Semua' : filterProgram})</span>
-        </button>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button 
+            type="button"
+            onClick={handleDownloadCSV}
+            className="btn-portal-outline"
+            style={{ 
+              borderColor: "var(--color-accent)", 
+              color: "var(--color-accent-dark, #a68849)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.5rem 1rem"
+            }}
+          >
+            <span>📥 Unduh Excel (CSV)</span>
+          </button>
+          <button 
+            type="button"
+            onClick={() => window.print()}
+            className="btn-portal-outline"
+            style={{ 
+              borderColor: "var(--color-primary)", 
+              color: "var(--color-primary)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.5rem 1rem"
+            }}
+          >
+            <span>🖨️ Cetak Jadwal ({filterProgram === 'All' ? 'Semua' : filterProgram})</span>
+          </button>
+        </div>
       </div>
 
       {/* Monthly Navigation Header */}
