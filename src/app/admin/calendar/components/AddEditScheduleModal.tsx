@@ -316,9 +316,10 @@ export default function AddEditScheduleModal({
       <div className="portal-modal" style={{ animation: "slideIn 0.2s ease" }} onClick={(e) => e.stopPropagation()}>
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-            {selectedSchedule ? "✏️ Edit Jadwal Belajar" : "📅 Tambah Jadwal Belajar"}
-          </h2>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span>{selectedSchedule ? "✏️" : "📅"}</span>
+              <span>{selectedSchedule ? "Edit Jadwal Belajar" : "Tambah Jadwal Belajar"}</span>
+            </h2>
           <button 
             type="button" 
             onClick={onClose} 
