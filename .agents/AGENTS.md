@@ -153,6 +153,10 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 21g. **Kunci Aturan Fitur Pengelolaan Jadwal Kelas (Strict Class Scheduling Locking):**
     - AI dilarang memodifikasi logika pencegahan bentrok jadwal belajar pada tabel `academic_schedules` atau `online_schedules` tanpa izin pengguna.
     - Setiap entri jadwal baru wajib divalidasi ketersediaan waktu dan ruangannya di sisi server sebelum disimpan.
+    - **Aturan Penyusunan Jadwal Kursus**:
+      * **Fun Calistung**: Durasi belajar 45 menit per pertemuan, dengan frekuensi 3 kali seminggu.
+      * **Kids Program (Semua Level)**: Durasi belajar 1 jam 15 menit (75 menit) per pertemuan, dengan frekuensi 3 kali seminggu.
+      * **Teens Program**: Durasi belajar 90 menit per pertemuan, dengan frekuensi 2 kali seminggu.
 
 21h. **Kunci Aturan Fitur Negosiasi Konten Markdown (Strict Markdown Negotiation Locking):**
     - AI dilarang keras mengubah, merusak, atau menghapus logika perutean negosiasi konten markdown (`Accept: text/markdown`) di dalam `src/proxy.ts` atau middleware routing utama.
