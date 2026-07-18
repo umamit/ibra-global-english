@@ -455,6 +455,7 @@ export default function AdminCalendar() {
             <option value="Teens Program">Teens Program</option>
             <option value="Fun Calistung A">Fun Calistung A</option>
             <option value="Fun Calistung B">Fun Calistung B</option>
+            <option value="Fun Calistung C">Fun Calistung C</option>
           </select>
         </div>
         <div style={{ display: "flex", gap: "0.5rem" }}>
