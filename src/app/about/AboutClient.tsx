@@ -116,7 +116,9 @@ export default function AboutPage() {
           <div className="about-container">
             <div className="about-vision-mission">
               <div className="vision-card">
-                <span className="card-icon" aria-hidden="true">👁️‍🗨️</span>
+                <span className="card-icon" aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </span>
                 <h2>Visi Kami</h2>
                 <p>
                   Menjadi pusat bimbingan pendidikan non-formal terdepan di Pulau Taliabu yang mampu melahirkan generasi muda yang cerdas, kreatif, berakhlak mulia, serta fasih berkomunikasi secara aktif dalam Bahasa Inggris untuk siap bersaing di kancah global.
@@ -124,7 +126,9 @@ export default function AboutPage() {
               </div>
 
               <div className="mission-card">
-                <span className="card-icon" aria-hidden="true">🎯</span>
+                <span className="card-icon" aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                </span>
                 <h2>Misi Kami</h2>
                 <ul>
                   <li>Menyelenggarakan kursus Bahasa Inggris dengan metode belajar sambil bermain (*fun learning method*) bebas tekanan.</li>
@@ -143,19 +147,25 @@ export default function AboutPage() {
             <h2 className="section-title">Nilai-Nilai Utama Kami</h2>
             <div className="values-grid">
               <div className="value-card">
-                <span className="value-icon" aria-hidden="true">🤝</span>
+                <span className="value-icon" aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </span>
                 <h3>Child-Friendly Method</h3>
                 <p>Pembelajaran dirancang khusus tanpa tekanan akademis berlebih untuk merawat kesehatan mental dan kreativitas anak.</p>
               </div>
 
               <div className="value-card">
-                <span className="value-icon" aria-hidden="true">🗣️</span>
+                <span className="value-icon" aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </span>
                 <h3>Speaking-First Approach</h3>
                 <p>Mendorong siswa aktif berbicara bahasa Inggris minimal 70% dari waktu pertemuan di kelas untuk melatih mental berbicara sejak dini.</p>
               </div>
 
               <div className="value-card">
-                <span className="value-icon" aria-hidden="true">🎓</span>
+                <span className="value-icon" aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M6 18.8v-4L2 13v6a1 1 0 0 0 1 1h3Z"/><path d="M21.5 12v6h-1.18a1 1 0 0 0-.96.72l-.72 2.56a1 1 0 0 1-1.92 0l-.72-2.56a1 1 0 0 0-.96-.72H15v-6"/></svg>
+                </span>
                 <h3>Attention to Detail</h3>
                 <p>Kapasitas kelas dibatasi maksimal 10 siswa agar pengajar dapat fokus memberikan perhatian personal ke setiap individu secara adil.</p>
               </div>

@@ -133,11 +133,17 @@ export default function ResultView({
           {/* Program & Study Time Recommendations */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", maxWidth: "550px", margin: "0 auto 2.5rem", padding: "0 1.5rem" }}>
             <div className="rec-card-primary">
-              <p style={{ fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-primary-dark)", marginBottom: "6px", letterSpacing: "0.5px" }}>🎓 Program yang Direkomendasikan</p>
+              <p style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-primary-dark)", marginBottom: "6px", letterSpacing: "0.5px" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M6 18.8v-4L2 13v6a1 1 0 0 0 1 1h3Z"/><path d="M21.5 12v6h-1.18a1 1 0 0 0-.96.72l-.72 2.56a1 1 0 0 1-1.92 0l-.72-2.56a1 1 0 0 0-.96-.72H15v-6"/></svg>
+                <span>Program yang Direkomendasikan</span>
+              </p>
               <p style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>{finalResult.programRecommendation}</p>
             </div>
             <div className="rec-card-accent">
-              <p style={{ fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-accent)", marginBottom: "6px", letterSpacing: "0.5px" }}>⏱️ Saran Waktu Belajar</p>
+              <p style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.7rem", fontWeight: "800", textTransform: "uppercase", color: "var(--color-accent)", marginBottom: "6px", letterSpacing: "0.5px" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Saran Waktu Belajar</span>
+              </p>
               <p className="rec-card-accent-text">{finalResult.studyTimeAdvice}</p>
             </div>
           </div>

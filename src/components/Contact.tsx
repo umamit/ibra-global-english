@@ -317,7 +317,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                       <polyline points="22 4 12 14.01 9 11.01"/>
                     </svg>
                   </div>
-                  <h4>Pendaftaran Terkirim! 🎉</h4>
+                  <h4>Pendaftaran Terkirim!</h4>
                   <p>Data pendaftaran Anda telah kami terima. Tim Ibra Global English akan segera menghubungi Anda melalui WhatsApp untuk konfirmasi dan jadwal belajar.</p>
                   <button
                     className="form-btn"
