@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Programs from "@/components/Programs";
+import RegistrationSteps from "@/components/RegistrationSteps";
 import Benefits from "@/components/Benefits";
 import Curriculum from "@/components/Curriculum";
 import Footer from "@/components/Footer";
@@ -193,6 +194,7 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
       <main>
         <Hero initialSettings={initialSettings} />
         <Programs initialSettings={initialSettings} />
+        <RegistrationSteps />
         <Curriculum initialSettings={initialSettings} />
         <Benefits initialSettings={initialSettings} />
         <Testimonials />
