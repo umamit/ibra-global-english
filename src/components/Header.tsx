@@ -42,20 +42,20 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
   // Scrollspy logic
   useEffect(() => {
     if (pathname === "/about") {
-      setActiveSection("about");
-      return;
+      const t = setTimeout(() => setActiveSection("about"), 0);
+      return () => clearTimeout(t);
     }
     if (pathname === "/gallery") {
-      setActiveSection("gallery");
-      return;
+      const t = setTimeout(() => setActiveSection("gallery"), 0);
+      return () => clearTimeout(t);
     }
     if (pathname === "/placement-test") {
-      setActiveSection("placement-test");
-      return;
+      const t = setTimeout(() => setActiveSection("placement-test"), 0);
+      return () => clearTimeout(t);
     }
     if (pathname !== "/") {
-      setActiveSection("");
-      return;
+      const t = setTimeout(() => setActiveSection(""), 0);
+      return () => clearTimeout(t);
     }
 
     const handleScrollspy = () => {
@@ -119,7 +119,7 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
   // Close mobile menu on screen resize to desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 920) {
+      if (window.innerWidth > 1100) {
         setIsMenuOpen(false);
       }
     };
