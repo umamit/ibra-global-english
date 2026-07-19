@@ -1,6 +1,6 @@
 {
   "name": "next-app-temp",
-  "version": "3.5.88",
+  "version": "3.5.89",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -42,7 +42,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.185.1",
     "cross-env": "^10.1.0",
-    "eslint": "^10.6.0",
+    "eslint": "^9.21.0",
     "eslint-config-next": "^16.2.10",
     "prisma": "^7.8.0",
     "tailwindcss": "^4.3.2",
