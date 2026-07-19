@@ -179,92 +179,6 @@ export default function PlacementTestClient() {
     }));
   };
 
-  const handleNextQuestion = () => {
-    const currentQuestion = QUESTIONS[currentQuestionIndex];
-    if (currentQuestion.is_speaking) {
-      if (answers[currentQuestion.id] === undefined) {
-        const confirmSkip = confirm("Anda belum menyelesaikan rekaman suara dengan sukses. Yakin ingin melanjutkan?");
-        if (!confirmSkip) return;
-        setAnswers((prev) => ({
-          ...prev,
-          [currentQuestion.id]: 0
-        }));
-      }
-    } else {
-      if (answers[currentQuestion.id] === undefined) {
-        alert("Pilih salah satu jawaban terlebih dahulu.");
-        return;
-      }
-    }
-
-    setTranscribedText("");
-    setSpeakingScore(null);
-    setRecognitionError("");
-
-    if (currentQuestionIndex < QUESTIONS.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    } else {
-      calculateAndSubmitResult();
-    }
-  };
-
-  const handleTimeOut = () => {
-    const currentQuestion = QUESTIONS[currentQuestionIndex];
-    if (!currentQuestion) return;
-
-    if (currentQuestion.is_speaking) {
-      if (answers[currentQuestion.id] === undefined) {
-        setAnswers((prev) => ({
-          ...prev,
-          [currentQuestion.id]: 0
-        }));
-      }
-    }
-
-    setTranscribedText("");
-    setSpeakingScore(null);
-    setRecognitionError("");
-
-    if (currentQuestionIndex < QUESTIONS.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    } else {
-      calculateAndSubmitResult();
-    }
-  };
-
-  // 1. Timer ticking effect
-  useEffect(() => {
-    if (step !== 2) return;
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [step]);
-
-  // 2. Reset timer when active question index changes
-  useEffect(() => {
-    if (step === 2) {
-      setSecondsLeft(15);
-    }
-  }, [currentQuestionIndex, step]);
-
-  // 3. Trigger auto-advance when timer hits 0
-  useEffect(() => {
-    if (step === 2 && secondsLeft === 0) {
-      handleTimeOut();
-    }
-  }, [secondsLeft, step]);
-
-  const handlePrevQuestion = () => {
-    setTranscribedText("");
-    setSpeakingScore(null);
-    setRecognitionError("");
-    
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((prev) => prev - 1);
-    }
-  };
-
   const calculateAndSubmitResult = async () => {
     setSubmitting(true);
     let totalScore = 0;
@@ -351,6 +265,99 @@ export default function PlacementTestClient() {
     }
   };
 
+  const handleNextQuestion = () => {
+    const currentQuestion = QUESTIONS[currentQuestionIndex];
+    if (currentQuestion.is_speaking) {
+      if (answers[currentQuestion.id] === undefined) {
+        const confirmSkip = confirm("Anda belum menyelesaikan rekaman suara dengan sukses. Yakin ingin melanjutkan?");
+        if (!confirmSkip) return;
+        setAnswers((prev) => ({
+          ...prev,
+          [currentQuestion.id]: 0
+        }));
+      }
+    } else {
+      if (answers[currentQuestion.id] === undefined) {
+        alert("Pilih salah satu jawaban terlebih dahulu.");
+        return;
+      }
+    }
+
+    setTranscribedText("");
+    setSpeakingScore(null);
+    setRecognitionError("");
+
+    if (currentQuestionIndex < QUESTIONS.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    } else {
+      calculateAndSubmitResult();
+    }
+  };
+
+  const handleTimeOut = () => {
+    const currentQuestion = QUESTIONS[currentQuestionIndex];
+    if (!currentQuestion) return;
+
+    if (currentQuestion.is_speaking) {
+      if (answers[currentQuestion.id] === undefined) {
+        setAnswers((prev) => ({
+          ...prev,
+          [currentQuestion.id]: 0
+        }));
+      }
+    }
+
+    setTranscribedText("");
+    setSpeakingScore(null);
+    setRecognitionError("");
+
+    if (currentQuestionIndex < QUESTIONS.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    } else {
+      calculateAndSubmitResult();
+    }
+  };
+
+  // 1. Timer ticking effect
+  useEffect(() => {
+    if (step !== 2) return;
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [step]);
+
+  // 2. Reset timer when active question index changes
+  useEffect(() => {
+    if (step === 2) {
+      const t = setTimeout(() => {
+        setSecondsLeft(15);
+      }, 0);
+      return () => clearTimeout(t);
+    }
+  }, [currentQuestionIndex, step]);
+
+  // 3. Trigger auto-advance when timer hits 0
+  useEffect(() => {
+    if (step === 2 && secondsLeft === 0) {
+      const t = setTimeout(() => {
+        handleTimeOut();
+      }, 0);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [secondsLeft, step]);
+
+  const handlePrevQuestion = () => {
+    setTranscribedText("");
+    setSpeakingScore(null);
+    setRecognitionError("");
+    
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex((prev) => prev - 1);
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -393,6 +400,30 @@ export default function PlacementTestClient() {
                 <div className="placement-info-card">
                   <h3 style={{ fontWeight: "800", color: "var(--color-primary)" }}>Resmi</h3>
                   <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", marginTop: "4px" }}>Sertifikat digital & ulasan</p>
+                </div>
+              </div>
+
+              {/* Visual Flowchart Stepper */}
+              <div className="stepper-container">
+                <h3 className="stepper-title">
+                  Alur Mudah Bergabung
+                </h3>
+                <div className="stepper-grid">
+                  <div className="step-card">
+                    <div className="step-badge">1</div>
+                    <h4 className="step-card-title">Isi Pendaftaran</h4>
+                    <p className="step-card-desc">Lengkapi formulir identitas singkat sebelum memulai evaluasi.</p>
+                  </div>
+                  <div className="step-card">
+                    <div className="step-badge">2</div>
+                    <h4 className="step-card-title">Ikuti Tes</h4>
+                    <p className="step-card-desc">Jawab kuis bahasa Inggris berdurasi 10 menit secara santai.</p>
+                  </div>
+                  <div className="step-card">
+                    <div className="step-badge step-badge-accent">3</div>
+                    <h4 className="step-card-title">Mulai Belajar</h4>
+                    <p className="step-card-desc">Dapatkan sertifikat Anda dan tutor kami akan menghubungi Anda.</p>
+                  </div>
                 </div>
               </div>
 
