@@ -497,36 +497,78 @@ iframe[src^="https://vercel.live"] {
   transform: translateY(0);
 }
 
-/* ── Scroll Reveal / AOS Classes ── */
-.reveal-hidden {
-  opacity: 0;
-  transition-property: opacity, transform;
-  transition-duration: 0.8s;
-  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform, opacity;
+
+/* ── CSS Scroll-Driven Animations ── */
+/* Keyframes for each animation direction */
+@keyframes sda-fade-up {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sda-fade-down {
+  from { opacity: 0; transform: translateY(-32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sda-fade-left {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes sda-fade-right {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes sda-zoom-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
-.reveal-fade-up {
-  transform: translateY(30px);
+/* Base class — shared animation settings */
+.scroll-fade-up,
+.scroll-fade-down,
+.scroll-fade-left,
+.scroll-fade-right,
+.scroll-zoom-in {
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-duration: 0.8s;
 }
 
-.reveal-fade-down {
-  transform: translateY(-30px);
+/* Modern browsers (Chrome 115+, Edge 115+) */
+@supports (animation-timeline: view()) {
+  .scroll-fade-up    { animation-name: sda-fade-up;    animation-timeline: view(); animation-range: entry 0% entry 35%; }
+  .scroll-fade-down  { animation-name: sda-fade-down;  animation-timeline: view(); animation-range: entry 0% entry 35%; }
+  .scroll-fade-left  { animation-name: sda-fade-left;  animation-timeline: view(); animation-range: entry 0% entry 35%; }
+  .scroll-fade-right { animation-name: sda-fade-right; animation-timeline: view(); animation-range: entry 0% entry 35%; }
+  .scroll-zoom-in    { animation-name: sda-zoom-in;    animation-timeline: view(); animation-range: entry 0% entry 35%; }
+
+  /* Staggered card delays using nth-child */
+  .scroll-stagger > *:nth-child(1) { animation-range: entry 0%  entry 35%; }
+  .scroll-stagger > *:nth-child(2) { animation-range: entry 5%  entry 40%; }
+  .scroll-stagger > *:nth-child(3) { animation-range: entry 10% entry 45%; }
+  .scroll-stagger > *:nth-child(4) { animation-range: entry 15% entry 50%; }
+  .scroll-stagger > *:nth-child(5) { animation-range: entry 20% entry 55%; }
+  .scroll-stagger > *:nth-child(6) { animation-range: entry 25% entry 60%; }
+
+  /* Section-level reveal (used in About page) */
+  .reveal {
+    animation-name: sda-fade-up;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation-duration: 0.9s;
+  }
 }
 
-.reveal-fade-left {
-  transform: translateX(30px);
+/* Fallback — Firefox / Safari: just show elements, no animation */
+@supports not (animation-timeline: view()) {
+  .scroll-fade-up,
+  .scroll-fade-down,
+  .scroll-fade-left,
+  .scroll-fade-right,
+  .scroll-zoom-in,
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.reveal-fade-right {
-  transform: translateX(-30px);
-}
-
-.reveal-zoom-in {
-  transform: scale(0.95);
-}
-
-.reveal-active {
-  opacity: 1;
-  transform: translate(0) scale(1);
-}

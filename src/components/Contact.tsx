@@ -111,7 +111,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
     <section id="contact" className="contact-section">
       <div className="container contact-grid">
         {/* Info Left */}
-        <div className="contact-info-panel" data-aos="fade-right">
+        <div className="contact-info-panel scroll-fade-right">
           <h2>Hubungi Kami di Bobong</h2>
           <p>Siap meningkatkan kemampuan bahasa Inggris Anda di Pulau Taliabu? Hubungi kami sekarang untuk konsultasi gratis!</p>
           
@@ -203,7 +203,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
         </div>
         
         {/* Form Right */}
-        <div className="form-panel" id="registration-form-panel" data-aos="fade-left">
+        <div className="form-panel scroll-fade-left" id="registration-form-panel">
 
           {/* Tab Switcher */}
           <div className="contact-tab-switcher">
@@ -473,7 +473,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
       </div>
 
       {/* Google Map Section */}
-      <div className="container contact-map-container" data-aos="fade-up">
+      <div className="container contact-map-container scroll-fade-up">
         <div className="contact-map-card">
           <iframe
             title="Google Maps Lokasi Ibra Global English Bobong"

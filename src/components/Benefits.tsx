@@ -39,14 +39,14 @@ export default function Benefits({ initialSettings }: { initialSettings: any }) 
   return (
     <section id="benefits" className="benefits-section">
       <div className="container">
-        <div className="section-header" data-aos="fade-up">
+        <div className="section-header scroll-fade-up">
           <h2>Mengapa Pilih Ibra Global English Bobong?</h2>
           <p>Keunggulan kursus bahasa Inggris kami di Pulau Taliabu</p>
         </div>
         
-        <div className="benefits-grid">
+        <div className="benefits-grid scroll-stagger">
           {benefits.map((b, idx) => (
-            <div key={idx} className="benefit-card glowing-card" data-aos="fade-up" data-aos-delay={idx * 100}>
+            <div key={idx} className="benefit-card glowing-card scroll-fade-up">
               <div className="benefit-icon-box">
                 {ICON_MAP[b.iconKey as keyof typeof ICON_MAP] || ICON_MAP.check}
               </div>

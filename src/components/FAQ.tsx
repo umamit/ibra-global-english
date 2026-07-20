@@ -47,7 +47,7 @@ export default function FAQ({ initialSettings }: FAQProps) {
   return (
     <section id="faq" className="faq-section">
       <div className="container">
-        <div className="section-header" data-aos="fade-up">
+        <div className="section-header scroll-fade-up">
           <h2>Tanya Jawab (FAQ) Kursus Bobong</h2>
           <p>Pertanyaan yang sering diajukan seputar kursus bahasa Inggris Ibra Global English di Bobong, Pulau Taliabu</p>
         </div>
@@ -59,7 +59,7 @@ export default function FAQ({ initialSettings }: FAQProps) {
             {faqs.map((faq, idx) => {
               const faqId: string = String(faq.id ?? idx + 1);
               return (
-                <div key={faqId} className={`faq-item ${activeFaq === faqId ? "active" : ""}`} data-aos="fade-up">
+                <div key={faqId} className={`faq-item scroll-fade-up ${activeFaq === faqId ? "active" : ""}`}>
                   <button 
                     className="faq-question" 
                     aria-expanded={activeFaq === faqId} 

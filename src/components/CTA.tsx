@@ -47,12 +47,12 @@ export default function CTA({ initialSettings }: { initialSettings: any }) {
   const canvaEmbedUrl = getCanvaEmbedUrl(ctaBrochureImage);
 
   return (
-    <section className="cta-section" data-aos="fade-up">
+    <section className="cta-section scroll-fade-up">
       <div className="container" style={{ display: "flex", flexDirection: "column", gap: "2.5rem", alignItems: "center" }}>
         {/* Dynamic Brochure Display Card */}
         {ctaBrochureImage && (
           <div 
-            className="cta-brochure-card" 
+            className="cta-brochure-card scroll-zoom-in"
             style={{ 
               width: "100%", 
               maxWidth: "850px", 
@@ -64,7 +64,6 @@ export default function CTA({ initialSettings }: { initialSettings: any }) {
               aspectRatio: canvaEmbedUrl ? "16 / 9" : "auto",
               position: "relative"
             }}
-            data-aos="zoom-in"
           >
             {canvaEmbedUrl ? (
               <iframe 

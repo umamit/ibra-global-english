@@ -8,7 +8,7 @@ import AIChatWidget from "@/components/AIChatWidget";
 import LightboxModal from "@/components/LightboxModal";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import { createClient } from "@/utils/supabase/client";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 import { DEFAULT_VIDEOS } from "@/utils/fallbackData";
 import { STATIC_GALLERY } from "./galleryData";
 import "./gallery.css";
@@ -62,7 +62,7 @@ export default function GalleryClient() {
   });
   const [groupActiveIndexes, setGroupActiveIndexes] = useState<{ [groupId: string]: number }>({});
 
-  useScrollReveal();
+
 
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [allowPublicCopy, setAllowPublicCopy] = useState<boolean>(false);

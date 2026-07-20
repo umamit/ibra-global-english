@@ -144,12 +144,12 @@ export default function Gallery({ onOpenLightbox }: { onOpenLightbox: (src: stri
   return (
     <section id="gallery" className="gallery-section">
       <div className="container">
-        <div className="section-header" data-aos="fade-up">
+        <div className="section-header scroll-fade-up">
           <h2>Galeri Kegiatan Kami di Bobong</h2>
           <p>Melihat lebih dekat keseruan belajar bahasa Inggris di Ibra Global English Bobong</p>
         </div>
 
-        <div className="gallery-stack-wrapper" data-aos="fade-up">
+        <div className="gallery-stack-wrapper scroll-zoom-in">
           <div 
             className="gallery-stack-container"
             onTouchStart={handleTouchStart}

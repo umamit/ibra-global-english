@@ -14,7 +14,7 @@ import Benefits from "@/components/Benefits";
 import Curriculum from "@/components/Curriculum";
 import Footer from "@/components/Footer";
 import MarqueeBanner from "@/components/MarqueeBanner";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 
 // Dynamically load below-the-fold and interactive elements
 const Testimonials = dynamic(() => import("@/components/Testimonials"), { ssr: true });
@@ -40,8 +40,6 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
   // Theme state
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
-  // Call scroll reveal animation hook
-  useScrollReveal();
 
   // Controlled Registration Form state (synchronized with WebMCP Agent Tools)
   const [form, setForm] = useState<RegistrationForm>({ name: "", whatsapp: "", program: "Kids Program (5-12 tahun)" });

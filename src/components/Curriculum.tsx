@@ -5,7 +5,7 @@ export default function Curriculum({ initialSettings }: any) {
   return (
     <section id="curriculum" className="curriculum-section">
       <div className="container">
-        <div className="curriculum-card" data-aos="fade-up">
+        <div className="curriculum-card scroll-fade-up">
           <div className="curriculum-card-header">
             <img src="/assets/logo.png" alt="Logo PT. Ibra Global English" className="curriculum-logo" />
             <div>

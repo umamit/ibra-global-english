@@ -30,19 +30,17 @@ export default function Programs({ initialSettings }: any) {
   return (
     <section id="programs" className="programs-section">
       <div className="container">
-        <div className="section-header" data-aos="fade-up">
+        <div className="section-header scroll-fade-up">
           <h2>Program Kursus di Bobong</h2>
           <p>Pilih program kursus di Bobong terbaik: kursus bahasa Inggris dan bimbingan belajar Calistung untuk Anda di Pulau Taliabu</p>
         </div>
         
-        <div className="programs-grid">
+        <div className="programs-grid scroll-stagger">
           {programs.map((prog, idx) => (
             <div 
               key={idx} 
               id={prog.title.toLowerCase().replace(/\s+/g, "-")}
-              className={`program-card glowing-card bento-card-${idx}`} 
-              data-aos="fade-up" 
-              data-aos-delay={idx * 150}
+              className={`program-card glowing-card bento-card-${idx} scroll-fade-up`}
             >
               <div className="bento-content-wrapper">
                 <div className="bento-main-info">

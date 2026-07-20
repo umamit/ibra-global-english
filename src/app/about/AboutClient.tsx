@@ -8,7 +8,7 @@ import SocialFloat from "@/components/SocialFloat";
 import AIChatWidget from "@/components/AIChatWidget";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import { createClient } from "@/utils/supabase/client";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 import "./about.css";
 
 interface Tutor {
@@ -26,7 +26,7 @@ export default function AboutPage() {
   const [tutors, setTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useScrollReveal();
+
 
   // Handle theme initialization
   useEffect(() => {

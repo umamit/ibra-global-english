@@ -98,7 +98,7 @@ export default function Testimonials() {
   return (
     <section id="testimonials" className="testimonials-section">
       <div className="container">
-        <div className="section-header" data-aos="fade-up">
+        <div className="section-header scroll-fade-up">
           <h2>Testimoni Siswa dan Orang Tua di Bobong</h2>
           <p>Apa kata mereka tentang kami</p>
         </div>
@@ -106,9 +106,9 @@ export default function Testimonials() {
         {combinedLoading && <p style={{ textAlign: 'center' }}>Memuat testimoni...</p>}
  
         {!combinedLoading && (
-          <div className={`testimonials-grid ${testimonials.length < 3 ? 'justify-center-flex' : ''}`}>
+          <div className={`testimonials-grid scroll-stagger ${testimonials.length < 3 ? 'justify-center-flex' : ''}`}>
           {testimonials.map((t, idx) => (
-            <div key={idx} className="testimonial-card" data-aos="fade-up" data-aos-delay={t.delay}>
+            <div key={idx} className="testimonial-card scroll-fade-up">
               <div className="testimonial-rating">
                 {[...Array(t.rating)].map((_, i) => (
                   <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
