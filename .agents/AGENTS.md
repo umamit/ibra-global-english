@@ -100,6 +100,7 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 
 17. **Pengelolaan Commit & Push Git:**
    - Jangan push ke GitHub jika tidak diminta secara eksplisit oleh pengguna. Cukup lakukan commit lokal saja untuk mengamankan pekerjaan.
+   - Jangan pernah membuat cabang (branch) baru jika tidak diperintahkan secara eksplisit oleh pengguna. Seluruh pengerjaan wajib dilakukan langsung di cabang utama (`main`).
 
 18. **Pembaruan Versi Website Otomatis (Automatic Version Bumping):**
    - Setiap kali Agen melakukan perubahan kode, perbaikan bug, atau penambahan fitur di basis kode (codebase), Agen WAJIB memperbarui nomor versi platform pada berkas-berkas berikut sebelum melakukan commit:
