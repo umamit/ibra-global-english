@@ -168,53 +168,68 @@ export default function InteractiveMap() {
                 {/* Background Grid */}
                 <rect width="100%" height="100%" fill="var(--color-bg-teal-50)" rx="14" />
 
-                {/* Corridor / Balcony (Shared at bottom of Lantai 2) */}
+                {/* Corridor in the middle */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l2-koridor" ? "selected" : ""} ${hoveredRoomId === "l2-koridor" ? "hovered" : ""}`}
                   onClick={() => handleRoomClick(LANTAI_2_ROOMS[2])}
                   onMouseEnter={() => setHoveredRoomId("l2-koridor")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="150" y="220" width="400" height="40" rx="6" className="room-poly corridor-area" />
-                  <text x="350" y="245" textAnchor="middle" className="room-label">Koridor & Balkon Luar (Jemuran / Tanaman)</text>
+                  <rect x="130" y="145" width="420" height="30" rx="4" className="room-poly corridor-area" style={{ fill: "rgba(33, 108, 126, 0.08)" }} />
+                  <text x="340" y="164" textAnchor="middle" className="room-label">Koridor Tengah & Selasar</text>
                 </g>
 
                 {/* Stairs on left */}
                 <g className="map-static-group">
-                  <rect x="50" y="60" width="80" height="200" rx="10" className="room-poly stair-disabled" />
+                  <rect x="50" y="55" width="80" height="210" rx="10" className="room-poly stair-disabled" />
                   <text x="90" y="160" textAnchor="middle" className="room-label stair-label" opacity="0.6">Tangga</text>
                   {Array.from({ length: 8 }).map((_, i) => (
-                    <line key={i} x1="55" y1={80 + i * 20} x2="125" y2={80 + i * 20} stroke="var(--color-gray-400)" strokeWidth="1" opacity="0.2" />
+                    <line key={i} x1="55" y1={75 + i * 22} x2="125" y2={75 + i * 22} stroke="var(--color-gray-400)" strokeWidth="1" opacity="0.2" />
                   ))}
                 </g>
 
-                {/* Indekos Rooms 1 to 9 (grouped blocks) */}
+                {/* Indekos Rooms 1 to 5 (top row) */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l2-kos" ? "selected" : ""} ${hoveredRoomId === "l2-kos" ? "hovered" : ""}`}
                   onClick={() => handleRoomClick(LANTAI_2_ROOMS[1])}
                   onMouseEnter={() => setHoveredRoomId("l2-kos")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  {/* Draw 4 blocks to represent boarding rooms layout */}
-                  <rect x="150" y="60" width="70" height="150" rx="8" className="room-poly kos-room" />
-                  <rect x="225" y="60" width="70" height="150" rx="8" className="room-poly kos-room" />
-                  <rect x="300" y="60" width="70" height="150" rx="8" className="room-poly kos-room" />
-                  <rect x="375" y="60" width="70" height="150" rx="8" className="room-poly kos-room" />
+                  <rect x="150" y="55" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  <rect x="230" y="55" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  <rect x="310" y="55" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  <rect x="390" y="55" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  <rect x="470" y="55" width="70" height="80" rx="6" className="room-poly kos-room" />
                   
-                  <text x="290" y="140" textAnchor="middle" className="room-label">Kamar Kos 1 - 9</text>
+                  <text x="325" y="100" textAnchor="middle" className="room-label">Kamar Kos 1 - 5</text>
                 </g>
 
-                {/* Classroom - Room 10 (Gold highlighted block on far right) */}
+                {/* Indekos Rooms 6 to 9 (bottom row, except left-most which is Room 10) */}
+                <g 
+                  className={`map-interactive-group ${selectedRoom.id === "l2-kos" ? "selected" : ""} ${hoveredRoomId === "l2-kos" ? "hovered" : ""}`}
+                  onClick={() => handleRoomClick(LANTAI_2_ROOMS[1])}
+                  onMouseEnter={() => setHoveredRoomId("l2-kos")}
+                  onMouseLeave={() => setHoveredRoomId(null)}
+                >
+                  <rect x="230" y="185" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  <rect x="310" y="185" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  <rect x="390" y="185" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  <rect x="470" y="185" width="70" height="80" rx="6" className="room-poly kos-room" />
+                  
+                  <text x="365" y="230" textAnchor="middle" className="room-label">Kamar Kos 6 - 9</text>
+                </g>
+
+                {/* Classroom - Room 10 (Gold highlighted block on far left bottom / kiri depan) */}
                 <g 
                   className={`map-interactive-group highlighted-group ${selectedRoom.id === "l2-kamar10" ? "selected" : ""} ${hoveredRoomId === "l2-kamar10" ? "hovered" : ""}`}
                   onClick={() => handleRoomClick(LANTAI_2_ROOMS[0])}
                   onMouseEnter={() => setHoveredRoomId("l2-kamar10")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="450" y="60" width="100" height="150" rx="10" className="room-poly class-room-10" />
-                  <text x="500" y="125" textAnchor="middle" className="room-label text-bold gold-text">KAMAR 10</text>
-                  <text x="500" y="145" textAnchor="middle" className="room-label text-bold gold-text">KELAS IGE</text>
-                  <circle cx="500" cy="85" r="5" fill="var(--color-accent)" className="pulsing-dot" />
+                  <rect x="150" y="185" width="70" height="80" rx="8" className="room-poly class-room-10" />
+                  <text x="185" y="225" textAnchor="middle" className="room-label text-bold gold-text" style={{ fontSize: "9px" }}>KAMAR 10</text>
+                  <text x="185" y="238" textAnchor="middle" className="room-label text-bold gold-text" style={{ fontSize: "9px" }}>KELAS IGE</text>
+                  <circle cx="185" cy="200" r="4" fill="var(--color-accent)" className="pulsing-dot" />
                 </g>
               </svg>
             )}

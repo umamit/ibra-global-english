@@ -131,7 +131,8 @@
 }
 
 .pulsing-dot {
-  transform-origin: 500px 85px;
+  transform-box: fill-box;
+  transform-origin: center;
   animation: pulse-gold 1.5s infinite ease-out;
 }
 
