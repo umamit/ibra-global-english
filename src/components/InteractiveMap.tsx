@@ -12,29 +12,22 @@ interface RoomDetail {
 
 const LANTAI_1_ROOMS: RoomDetail[] = [
   {
-    id: "l1-teras",
-    name: "Teras & Ruang Tunggu",
-    type: "Lobi Publik",
-    desc: "Teras semi-terbuka di lantai 1 yang nyaman, dilengkapi dengan meja dan kursi tunggu kayu untuk orang tua wali murid yang sedang menjemput."
-  },
-  {
-    id: "l1-parkir",
-    name: "Area Parkir Utama",
-    type: "Fasilitas Bersama",
-    desc: "Halaman paving block depan gedung yang luas dan aman untuk memarkir sepeda motor dan sepeda roda dua.",
-    capacity: "Hingga 12 Motor / Sepeda"
-  },
-  {
     id: "l1-rumah",
     name: "Area Kediaman Rumah Tinggal",
     type: "Area Privat",
     desc: "Bagian dalam lantai 1 yang digunakan sebagai kediaman pribadi pemilik gedung."
   },
   {
+    id: "l1-teras",
+    name: "Teras & Ruang Tunggu",
+    type: "Lobi Publik",
+    desc: "Teras semi-terbuka di lantai 1 yang nyaman, dilengkapi dengan meja dan kursi tunggu kayu untuk orang tua wali murid yang sedang menjemput."
+  },
+  {
     id: "l1-tangga",
     name: "Akses Tangga Kayu",
     type: "Penghubung Lantai",
-    desc: "Tangga kayu luar dengan handrail kokoh di sisi kiri gedung untuk akses langsung ke indekos dan kelas di lantai 2."
+    desc: "Tangga kayu luar di posisi bawah gedung untuk akses langsung naik ke indekos dan kelas di lantai 2."
   }
 ];
 
@@ -117,49 +110,38 @@ export default function InteractiveMap() {
                 {/* Main House Footprint */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l1-rumah" ? "selected" : ""} ${hoveredRoomId === "l1-rumah" ? "hovered" : ""}`}
-                  onClick={() => handleRoomClick(LANTAI_1_ROOMS[2])}
+                  onClick={() => handleRoomClick(LANTAI_1_ROOMS[0])}
                   onMouseEnter={() => setHoveredRoomId("l1-rumah")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="150" y="60" width="300" height="200" rx="10" className="room-poly house-main" />
-                  <text x="300" y="160" textAnchor="middle" className="room-label">Kediaman Rumah Tinggal</text>
+                  <rect x="100" y="50" width="365" height="225" rx="10" className="room-poly house-main" />
+                  <text x="280" y="160" textAnchor="middle" className="room-label">Kediaman Rumah Tinggal</text>
                 </g>
 
-                {/* Parent Waiting Area / Front Terrace */}
+                {/* Parent Waiting Area / Front Terrace (Right side) */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l1-teras" ? "selected" : ""} ${hoveredRoomId === "l1-teras" ? "hovered" : ""}`}
-                  onClick={() => handleRoomClick(LANTAI_1_ROOMS[0])}
+                  onClick={() => handleRoomClick(LANTAI_1_ROOMS[1])}
                   onMouseEnter={() => setHoveredRoomId("l1-teras")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="450" y="80" width="100" height="160" rx="10" className="room-poly lobby-area" />
-                  <text x="500" y="150" textAnchor="middle" className="room-label">Teras &</text>
-                  <text x="500" y="170" textAnchor="middle" className="room-label">R. Tunggu</text>
+                  <rect x="470" y="50" width="75" height="225" rx="10" className="room-poly lobby-area" />
+                  <text x="507" y="150" textAnchor="middle" className="room-label">Teras &</text>
+                  <text x="507" y="170" textAnchor="middle" className="room-label">R. Tunggu</text>
                 </g>
 
-                {/* Parking Lot */}
-                <g 
-                  className={`map-interactive-group ${selectedRoom.id === "l1-parkir" ? "selected" : ""} ${hoveredRoomId === "l1-parkir" ? "hovered" : ""}`}
-                  onClick={() => handleRoomClick(LANTAI_1_ROOMS[1])}
-                  onMouseEnter={() => setHoveredRoomId("l1-parkir")}
-                  onMouseLeave={() => setHoveredRoomId(null)}
-                >
-                  <rect x="350" y="270" width="200" height="60" rx="10" className="room-poly parking-area" />
-                  <text x="450" y="305" textAnchor="middle" className="room-label">Area Parkir Utama</text>
-                </g>
-
-                {/* Left Side Outdoor Staircase */}
+                {/* Outdoor Staircase (Bottom Left) */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l1-tangga" ? "selected" : ""} ${hoveredRoomId === "l1-tangga" ? "hovered" : ""}`}
-                  onClick={() => handleRoomClick(LANTAI_1_ROOMS[3])}
+                  onClick={() => handleRoomClick(LANTAI_1_ROOMS[2])}
                   onMouseEnter={() => setHoveredRoomId("l1-tangga")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="50" y="60" width="80" height="200" rx="10" className="room-poly stair-area" />
-                  <text x="90" y="160" textAnchor="middle" className="room-label stair-label">Tangga</text>
+                  <rect x="35" y="210" width="60" height="90" rx="8" className="room-poly stair-area" />
+                  <text x="65" y="255" textAnchor="middle" className="room-label stair-label">Tangga</text>
                   {/* Stair steps lines */}
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <line key={i} x1="55" y1={80 + i * 20} x2="125" y2={80 + i * 20} stroke="var(--color-primary-dark)" strokeWidth="1" opacity="0.3" />
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <line key={i} x1="40" y1={220 + i * 14} x2="90" y2={220 + i * 14} stroke="var(--color-primary-dark)" strokeWidth="1" opacity="0.3" />
                   ))}
                 </g>
               </svg>
