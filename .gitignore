@@ -27,3 +27,5 @@
 .env.production.local
 .env
 .env.vercel
+.vercel
+.env*

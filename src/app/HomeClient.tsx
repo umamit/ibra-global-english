@@ -23,6 +23,7 @@ const CTA = dynamic(() => import("@/components/CTA"), { ssr: true });
 const Contact = dynamic(() => import("@/components/Contact"), { ssr: true });
 const SocialFloat = dynamic(() => import("@/components/SocialFloat"), { ssr: false });
 const AIChatWidget = dynamic(() => import("@/components/AIChatWidget"), { ssr: false });
+const InteractiveMap = dynamic(() => import("@/components/InteractiveMap"), { ssr: true });
 
 import { LandingSettings } from "@/utils/getLandingSettings";
 
@@ -198,6 +199,7 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
         <Testimonials />
         <FAQ initialSettings={initialSettings} />
         <CTA initialSettings={initialSettings} />
+        <InteractiveMap />
         <Contact
           form={form}
           setForm={setForm}

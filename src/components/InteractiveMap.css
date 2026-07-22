@@ -1,0 +1,294 @@
+.map-section {
+  padding: 5rem 0;
+  background-color: var(--color-white);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.map-floor-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.floor-btn {
+  background: var(--color-gray-50);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--color-gray-600);
+  padding: 0.8rem 1.8rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.floor-btn:hover {
+  background: var(--color-white);
+  color: var(--color-primary-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.floor-btn.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 14px rgba(33, 108, 126, 0.3);
+}
+
+/* Grid Layout */
+.map-grid-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Canvas styling */
+.map-canvas-container {
+  background-color: var(--color-white);
+  border-radius: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
+  padding: 1rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.svg-map-canvas {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  display: block;
+}
+
+/* Room styles */
+.room-poly {
+  fill: var(--color-white);
+  stroke: var(--color-primary);
+  stroke-width: 2px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.room-label {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--color-primary-dark);
+  pointer-events: none;
+  user-select: none;
+}
+
+.stair-label {
+  fill: var(--color-primary-dark);
+  font-size: 12px;
+}
+
+/* Room Specific Fills */
+.lobby-area {
+  fill: rgba(33, 108, 126, 0.06);
+}
+.parking-area {
+  fill: var(--color-gray-50);
+  stroke: var(--color-gray-400);
+}
+.stair-area {
+  fill: rgba(166, 136, 73, 0.06);
+  stroke: var(--color-accent);
+}
+.stair-disabled {
+  fill: var(--color-gray-100);
+  stroke: var(--color-gray-300);
+}
+.kos-room {
+  fill: var(--color-white);
+  stroke: var(--color-primary);
+  stroke-opacity: 0.7;
+}
+
+/* Room 10 Class highlight style */
+.class-room-10 {
+  fill: rgba(166, 136, 73, 0.09);
+  stroke: var(--color-accent);
+  stroke-width: 3px;
+}
+
+.gold-text {
+  fill: var(--color-accent) !important;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* Pulsing Dot animation */
+@keyframes pulse-gold {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.pulsing-dot {
+  transform-origin: 500px 85px;
+  animation: pulse-gold 1.5s infinite ease-out;
+}
+
+/* Interactive States */
+.map-interactive-group {
+  cursor: pointer;
+}
+
+.map-interactive-group:hover .room-poly {
+  filter: drop-shadow(0 4px 10px rgba(33, 108, 126, 0.15));
+  fill: rgba(33, 108, 126, 0.12);
+  stroke-width: 2.5px;
+}
+
+.map-interactive-group.highlighted-group:hover .room-poly {
+  fill: rgba(166, 136, 73, 0.18);
+  stroke-width: 3.5px;
+}
+
+/* Selected Room */
+.map-interactive-group.selected .room-poly {
+  fill: var(--color-primary);
+  stroke: var(--color-primary-dark);
+}
+
+.map-interactive-group.selected .room-label {
+  fill: var(--color-white);
+}
+
+.map-interactive-group.highlighted-group.selected .room-poly {
+  fill: var(--color-accent);
+  stroke: #8d7037;
+}
+
+.map-interactive-group.highlighted-group.selected .gold-text {
+  fill: var(--color-white) !important;
+}
+
+/* Detail Card */
+.map-info-card {
+  background: var(--color-white);
+  border-radius: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-lg);
+  padding: 2.2rem;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.map-info-card.accent-border {
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 10px 30px rgba(166, 136, 73, 0.15);
+}
+
+.info-badge-tag {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.primary-tag {
+  background: rgba(33, 108, 126, 0.08);
+  color: var(--color-primary-dark);
+}
+
+.accent-tag {
+  background: rgba(166, 136, 73, 0.12);
+  color: #8d7037;
+}
+
+.map-info-card h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  margin-bottom: 0.8rem;
+}
+
+.info-desc {
+  font-size: 0.95rem;
+  color: var(--color-gray-600);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.info-facilities h4,
+.info-capacity h4 {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-gray-400);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.6rem;
+}
+
+.info-facilities ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-facilities li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-gray-700);
+}
+
+.info-capacity p {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-gray-800);
+  margin: 0 0 1.5rem 0;
+}
+
+.info-action-block {
+  margin-top: auto;
+}
+
+.map-action-btn {
+  display: block;
+  text-align: center;
+  background: var(--color-accent);
+  color: var(--color-white);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.9rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(166, 136, 73, 0.25);
+}
+
+.map-action-btn:hover {
+  background: #8d7037;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(166, 136, 73, 0.35);
+}
+
+.map-action-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsiveness */
+@media (max-width: 991px) {
+  .map-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
