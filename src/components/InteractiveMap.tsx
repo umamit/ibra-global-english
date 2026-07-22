@@ -114,8 +114,8 @@ export default function InteractiveMap() {
                   onMouseEnter={() => setHoveredRoomId("l1-rumah")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="100" y="50" width="365" height="225" rx="10" className="room-poly house-main" />
-                  <text x="280" y="160" textAnchor="middle" className="room-label">Kediaman Rumah Tinggal</text>
+                  <rect x="50" y="50" width="410" height="215" rx="10" className="room-poly house-main" />
+                  <text x="255" y="162" textAnchor="middle" className="room-label">Kediaman Rumah Tinggal</text>
                 </g>
 
                 {/* Parent Waiting Area / Front Terrace (Right side) */}
@@ -125,23 +125,23 @@ export default function InteractiveMap() {
                   onMouseEnter={() => setHoveredRoomId("l1-teras")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="470" y="50" width="75" height="225" rx="10" className="room-poly lobby-area" />
+                  <rect x="470" y="50" width="75" height="215" rx="10" className="room-poly lobby-area" />
                   <text x="507" y="150" textAnchor="middle" className="room-label">Teras &</text>
                   <text x="507" y="170" textAnchor="middle" className="room-label">R. Tunggu</text>
                 </g>
 
-                {/* Outdoor Staircase (Bottom Left) */}
+                {/* Outdoor Staircase (Horizontal along bottom) */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l1-tangga" ? "selected" : ""} ${hoveredRoomId === "l1-tangga" ? "hovered" : ""}`}
                   onClick={() => handleRoomClick(LANTAI_1_ROOMS[2])}
                   onMouseEnter={() => setHoveredRoomId("l1-tangga")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="35" y="210" width="60" height="90" rx="8" className="room-poly stair-area" />
-                  <text x="65" y="255" textAnchor="middle" className="room-label stair-label">Tangga</text>
+                  <rect x="50" y="280" width="495" height="45" rx="8" className="room-poly stair-area" />
+                  <text x="297" y="307" textAnchor="middle" className="room-label stair-label">Tangga (Akses Naik ke Lt. 2)</text>
                   {/* Stair steps lines */}
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <line key={i} x1="40" y1={220 + i * 14} x2="90" y2={220 + i * 14} stroke="var(--color-primary-dark)" strokeWidth="1" opacity="0.3" />
+                  {Array.from({ length: 15 }).map((_, i) => (
+                    <line key={i} x1={75 + i * 28} y1="280" x2={75 + i * 28} y2="325" stroke="var(--color-primary-dark)" strokeWidth="1" opacity="0.25" />
                   ))}
                 </g>
               </svg>
@@ -157,8 +157,8 @@ export default function InteractiveMap() {
                   onMouseEnter={() => setHoveredRoomId("l2-koridor")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="100" y="145" width="365" height="30" rx="4" className="room-poly corridor-area" style={{ fill: "rgba(33, 108, 126, 0.08)" }} />
-                  <text x="280" y="164" textAnchor="middle" className="room-label">Koridor Tengah</text>
+                  <rect x="50" y="138" width="410" height="25" rx="4" className="room-poly corridor-area" style={{ fill: "rgba(33, 108, 126, 0.08)" }} />
+                  <text x="255" y="155" textAnchor="middle" className="room-label" style={{ fontSize: "11px" }}>Koridor Tengah</text>
                 </g>
 
                 {/* Teras LT 2 on right */}
@@ -168,17 +168,8 @@ export default function InteractiveMap() {
                   onMouseEnter={() => setHoveredRoomId("l2-teras")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="470" y="50" width="75" height="225" rx="8" className="room-poly terrace-l2" style={{ fill: "rgba(166, 136, 73, 0.06)", stroke: "var(--color-accent)" }} />
-                  <text x="507" y="165" textAnchor="middle" className="room-label text-bold" transform="rotate(-90 507 165)" style={{ fill: "var(--color-primary-dark)", letterSpacing: "1px", fontSize: "11px" }}>TERAS LT 2</text>
-                </g>
-
-                {/* Stairs on bottom left */}
-                <g className="map-static-group">
-                  <rect x="35" y="210" width="60" height="90" rx="8" className="room-poly stair-disabled" />
-                  <text x="65" y="255" textAnchor="middle" className="room-label stair-label" opacity="0.6">Tangga</text>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <line key={i} x1="40" y1={220 + i * 14} x2="90" y2={220 + i * 14} stroke="var(--color-gray-400)" strokeWidth="1" opacity="0.3" />
-                  ))}
+                  <rect x="470" y="50" width="75" height="215" rx="8" className="room-poly terrace-l2" style={{ fill: "rgba(166, 136, 73, 0.06)", stroke: "var(--color-accent)" }} />
+                  <text x="507" y="160" textAnchor="middle" className="room-label text-bold" transform="rotate(-90 507 160)" style={{ fill: "var(--color-primary-dark)", letterSpacing: "1px", fontSize: "11px" }}>TERAS LT 2</text>
                 </g>
 
                 {/* Top Row Rooms (6, 7, 8, 9, IBRA 10) */}
@@ -188,17 +179,17 @@ export default function InteractiveMap() {
                   onMouseEnter={() => setHoveredRoomId("l2-kos")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="100" y="50" width="68" height="90" rx="6" className="room-poly kos-room" />
-                  <text x="134" y="100" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>6</text>
+                  <rect x="50" y="50" width="78" height="80" rx="6" className="room-poly kos-room" />
+                  <text x="89" y="95" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>6</text>
 
-                  <rect x="173" y="50" width="68" height="90" rx="6" className="room-poly kos-room" />
-                  <text x="207" y="100" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>7</text>
+                  <rect x="133" y="50" width="78" height="80" rx="6" className="room-poly kos-room" />
+                  <text x="172" y="95" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>7</text>
 
-                  <rect x="246" y="50" width="68" height="90" rx="6" className="room-poly kos-room" />
-                  <text x="280" y="100" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>8</text>
+                  <rect x="216" y="50" width="78" height="80" rx="6" className="room-poly kos-room" />
+                  <text x="255" y="95" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>8</text>
 
-                  <rect x="319" y="50" width="68" height="90" rx="6" className="room-poly kos-room" />
-                  <text x="353" y="100" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>9</text>
+                  <rect x="299" y="50" width="78" height="80" rx="6" className="room-poly kos-room" />
+                  <text x="338" y="95" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>9</text>
                 </g>
 
                 {/* IBRA 10 (Kamar 10 - Kelas IGE) */}
@@ -208,10 +199,10 @@ export default function InteractiveMap() {
                   onMouseEnter={() => setHoveredRoomId("l2-kamar10")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="392" y="50" width="73" height="90" rx="8" className="room-poly class-room-10" />
-                  <text x="428" y="90" textAnchor="middle" className="room-label text-bold gold-text" style={{ fontSize: "9px" }}>IBRA 10</text>
-                  <text x="428" y="105" textAnchor="middle" className="room-label text-bold gold-text" style={{ fontSize: "8px" }}>KELAS IGE</text>
-                  <circle cx="428" cy="70" r="4" fill="var(--color-accent)" className="pulsing-dot" />
+                  <rect x="382" y="50" width="78" height="80" rx="8" className="room-poly class-room-10" />
+                  <text x="421" y="86" textAnchor="middle" className="room-label text-bold gold-text" style={{ fontSize: "9px" }}>IBRA 10</text>
+                  <text x="421" y="100" textAnchor="middle" className="room-label text-bold gold-text" style={{ fontSize: "8px" }}>KELAS IGE</text>
+                  <circle cx="421" cy="67" r="4" fill="var(--color-accent)" className="pulsing-dot" />
                 </g>
 
                 {/* Bottom Row Rooms (5, 4, 3, 2, 1) */}
@@ -221,20 +212,29 @@ export default function InteractiveMap() {
                   onMouseEnter={() => setHoveredRoomId("l2-kos")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="100" y="180" width="68" height="95" rx="6" className="room-poly kos-room" />
-                  <text x="134" y="232" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>5</text>
+                  <rect x="50" y="170" width="78" height="95" rx="6" className="room-poly kos-room" />
+                  <text x="89" y="222" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>5</text>
 
-                  <rect x="173" y="180" width="68" height="95" rx="6" className="room-poly kos-room" />
-                  <text x="207" y="232" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>4</text>
+                  <rect x="133" y="170" width="78" height="95" rx="6" className="room-poly kos-room" />
+                  <text x="172" y="222" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>4</text>
 
-                  <rect x="246" y="180" width="68" height="95" rx="6" className="room-poly kos-room" />
-                  <text x="280" y="232" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>3</text>
+                  <rect x="216" y="170" width="78" height="95" rx="6" className="room-poly kos-room" />
+                  <text x="255" y="222" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>3</text>
 
-                  <rect x="319" y="180" width="68" height="95" rx="6" className="room-poly kos-room" />
-                  <text x="353" y="232" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>2</text>
+                  <rect x="299" y="170" width="78" height="95" rx="6" className="room-poly kos-room" />
+                  <text x="338" y="222" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>2</text>
 
-                  <rect x="392" y="180" width="73" height="95" rx="6" className="room-poly kos-room" />
-                  <text x="428" y="232" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>1</text>
+                  <rect x="382" y="170" width="78" height="95" rx="6" className="room-poly kos-room" />
+                  <text x="421" y="222" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>1</text>
+                </g>
+
+                {/* Stairs on bottom (Akses Tangga) */}
+                <g className="map-static-group">
+                  <rect x="50" y="280" width="495" height="45" rx="8" className="room-poly stair-disabled" />
+                  <text x="297" y="307" textAnchor="middle" className="room-label stair-label" opacity="0.6">Tangga (Akses dari Lt. 1)</text>
+                  {Array.from({ length: 15 }).map((_, i) => (
+                    <line key={i} x1={75 + i * 28} y1="280" x2={75 + i * 28} y2="325" stroke="var(--color-gray-400)" strokeWidth="1" opacity="0.25" />
+                  ))}
                 </g>
               </svg>
             )}
