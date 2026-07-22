@@ -7,7 +7,6 @@ interface RoomDetail {
   name: string;
   type: string;
   desc: string;
-  facilities?: string[];
   capacity?: string;
 }
 
@@ -16,8 +15,7 @@ const LANTAI_1_ROOMS: RoomDetail[] = [
     id: "l1-teras",
     name: "Teras & Ruang Tunggu",
     type: "Lobi Publik",
-    desc: "Teras semi-terbuka di lantai 1 yang nyaman, dilengkapi dengan meja dan kursi tunggu kayu untuk orang tua wali murid yang sedang menjemput.",
-    facilities: ["Kursi Tunggu Kayu", "Area Hijau Taman Mini", "Pencahayaan Hangat"]
+    desc: "Teras semi-terbuka di lantai 1 yang nyaman, dilengkapi dengan meja dan kursi tunggu kayu untuk orang tua wali murid yang sedang menjemput."
   },
   {
     id: "l1-parkir",
@@ -36,8 +34,7 @@ const LANTAI_1_ROOMS: RoomDetail[] = [
     id: "l1-tangga",
     name: "Akses Tangga Kayu",
     type: "Penghubung Lantai",
-    desc: "Tangga kayu luar dengan handrail kokoh di sisi kiri gedung untuk akses langsung ke indekos dan kelas di lantai 2.",
-    facilities: ["Handrail Keamanan", "Lampu Penerangan Malam"]
+    desc: "Tangga kayu luar dengan handrail kokoh di sisi kiri gedung untuk akses langsung ke indekos dan kelas di lantai 2."
   }
 ];
 
@@ -47,22 +44,19 @@ const LANTAI_2_ROOMS: RoomDetail[] = [
     name: "Kamar 10 (Kelas Ibra Global English)",
     type: "Ruang Kelas Utama",
     desc: "Pusat pembelajaran interaktif Ibra Global English. Didesain ramah anak, ber-AC, dan menggunakan metode Speaking-First.",
-    facilities: ["Air Conditioning (AC)", "Whiteboard Kaca", "Meja & Kursi Belajar Ergonomis", "Perpustakaan Buku Saku & Audio"],
     capacity: "Maksimal 10 Siswa per Kelas"
   },
   {
     id: "l2-kos",
     name: "Kamar Indekos (1 - 9)",
     type: "Hunian Semi-Privat",
-    desc: "Kamar-kamar sewa indekos harian/bulanan di lantai 2 dengan akses koridor luar yang sejuk.",
-    facilities: ["Kamar Mandi Dalam", "Tempat Tidur", "Lemari Pakaian"]
+    desc: "Kamar-kamar sewa indekos harian/bulanan di lantai 2 dengan akses koridor luar yang sejuk."
   },
   {
     id: "l2-koridor",
     name: "Koridor & Balkon Luar",
     type: "Akses Publik Lantai 2",
-    desc: "Selasar luar berpagar pengaman besi di lantai 2, tempat jemuran pakaian, pot tanaman hijau, dan area bersantai menghadap pemandangan.",
-    facilities: ["Pagar Pengaman", "Area Pot Bunga Gantung"]
+    desc: "Selasar luar berpagar pengaman besi di lantai 2, tempat jemuran pakaian, pot tanaman hijau, dan area bersantai menghadap pemandangan."
   }
 ];
 
@@ -243,19 +237,7 @@ export default function InteractiveMap() {
             <h3>{selectedRoom.name}</h3>
             <p className="info-desc">{selectedRoom.desc}</p>
 
-            {selectedRoom.facilities && (
-              <div className="info-facilities">
-                <h4>Fasilitas Area:</h4>
-                <ul>
-                  {selectedRoom.facilities.map((fac, i) => (
-                    <li key={i}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>{fac}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+
 
             {selectedRoom.capacity && (
               <div className="info-capacity">
