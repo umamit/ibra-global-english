@@ -8,6 +8,7 @@ import { getLandingSettings } from "@/utils/getLandingSettings";
 import PromoPopup from "@/components/PromoPopup";
 import CloudflareAnalytics from "@/components/CloudflareAnalytics";
 import QueryProvider from "./QueryProvider";
+import AntiCopyProtection from "@/components/AntiCopyProtection";
 import "./globals.css";
 // landing.css di-import di HomeClient.jsx agar hanya aktif di halaman landing
 
@@ -234,6 +235,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body>
+        <AntiCopyProtection />
         <WebVitals />
         <QueryProvider>
           {children}

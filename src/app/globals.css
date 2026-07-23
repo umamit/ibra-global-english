@@ -237,6 +237,24 @@ body {
   overflow-x: hidden;
   width: 100%;
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Allow text selection for inputs, textareas, and explicit selectable containers */
+input,
+textarea,
+select,
+[contenteditable="true"],
+.selectable,
+.copyable,
+.admin-content {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
 }
 
 main {
@@ -282,6 +300,8 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+  -webkit-user-drag: none;
+  user-drag: none;
 }
 
 button, input, select, textarea {
