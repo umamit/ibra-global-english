@@ -92,6 +92,8 @@ export default function Footer({ initialSettings }: FooterProps) {
             <a href="/terms" style={{ color: "inherit", textDecoration: "none" }}>Syarat & Ketentuan</a>
             <span style={{ opacity: 0.5 }}>&bull;</span>
             <a href="/formulir-offline" style={{ color: "inherit", textDecoration: "none" }}>Formulir Offline</a>
+            <span style={{ opacity: 0.5 }}>&bull;</span>
+            <a href="/kemitraan" style={{ color: "inherit", textDecoration: "none" }}>Penawaran Kemitraan</a>
           </span>
           {visitorData?.count && (
             <span style={{ fontSize: "0.8rem", opacity: 0.8, display: "inline-flex", alignItems: "center", gap: "0.25rem", marginTop: "0.5rem" }} className="footer-visitor-counter">

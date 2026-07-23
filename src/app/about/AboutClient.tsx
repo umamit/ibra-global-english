@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
 import AIChatWidget from "@/components/AIChatWidget";
 import MarqueeBanner from "@/components/MarqueeBanner";
+import Link from 'next/link';
 import { createClient } from "@/utils/supabase/client";
 
 import "./about.css";
@@ -248,6 +249,25 @@ export default function AboutPage() {
             </div>
           </section>
         )}
+
+        {/* Partnership Highlight Section */}
+        <section className="about-section" style={{ background: "rgba(33, 108, 126, 0.04)", borderRadius: "18px", padding: "2.5rem 1.5rem", textAlign: "center", marginBlock: "3rem 1rem", border: "1px solid rgba(33, 108, 126, 0.12)" }}>
+          <div className="about-container">
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.75rem", color: "var(--color-primary)" }}>
+              Peluang Kemitraan Sekolah & Instansi
+            </h2>
+            <p style={{ fontSize: "0.92rem", color: "var(--color-gray-600)", maxWidth: "600px", marginInline: "auto", marginBottom: "1.5rem", lineHeight: 1.6 }}>
+              Ingin menjadikan Ibra Global English sebagai mitra rujukan resmi pembelajaran bahasa Inggris untuk siswa atau staf sekolah/instansi Anda? Dapatkan akses Diagnostic Test gratis & voucher khusus mitra.
+            </p>
+            <Link 
+              href="/kemitraan" 
+              className="about-cta-btn" 
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--color-primary)", color: "#ffffff", padding: "0.75rem 1.5rem", borderRadius: "9999px", fontWeight: 700, fontSize: "0.9rem", textDecoration: "none", boxShadow: "0 4px 14px rgba(33, 108, 126, 0.25)" }}
+            >
+              Lihat Penawaran Kemitraan →
+            </Link>
+          </div>
+        </section>
 
       </main>
 

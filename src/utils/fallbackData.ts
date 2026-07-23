@@ -203,5 +203,6 @@ export const DEFAULT_NAVIGATION_MENU: NavigationItem[] = [
   { label: "Program", path: "/#programs" },
   { label: "Galeri", path: "/gallery" },
   { label: "Tes Penempatan", path: "/placement-test" },
+  { label: "Kemitraan", path: "/kemitraan" },
   { label: "FAQ", path: "/#faq" }
 ];
