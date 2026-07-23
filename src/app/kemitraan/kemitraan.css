@@ -1,10 +1,10 @@
 /* ==========================================================================
-   KEMITRAAN PAGE STYLES — Consistent with About & Gallery Pages
+   KEMITRAAN PAGE STYLES — Seamless Apple HIG Background (No Contrast Blocks)
    ========================================================================== */
 
 .kemitraan-wrapper {
   padding-top: 80px;
-  background-color: var(--color-gray-50);
+  background-color: var(--color-gray-50, #f5f5f7);
   min-height: 100vh;
 }
 
@@ -18,15 +18,11 @@
   padding-inline: 1.5rem;
 }
 
-/* ── 1. Hero Section (Match About / Gallery Hero) ── */
+/* ── 1. Hero Section (Seamless Background) ── */
 .kemitraan-hero-section {
-  background: linear-gradient(180deg, var(--color-bg-teal-50, rgba(33, 108, 126, 0.04)) 0%, var(--color-gray-50) 100%);
-  padding: 5rem 1.5rem 3.5rem;
+  background-color: transparent;
+  padding: 4.5rem 1.5rem 2rem;
   text-align: center;
-}
-
-[data-theme="dark"] .kemitraan-hero-section {
-  background: linear-gradient(180deg, rgba(33, 108, 126, 0.12) 0%, #000000 100%);
 }
 
 .kemitraan-eyebrow {
@@ -73,9 +69,10 @@
   color: var(--color-gray-400);
 }
 
-/* ── 2. Benefits Grid (Match About Vision/Mission Grid) ── */
+/* ── 2. Benefits Grid (Seamless Background, White Cards Only) ── */
 .kemitraan-section {
-  padding: 3.5rem 0;
+  padding: 2.5rem 0;
+  background-color: transparent;
 }
 
 .kemitraan-section-title {
