@@ -1,201 +1,264 @@
 /* ==========================================================================
-   KEMITRAAN & PROPOSAL STYLING — Mobile-First Apple HIG Guidelines
+   KEMITRAAN PAGE STYLES — Consistent with About & Gallery Pages
    ========================================================================== */
 
-.kemitraan-page {
-  min-height: 100vh;
+.kemitraan-wrapper {
+  padding-top: 80px;
   background-color: var(--color-gray-50);
-  color: var(--color-gray-900);
-  padding-top: 5.5rem;
-  padding-bottom: 4rem;
-  transition: background-color var(--transition-normal);
+  min-height: 100vh;
+}
+
+[data-theme="dark"] .kemitraan-wrapper {
+  background-color: #000000;
 }
 
 .kemitraan-container {
-  width: 100%;
-  max-width: 1120px;
+  max-width: var(--container-max-width, 1140px);
   margin-inline: auto;
-  padding-inline: 1.25rem;
+  padding-inline: 1.5rem;
 }
 
-/* ── Hero Section (Mobile First) ── */
-.kemitraan-hero {
+/* ── 1. Hero Section (Match About / Gallery Hero) ── */
+.kemitraan-hero-section {
+  background: linear-gradient(180deg, var(--color-bg-teal-50, rgba(33, 108, 126, 0.04)) 0%, var(--color-gray-50) 100%);
+  padding: 5rem 1.5rem 3.5rem;
   text-align: center;
-  margin-bottom: 2.5rem;
 }
 
-.kemitraan-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 1rem;
-  border-radius: var(--radius-full);
-  background: rgba(33, 108, 126, 0.08);
-  border: 1px solid rgba(33, 108, 126, 0.2);
-  color: var(--color-primary);
+[data-theme="dark"] .kemitraan-hero-section {
+  background: linear-gradient(180deg, rgba(33, 108, 126, 0.12) 0%, #000000 100%);
+}
+
+.kemitraan-eyebrow {
   font-size: 0.8rem;
   font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.kemitraan-hero h1 {
-  font-size: 1.75rem;
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
-  color: var(--color-gray-900);
-  margin-bottom: 1rem;
-}
-
-.kemitraan-hero h1 span {
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--color-primary);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.75rem;
+  display: inline-block;
 }
 
-.kemitraan-hero p {
-  font-size: 0.95rem;
-  color: var(--color-gray-600);
-  max-width: 680px;
+[data-theme="dark"] .kemitraan-eyebrow {
+  color: var(--color-accent);
+}
+
+.kemitraan-hero-headline {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+  max-width: 900px;
   margin-inline: auto;
-  line-height: 1.6;
+  text-wrap: balance;
 }
 
-/* ── Benefits Grid (Mobile First Stack -> Tablet/Desktop Grid) ── */
+[data-theme="dark"] .kemitraan-hero-headline {
+  color: var(--color-white);
+}
+
+.kemitraan-hero-subhead {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  color: var(--color-gray-600);
+  line-height: 1.65;
+  font-weight: 500;
+  max-width: 720px;
+  margin-inline: auto;
+  text-wrap: pretty;
+}
+
+[data-theme="dark"] .kemitraan-hero-subhead {
+  color: var(--color-gray-400);
+}
+
+/* ── 2. Benefits Grid (Match About Vision/Mission Grid) ── */
+.kemitraan-section {
+  padding: 3.5rem 0;
+}
+
 .kemitraan-section-title {
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 800;
   text-align: center;
-  margin-bottom: 1.5rem;
-  color: var(--color-gray-900);
+  margin-bottom: 2.25rem;
+  letter-spacing: -0.025em;
+  color: var(--color-primary-dark);
+}
+
+[data-theme="dark"] .kemitraan-section-title {
+  color: var(--color-white);
 }
 
 .benefits-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin-bottom: 3.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.75rem;
 }
 
 .benefit-card {
-  background: var(--color-card-bg, #ffffff);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  background-color: var(--color-white, #ffffff);
+  padding: 2.25rem 2rem;
+  border-radius: var(--radius-xl, 18px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-normal, 0.25s ease), box-shadow var(--transition-normal, 0.25s ease);
+}
+
+[data-theme="dark"] .benefit-card {
+  background-color: #121212;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .benefit-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(33, 108, 126, 0.1);
 }
 
 .benefit-icon-wrapper {
-  width: 3.2rem;
-  height: 3.2rem;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(33, 108, 126, 0.1) 0%, rgba(166, 136, 73, 0.1) 100%);
+  font-size: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radius-lg, 14px);
+  background: var(--color-bg-teal-50, rgba(33, 108, 126, 0.08));
   color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .benefit-card h3 {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.65rem;
   color: var(--color-gray-900);
+  letter-spacing: -0.015em;
+}
+
+[data-theme="dark"] .benefit-card h3 {
+  color: var(--color-white);
 }
 
 .benefit-card p {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: var(--color-gray-600);
-  line-height: 1.55;
+  line-height: 1.65;
 }
 
-/* ── 3-Step Timeline (Mobile First) ── */
+[data-theme="dark"] .benefit-card p {
+  color: var(--color-gray-400);
+}
+
+/* ── 3. Timeline 3 Langkah ── */
 .timeline-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin-bottom: 3.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 .step-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  background: #ffffff;
+  background-color: var(--color-white, #ffffff);
+  padding: 1.75rem 1.5rem;
+  border-radius: var(--radius-xl, 18px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 14px;
-  padding: 1.25rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+[data-theme="dark"] .step-card {
+  background-color: #121212;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .step-number {
   flex-shrink: 0;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 9999px;
-  background: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #C5A86B 100%);
   color: #ffffff;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 12px rgba(166, 136, 73, 0.3);
 }
 
 .step-content h4 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
   color: var(--color-gray-900);
 }
 
-.step-content p {
-  font-size: 0.85rem;
-  color: var(--color-gray-600);
-  line-height: 1.5;
+[data-theme="dark"] .step-content h4 {
+  color: var(--color-white);
 }
 
-/* ── Form Section (Touch Friendly 44px targets) ── */
+.step-content p {
+  font-size: 0.9rem;
+  color: var(--color-gray-600);
+  line-height: 1.6;
+}
+
+[data-theme="dark"] .step-content p {
+  color: var(--color-gray-400);
+}
+
+/* ── 4. Form Card ── */
 .kemitraan-form-card {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 18px;
-  padding: 1.75rem 1.25rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-  max-width: 640px;
+  background-color: var(--color-white, #ffffff);
+  border-radius: var(--radius-xl, 18px);
+  padding: 2.5rem 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  max-width: 680px;
   margin-inline: auto;
 }
 
+[data-theme="dark"] .kemitraan-form-card {
+  background-color: #121212;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .form-group {
-  margin-bottom: 1.15rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--color-gray-800);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.45rem;
+}
+
+[data-theme="dark"] .form-group label {
+  color: var(--color-gray-200);
 }
 
 .form-input {
   width: 100%;
-  min-height: 44px;
-  padding: 0.65rem 0.9rem;
-  font-size: 0.9rem;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  min-height: 46px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   background: var(--color-gray-50);
   color: var(--color-gray-900);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
+}
+
+[data-theme="dark"] .form-input {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
 }
 
 .form-input:focus {
@@ -205,46 +268,31 @@
   background: #ffffff;
 }
 
+[data-theme="dark"] .form-input:focus {
+  background: #222222;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(166, 136, 73, 0.2);
+}
+
 .submit-btn {
   width: 100%;
-  min-height: 48px;
+  min-height: 50px;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: #ffffff;
   font-weight: 700;
-  font-size: 0.95rem;
-  border-radius: 12px;
+  font-size: 1rem;
+  border-radius: 9999px;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(33, 108, 126, 0.3);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .submit-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-}
-
-/* ── Progressive Enhancement (Tablet & Desktop) ── */
-@media (min-width: 768px) {
-  .kemitraan-hero h1 {
-    font-size: 2.4rem;
-  }
-  .benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .timeline-steps {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .step-card {
-    flex-direction: column;
-  }
-  .kemitraan-form-card {
-    padding: 2.25rem;
-  }
+  transform: translateY(-2px);
+  filter: brightness(1.08);
 }

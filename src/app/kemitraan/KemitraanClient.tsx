@@ -58,23 +58,23 @@ export default function KemitraanClient() {
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       <MarqueeBanner />
 
-      <main className="kemitraan-page">
-        <div className="kemitraan-container">
-          {/* Hero Section */}
-          <section className="kemitraan-hero">
-            <div className="kemitraan-badge">
-              <span>★</span> Program Mitra Rekomendasi Resmi
-            </div>
-            <h1>
-              Tingkatkan Prestasi Bahasa Inggris Siswa Anda — <span>Jadikan Ibra Mitra Rujukan Resmi Sekolah Anda</span>
+      <main className="kemitraan-wrapper">
+        {/* Hero Section */}
+        <section className="kemitraan-hero-section">
+          <div className="kemitraan-container">
+            <span className="kemitraan-eyebrow">Program Mitra Rekomendasi Resmi</span>
+            <h1 className="kemitraan-hero-headline">
+              Tingkatkan Prestasi Bahasa Inggris Siswa Anda — Mari Bergabung Menjadi Mitra Sekolah Pertama Kami di Bobong
             </h1>
-            <p>
-              Ibra Global English Bobong mengundang Sekolah (SD/SMP/SMA) dan Dinas/Instansi di Kabupaten Pulau Taliabu untuk bergabung sebagai mitra perintis. Dapatkan akses Diagnostic Test gratis dan potongan khusus untuk siswa Anda.
+            <p className="kemitraan-hero-subhead">
+              Ibra Global English Bobong mengundang Sekolah (SD/SMP/SMA) dan Dinas/Instansi di Kabupaten Pulau Taliabu untuk bergabung sebagai mitra rujukan resmi. Dapatkan akses Diagnostic Test gratis dan voucher pendaftaran khusus untuk siswa Anda.
             </p>
-          </section>
+          </div>
+        </section>
 
+        <div className="kemitraan-container" style={{ paddingBottom: "5rem" }}>
           {/* Value Proposition Cards */}
-          <section style={{ marginBottom: "3.5rem" }}>
+          <section className="kemitraan-section">
             <h2 className="kemitraan-section-title">Keuntungan Utama untuk Sekolah & Instansi Mitra</h2>
             <div className="benefits-grid">
               <div className="benefit-card">
@@ -84,7 +84,7 @@ export default function KemitraanClient() {
                     <polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
                 </div>
-                <h3>Diagnostic / Placement Test Gratis</h3>
+                <h3>Diagnostic Test Gratis</h3>
                 <p>
                   Siswa di sekolah mitra berhak mengikuti tes pemetaan kemampuan bahasa Inggris gratis untuk mengukur level awal bahasa Inggris secara objektif.
                 </p>
@@ -120,8 +120,8 @@ export default function KemitraanClient() {
             </div>
           </section>
 
-          {/* 3-Step Partnership Process */}
-          <section style={{ marginBottom: "3.5rem" }}>
+          {/* 3-Step Timeline */}
+          <section className="kemitraan-section">
             <h2 className="kemitraan-section-title">3 Langkah Mudah Menjadi Mitra Sekolah Pertama</h2>
             <div className="timeline-steps">
               <div className="step-card">
@@ -151,12 +151,12 @@ export default function KemitraanClient() {
           </section>
 
           {/* Form Ajakan Kemitraan */}
-          <section>
+          <section className="kemitraan-section">
             <div className="kemitraan-form-card">
-              <h2 style={{ fontSize: "1.25rem", fontWeight: 700, textAlign: "center", marginBottom: "0.5rem" }}>
+              <h2 style={{ fontSize: "1.35rem", fontWeight: 800, textAlign: "center", marginBottom: "0.5rem", color: "var(--color-gray-900)" }}>
                 Formulir Pengajuan Diskusi Kemitraan
               </h2>
-              <p style={{ fontSize: "0.88rem", color: "var(--color-gray-600)", textAlign: "center", marginBottom: "1.5rem" }}>
+              <p style={{ fontSize: "0.92rem", color: "var(--color-gray-600)", textAlign: "center", marginBottom: "1.75rem", lineHeight: 1.6 }}>
                 Isi formulir ringkas di bawah ini untuk menjadwalkan diskusi santai bersama Direksi Ibra Global English Bobong via WhatsApp.
               </p>
 
@@ -217,7 +217,7 @@ export default function KemitraanClient() {
                   <textarea
                     id="notes"
                     className="form-input"
-                    style={{ minHeight: "80px", resize: "vertical" }}
+                    style={{ minHeight: "85px", resize: "vertical" }}
                     placeholder="Contoh: Berminat mengadakan Diagnostic Test gratis untuk siswa kelas 5 & 6."
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
