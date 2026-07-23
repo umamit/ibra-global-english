@@ -18,10 +18,10 @@
   padding-inline: 1.5rem;
 }
 
-/* ── 1. Hero Section (Seamless Background) ── */
+/* ── 1. Hero Section ── */
 .kemitraan-hero-section {
   background-color: transparent;
-  padding: 4.5rem 1.5rem 2rem;
+  padding: 4rem 1.5rem 1.5rem;
   text-align: center;
 }
 
@@ -69,9 +69,60 @@
   color: var(--color-gray-400);
 }
 
-/* ── 2. Benefits Grid (Seamless Background, White Cards Only) ── */
+/* ── 1b. Transparansi Biaya Banner ── */
+.fee-notice-banner {
+  background: rgba(33, 108, 126, 0.06);
+  border: 1px solid rgba(33, 108, 126, 0.18);
+  border-radius: var(--radius-xl, 18px);
+  padding: 1.5rem;
+  margin-block: 1rem 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+[data-theme="dark"] .fee-notice-banner {
+  background: rgba(33, 108, 126, 0.15);
+  border-color: rgba(33, 108, 126, 0.3);
+}
+
+.fee-notice-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fee-notice-text h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  margin-bottom: 0.25rem;
+}
+
+[data-theme="dark"] .fee-notice-text h3 {
+  color: var(--color-white);
+}
+
+.fee-notice-text p {
+  font-size: 0.9rem;
+  color: var(--color-gray-700);
+  line-height: 1.55;
+  margin: 0;
+}
+
+[data-theme="dark"] .fee-notice-text p {
+  color: var(--color-gray-300);
+}
+
+/* ── 2. Benefits Grid ── */
 .kemitraan-section {
-  padding: 2.5rem 0;
+  padding: 2.25rem 0;
   background-color: transparent;
 }
 
@@ -79,7 +130,7 @@
   font-size: clamp(1.6rem, 3.5vw, 2.2rem);
   font-weight: 800;
   text-align: center;
-  margin-bottom: 2.25rem;
+  margin-bottom: 2rem;
   letter-spacing: -0.025em;
   color: var(--color-primary-dark);
 }
@@ -207,7 +258,73 @@
   color: var(--color-gray-400);
 }
 
-/* ── 4. Form Card ── */
+/* ── 4. FAQ Accordions ── */
+.kemitraan-faq-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 800px;
+  margin-inline: auto;
+}
+
+.kemitraan-faq-item {
+  background-color: var(--color-white, #ffffff);
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-theme="dark"] .kemitraan-faq-item {
+  background-color: #121212;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.kemitraan-faq-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.faq-question-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.faq-question-row h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+[data-theme="dark"] .faq-question-row h4 {
+  color: var(--color-white);
+}
+
+.faq-toggle-icon {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  transition: transform 0.25s ease;
+}
+
+.faq-answer {
+  margin-top: 0.75rem;
+  font-size: 0.92rem;
+  color: var(--color-gray-600);
+  line-height: 1.6;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 0.75rem;
+}
+
+[data-theme="dark"] .faq-answer {
+  color: var(--color-gray-400);
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ── 5. Form Card ── */
 .kemitraan-form-card {
   background-color: var(--color-white, #ffffff);
   border-radius: var(--radius-xl, 18px);

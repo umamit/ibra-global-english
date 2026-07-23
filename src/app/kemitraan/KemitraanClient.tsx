@@ -9,8 +9,33 @@ import MarqueeBanner from "@/components/MarqueeBanner";
 import { SITE_CONFIG } from "@/config/siteConfig";
 import "./kemitraan.css";
 
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+const KEMITRAAN_FAQS: FAQItem[] = [
+  {
+    question: "Apakah pihak sekolah / instansi mitra perlu mengeluarkan anggaran/biaya?",
+    answer: "SAMA SEKALI TIDAK. Kerja sama ini 100% GRATIS untuk sekolah/instansi mitra. Pihak sekolah tidak perlu mengalokasikan anggaran sekolah atau dana BOS sepeser pun."
+  },
+  {
+    question: "Siapa yang membayarkan biaya kursus siswa?",
+    answer: "Biaya kursus (SPP bulanan) dibayarkan mandiri oleh orang tua murid. Sebagai siswa dari sekolah mitra, orang tua murid justru mendapatkan keuntungan khusus berupa Bebas Biaya Pendaftaran dan Voucher Potongan Khusus."
+  },
+  {
+    question: "Apakah sesi Diagnostic Test gratis mengganggu jam pelajaran sekolah?",
+    answer: "Tidak mengganggu. Pelaksanaan Diagnostic Test gratis disesuaikan sepenuhnya dengan waktu luang yang disepakati sekolah (misal saat jam pelajaran seni/olahraga atau sesi kegiatan ekstra)."
+  },
+  {
+    question: "Bagaimana cara sekolah kami mendaftar menjadi mitra rujukan resmi?",
+    answer: "Sangat mudah. Pihak Kepala Sekolah, Guru, atau Perwakilan Sekolah cukup mengisi formulir di bawah ini atau menghubungi WhatsApp resmi Direksi Ibra Global English Bobong untuk diskusi singkat."
+  }
+];
+
 export default function KemitraanClient() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const [form, setForm] = useState({
     institution_name: "",
@@ -69,6 +94,21 @@ export default function KemitraanClient() {
             <p className="kemitraan-hero-subhead">
               Ibra Global English Bobong mengundang Sekolah (SD/SMP/SMA) dan Dinas/Instansi di Kabupaten Pulau Taliabu untuk bergabung sebagai mitra rujukan resmi. Dapatkan akses Diagnostic Test gratis dan voucher pendaftaran khusus untuk siswa Anda.
             </p>
+
+            {/* Banner Transparansi Biaya */}
+            <div className="fee-notice-banner" style={{ maxWidth: "800px", marginInline: "auto", marginTop: "2rem" }}>
+              <div className="fee-notice-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div className="fee-notice-text" style={{ textAlign: "left" }}>
+                <h3>100% Bebas Biaya untuk Sekolah & Instansi</h3>
+                <p>
+                  Kerja sama ini <strong>tidak menggunakan anggaran sekolah/dana BOS</strong>. Pihak sekolah memfasilitasi rujukan & tes gratis, dan biaya SPP bulanan dibayarkan mandiri oleh orang tua murid dengan voucher pendaftaran khusus.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -112,9 +152,9 @@ export default function KemitraanClient() {
                     <line x1="16" y1="17" x2="8" y2="17"/>
                   </svg>
                 </div>
-                <h3>Laporan Capaian Berkala</h3>
+                <h3>Laporan Capaian untuk Sekolah</h3>
                 <p>
-                  Pihak sekolah/instansi menerima laporan perkembangan capaian siswa secara transparan untuk mendukung nilai portofolio & akreditasi sekolah.
+                  Pihak sekolah menerima Laporan CapaianPrestasi (Skor Speaking, Kehadiran, Evaluasi Grammar, & Sertifikat Level CEFR) untuk portofolio & akreditasi.
                 </p>
               </div>
             </div>
@@ -147,6 +187,31 @@ export default function KemitraanClient() {
                   <p>Siswa belajar di gedung Ibra Global English Bobong, dan sekolah menerima laporan hasil belajar berkala.</p>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* FAQ Kemitraan */}
+          <section className="kemitraan-section">
+            <h2 className="kemitraan-section-title">Pertanyaan Sering Ditanyakan (FAQ Kemitraan)</h2>
+            <div className="kemitraan-faq-grid">
+              {KEMITRAAN_FAQS.map((faq, idx) => {
+                const isOpen = openFaqIndex === idx;
+                return (
+                  <div
+                    key={idx}
+                    className="kemitraan-faq-item"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                  >
+                    <div className="faq-question-row">
+                      <h4>{faq.question}</h4>
+                      <span className="faq-toggle-icon" style={{ transform: isOpen ? "rotate(45deg)" : "none" }}>
+                        +
+                      </span>
+                    </div>
+                    {isOpen && <div className="faq-answer">{faq.answer}</div>}
+                  </div>
+                );
+              })}
             </div>
           </section>
 
