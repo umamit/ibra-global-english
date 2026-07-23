@@ -59,10 +59,6 @@
   position: relative;
   transition: background-color var(--transition-normal);
   container-type: inline-size;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
 }
 
 [data-theme="dark"] .certificate-page-2 {
@@ -222,10 +218,6 @@
   border: 1px solid var(--color-gray-200);
   box-sizing: border-box;
   container-type: inline-size; /* Enables container-query scaling for overlays */
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
 }
 
 .cert-student-name-overlay {

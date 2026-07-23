@@ -203,27 +203,6 @@
   transform: scale(1.02);
 }
 
-/* ── No-copy protection ─────────────────────────────────────────────── */
-.nocopy-container {
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
-}
-
-.nocopy-container input,
-.nocopy-container textarea,
-.nocopy-container select,
-.nocopy-container [contenteditable='true'] {
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  -ms-user-select: text !important;
-}
-
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .cta-section {
