@@ -64,7 +64,7 @@ export default function KemitraanClient() {
           <div className="kemitraan-container">
             <span className="kemitraan-eyebrow">Program Mitra Rekomendasi Resmi</span>
             <h1 className="kemitraan-hero-headline">
-              Tingkatkan Prestasi Bahasa Inggris Siswa Anda — Mari Bergabung Menjadi Mitra Sekolah Pertama Kami di Bobong
+              Tingkatkan Prestasi Bahasa Inggris Siswa Anda — Mari Bergabung Menjadi Mitra Sekolah Pertama Ibra Global English di Bobong
             </h1>
             <p className="kemitraan-hero-subhead">
               Ibra Global English Bobong mengundang Sekolah (SD/SMP/SMA) dan Dinas/Instansi di Kabupaten Pulau Taliabu untuk bergabung sebagai mitra rujukan resmi. Dapatkan akses Diagnostic Test gratis dan voucher pendaftaran khusus untuk siswa Anda.
@@ -99,7 +99,7 @@ export default function KemitraanClient() {
                 </div>
                 <h3>Voucher & Potongan Pendaftaran</h3>
                 <p>
-                  Siswa rekomendasi dari sekolah mitra mendapatkan pendaftaran bebas biaya admin serta voucher potongan pendaftaran khusus di Ibra Bobong.
+                  Siswa rekomendasi dari sekolah mitra mendapatkan pendaftaran bebas biaya admin serta voucher potongan pendaftaran khusus di Ibra Global English Bobong.
                 </p>
               </div>
 
@@ -128,7 +128,7 @@ export default function KemitraanClient() {
                 <div className="step-number">1</div>
                 <div className="step-content">
                   <h4>Diskusi & Penandatanganan Bebas Biaya</h4>
-                  <p>Kesepakatan rujukan sederhana tanpa dipungut biaya apapun dari pihak sekolah/instansi.</p>
+                  <p>Kesepakatan rujukan sederhana — 100% gratis tanpa mengenakan biaya apapun kepada pihak sekolah/instansi mitra.</p>
                 </div>
               </div>
 
@@ -136,7 +136,7 @@ export default function KemitraanClient() {
                 <div className="step-number">2</div>
                 <div className="step-content">
                   <h4>Sesi Diagnostic Test Gratis</h4>
-                  <p>Tim Ibra memfasilitasi tes pemetaan bahasa Inggris gratis bagi siswa di sekolah mitra.</p>
+                  <p>Tim Ibra Global English memfasilitasi tes pemetaan bahasa Inggris gratis bagi siswa di sekolah mitra.</p>
                 </div>
               </div>
 
@@ -144,7 +144,7 @@ export default function KemitraanClient() {
                 <div className="step-number">3</div>
                 <div className="step-content">
                   <h4>Pembelajaran & Laporan Progress</h4>
-                  <p>Siswa belajar di gedung Ibra Bobong, dan sekolah menerima laporan hasil belajar berkala.</p>
+                  <p>Siswa belajar di gedung Ibra Global English Bobong, dan sekolah menerima laporan hasil belajar berkala.</p>
                 </div>
               </div>
             </div>
