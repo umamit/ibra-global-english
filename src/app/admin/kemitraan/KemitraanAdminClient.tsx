@@ -288,8 +288,8 @@ export default function KemitraanAdminClient() {
             <div id="print-area" style={{ border: "1px solid #ddd", padding: "1.75rem", borderRadius: "8px", background: "#fff", fontFamily: "serif", lineHeight: 1.6, color: "#111" }}>
               {/* Kop Surat Header */}
               <div style={{ textAlign: "center", borderBottom: "2px solid #164d57", paddingBottom: "0.75rem", marginBottom: "1.25rem" }}>
-                <h2 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "bold", color: "#164d57" }}>IBRA GLOBAL ENGLISH BOBONG</h2>
-                <p style={{ margin: 0, fontSize: "0.8rem", color: "#555" }}>Kabupaten Pulau Taliabu, Maluku Utara | WhatsApp: {SITE_CONFIG.contact.phone}</p>
+                <h2 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "bold", color: "#164d57" }}>IBRA GLOBAL ENGLISH</h2>
+                <p style={{ margin: 0, fontSize: "0.8rem", color: "#555" }}>Bobong, Kabupaten Pulau Taliabu, Maluku Utara | WhatsApp: {SITE_CONFIG.contact.phone}</p>
               </div>
 
               <div style={{ fontSize: "0.9rem" }}>
@@ -299,12 +299,12 @@ export default function KemitraanAdminClient() {
 
                 <p style={{ marginTop: "1rem" }}>Dengan hormat,</p>
                 <p>
-                  Sehubungan dengan komitmen Ibra Global English Bobong dalam meningkatkan mutu kemampuan bahasa Inggris generasi muda di Kabupaten Pulau Taliabu, melalui surat ini kami bermaksud mengundangkan <strong>{selectedSub.institution_name}</strong> untuk bergabung sebagai Mitra Rekomendasi Resmi.
+                  Sehubungan dengan komitmen Ibra Global English dalam meningkatkan mutu kemampuan bahasa Inggris generasi muda di Kabupaten Pulau Taliabu, melalui surat ini kami bermaksud mengundangkan <strong>{selectedSub.institution_name}</strong> untuk bergabung sebagai Mitra Rekomendasi Resmi.
                 </p>
                 <p>
                   Kerja sama ini bersifat <strong>100% Bebas Biaya (Tanpa Anggaran Sekolah)</strong>, di mana murid-murid dari sekolah Bapak/Ibu berhak mendapatkan sesi Diagnostic Test gratis serta Voucher Potongan Pendaftaran Khusus.
                 </p>
-                <p style={{ marginTop: "1.5rem" }}>Hormat kami,<br /><strong>Direksi Ibra Global English Bobong</strong></p>
+                <p style={{ marginTop: "1.5rem" }}>Hormat kami,<br /><strong>Direksi Ibra Global English</strong></p>
               </div>
             </div>
 

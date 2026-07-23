@@ -1,23 +1,22 @@
 import sys
 
 def create_simple_pdf(filename):
-    # Constructing a valid minimal PDF 1.4 file with text
     content = """
 ================================================================================
                     PROPOSAL KEMITRAAN REKOMENDASI RESMI
-                         IBRA GLOBAL ENGLISH BOBONG
+                             IBRA GLOBAL ENGLISH
                  Kabupaten Pulau Taliabu, Provinsi Maluku Utara
 ================================================================================
 
 1. LATAR BELAKANG
-Ibra Global English Bobong mengundang Sekolah (SD/SMP/SMA) dan Instansi/Dinas di
+Ibra Global English mengundang Sekolah (SD/SMP/SMA) dan Instansi/Dinas di
 Kabupaten Pulau Taliabu untuk bergabung dalam Program Mitra Rekomendasi Resmi.
-Program ini bertujuan meningkatkan kemampuan Bahasa Inggris generasi muda di Bobong
-secara terstruktur, akurat, dan berstandar CEFR.
+Program ini bertujuan meningkatkan kemampuan Bahasa Inggris generasi muda
+secara terstruktur, akurat, dan berstandar internasional CEFR.
 
 2. TRANSPARANSI BIAYA (100% BEBAS BIAYA UNTUK SEKOLAH)
 - Pihak Sekolah/Instansi TIDAK mengeluarkan anggaran sekolah / Dana BOS sepeser pun.
-- Sekolah hanya bertindak sebagai fasilitator rujukan resmi.
+- Sekolah bertindak sebagai fasilitator rujukan resmi.
 - Biaya kursus dibayarkan secara mandiri oleh orang tua murid.
 - Siswa rujukan dari Sekolah Mitra berhak atas Bebas Biaya Admin Pendaftaran
   dan Voucher Potongan Khusus.
@@ -34,8 +33,8 @@ Step 2: Pelaksanaan Sesi Diagnostic Test Gratis untuk siswa.
 Step 3: Pembelajaran di Gedung Ibra Global English & Pengiriman Laporan Berkala.
 
 5. KONTAK PENGAJUAN KEMITRAAN
-Gedung Ibra Global English Bobong
-Kabupaten Pulau Taliabu, Maluku Utara
+Gedung Ibra Global English
+Alamat: Bobong, Kabupaten Pulau Taliabu, Maluku Utara
 Website: https://ibraglobalenglish.uk/kemitraan
 ================================================================================
 """
@@ -45,7 +44,6 @@ Website: https://ibraglobalenglish.uk/kemitraan
     pdf_text_cmds = []
     y = 750
     for line in lines:
-        # Escape parenthesis
         safe_line = line.replace('\\', '\\\\').replace('(', '\\(').replace(')', '\\)')
         pdf_text_cmds.append(f"1 0 0 1 50 {y} Tm ({safe_line}) Tj")
         y -= 14
@@ -79,7 +77,6 @@ endobj
 endobj
 """
     
-    # Calculate xref
     header = "%PDF-1.4\n"
     o1 = len(header)
     o2 = o1 + len(f"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n")
@@ -110,7 +107,7 @@ startxref
     with open(filename, "wb") as f:
         f.write(full_pdf.encode('latin1'))
 
-    print(f"PDF successfully written to {filename}")
+    print(f"PDF successfully updated: {filename}")
 
 if __name__ == "__main__":
     create_simple_pdf("public/docs/Proposal_Kemitraan_Ibra_Global_English.pdf")
