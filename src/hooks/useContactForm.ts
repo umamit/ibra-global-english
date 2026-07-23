@@ -116,6 +116,7 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
     regSuccess,
     setRegSuccess,
     regError,
+    setRegError,
     handleFormSubmit,
     handleRegSubmit,
   };

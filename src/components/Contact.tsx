@@ -18,6 +18,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
     regSuccess,
     setRegSuccess,
     regError,
+    setRegError,
     handleFormSubmit,
     handleRegSubmit,
   } = useContactForm({ form, setForm, honeypot, initialSettings });
