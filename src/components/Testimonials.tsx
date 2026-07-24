@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useTestimonialForm } from "@/hooks/useTestimonialForm";
 import "./Testimonials.css";
 
 const TESTIMONIALS_FALLBACK = [
@@ -41,17 +42,17 @@ export default function Testimonials() {
   const [supabaseData, setSupabaseData] = useState<any[]>([]);
   const [supabaseLoading, setSupabaseLoading] = useState<boolean>(true);
 
-  // Modal State
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [toastMsg, setToastMsg] = useState<{ msg: string; type: "success" | "error" }>({ msg: "", type: "success" });
-
-  const [form, setForm] = useState({
-    author: "",
-    role: "Siswa / Alumni",
-    rating: 5,
-    text: "",
-  });
+  // Consume Shared Hook
+  const {
+    form,
+    setForm,
+    isModalOpen,
+    openModal,
+    closeModal,
+    submitting,
+    toastMsg,
+    submitTestimonial,
+  } = useTestimonialForm();
 
   const fetchSupabaseTestimonials = async () => {
     try {
@@ -101,40 +102,6 @@ export default function Testimonials() {
     return TESTIMONIALS_FALLBACK;
   }, [supabaseData]);
 
-  const handleSubmitTestimonial = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.author.trim() || !form.text.trim()) {
-      alert("Mohon lengkapi Nama Anda dan Pesan Ulasan.");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/testimonials", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      const result = await res.json();
-      if (res.ok) {
-        setToastMsg({
-          msg: "Terima kasih! Ulasan Anda telah terkirim dan akan ditinjau oleh Admin sebelum ditayangkan.",
-          type: "success",
-        });
-        setForm({ author: "", role: "Siswa / Alumni", rating: 5, text: "" });
-        setIsModalOpen(false);
-        setTimeout(() => setToastMsg({ msg: "", type: "success" }), 5000);
-      } else {
-        alert(result.error || "Gagal mengirim ulasan.");
-      }
-    } catch {
-      alert("Terjadi kesalahan jaringan.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
     <section id="testimonials" className="testimonials-section">
       <div className="container">
@@ -148,7 +115,7 @@ export default function Testimonials() {
           <button
             type="button"
             className="submit-testimonial-btn"
-            onClick={() => setIsModalOpen(true)}
+            onClick={openModal}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14M5 12h14"/>
@@ -208,20 +175,20 @@ export default function Testimonials() {
 
       {/* Modal Pop-up Kirim Testimoni Publik */}
       {isModalOpen && (
-        <div className="testimonial-modal-backdrop" onClick={() => setIsModalOpen(false)}>
+        <div className="testimonial-modal-backdrop" onClick={closeModal}>
           <div className="testimonial-modal-card" onClick={(e) => e.stopPropagation()}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
               <h3 style={{ fontSize: "1.25rem", fontWeight: 800, margin: 0 }}>Kirim Ulasan / Testimoni Anda</h3>
               <button
                 type="button"
-                onClick={() => setIsModalOpen(false)}
+                onClick={closeModal}
                 style={{ background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "#888" }}
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmitTestimonial}>
+            <form onSubmit={submitTestimonial}>
               <div style={{ marginBottom: "1rem" }}>
                 <label style={{ display: "block", fontSize: "0.88rem", fontWeight: 600, marginBottom: "0.35rem" }}>Nama Lengkap *</label>
                 <input
