@@ -167,7 +167,8 @@
   right: 0;
   height: 3px;
   background-color: var(--color-primary);
-  border-radius: 0 0 3px 3px;
+  border-top-left-radius: var(--radius-2xl, 20px);
+  border-top-right-radius: var(--radius-2xl, 20px);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
