@@ -170,6 +170,43 @@ const faqSchema = {
   ]
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Beranda",
+      "item": "https://www.ibraglobalenglish.uk/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Kemitraan Sekolah",
+      "item": "https://www.ibraglobalenglish.uk/kemitraan"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Placement Test",
+      "item": "https://www.ibraglobalenglish.uk/placement-test"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Galeri Kegiatan",
+      "item": "https://www.ibraglobalenglish.uk/gallery"
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "name": "Tentang Kami",
+      "item": "https://www.ibraglobalenglish.uk/about"
+    }
+  ]
+};
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const headersList = await headers();
   const nonce = headersList.get("x-nonce") || "";
@@ -231,6 +268,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          nonce={nonce}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
           nonce={nonce}
         />
       </head>
