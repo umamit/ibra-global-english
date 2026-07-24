@@ -28,25 +28,31 @@
 .kemitraan-eyebrow {
   font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-primary);
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
   display: inline-block;
+  background: rgba(33, 108, 126, 0.08);
+  padding: 0.4rem 1.1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(33, 108, 126, 0.15);
 }
 
 [data-theme="dark"] .kemitraan-eyebrow {
   color: var(--color-accent);
+  background: rgba(166, 136, 73, 0.12);
+  border-color: rgba(166, 136, 73, 0.25);
 }
 
 .kemitraan-hero-headline {
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-size: clamp(1.85rem, 3.8vw, 2.75rem);
   font-weight: 800;
   color: var(--color-primary-dark);
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  letter-spacing: -0.015em;
+  line-height: 1.32;
   margin-bottom: 1.25rem;
-  max-width: 900px;
+  max-width: 860px;
   margin-inline: auto;
   text-wrap: balance;
 }
@@ -58,9 +64,9 @@
 .kemitraan-hero-subhead {
   font-size: clamp(1rem, 2vw, 1.125rem);
   color: var(--color-gray-600);
-  line-height: 1.65;
+  line-height: 1.68;
   font-weight: 500;
-  max-width: 720px;
+  max-width: 760px;
   margin-inline: auto;
   text-wrap: pretty;
 }
@@ -74,10 +80,11 @@
   background: rgba(33, 108, 126, 0.06);
   border: 1px solid rgba(33, 108, 126, 0.18);
   border-radius: var(--radius-xl, 18px);
-  padding: 1.5rem;
-  margin-block: 1rem 2.5rem;
+  padding: 1.5rem 1.75rem;
+  margin-block: 1.5rem 2.5rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  text-align: left;
   gap: 1.25rem;
 }
 
@@ -92,30 +99,35 @@
   border-radius: 9999px;
   background: var(--color-primary);
   color: #ffffff;
+  font-size: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
+.fee-notice-content h4,
 .fee-notice-text h3 {
   font-size: 1.1rem;
   font-weight: 800;
   color: var(--color-primary-dark);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
+[data-theme="dark"] .fee-notice-content h4,
 [data-theme="dark"] .fee-notice-text h3 {
   color: var(--color-white);
 }
 
+.fee-notice-content p,
 .fee-notice-text p {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: var(--color-gray-700);
-  line-height: 1.55;
+  line-height: 1.6;
   margin: 0;
 }
 
+[data-theme="dark"] .fee-notice-content p,
 [data-theme="dark"] .fee-notice-text p {
   color: var(--color-gray-300);
 }
