@@ -291,6 +291,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           }}
           nonce={nonce}
         />
+        <Script id="register-sw" strategy="afterInteractive" nonce={nonce}>
+          {`
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                  console.log('SW registration failed: ', err);
+                });
+              });
+            }
+          `}
+        </Script>
       </head>
       <body>
         <AntiCopyProtection />
