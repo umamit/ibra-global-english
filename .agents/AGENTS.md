@@ -167,6 +167,10 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 21i. **Kunci Aturan Fitur Integrasi WebMCP (Strict WebMCP Integration Locking):**
     - AI wajib mempertahankan pendaftaran alat agen di `src/app/HomeClient.tsx` menggunakan pemanggilan ganda `provideContext()` dan `registerTool()` untuk kompatibilitas perayapan agen AI.
 
+21j. **Kunci Struktur Layout & Nama Kelas UI (Strict UI Layout & Class Name Locking):**
+    - AI dilarang keras mengubah, mereset, atau mengganti nama kelas CSS (`className`) dan struktur elemen JSX visual yang sudah ada ketika menambah atau mengintegrasikan komponen/fitur baru ke dalam suatu halaman.
+    - Setiap modifikasi pada berkas tampilan wajib mempertahankan keselarasan nama kelas dengan berkas CSS stylesheet yang bersangkutan agar tidak memicu kepecahan tampilan (*CSS layout breakage*).
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
