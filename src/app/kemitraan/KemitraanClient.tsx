@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
@@ -9,15 +8,6 @@ import AIChatWidget from "@/components/AIChatWidget";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import { useKemitraan } from "@/hooks/useKemitraan";
 import "./kemitraan.css";
-
-const CesiumGlobe = dynamic(() => import("@/components/CesiumGlobe"), {
-  ssr: false,
-  loading: () => (
-    <div style={{ height: "480px", display: "flex", alignItems: "center", justifyContent: "center", color: "#666" }}>
-      Memuat Peta Satelit 3D CesiumJS...
-    </div>
-  ),
-});
 
 export default function KemitraanClient() {
   const {
@@ -60,17 +50,6 @@ export default function KemitraanClient() {
                 </p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Seksi Peta Satelit 3D CesiumJS */}
-        <section className="kemitraan-section" style={{ paddingTop: "0", paddingBottom: "3rem" }}>
-          <div className="kemitraan-container">
-            <div className="kemitraan-section-title">
-              <h2>Peta Geospasial Satelit 3D Lokasi Bobong</h2>
-              <p>Jelajahi titik presisi pusat Ibra Global English di Kabupaten Pulau Taliabu melalui peta satelit 3D interaktif</p>
-            </div>
-            <CesiumGlobe />
           </div>
         </section>
 
