@@ -33,6 +33,18 @@
   cursor: grab;
 }
 
+/* Force Cesium canvas & internal widgets to stretch to 100% width and height */
+.cesium-canvas-container .cesium-widget,
+.cesium-canvas-container .cesium-widget canvas,
+.cesium-canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  display: block !important;
+}
+
 .cesium-canvas-container:active {
   cursor: grabbing;
 }

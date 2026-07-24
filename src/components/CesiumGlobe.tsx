@@ -55,18 +55,19 @@ export default function CesiumGlobe() {
         const Cesium = (window as any).Cesium;
         if (!Cesium) return;
 
-        // Atur Ion token ke token anonim / public
+        // Nonaktifkan Ion token warning
         Cesium.Ion.defaultAccessToken = "";
 
-        // Menggunakan Provider Citra Satelit Esri World Imagery (High Res Satellite Photos)
-        const esriSatelliteProvider = new Cesium.UrlTemplateImageryProvider({
+        // Provider Citra Satelit Foto Realistis (Esri World Imagery)
+        const imageryProvider = new Cesium.UrlTemplateImageryProvider({
           url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
           credit: "Esri World Imagery",
+          maximumLevel: 18,
         });
 
         // 1. Inisialisasi Cesium Viewer dalam mode clean
         const viewer = new Cesium.Viewer(containerRef.current, {
-          imageryProvider: esriSatelliteProvider,
+          imageryProvider: imageryProvider,
           baseLayerPicker: false,
           geocoder: false,
           homeButton: false,
@@ -78,10 +79,15 @@ export default function CesiumGlobe() {
           animation: false,
           fullscreenButton: false,
           vrButton: false,
+          useBrowserRecommendedResolution: true,
           creditContainer: document.createElement("div"), // Menyembunyikan teks kredit default
         });
 
         viewerRef.current = viewer;
+
+        // Paksa resize viewport agar canvas mengisi 100% penuh kontainer
+        viewer.forceResize();
+        window.dispatchEvent(new Event("resize"));
 
         // 2. Tambahkan Pin 3D Emas Menyala di Bobong, Pulau Taliabu
         const bobongLocation = Cesium.Cartesian3.fromDegrees(BOBONG_LON, BOBONG_LAT, 0);
@@ -116,10 +122,18 @@ export default function CesiumGlobe() {
 
         setIsLoaded(true);
 
+        // Resize ulang secara aman setelah beberapa frame render
+        requestAnimationFrame(() => {
+          if (viewerRef.current) {
+            viewerRef.current.forceResize();
+          }
+        });
+
         // 4. Animasi Fly-To Meluncur Terbang dari Luar Angkasa ke Bobong
         setTimeout(() => {
           if (!isMounted || !viewerRef.current) return;
-          viewer.flyTo(viewer.entities, {
+          viewerRef.current.forceResize();
+          viewerRef.current.flyTo(viewerRef.current.entities, {
             duration: 3.5,
             offset: new Cesium.HeadingPitchRange(
               Cesium.Math.toRadians(0),
@@ -127,12 +141,12 @@ export default function CesiumGlobe() {
               25000
             ),
           });
-        }, 800);
+        }, 600);
       })
       .catch((err) => {
         console.error(err);
         if (isMounted) {
-          setLoadingText("Terjadi kendala memuat peta 3D. Memuat ulang...");
+          setLoadingText("Terjadi kendala memuat peta 3D. Silakan coba muat ulang.");
         }
       });
 
@@ -151,6 +165,7 @@ export default function CesiumGlobe() {
     const Cesium = (window as any).Cesium;
     if (!Cesium) return;
 
+    viewerRef.current.forceResize();
     viewerRef.current.flyTo(viewerRef.current.entities, {
       duration: 2.5,
       offset: new Cesium.HeadingPitchRange(
