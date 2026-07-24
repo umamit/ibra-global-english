@@ -4,7 +4,37 @@
 
 .testimonials-section {
   background-color: var(--color-gray-50);
-  padding-block: 7rem;
+  padding-block: 6rem;
+}
+
+.testimonials-header-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.submit-testimonial-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(33, 108, 126, 0.25);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.submit-testimonial-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
 }
 
 /* ── Grid ── */
@@ -140,6 +170,35 @@
   margin: 0;
   letter-spacing: -0.01em;
   line-height: 1.2;
+}
+
+/* ── Modal Pop-up ── */
+.testimonial-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.testimonial-modal-card {
+  background: var(--color-white, #ffffff);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .testimonial-modal-card {
+  background: #1c1c1e;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* ── Dark Mode ── */
