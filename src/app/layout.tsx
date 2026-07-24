@@ -80,6 +80,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     manifest: "/manifest.json",
     verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "google-site-verification-code",
       other: {
         "facebook-domain-verification": ["7f0myl220gjkh4ndqe6cvvz26h7iyg"],
       },
