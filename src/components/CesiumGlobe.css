@@ -1,0 +1,140 @@
+/* ==========================================================================
+   CESIUMJS 3D SATELLITE GLOBE — Apple HIG Interactive Satellite Map
+   ========================================================================== */
+
+.cesium-globe-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  height: 480px;
+  margin: 0 auto;
+  border-radius: var(--radius-3xl, 24px);
+  background: var(--color-surface, #ffffff);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cesium-globe-wrapper:hover {
+  box-shadow: 0 30px 60px rgba(33, 108, 126, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.cesium-canvas-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+}
+
+.cesium-canvas-container:active {
+  cursor: grabbing;
+}
+
+/* Floating Location Badge */
+.cesium-badge {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(33, 108, 126, 0.18);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary-dark, #164d57);
+  pointer-events: none;
+}
+
+.cesium-badge-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #A68849;
+  box-shadow: 0 0 10px #A68849;
+  animation: pulse-beacon 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-beacon {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Fly-To Reset Button */
+.cesium-flyto-btn {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-primary, #216c7e);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(33, 108, 126, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cesium-flyto-btn:hover {
+  background: var(--color-primary, #216c7e);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(33, 108, 126, 0.25);
+}
+
+/* Hide default Cesium widget clutter buttons for ultra-clean Apple HIG design */
+.cesium-viewer-bottom,
+.cesium-viewer-animationContainer,
+.cesium-viewer-timelineContainer,
+.cesium-viewer-fullscreenContainer,
+.cesium-viewer-geocoderContainer,
+.cesium-navigationHelpButton,
+.cesium-sceneModePicker-wrapper {
+  display: none !important;
+}
+
+/* Dark Mode Alignment */
+[data-theme='dark'] .cesium-globe-wrapper {
+  background: #1c1c1e;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .cesium-badge {
+  background: rgba(30, 30, 32, 0.88);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .cesium-flyto-btn {
+  background: rgba(30, 30, 32, 0.92);
+  color: #7ecfdb;
+  border-color: rgba(126, 207, 219, 0.3);
+}
+
+[data-theme='dark'] .cesium-flyto-btn:hover {
+  background: #216c7e;
+  color: #ffffff;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
@@ -8,6 +9,15 @@ import AIChatWidget from "@/components/AIChatWidget";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import { useKemitraan } from "@/hooks/useKemitraan";
 import "./kemitraan.css";
+
+const CesiumGlobe = dynamic(() => import("@/components/CesiumGlobe"), {
+  ssr: false,
+  loading: () => (
+    <div style={{ height: "480px", display: "flex", alignItems: "center", justifyContent: "center", color: "#666" }}>
+      Memuat Peta Satelit 3D CesiumJS...
+    </div>
+  ),
+});
 
 export default function KemitraanClient() {
   const {
@@ -50,119 +60,108 @@ export default function KemitraanClient() {
                 </p>
               </div>
             </div>
-
-            <div className="kemitraan-cta-row">
-              <a href="#form-kemitraan" className="kemitraan-btn-primary">
-                Ajukan Kerja Sama Sekolah
-              </a>
-              <a href="/docs/Proposal_Kemitraan_Ibra_Global_English.pdf" download target="_blank" rel="noopener noreferrer" className="kemitraan-btn-secondary">
-                📄 Unduh Proposal Kemitraan (PDF)
-              </a>
-            </div>
           </div>
         </section>
 
-        {/* Benefits Grid Section */}
+        {/* Seksi Peta Satelit 3D CesiumJS */}
+        <section className="kemitraan-section" style={{ paddingTop: "0", paddingBottom: "3rem" }}>
+          <div className="kemitraan-container">
+            <div className="kemitraan-section-title">
+              <h2>Peta Geospasial Satelit 3D Lokasi Bobong</h2>
+              <p>Jelajahi titik presisi pusat Ibra Global English di Kabupaten Pulau Taliabu melalui peta satelit 3D interaktif</p>
+            </div>
+            <CesiumGlobe />
+          </div>
+        </section>
+
+        {/* Benefits Grid */}
         <section className="kemitraan-section">
           <div className="kemitraan-container">
             <div className="kemitraan-section-title">
-              <h2>Keuntungan Kemitraan Bagi Sekolah & Instansi</h2>
-              <p>Mengapa bermitra dengan Ibra Global English Bobong adalah langkah strategis bagi sekolah Anda?</p>
+              <h2>Manfaat & Keuntungan Sekolah Mitra</h2>
+              <p>Dukungan penuh untuk meningkatkan reputasi akademik dan kecakapan bahasa asing siswa Anda.</p>
             </div>
 
             <div className="kemitraan-grid">
               <div className="kemitraan-card">
                 <div className="kemitraan-card-icon">🎯</div>
                 <h3>Free English Diagnostic Test</h3>
-                <p>
-                  Siswa sekolah mitra mendapatkan fasilitas evaluasi / tes pemetaan kemampuan bahasa Inggris secara <strong>GRATIS</strong> langsung oleh tim akademik profesional kami.
-                </p>
+                <p>Akses pemetaan kemampuan bahasa Inggris gratis untuk seluruh siswa sekolah mitra guna mengetahui level awal mereka secara akurat.</p>
               </div>
 
               <div className="kemitraan-card">
-                <div className="kemitraan-card-icon">🏷️</div>
-                <h3>Voucher Khusus Siswa Sekolah Mitra</h3>
-                <p>
-                  Siswa yang mendaftar dari sekolah mitra mendapatkan potongan khusus bebas biaya pendaftaran awal dan diskon biaya program bulanan.
-                </p>
+                <div className="kemitraan-card-icon">🎟️</div>
+                <h3>Voucher Khusus Siswa Mitra</h3>
+                <p>Siswa dari sekolah mitra mendapatkan potongan biaya pendaftaran dan prioritas kuota kelas offline maupun online.</p>
               </div>
 
               <div className="kemitraan-card">
-                <div className="kemitraan-card-icon">📊</div>
-                <h3>Laporan Perkembangan Akademik Berkala</h3>
-                <p>
-                  Pihak sekolah akan mendapatkan ringkasan laporan perkembangan nilai dan capaian level CEFR siswa yang mengikuti program di tempat kami sebagai bahan evaluasi prestasi sekolah.
-                </p>
-              </div>
-
-              <div className="kemitraan-card">
-                <div className="kemitraan-card-icon">🏆</div>
-                <h3>Dukungan Lomba & Event Bahasa Inggris</h3>
-                <p>
-                  Kami siap memberikan bimbingan intensif dan dukungan gratis bagi siswa mitra yang mewakili sekolah dalam kompetisi pidato, debat, atau olimpiade bahasa Inggris tingkat daerah maupun nasional.
-                </p>
+                <div className="kemitraan-card-icon">📜</div>
+                <h3>Sertifikat Penghargaan Kemitraan</h3>
+                <p>Sekolah menerima Piagam Kemitraan Resmi Ibra Global English sebagai pelopor pendukung literasi bahasa Inggris di Bobong.</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Form Section */}
-        <section id="form-kemitraan" className="kemitraan-form-section">
+        {/* Form Registration Section */}
+        <section className="kemitraan-section kemitraan-form-section">
           <div className="kemitraan-container">
             <div className="kemitraan-form-card">
-              <div className="kemitraan-form-header">
-                <h2>Formulir Pengajuan Kemitraan Sekolah / Instansi</h2>
-                <p>Isi data singkat di bawah ini. Tim Direksi Ibra Global English Bobong akan segera menghubungi Anda melalui WhatsApp untuk diskusi lebih lanjut.</p>
-              </div>
+              <h2>Formulir Pengajuan Mitra Sekolah</h2>
+              <p>Isi formulir singkat di bawah ini. Tim Ibra Global English akan menghubungi Anda untuk diskusi jadwal audiens resmi.</p>
 
               <form onSubmit={handleSubmit} className="kemitraan-form">
-                <div className="kemitraan-form-group">
-                  <label htmlFor="institution_name">Nama Sekolah / Instansi *</label>
-                  <input
-                    id="institution_name"
-                    type="text"
-                    required
-                    placeholder="Contoh: SD Negeri 1 Bobong / SMP Negeri 2 Taliabu"
-                    value={form.institution_name}
-                    onChange={(e) => setForm({ ...form, institution_name: e.target.value })}
-                  />
-                </div>
-
                 <div className="kemitraan-form-grid">
                   <div className="kemitraan-form-group">
-                    <label htmlFor="rep_name">Nama Lengkap Perwakilan *</label>
+                    <label htmlFor="institution_name">Nama Sekolah / Instansi *</label>
+                    <input
+                      id="institution_name"
+                      type="text"
+                      required
+                      placeholder="Contoh: SD Negeri 1 Bobong"
+                      value={form.institution_name}
+                      onChange={(e) => setForm({ ...form, institution_name: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="kemitraan-form-group">
+                    <label htmlFor="rep_name">Nama Penanggung Jawab / Perwakilan *</label>
                     <input
                       id="rep_name"
                       type="text"
                       required
-                      placeholder="Contoh: Ibu Rahmawati, S.Pd."
+                      placeholder="Contoh: Bapak Ahmad, S.Pd."
                       value={form.rep_name}
                       onChange={(e) => setForm({ ...form, rep_name: e.target.value })}
                     />
                   </div>
+                </div>
 
+                <div className="kemitraan-form-grid">
                   <div className="kemitraan-form-group">
-                    <label htmlFor="rep_role">Jabatan / Peran</label>
+                    <label htmlFor="rep_role">Jabatan Perwakilan *</label>
                     <input
                       id="rep_role"
                       type="text"
-                      placeholder="Contoh: Kepala Sekolah / Guru Bahasa Inggris / Kesiswaan"
+                      required
+                      placeholder="Contoh: Kepala Sekolah / Guru Bahasa Inggris"
                       value={form.rep_role}
                       onChange={(e) => setForm({ ...form, rep_role: e.target.value })}
                     />
                   </div>
-                </div>
 
-                <div className="kemitraan-form-group">
-                  <label htmlFor="phone">Nomor WhatsApp Aktif *</label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    required
-                    placeholder="Contoh: 081234567890"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  />
+                  <div className="kemitraan-form-group">
+                    <label htmlFor="phone">Nomor WhatsApp Aktif *</label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      required
+                      placeholder="Contoh: 081234567890"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    />
+                  </div>
                 </div>
 
                 <div className="kemitraan-form-group">
