@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { usePlacementQuiz } from "@/hooks/usePlacementQuiz";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,355 +8,46 @@ import "../dashboard-components.css";
 import "./placement-test.css";
 import FormInput from "@/components/FormInput";
 import Button from "@/components/Button";
-import { createClient } from "@/utils/supabase/client";
-import posthog from "posthog-js";
-import {
-  Question,
-  PlacementResult,
-  calculateSpeechAccuracy,
-  determineLevelDetails,
-} from "./placementHelpers";
 import ResultView from "./ResultView";
 
 export default function PlacementTestClient() {
-  const supabase = createClient();
+  const {
+    theme,
+    toggleTheme,
+    step,
+    setStep,
+    userData,
+    handleInputChange,
+    handleStartTest,
+    handleRegister,
+    currentQuestionIndex,
+    setCurrentQuestionIndex,
+    questions,
+    QUESTIONS,
+    answers,
+    setAnswers,
+    handleOptionSelect,
+    secondsLeft,
+    setSecondsLeft,
+    handleNextQuestion,
+    handlePrevQuestion,
+    submitting,
+    finalResult,
+    loadingQuestions,
+    isAudioPlaying,
+    playListeningAudio,
+    isRecording,
+    startSpeechRecognition,
+    transcribedText,
+    speakingScore,
+    recognitionError,
+    issueDateStr,
+    calculateAndSubmitResult,
+  } = usePlacementQuiz();
 
-  const [theme, setTheme] = useState("light");
-  const [step, setStep] = useState(0); // 0: Start/Intro, 1: Registration Form, 2: Quiz, 3: Success Result
-  const [userData, setUserData] = useState({ fullName: "", email: "", whatsapp: "" });
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number>>({}); // { questionId: chosenIndex }
-  const [secondsLeft, setSecondsLeft] = useState(15);
-  const [submitting, setSubmitting] = useState(false);
-  const [finalResult, setFinalResult] = useState<PlacementResult | null>(null);
 
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loadingQuestions, setLoadingQuestions] = useState(true);
 
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [transcribedText, setTranscribedText] = useState("");
-  const [speakingScore, setSpeakingScore] = useState<number | null>(null);
-  const [recognitionError, setRecognitionError] = useState("");
-  const [issueDateStr, setIssueDateStr] = useState("");
 
-  const QUESTIONS = questions;
-
-  const playListeningAudio = (text: string) => {
-    if (typeof window === "undefined" || !window.speechSynthesis) {
-      alert("Browser Anda tidak mendukung sintesis suara (TTS).");
-      return;
-    }
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = 0.85;
-    utterance.onstart = () => setIsAudioPlaying(true);
-    utterance.onend = () => setIsAudioPlaying(false);
-    utterance.onerror = () => setIsAudioPlaying(false);
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const startSpeechRecognition = () => {
-    if (typeof window === "undefined") return;
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Browser Anda tidak mendukung Web Speech API (Perekam Suara). Silakan gunakan Google Chrome.");
-      return;
-    }
-    setTranscribedText("");
-    setSpeakingScore(null);
-    setRecognitionError("");
-    setIsRecording(true);
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onresult = (event: any) => {
-      const resultText = event.results[0][0].transcript;
-      setTranscribedText(resultText);
-      const target = QUESTIONS[currentQuestionIndex].target_sentence || "";
-      const score = calculateSpeechAccuracy(resultText, target);
-      setSpeakingScore(score);
-      const point = score >= 70 ? 1 : 0;
-      setAnswers((prev) => ({
-        ...prev,
-        [QUESTIONS[currentQuestionIndex].id]: point
-      }));
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error("Speech recognition error", event.error);
-      setRecognitionError(event.error === "not-allowed" ? "Izin mikrofon ditolak." : "Gagal merekam suara.");
-      setIsRecording(false);
-    };
-
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
-
-    recognition.start();
-  };
-
-  // calculateSpeechAccuracy is imported from placementHelpers
-
-  // Initialize theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
-    setTimeout(() => {
-      setTheme(initialTheme);
-    }, 0);
-  }, []);
-
-  // Set issue date once on mount (prevents hydration mismatch)
-  useEffect(() => {
-    setTimeout(() => {
-      setIssueDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
-    }, 0);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    const loadQuestions = async () => {
-      try {
-        const res = await fetch(`/api/placement-test/questions?t=${Date.now()}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (!cancelled && Array.isArray(data) && data.length) {
-            setQuestions(data);
-          }
-        }
-      } catch (e) {
-        console.warn("Gagal memuat soal dinamis, gunakan fallback.", e);
-      } finally {
-        if (!cancelled) setLoadingQuestions(false);
-      }
-    };
-    loadQuestions();
-    return () => { cancelled = true; };
-  }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    document.documentElement.setAttribute("data-theme", nextTheme);
-    localStorage.setItem("theme", nextTheme);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleStartTest = () => {
-    if (loadingQuestions) return;
-    if (questions.length === 0) {
-      alert("Gagal memuat soal AI. Pastikan server AI Groq aktif dan muat ulang halaman.");
-      return;
-    }
-    posthog.capture("placement_test_started");
-    setStep(1);
-  };
-
-  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!userData.fullName.trim() || !userData.email.trim() || !userData.whatsapp.trim()) {
-      alert("Mohon lengkapi semua isian.");
-      return;
-    }
-    posthog.capture("placement_test_registered");
-    setStep(2);
-  };
-
-  const handleOptionSelect = (optionIndex: number) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [QUESTIONS[currentQuestionIndex].id]: optionIndex
-    }));
-  };
-
-  const calculateAndSubmitResult = async () => {
-    setSubmitting(true);
-    let totalScore = 0;
-
-    // Calculate score
-    QUESTIONS.forEach((q) => {
-      if (q.is_speaking) {
-        const speakingVal = answers[q.id] || 0;
-        totalScore += speakingVal;
-      } else {
-        const selectedOptIdx = answers[q.id];
-        if (selectedOptIdx !== undefined) {
-          totalScore += q.options[selectedOptIdx].score;
-        }
-      }
-    });
-
-    // Determine CEFR level details from helper
-    const levelDetails = determineLevelDetails(totalScore);
-    const determinedLevel = levelDetails.level;
-    const levelDescription = levelDetails.description;
-    const programRecommendation = levelDetails.programRecommendation;
-    const studyTimeAdvice = levelDetails.studyTimeAdvice;
-
-    try {
-      const payload = {
-        full_name: userData.fullName.trim(),
-        email: userData.email.trim(),
-        whatsapp_number: userData.whatsapp.trim(),
-        score: totalScore,
-        level: determinedLevel,
-        status: "pending",
-        created_at: new Date().toISOString()
-      };
-
-      const response = await fetch("/api/placement-test", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "Gagal menyimpan hasil tes");
-      }
-
-      const { data } = await response.json();
-
-      posthog.capture("placement_test_completed", {
-        score: totalScore,
-        level: determinedLevel,
-        total_questions: QUESTIONS.length,
-      });
-      setFinalResult({
-        score: totalScore,
-        level: determinedLevel,
-        description: levelDescription,
-        programRecommendation,
-        studyTimeAdvice,
-        id: data?.id || "N/A"
-      });
-      setStep(3);
-    } catch (err) {
-      console.error("Gagal menyimpan hasil tes penempatan:", err);
-      posthog.capture("placement_test_completed", {
-        score: totalScore,
-        level: determinedLevel,
-        total_questions: QUESTIONS.length,
-      });
-      // Fallback local display even if DB insert fails
-      setFinalResult({
-        score: totalScore,
-        level: determinedLevel,
-        description: levelDescription,
-        programRecommendation,
-        studyTimeAdvice,
-        id: "offline-mode"
-      });
-      setStep(3);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleNextQuestion = () => {
-    const currentQuestion = QUESTIONS[currentQuestionIndex];
-    if (currentQuestion.is_speaking) {
-      if (answers[currentQuestion.id] === undefined) {
-        const confirmSkip = confirm("Anda belum menyelesaikan rekaman suara dengan sukses. Yakin ingin melanjutkan?");
-        if (!confirmSkip) return;
-        setAnswers((prev) => ({
-          ...prev,
-          [currentQuestion.id]: 0
-        }));
-      }
-    } else {
-      if (answers[currentQuestion.id] === undefined) {
-        alert("Pilih salah satu jawaban terlebih dahulu.");
-        return;
-      }
-    }
-
-    setTranscribedText("");
-    setSpeakingScore(null);
-    setRecognitionError("");
-
-    if (currentQuestionIndex < QUESTIONS.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    } else {
-      calculateAndSubmitResult();
-    }
-  };
-
-  const handleTimeOut = () => {
-    const currentQuestion = QUESTIONS[currentQuestionIndex];
-    if (!currentQuestion) return;
-
-    if (currentQuestion.is_speaking) {
-      if (answers[currentQuestion.id] === undefined) {
-        setAnswers((prev) => ({
-          ...prev,
-          [currentQuestion.id]: 0
-        }));
-      }
-    }
-
-    setTranscribedText("");
-    setSpeakingScore(null);
-    setRecognitionError("");
-
-    if (currentQuestionIndex < QUESTIONS.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    } else {
-      calculateAndSubmitResult();
-    }
-  };
-
-  // 1. Timer ticking effect
-  useEffect(() => {
-    if (step !== 2) return;
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [step]);
-
-  // 2. Reset timer when active question index changes
-  useEffect(() => {
-    if (step === 2) {
-      const t = setTimeout(() => {
-        setSecondsLeft(15);
-      }, 0);
-      return () => clearTimeout(t);
-    }
-  }, [currentQuestionIndex, step]);
-
-  // 3. Trigger auto-advance when timer hits 0
-  useEffect(() => {
-    if (step === 2 && secondsLeft === 0) {
-      const t = setTimeout(() => {
-        handleTimeOut();
-      }, 0);
-      return () => clearTimeout(t);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [secondsLeft, step]);
-
-  const handlePrevQuestion = () => {
-    setTranscribedText("");
-    setSpeakingScore(null);
-    setRecognitionError("");
-    
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((prev) => prev - 1);
-    }
-  };
 
   const handlePrint = () => {
     window.print();

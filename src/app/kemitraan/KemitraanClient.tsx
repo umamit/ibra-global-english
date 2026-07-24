@@ -1,82 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
 import AIChatWidget from "@/components/AIChatWidget";
 import MarqueeBanner from "@/components/MarqueeBanner";
-import { SITE_CONFIG } from "@/config/siteConfig";
+import { useKemitraan } from "@/hooks/useKemitraan";
 import "./kemitraan.css";
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-const KEMITRAAN_FAQS: FAQItem[] = [
-  {
-    question: "Apakah pihak sekolah / instansi mitra perlu mengeluarkan anggaran/biaya?",
-    answer: "SAMA SEKALI TIDAK. Kerja sama ini 100% GRATIS untuk sekolah/instansi mitra. Pihak sekolah tidak perlu mengalokasikan anggaran sekolah atau dana BOS sepeser pun."
-  },
-  {
-    question: "Siapa yang membayarkan biaya kursus siswa?",
-    answer: "Biaya kursus (SPP bulanan) dibayarkan mandiri oleh orang tua murid. Sebagai siswa dari sekolah mitra, orang tua murid justru mendapatkan keuntungan khusus berupa Bebas Biaya Pendaftaran dan Voucher Potongan Khusus."
-  },
-  {
-    question: "Apakah sesi Diagnostic Test gratis mengganggu jam pelajaran sekolah?",
-    answer: "Tidak mengganggu. Pelaksanaan Diagnostic Test gratis disesuaikan sepenuhnya dengan waktu luang yang disepakati sekolah (misal saat jam pelajaran seni/olahraga atau sesi kegiatan ekstra)."
-  },
-  {
-    question: "Bagaimana cara sekolah kami mendaftar menjadi mitra rujukan resmi?",
-    answer: "Sangat mudah. Pihak Kepala Sekolah, Guru, atau Perwakilan Sekolah cukup mengisi formulir di bawah ini atau menghubungi WhatsApp resmi Direksi Ibra Global English Bobong untuk diskusi singkat."
-  }
-];
-
 export default function KemitraanClient() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-
-  const [form, setForm] = useState({
-    institution_name: "",
-    rep_name: "",
-    rep_role: "",
-    phone: "",
-    notes: "",
-  });
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
-
-    setTimeout(() => {
-      setTheme(initialTheme === "dark" ? "dark" : "light");
-    }, 0);
-    document.documentElement.setAttribute("data-theme", initialTheme);
-  }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    document.documentElement.setAttribute("data-theme", nextTheme);
-    localStorage.setItem("theme", nextTheme);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!form.institution_name || !form.rep_name || !form.phone) {
-      alert("Mohon lengkapi Nama Sekolah/Instansi, Nama Perwakilan, dan Nomor WhatsApp.");
-      return;
-    }
-
-    const targetPhone = SITE_CONFIG.contact.phoneRaw;
-    const message = `Halo Ibra Global English, saya ingin mengajukan diskusi *Kemitraan Rekomendasi Resmi*.\n\n*Nama Sekolah/Instansi:* ${form.institution_name}\n*Nama Perwakilan:* ${form.rep_name} (${form.rep_role || "Perwakilan"})\n*Nomor WhatsApp:* ${form.phone}\n*Catatan/Pesan:* ${form.notes || "-"}`;
-    const encoded = encodeURIComponent(message);
-
-    window.open(`https://wa.me/${targetPhone}?text=${encoded}`, "_blank");
-  };
+  const {
+    theme,
+    toggleTheme,
+    openFaqIndex,
+    toggleFaq,
+    form,
+    setForm,
+    handleSubmit,
+    faqs,
+  } = useKemitraan();
 
   return (
     <>
@@ -98,212 +41,184 @@ export default function KemitraanClient() {
             {/* Banner Transparansi Biaya */}
             <div className="fee-notice-banner" style={{ maxWidth: "800px", marginInline: "auto", marginTop: "2rem" }}>
               <div className="fee-notice-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
+                💡
               </div>
-              <div className="fee-notice-text" style={{ textAlign: "left" }}>
-                <h3>100% Bebas Biaya untuk Sekolah & Instansi</h3>
+              <div className="fee-notice-content">
+                <h4>Transparansi Biaya & Model Kemitraan</h4>
                 <p>
-                  Kerja sama ini <strong>tidak menggunakan anggaran sekolah/dana BOS</strong>. Pihak sekolah memfasilitasi rujukan & tes gratis, dan biaya SPP bulanan dibayarkan mandiri oleh orang tua murid dengan voucher pendaftaran khusus.
+                  Kerja sama kemitraan ini <strong>100% Bebas Biaya (Tanpa Anggaran Sekolah/BOS)</strong>. Pihak sekolah cukup memberikan rekomendasi resmi dan memfasilitasi informasi Diagnostic Test gratis. Biaya belajar siswa dibayarkan secara mandiri oleh orang tua murid dengan penawaran voucher khusus mitra.
+                </p>
+              </div>
+            </div>
+
+            <div className="kemitraan-cta-row">
+              <a href="#form-kemitraan" className="kemitraan-btn-primary">
+                Ajukan Kerja Sama Sekolah
+              </a>
+              <a href="/docs/Proposal_Kemitraan_Ibra_Global_English.pdf" download target="_blank" rel="noopener noreferrer" className="kemitraan-btn-secondary">
+                📄 Unduh Proposal Kemitraan (PDF)
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits Grid Section */}
+        <section className="kemitraan-section">
+          <div className="kemitraan-container">
+            <div className="kemitraan-section-title">
+              <h2>Keuntungan Kemitraan Bagi Sekolah & Instansi</h2>
+              <p>Mengapa bermitra dengan Ibra Global English Bobong adalah langkah strategis bagi sekolah Anda?</p>
+            </div>
+
+            <div className="kemitraan-grid">
+              <div className="kemitraan-card">
+                <div className="kemitraan-card-icon">🎯</div>
+                <h3>Free English Diagnostic Test</h3>
+                <p>
+                  Siswa sekolah mitra mendapatkan fasilitas evaluasi / tes pemetaan kemampuan bahasa Inggris secara <strong>GRATIS</strong> langsung oleh tim akademik profesional kami.
+                </p>
+              </div>
+
+              <div className="kemitraan-card">
+                <div className="kemitraan-card-icon">🏷️</div>
+                <h3>Voucher Khusus Siswa Sekolah Mitra</h3>
+                <p>
+                  Siswa yang mendaftar dari sekolah mitra mendapatkan potongan khusus bebas biaya pendaftaran awal dan diskon biaya program bulanan.
+                </p>
+              </div>
+
+              <div className="kemitraan-card">
+                <div className="kemitraan-card-icon">📊</div>
+                <h3>Laporan Perkembangan Akademik Berkala</h3>
+                <p>
+                  Pihak sekolah akan mendapatkan ringkasan laporan perkembangan nilai dan capaian level CEFR siswa yang mengikuti program di tempat kami sebagai bahan evaluasi prestasi sekolah.
+                </p>
+              </div>
+
+              <div className="kemitraan-card">
+                <div className="kemitraan-card-icon">🏆</div>
+                <h3>Dukungan Lomba & Event Bahasa Inggris</h3>
+                <p>
+                  Kami siap memberikan bimbingan intensif dan dukungan gratis bagi siswa mitra yang mewakili sekolah dalam kompetisi pidato, debat, atau olimpiade bahasa Inggris tingkat daerah maupun nasional.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <div className="kemitraan-container" style={{ paddingBottom: "5rem" }}>
-          {/* Value Proposition Cards */}
-          <section className="kemitraan-section">
-            <h2 className="kemitraan-section-title">Keuntungan Utama untuk Sekolah & Instansi Mitra</h2>
-            <div className="benefits-grid">
-              <div className="benefit-card">
-                <div className="benefit-icon-wrapper">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
-                  </svg>
-                </div>
-                <h3>Diagnostic Test Gratis</h3>
-                <p>
-                  Siswa di sekolah mitra berhak mengikuti tes pemetaan kemampuan bahasa Inggris gratis untuk mengukur level awal bahasa Inggris secara objektif.
-                </p>
-              </div>
-
-              <div className="benefit-card">
-                <div className="benefit-icon-wrapper">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="5" width="20" height="14" rx="2"/>
-                    <line x1="2" y1="10" x2="22" y2="10"/>
-                  </svg>
-                </div>
-                <h3>Voucher & Potongan Pendaftaran</h3>
-                <p>
-                  Siswa rekomendasi dari sekolah mitra mendapatkan pendaftaran bebas biaya admin serta voucher potongan pendaftaran khusus di Ibra Global English Bobong.
-                </p>
-              </div>
-
-              <div className="benefit-card">
-                <div className="benefit-icon-wrapper">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                  </svg>
-                </div>
-                <h3>Laporan Capaian untuk Sekolah</h3>
-                <p>
-                  Pihak sekolah menerima Laporan CapaianPrestasi (Skor Speaking, Kehadiran, Evaluasi Grammar, & Sertifikat Level CEFR) untuk portofolio & akreditasi.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* 3-Step Timeline */}
-          <section className="kemitraan-section">
-            <h2 className="kemitraan-section-title">3 Langkah Mudah Menjadi Mitra Sekolah Pertama</h2>
-            <div className="timeline-steps">
-              <div className="step-card">
-                <div className="step-number">1</div>
-                <div className="step-content">
-                  <h4>Diskusi & Penandatanganan Bebas Biaya</h4>
-                  <p>Kesepakatan rujukan sederhana — 100% gratis tanpa mengenakan biaya apapun kepada pihak sekolah/instansi mitra.</p>
-                </div>
-              </div>
-
-              <div className="step-card">
-                <div className="step-number">2</div>
-                <div className="step-content">
-                  <h4>Sesi Diagnostic Test Gratis</h4>
-                  <p>Tim Ibra Global English memfasilitasi tes pemetaan bahasa Inggris gratis bagi siswa di sekolah mitra.</p>
-                </div>
-              </div>
-
-              <div className="step-card">
-                <div className="step-number">3</div>
-                <div className="step-content">
-                  <h4>Pembelajaran & Laporan Progress</h4>
-                  <p>Siswa belajar di gedung Ibra Global English Bobong, dan sekolah menerima laporan hasil belajar berkala.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* FAQ Kemitraan */}
-          <section className="kemitraan-section">
-            <h2 className="kemitraan-section-title">Pertanyaan Sering Ditanyakan (FAQ Kemitraan)</h2>
-            <div className="kemitraan-faq-grid">
-              {KEMITRAAN_FAQS.map((faq, idx) => {
-                const isOpen = openFaqIndex === idx;
-                return (
-                  <div
-                    key={idx}
-                    className="kemitraan-faq-item"
-                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                  >
-                    <div className="faq-question-row">
-                      <h4>{faq.question}</h4>
-                      <span className="faq-toggle-icon" style={{ transform: isOpen ? "rotate(45deg)" : "none" }}>
-                        +
-                      </span>
-                    </div>
-                    {isOpen && <div className="faq-answer">{faq.answer}</div>}
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Form Ajakan Kemitraan */}
-          <section className="kemitraan-section">
+        {/* Form Section */}
+        <section id="form-kemitraan" className="kemitraan-form-section">
+          <div className="kemitraan-container">
             <div className="kemitraan-form-card">
-              <h2 style={{ fontSize: "1.35rem", fontWeight: 800, textAlign: "center", marginBottom: "0.5rem", color: "var(--color-gray-900)" }}>
-                Formulir Pengajuan Diskusi Kemitraan
-              </h2>
-              <p style={{ fontSize: "0.92rem", color: "var(--color-gray-600)", textAlign: "center", marginBottom: "1.75rem", lineHeight: 1.6 }}>
-                Isi formulir ringkas di bawah ini untuk menjadwalkan diskusi santai bersama Direksi Ibra Global English Bobong via WhatsApp.
-              </p>
+              <div className="kemitraan-form-header">
+                <h2>Formulir Pengajuan Kemitraan Sekolah / Instansi</h2>
+                <p>Isi data singkat di bawah ini. Tim Direksi Ibra Global English Bobong akan segera menghubungi Anda melalui WhatsApp untuk diskusi lebih lanjut.</p>
+              </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="institution_name">Nama Sekolah / Instansi / Dinas *</label>
+              <form onSubmit={handleSubmit} className="kemitraan-form">
+                <div className="kemitraan-form-group">
+                  <label htmlFor="institution_name">Nama Sekolah / Instansi *</label>
                   <input
-                    type="text"
                     id="institution_name"
-                    className="form-input"
-                    placeholder="Contoh: SD Negeri 1 Bobong / SMP N 2 Taliabu"
+                    type="text"
+                    required
+                    placeholder="Contoh: SD Negeri 1 Bobong / SMP Negeri 2 Taliabu"
                     value={form.institution_name}
                     onChange={(e) => setForm({ ...form, institution_name: e.target.value })}
-                    required
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="rep_name">Nama Lengkap Perwakilan *</label>
-                  <input
-                    type="text"
-                    id="rep_name"
-                    className="form-input"
-                    placeholder="Contoh: Bapak Ahmad / Ibu Maria"
-                    value={form.rep_name}
-                    onChange={(e) => setForm({ ...form, rep_name: e.target.value })}
-                    required
-                  />
+                <div className="kemitraan-form-grid">
+                  <div className="kemitraan-form-group">
+                    <label htmlFor="rep_name">Nama Lengkap Perwakilan *</label>
+                    <input
+                      id="rep_name"
+                      type="text"
+                      required
+                      placeholder="Contoh: Ibu Rahmawati, S.Pd."
+                      value={form.rep_name}
+                      onChange={(e) => setForm({ ...form, rep_name: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="kemitraan-form-group">
+                    <label htmlFor="rep_role">Jabatan / Peran</label>
+                    <input
+                      id="rep_role"
+                      type="text"
+                      placeholder="Contoh: Kepala Sekolah / Guru Bahasa Inggris / Kesiswaan"
+                      value={form.rep_role}
+                      onChange={(e) => setForm({ ...form, rep_role: e.target.value })}
+                    />
+                  </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="rep_role">Jabatan / Peran di Sekolah/Instansi</label>
-                  <input
-                    type="text"
-                    id="rep_role"
-                    className="form-input"
-                    placeholder="Contoh: Kepala Sekolah / Guru Bahasa Inggris / Staf"
-                    value={form.rep_role}
-                    onChange={(e) => setForm({ ...form, rep_role: e.target.value })}
-                  />
-                </div>
-
-                <div className="form-group">
+                <div className="kemitraan-form-group">
                   <label htmlFor="phone">Nomor WhatsApp Aktif *</label>
                   <input
-                    type="tel"
                     id="phone"
-                    className="form-input"
-                    placeholder="Contoh: 081357001357"
+                    type="tel"
+                    required
+                    placeholder="Contoh: 081234567890"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    required
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="notes">Pesan / Catatan Tambahan (Opsional)</label>
+                <div className="kemitraan-form-group">
+                  <label htmlFor="notes">Catatan Tambahan / Pesan Khusus (Opsional)</label>
                   <textarea
                     id="notes"
-                    className="form-input"
-                    style={{ minHeight: "85px", resize: "vertical" }}
-                    placeholder="Contoh: Berminat mengadakan Diagnostic Test gratis untuk siswa kelas 5 & 6."
+                    rows={4}
+                    placeholder="Tuliskan harapan atau jadwal diskusi yang diinginkan..."
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   />
                 </div>
 
-                <button type="submit" className="submit-btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                  </svg>
-                  Kirim Pengajuan Diskusi via WhatsApp
+                <button type="submit" className="kemitraan-submit-btn">
+                  Kirim Pengajuan via WhatsApp Official 💬
                 </button>
               </form>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="kemitraan-section">
+          <div className="kemitraan-container">
+            <div className="kemitraan-section-title">
+              <h2>Pertanyaan Sering Diajukan (FAQ Kemitraan)</h2>
+              <p>Jawaban atas pertanyaan seputar skema dan pelaksanaan kerja sama sekolah mitra.</p>
+            </div>
+
+            <div className="kemitraan-faq-wrapper">
+              {faqs.map((faq, idx) => (
+                <div key={idx} className={`kemitraan-faq-item ${openFaqIndex === idx ? "active" : ""}`}>
+                  <button
+                    type="button"
+                    className="kemitraan-faq-question"
+                    onClick={() => toggleFaq(idx)}
+                    aria-expanded={openFaqIndex === idx}
+                  >
+                    <span>{faq.question}</span>
+                    <span className="kemitraan-faq-chevron">{openFaqIndex === idx ? "−" : "+"}</span>
+                  </button>
+                  {openFaqIndex === idx && (
+                    <div className="kemitraan-faq-answer">
+                      <p>{faq.answer}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
 
+      <Footer />
       <SocialFloat />
       <AIChatWidget />
-      <Footer />
     </>
   );
 }

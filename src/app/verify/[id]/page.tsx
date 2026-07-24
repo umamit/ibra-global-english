@@ -1,92 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { useCertificateVerify } from "@/hooks/useCertificateVerify";
 import Link from "next/link";
 import "./verify.css";
 
-interface CertStudents {
-  name: string;
-  program: string;
-}
-
-interface CertReport {
-  speaking_score: number;
-  grammar_score: number;
-  vocabulary_score: number;
-  active_score: number;
-  tutor_notes?: string;
-}
-
-interface CertData {
-  id: string;
-  cert_number?: string;
-  issue_date: string;
-  module_name: string;
-  grade: string;
-  tutor_name: string;
-  student_id: string;
-  custom_image_url: string;
-  students?: CertStudents;
-  reports?: CertReport | null;
-}
-
 export default function VerifyCertificate() {
-  const params = useParams();
-  const id = params?.id;
-  const router = useRouter();
-  const supabase = createClient();
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const [cert, setCert] = useState<CertData | null>(null);
-  const [theme, setTheme] = useState<string>("light");
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
-
-  useEffect(() => {
-    // Theme sync
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setTimeout(() => {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    }, 0);
-
-    if (!id) return;
-
-    async function fetchCertificate() {
-      try {
-        const { data, error } = await supabase
-          .from("certificates")
-          .select("*, students(*), reports(*)")
-          .eq("id", id)
-          .single();
-
-        if (error) throw error;
-
-        let finalCert: CertData = data as CertData;
-        // Fallback to fetch report if report_id relation is not fully loaded or null
-        if (!finalCert.reports && finalCert.student_id) {
-          const { data: repData } = await supabase
-            .from("reports")
-            .select("*")
-            .eq("student_id", finalCert.student_id)
-            .ilike("module_name", finalCert.module_name)
-            .limit(1)
-            .maybeSingle();
-          if (repData) {
-            finalCert = { ...finalCert, reports: repData as CertReport };
-          }
-        }
-        setCert(finalCert);
-      } catch (err) {
-        console.error("Gagal memvalidasi sertifikat:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchCertificate();
-  }, [id, supabase]);
+  const {
+    id,
+    loading,
+    cert,
+    theme,
+    toggleTheme,
+    isGeneratingPDF,
+    setIsGeneratingPDF,
+  } = useCertificateVerify();
 
   if (loading) {
     return (
@@ -610,9 +537,9 @@ export default function VerifyCertificate() {
             <p style={{ color: "var(--color-gray-600)", fontSize: "0.95rem", maxWidth: "550px", margin: "0 auto", lineHeight: "1.6" }}>
               Maaf, tanda pengenal sertifikat digital ini tidak terdaftar di pangkalan data Ibra Global English Bobong atau telah ditarik kembali oleh administrator. Silakan periksa kembali tautan verifikasi Anda.
             </p>
-            <button className="btn-portal-outline" onClick={() => router.push("/")} style={{ marginTop: "2rem", cursor: "pointer" }}>
+            <Link href="/" className="btn-portal-outline" style={{ marginTop: "2rem", display: "inline-block", textDecoration: "none" }}>
               Kembali ke Beranda Utama
-            </button>
+            </Link>
           </div>
         )}
 

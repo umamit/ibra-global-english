@@ -1,9 +1,10 @@
 "use client";
+
+import React from "react";
+import { z } from "zod";
+import { useFAQ } from "@/hooks/useFAQ";
 import "./FAQ.css";
 
-import { z } from "zod";
-import { useState, useMemo } from "react";
-import { DEFAULT_FAQS } from "../utils/fallbackData";
 const faqPropsSchema = z.object({
   initialSettings: z.object({
     landing_faq: z.union([z.string(), z.array(z.any())]).optional(),
@@ -12,37 +13,8 @@ const faqPropsSchema = z.object({
 
 type FAQProps = z.infer<typeof faqPropsSchema>;
 
-interface FAQEntry {
-  id: string;
-  question?: string;
-  answer?: string;
-}
-
 export default function FAQ({ initialSettings }: FAQProps) {
-  const [activeFaq, setActiveFaq] = useState<string | null>(null);
-
-  // Gabungkan data dari Supabase/initialSettings sebagai fallback
-  const faqs = useMemo(() => {
-    let supabaseFaqs = DEFAULT_FAQS;
-    if (initialSettings?.landing_faq) {
-      try {
-        const parsed = typeof initialSettings.landing_faq === "string"
-          ? JSON.parse(initialSettings.landing_faq)
-          : initialSettings.landing_faq;
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          supabaseFaqs = parsed;
-        }
-      } catch (e) {
-        console.warn("Gagal mem-parsing FAQ dari initialSettings.");
-      }
-    }
-
-    return supabaseFaqs;
-  }, [initialSettings]);
-
-  const toggleFaq = (id: string) => {
-    setActiveFaq(activeFaq === id ? null : id);
-  };
+  const { faqs, activeFaq, toggleFaq } = useFAQ(initialSettings);
 
   return (
     <section id="faq" className="faq-section">
