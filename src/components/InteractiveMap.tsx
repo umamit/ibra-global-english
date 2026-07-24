@@ -1,6 +1,16 @@
 "use client";
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import "./InteractiveMap.css";
+
+const ThreeDGlobe = dynamic(() => import("./ThreeDGlobe"), {
+  ssr: false,
+  loading: () => (
+    <div style={{ height: "400px", display: "flex", alignItems: "center", justifyContent: "center", color: "#666" }}>
+      Memuat Globe 3D Bobong...
+    </div>
+  ),
+});
 
 interface RoomDetail {
   id: string;
@@ -265,6 +275,19 @@ export default function InteractiveMap() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* 3D Globe Section */}
+        <div style={{ marginTop: "4rem", paddingTop: "3rem", borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+          <div className="section-header" style={{ marginBottom: "2rem" }}>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-accent)", letterSpacing: "0.08em", textTransform: "uppercase", display: "block", marginBottom: "0.5rem" }}>
+              Pusat Pembelajaran Berstandar Global
+            </span>
+            <h2>Lokasi Strategis Kami di Bobong, Pulau Taliabu</h2>
+            <p>Jelajahi titik lokasi presisi Ibra Global English di peta bola bumi 3D interaktif</p>
+          </div>
+
+          <ThreeDGlobe />
         </div>
       </div>
     </section>
