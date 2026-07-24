@@ -1,16 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import dynamic from "next/dynamic";
 import "./InteractiveMap.css";
-
-const ThreeDGlobe = dynamic(() => import("./ThreeDGlobe"), {
-  ssr: false,
-  loading: () => (
-    <div style={{ height: "400px", display: "flex", alignItems: "center", justifyContent: "center", color: "#666" }}>
-      Memuat Globe 3D Bobong...
-    </div>
-  ),
-});
 
 interface RoomDetail {
   id: string;
@@ -140,18 +130,17 @@ export default function InteractiveMap() {
                   <text x="507" y="170" textAnchor="middle" className="room-label">R. Tunggu</text>
                 </g>
 
-                {/* Outdoor Staircase (Horizontal along bottom) */}
+                {/* Stairs on bottom (Akses Tangga) */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l1-tangga" ? "selected" : ""} ${hoveredRoomId === "l1-tangga" ? "hovered" : ""}`}
                   onClick={() => handleRoomClick(LANTAI_1_ROOMS[2])}
                   onMouseEnter={() => setHoveredRoomId("l1-tangga")}
                   onMouseLeave={() => setHoveredRoomId(null)}
                 >
-                  <rect x="50" y="280" width="495" height="45" rx="8" className="room-poly stair-area" />
-                  <text x="297" y="307" textAnchor="middle" className="room-label stair-label">Tangga (Akses Naik ke Lt. 2)</text>
-                  {/* Stair steps lines */}
+                  <rect x="50" y="280" width="495" height="45" rx="8" className="room-poly stair-room" />
+                  <text x="297" y="307" textAnchor="middle" className="room-label stair-label">Tangga Kayu (Akses Lt. 2)</text>
                   {Array.from({ length: 15 }).map((_, i) => (
-                    <line key={i} x1={75 + i * 28} y1="280" x2={75 + i * 28} y2="325" stroke="var(--color-primary-dark)" strokeWidth="1" opacity="0.25" />
+                    <line key={i} x1={75 + i * 28} y1="280" x2={75 + i * 28} y2="325" stroke="var(--color-primary-dark)" strokeWidth="1" opacity="0.3" />
                   ))}
                 </g>
               </svg>
@@ -160,29 +149,7 @@ export default function InteractiveMap() {
                 {/* Background Grid */}
                 <rect width="100%" height="100%" fill="var(--color-bg-teal-50)" rx="14" />
 
-                {/* Corridor in the middle */}
-                <g 
-                  className={`map-interactive-group ${selectedRoom.id === "l2-koridor" ? "selected" : ""} ${hoveredRoomId === "l2-koridor" ? "hovered" : ""}`}
-                  onClick={() => handleRoomClick(LANTAI_2_ROOMS[3])}
-                  onMouseEnter={() => setHoveredRoomId("l2-koridor")}
-                  onMouseLeave={() => setHoveredRoomId(null)}
-                >
-                  <rect x="50" y="138" width="410" height="25" rx="4" className="room-poly corridor-area" style={{ fill: "rgba(33, 108, 126, 0.08)" }} />
-                  <text x="255" y="155" textAnchor="middle" className="room-label" style={{ fontSize: "11px" }}>Koridor Tengah</text>
-                </g>
-
-                {/* Teras LT 2 on right */}
-                <g 
-                  className={`map-interactive-group ${selectedRoom.id === "l2-teras" ? "selected" : ""} ${hoveredRoomId === "l2-teras" ? "hovered" : ""}`}
-                  onClick={() => handleRoomClick(LANTAI_2_ROOMS[1])}
-                  onMouseEnter={() => setHoveredRoomId("l2-teras")}
-                  onMouseLeave={() => setHoveredRoomId(null)}
-                >
-                  <rect x="470" y="50" width="75" height="215" rx="8" className="room-poly terrace-l2" style={{ fill: "rgba(166, 136, 73, 0.06)", stroke: "var(--color-accent)" }} />
-                  <text x="507" y="160" textAnchor="middle" className="room-label text-bold" transform="rotate(-90 507 160)" style={{ fill: "var(--color-primary-dark)", letterSpacing: "1px", fontSize: "11px" }}>TERAS LT 2</text>
-                </g>
-
-                {/* Top Row Rooms (6, 7, 8, 9, IBRA 10) */}
+                {/* Top Row Rooms (6, 7, 8, 9) */}
                 <g 
                   className={`map-interactive-group ${selectedRoom.id === "l2-kos" ? "selected" : ""} ${hoveredRoomId === "l2-kos" ? "hovered" : ""}`}
                   onClick={() => handleRoomClick(LANTAI_2_ROOMS[2])}
@@ -202,9 +169,32 @@ export default function InteractiveMap() {
                   <text x="338" y="95" textAnchor="middle" className="room-label" style={{ fontSize: "14px", fontWeight: "800" }}>9</text>
                 </g>
 
-                {/* IBRA 10 (Kamar 10 - Kelas IGE) */}
+                {/* Middle Corridor (Selasar Lorong Tengah) */}
                 <g 
-                  className={`map-interactive-group highlighted-group ${selectedRoom.id === "l2-kamar10" ? "selected" : ""} ${hoveredRoomId === "l2-kamar10" ? "hovered" : ""}`}
+                  className={`map-interactive-group ${selectedRoom.id === "l2-koridor" ? "selected" : ""} ${hoveredRoomId === "l2-koridor" ? "hovered" : ""}`}
+                  onClick={() => handleRoomClick(LANTAI_2_ROOMS[3])}
+                  onMouseEnter={() => setHoveredRoomId("l2-koridor")}
+                  onMouseLeave={() => setHoveredRoomId(null)}
+                >
+                  <rect x="50" y="135" width="410" height="30" rx="4" className="room-poly corridor-room" />
+                  <text x="255" y="154" textAnchor="middle" className="room-label" style={{ fontSize: "11px" }}>Koridor Lorong Tengah</text>
+                </g>
+
+                {/* Front Terrace (Teras Lantai 2 - Right side top) */}
+                <g 
+                  className={`map-interactive-group ${selectedRoom.id === "l2-teras" ? "selected" : ""} ${hoveredRoomId === "l2-teras" ? "hovered" : ""}`}
+                  onClick={() => handleRoomClick(LANTAI_2_ROOMS[1])}
+                  onMouseEnter={() => setHoveredRoomId("l2-teras")}
+                  onMouseLeave={() => setHoveredRoomId(null)}
+                >
+                  <rect x="470" y="50" width="75" height="215" rx="10" className="room-poly terrace-room" />
+                  <text x="507" y="150" textAnchor="middle" className="room-label">Teras</text>
+                  <text x="507" y="170" textAnchor="middle" className="room-label">Lantai 2</text>
+                </g>
+
+                {/* IBRA GLOBAL ENGLISH CLASSROOM (Kamar 10 - Highlight Gold) */}
+                <g 
+                  className={`map-interactive-group ${selectedRoom.id === "l2-kamar10" ? "selected" : ""} ${hoveredRoomId === "l2-kamar10" ? "hovered" : ""}`}
                   onClick={() => handleRoomClick(LANTAI_2_ROOMS[0])}
                   onMouseEnter={() => setHoveredRoomId("l2-kamar10")}
                   onMouseLeave={() => setHoveredRoomId(null)}
@@ -258,8 +248,6 @@ export default function InteractiveMap() {
             <h3>{selectedRoom.name}</h3>
             <p className="info-desc">{selectedRoom.desc}</p>
 
-
-
             {selectedRoom.capacity && (
               <div className="info-capacity">
                 <h4>Kapasitas Maksimal:</h4>
@@ -275,19 +263,6 @@ export default function InteractiveMap() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* 3D Globe Section */}
-        <div style={{ marginTop: "4rem", paddingTop: "3rem", borderTop: "1px solid rgba(0,0,0,0.06)" }}>
-          <div className="section-header" style={{ marginBottom: "2rem" }}>
-            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-accent)", letterSpacing: "0.08em", textTransform: "uppercase", display: "block", marginBottom: "0.5rem" }}>
-              Pusat Pembelajaran Berstandar Global
-            </span>
-            <h2>Lokasi Strategis Kami di Bobong, Pulau Taliabu</h2>
-            <p>Jelajahi titik lokasi presisi Ibra Global English di peta bola bumi 3D interaktif</p>
-          </div>
-
-          <ThreeDGlobe />
         </div>
       </div>
     </section>
