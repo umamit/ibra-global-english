@@ -28,35 +28,6 @@ export default function Programs({ initialSettings }: any) {
     return DEFAULT_PROGRAMS;
   });
 
-  // Handler 3D Holographic Tilt physics
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    // Maksimal derajat rotasi 3D (14° deg)
-    const rotateX = ((y - centerY) / centerY) * -12;
-    const rotateY = ((x - centerX) / centerX) * 12;
-
-    // Posisi persentase untuk Holographic Glare
-    const glareX = (x / rect.width) * 100;
-    const glareY = (y / rect.height) * 100;
-
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    card.style.setProperty("--glare-x", `${glareX}%`);
-    card.style.setProperty("--glare-y", `${glareY}%`);
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    // Spring reset ke posisi semula secara halus
-    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-  };
-
   return (
     <section id="programs" className="programs-section">
       <div className="container">
@@ -73,13 +44,8 @@ export default function Programs({ initialSettings }: any) {
             <div
               key={idx}
               id={prog.title.toLowerCase().replace(/\s+/g, "-")}
-              className={`program-card bento-card-${idx} scroll-fade-up`}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              className={`program-card glowing-card bento-card-${idx} scroll-fade-up`}
             >
-              {/* Holographic Refraction Glare Overlay */}
-              <div className="holographic-glare" />
-
               <div className="bento-content-wrapper">
                 <div className="bento-main-info">
                   <div className="program-icon-box">

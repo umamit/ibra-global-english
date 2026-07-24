@@ -25,13 +25,12 @@
   opacity: 1;
 }
 
-/* ── Grid — Apple Store Bento Grid Layout with 3D Perspective ───────────────────── */
+/* ── Grid — Apple Store Bento Grid Layout ───────────────────────────── */
 .programs-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.75rem;
   position: relative;
-  perspective: 1200px;
 }
 
 /* Bento spans */
@@ -53,9 +52,6 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  position: relative;
-  z-index: 1;
-  transform: translateZ(20px);
 }
 
 .bento-main-info {
@@ -140,22 +136,20 @@
   }
 }
 
-/* ── Program Card — 3D Holographic Tilt ─────────────────────────────────── */
+/* ── Program Card ────────────────────────────────────────────────────── */
 .program-card {
   background: var(--color-white);
   padding: 2.375rem 2.25rem 2.5rem;
   border-radius: var(--radius-2xl, 20px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.02);
   border: 1px solid var(--color-gray-200, #e5e7eb);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  transform-style: preserve-3d;
-  will-change: transform;
-  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-              box-shadow 0.3s ease,
-              border-color 0.3s ease;
 }
 
 /* Apple-style accent bar — scaleX from left on hover */
@@ -171,61 +165,29 @@
   border-top-right-radius: var(--radius-2xl, 20px);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.4s ease;
-  z-index: 3;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .program-card:hover {
-  box-shadow: 0 35px 70px rgba(33, 108, 126, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04);
-  border-color: rgba(33, 108, 126, 0.35);
+  transform: translateY(-6px) scale(1.008);
+  box-shadow: 0 30px 60px rgba(33, 108, 126, 0.08),
+              0 1px 3px rgba(0, 0, 0, 0.02);
+  border-color: rgba(33, 108, 126, 0.22);
 }
 
 .program-card:hover::before {
   transform: scaleX(1);
 }
 
-/* Holographic Glare Overlay */
-.holographic-glare {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  mix-blend-mode: color-dodge;
-  background: radial-gradient(
-    circle at var(--glare-x, 50%) var(--glare-y, 50%),
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(33, 108, 126, 0.2) 35%,
-    rgba(166, 136, 73, 0.25) 70%,
-    transparent 100%
-  );
-}
-
-.program-card:hover .holographic-glare {
-  opacity: 1;
-}
-
 [data-theme='dark'] .program-card {
   background: #1c1c1e;
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme='dark'] .program-card:hover {
-  border-color: rgba(33, 108, 126, 0.5);
-  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(33, 108, 126, 0.25);
-}
-
-[data-theme='dark'] .holographic-glare {
-  background: radial-gradient(
-    circle at var(--glare-x, 50%) var(--glare-y, 50%),
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(33, 108, 126, 0.3) 40%,
-    rgba(166, 136, 73, 0.3) 75%,
-    transparent 100%
-  );
+  border-color: rgba(33, 108, 126, 0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(33, 108, 126, 0.15);
 }
 
 /* ── Icon box ───────────────────────────────────────────────────────── */
@@ -240,13 +202,12 @@
   justify-content: center;
   font-size: 1.75rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 8px 20px rgba(33, 108, 126, 0.25);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform: translateZ(30px);
+  box-shadow: 0 8px 20px rgba(33, 108, 126, 0.2);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .program-card:hover .program-icon-box {
-  transform: translateZ(40px) scale(1.06);
+  transform: scale(1.06);
 }
 
 .program-card h3 {
@@ -255,7 +216,6 @@
   color: var(--color-gray-900);
   margin-bottom: 0.25rem;
   letter-spacing: -0.02em;
-  transform: translateZ(25px);
 }
 
 [data-theme='dark'] .program-card h3 {
@@ -269,7 +229,6 @@
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  transform: translateZ(20px);
 }
 
 .program-desc {
@@ -277,7 +236,6 @@
   line-height: 1.6;
   color: var(--color-gray-600);
   margin-bottom: 1.5rem;
-  transform: translateZ(15px);
 }
 
 [data-theme='dark'] .program-desc {
@@ -291,7 +249,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
-  transform: translateZ(15px);
 }
 
 .program-features li {
