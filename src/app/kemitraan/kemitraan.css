@@ -302,43 +302,65 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
+.kemitraan-faq-question,
 .faq-question-row {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
 }
 
+.kemitraan-faq-question h4,
+.kemitraan-faq-question span:first-child,
 .faq-question-row h4 {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-gray-900);
   margin: 0;
+  line-height: 1.4;
 }
 
+[data-theme="dark"] .kemitraan-faq-question h4,
+[data-theme="dark"] .kemitraan-faq-question span:first-child,
 [data-theme="dark"] .faq-question-row h4 {
   color: var(--color-white);
 }
 
+.kemitraan-faq-chevron,
 .faq-toggle-icon {
   font-size: 1.25rem;
   font-weight: 800;
   color: var(--color-primary);
+  flex-shrink: 0;
   transition: transform 0.25s ease;
 }
 
-.faq-answer {
-  margin-top: 0.75rem;
-  font-size: 0.92rem;
-  color: var(--color-gray-600);
-  line-height: 1.6;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  padding-top: 0.75rem;
+[data-theme="dark"] .kemitraan-faq-chevron,
+[data-theme="dark"] .faq-toggle-icon {
+  color: var(--color-accent);
 }
 
+.kemitraan-faq-answer,
+.faq-answer {
+  margin-top: 0.85rem;
+  font-size: 0.95rem;
+  color: var(--color-gray-600);
+  line-height: 1.65;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding-top: 0.85rem;
+}
+
+[data-theme="dark"] .kemitraan-faq-answer,
 [data-theme="dark"] .faq-answer {
   color: var(--color-gray-400);
-  border-top-color: rgba(255, 255, 255, 0.06);
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 /* ── 5. Form Card ── */
