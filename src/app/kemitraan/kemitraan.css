@@ -352,16 +352,42 @@
   margin-inline: auto;
 }
 
-[data-theme="dark"] .kemitraan-form-card {
-  background-color: #121212;
-  border-color: rgba(255, 255, 255, 0.1);
+.kemitraan-form-card h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
 }
 
-.form-group {
+[data-theme="dark"] .kemitraan-form-card h2 {
+  color: var(--color-white);
+}
+
+.kemitraan-form-desc {
+  font-size: 0.95rem;
+  color: var(--color-gray-600);
+  margin-bottom: 1.75rem;
+  line-height: 1.55;
+}
+
+[data-theme="dark"] .kemitraan-form-desc {
+  color: var(--color-gray-400);
+}
+
+.kemitraan-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.form-group,
+.kemitraan-form-group {
   margin-bottom: 1.25rem;
 }
 
-.form-group label {
+.form-group label,
+.kemitraan-form-group label {
   display: block;
   font-size: 0.9rem;
   font-weight: 600;
@@ -369,7 +395,8 @@
   margin-bottom: 0.45rem;
 }
 
-[data-theme="dark"] .form-group label {
+[data-theme="dark"] .form-group label,
+[data-theme="dark"] .kemitraan-form-group label {
   color: var(--color-gray-200);
 }
 
@@ -384,6 +411,12 @@
   color: var(--color-gray-900);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
+}
+
+textarea.form-input {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
 }
 
 [data-theme="dark"] .form-input {

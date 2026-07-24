@@ -109,15 +109,16 @@ export default function KemitraanClient() {
           <div className="kemitraan-container">
             <div className="kemitraan-form-card">
               <h2>Formulir Pengajuan Mitra Sekolah</h2>
-              <p>Isi formulir singkat di bawah ini. Tim Ibra Global English akan menghubungi Anda untuk diskusi jadwal audiens resmi.</p>
+              <p className="kemitraan-form-desc">Isi formulir singkat di bawah ini. Tim Ibra Global English akan menghubungi Anda untuk diskusi jadwal audiens resmi.</p>
 
               <form onSubmit={handleSubmit} className="kemitraan-form">
                 <div className="kemitraan-form-grid">
-                  <div className="kemitraan-form-group">
+                  <div className="form-group kemitraan-form-group">
                     <label htmlFor="institution_name">Nama Sekolah / Instansi *</label>
                     <input
                       id="institution_name"
                       type="text"
+                      className="form-input"
                       required
                       placeholder="Contoh: SD Negeri 1 Bobong"
                       value={form.institution_name}
@@ -125,11 +126,12 @@ export default function KemitraanClient() {
                     />
                   </div>
 
-                  <div className="kemitraan-form-group">
+                  <div className="form-group kemitraan-form-group">
                     <label htmlFor="rep_name">Nama Penanggung Jawab / Perwakilan *</label>
                     <input
                       id="rep_name"
                       type="text"
+                      className="form-input"
                       required
                       placeholder="Contoh: Bapak Ahmad, S.Pd."
                       value={form.rep_name}
@@ -139,11 +141,12 @@ export default function KemitraanClient() {
                 </div>
 
                 <div className="kemitraan-form-grid">
-                  <div className="kemitraan-form-group">
+                  <div className="form-group kemitraan-form-group">
                     <label htmlFor="rep_role">Jabatan Perwakilan *</label>
                     <input
                       id="rep_role"
                       type="text"
+                      className="form-input"
                       required
                       placeholder="Contoh: Kepala Sekolah / Guru Bahasa Inggris"
                       value={form.rep_role}
@@ -151,11 +154,12 @@ export default function KemitraanClient() {
                     />
                   </div>
 
-                  <div className="kemitraan-form-group">
+                  <div className="form-group kemitraan-form-group">
                     <label htmlFor="phone">Nomor WhatsApp Aktif *</label>
                     <input
                       id="phone"
                       type="tel"
+                      className="form-input"
                       required
                       placeholder="Contoh: 081234567890"
                       value={form.phone}
@@ -164,18 +168,19 @@ export default function KemitraanClient() {
                   </div>
                 </div>
 
-                <div className="kemitraan-form-group">
+                <div className="form-group kemitraan-form-group">
                   <label htmlFor="notes">Catatan Tambahan / Pesan Khusus (Opsional)</label>
                   <textarea
                     id="notes"
                     rows={4}
+                    className="form-input"
                     placeholder="Tuliskan harapan atau jadwal diskusi yang diinginkan..."
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   />
                 </div>
 
-                <button type="submit" className="kemitraan-submit-btn">
+                <button type="submit" className="submit-btn kemitraan-submit-btn">
                   Kirim Pengajuan via WhatsApp Official 💬
                 </button>
               </form>
@@ -191,7 +196,7 @@ export default function KemitraanClient() {
               <p>Jawaban atas pertanyaan seputar skema dan pelaksanaan kerja sama sekolah mitra.</p>
             </div>
 
-            <div className="kemitraan-faq-wrapper">
+            <div className="kemitraan-faq-grid">
               {faqs.map((faq, idx) => (
                 <div key={idx} className={`kemitraan-faq-item ${openFaqIndex === idx ? "active" : ""}`}>
                   <button
