@@ -4,15 +4,10 @@ import "./Hero.css";
 import { z } from "zod";
 import { useState } from "react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import CountUp from "./CountUp";
 import posthog from "posthog-js";
 import { useQuery } from "@tanstack/react-query";
 import Button from "@/components/Button";
-
-const ThreeDHeroOrbs = dynamic(() => import("./ThreeDHeroOrbs"), {
-  ssr: false,
-});
 
 const heroPropsSchema = z.object({
   initialSettings: z.object({
@@ -64,15 +59,12 @@ export default function Hero({ initialSettings }: HeroProps) {
 
   return (
     <section id="home" className="hero">
-      {/* Three.js Background 3D Floating Glass Orbs */}
-      <ThreeDHeroOrbs />
-
       {/* Decorative Parallax Background Elements */}
       <div className="hero-parallax-bg hero-decor-1"></div>
       <div className="hero-parallax-bg hero-decor-2"></div>
       <div className="hero-parallax-bg hero-decor-3"></div>
 
-      <div className="container hero-grid" style={{ position: "relative", zIndex: 1 }}>
+      <div className="container hero-grid">
         <div className="hero-content scroll-fade-right" data-aos-delay="0">
           <div className="hero-badge">
             <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
