@@ -9,6 +9,7 @@ import PromoPopup from "@/components/PromoPopup";
 import CloudflareAnalytics from "@/components/CloudflareAnalytics";
 import QueryProvider from "./QueryProvider";
 import AntiCopyProtection from "@/components/AntiCopyProtection";
+import { createNewsArticleSchema } from "@/utils/seoHelpers";
 import "./globals.css";
 // landing.css di-import di HomeClient.jsx agar hanya aktif di halaman landing
 
@@ -274,6 +275,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+          nonce={nonce}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              createNewsArticleSchema({
+                title: "Pendaftaran Kursus Bahasa Inggris & Calistung Terbaru di Bobong, Pulau Taliabu",
+                description: "Informasi resmi program belajar bahasa Inggris interaktif untuk Kids, Teens, dan Calistung di Ibra Global English Bobong.",
+                image: "https://www.ibraglobalenglish.uk/assets/logo.png",
+                url: "https://www.ibraglobalenglish.uk/",
+              })
+            ),
+          }}
           nonce={nonce}
         />
       </head>
