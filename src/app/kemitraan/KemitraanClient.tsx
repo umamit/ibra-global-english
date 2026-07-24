@@ -82,21 +82,21 @@ export default function KemitraanClient() {
               <p>Dukungan penuh untuk meningkatkan reputasi akademik dan kecakapan bahasa asing siswa Anda.</p>
             </div>
 
-            <div className="kemitraan-grid">
-              <div className="kemitraan-card">
-                <div className="kemitraan-card-icon">🎯</div>
+            <div className="benefits-grid">
+              <div className="benefit-card">
+                <div className="benefit-icon-wrapper">🎯</div>
                 <h3>Free English Diagnostic Test</h3>
                 <p>Akses pemetaan kemampuan bahasa Inggris gratis untuk seluruh siswa sekolah mitra guna mengetahui level awal mereka secara akurat.</p>
               </div>
 
-              <div className="kemitraan-card">
-                <div className="kemitraan-card-icon">🎟️</div>
+              <div className="benefit-card">
+                <div className="benefit-icon-wrapper">🎟️</div>
                 <h3>Voucher Khusus Siswa Mitra</h3>
                 <p>Siswa dari sekolah mitra mendapatkan potongan biaya pendaftaran dan prioritas kuota kelas offline maupun online.</p>
               </div>
 
-              <div className="kemitraan-card">
-                <div className="kemitraan-card-icon">📜</div>
+              <div className="benefit-card">
+                <div className="benefit-icon-wrapper">📜</div>
                 <h3>Sertifikat Penghargaan Kemitraan</h3>
                 <p>Sekolah menerima Piagam Kemitraan Resmi Ibra Global English sebagai pelopor pendukung literasi bahasa Inggris di Bobong.</p>
               </div>
