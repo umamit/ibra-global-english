@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import React from 'react';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import FinanceStatsCards from "./components/FinanceStatsCards";
 import FinanceTable from "./components/FinanceTable";
@@ -48,6 +48,10 @@ export default function AdminFinance() {
     "Teens Program": 300000,
     "Fun Calistung": 350000
   });
+
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const showToast = (message: string, type: "success" | "error" = "success") => {
     setToast({ show: true, message, type });
@@ -238,6 +242,17 @@ export default function AdminFinance() {
     const matchesProgram = programFilter === "All" || student.program === programFilter;
     return matchesSearch && matchesProgram;
   });
+
+  // Reset currentPage to 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, programFilter, selectedMonth]);
+
+  const paginatedStudents = useMemo(() => {
+    if (pageSize >= 9999) return filteredStudents;
+    const start = (currentPage - 1) * pageSize;
+    return filteredStudents.slice(start, start + pageSize);
+  }, [filteredStudents, currentPage, pageSize]);
 
   // Financial Stats Calculations
   const stats = (() => {
@@ -445,7 +460,7 @@ export default function AdminFinance() {
           </div>
 
           <FinanceTable
-            filteredStudents={filteredStudents}
+            filteredStudents={paginatedStudents}
             getStudentPayment={getStudentPayment}
             formatRupiah={formatRupiah}
             loading={loading}
@@ -458,6 +473,11 @@ export default function AdminFinance() {
             onPrintReceipt={handlePrintReceipt}
             onEditPayment={handleOpenEditModal}
             onTriggerWaBilling={handleOpenWaBillingModal}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalStudents={filteredStudents.length}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
           />
         </>
     )}
