@@ -22,7 +22,7 @@ const CUSTOM_POSTPAID_NAME_PATTERNS = [
 export const getStudentSPPDueInfo = (
   student: Student,
   paymentStatus: string,
-  selectedMonth: string
+  selectedMonth: string // format "YYYY-MM" (misal "2026-07")
 ): SPPDueInfo => {
   const nameLower = (student.name || "").toLowerCase().trim();
   const isPostPaidCustom = CUSTOM_POSTPAID_NAME_PATTERNS.some(p => nameLower.includes(p));
@@ -39,7 +39,7 @@ export const getStudentSPPDueInfo = (
     }
   }
 
-  const modelLabel = isPostPaid ? "Post-Paid (Kursus Dulu)" : "Pre-Paid (Bayar Awal)";
+  const modelLabel = isPostPaid ? "Post-Paid (Kursus Dulu, Bayar Tgl 5 Bln Depan)" : "Pre-Paid (Bayar Awal)";
 
   if (paymentStatus === "lunas") {
     return {
@@ -63,26 +63,39 @@ export const getStudentSPPDueInfo = (
     };
   }
 
-  // Calculate current day & due date proximity for selected month
-  const today = new Date();
-  const currentDay = today.getDate();
-  
-  // Format current month YYYY-MM
-  const currentYearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-  const isCurrentMonth = selectedMonth ? selectedMonth === currentYearMonth : true;
-
-  if (!isCurrentMonth) {
-    return {
-      dueDay,
-      isPostPaid,
-      modelLabel,
-      dueStatus: "normal",
-      badgeLabel: `Jatuh Tempo Tgl ${dueDay}`,
-      badgeClass: "bg-slate-100 text-slate-700 border-slate-200"
-    };
+  // Parse selected month (YYYY-MM)
+  let selYear = new Date().getFullYear();
+  let selMonth = new Date().getMonth() + 1; // 1-12
+  if (selectedMonth && selectedMonth.includes("-")) {
+    const parts = selectedMonth.split("-");
+    selYear = parseInt(parts[0], 10);
+    selMonth = parseInt(parts[1], 10);
   }
 
-  const diffDays = dueDay - currentDay;
+  // Target due date calculation:
+  // Pre-Paid: Jatuh tempo pada selMonth (misal 21 Juli untuk tagihan Juli)
+  // Post-Paid: Belajar dulu 1 bulan, jatuh tempo pada tanggal 5 di bulan BERIKUTNYA (misal 5 Agustus untuk tagihan Juli)
+  let targetYear = selYear;
+  let targetMonth = selMonth;
+
+  if (isPostPaid) {
+    targetMonth = selMonth + 1;
+    if (targetMonth > 12) {
+      targetMonth = 1;
+      targetYear = selYear + 1;
+    }
+  }
+
+  const dueDate = new Date(targetYear, targetMonth - 1, dueDay);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const monthNamesId = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+  const targetMonthStr = monthNamesId[targetMonth - 1];
+
+  // Difference in calendar days from today
+  const diffTime = dueDate.getTime() - today.getTime();
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) {
     return {
@@ -90,7 +103,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "due_today",
-      badgeLabel: `⚠️ HARI H (Tgl ${dueDay})`,
+      badgeLabel: `⚠️ HARI H (${dueDay} ${targetMonthStr})`,
       badgeClass: "bg-amber-500 text-white font-bold animate-pulse"
     };
   }
@@ -101,7 +114,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "due_soon",
-      badgeLabel: `⏰ H-${diffDays} (Tgl ${dueDay})`,
+      badgeLabel: `⏰ H-${diffDays} (${dueDay} ${targetMonthStr})`,
       badgeClass: "bg-amber-100 text-amber-900 border-amber-400 font-semibold",
       daysRemaining: diffDays
     };
@@ -113,7 +126,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "overdue",
-      badgeLabel: `🚨 Lewat Tgl ${dueDay}`,
+      badgeLabel: `🚨 Lewat ${dueDay} ${targetMonthStr}`,
       badgeClass: "bg-rose-100 text-rose-800 border-rose-300 font-semibold"
     };
   }
@@ -123,7 +136,7 @@ export const getStudentSPPDueInfo = (
     isPostPaid,
     modelLabel,
     dueStatus: "normal",
-    badgeLabel: `Jatuh Tempo Tgl ${dueDay}`,
+    badgeLabel: `Jatuh Tempo ${dueDay} ${targetMonthStr}`,
     badgeClass: "bg-slate-100 text-slate-700 border-slate-200"
   };
 };
