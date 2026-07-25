@@ -74,16 +74,14 @@ export default function StudentManagement() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch students with parent info (with fallback if status column is not yet present)
-      let studentData: any[] | null = null;
-      const { data: sWithStatus, error: errS } = await supabase
+      // Fetch students with parent info cleanly (200 OK)
+      const { data: studentData, error: errS } = await supabase
         .from("students")
         .select(`
           id,
           name,
           age,
           program,
-          status,
           parent_id,
           profiles (
             id,
@@ -92,31 +90,7 @@ export default function StudentManagement() {
         `)
         .order("name", { ascending: true });
 
-      if (errS && errS.code === "42703") {
-        // Column status does not exist yet in database -> fallback query
-        const { data: sWithoutStatus, error: errFallback } = await supabase
-          .from("students")
-          .select(`
-            id,
-            name,
-            age,
-            program,
-            parent_id,
-            profiles (
-              id,
-              full_name
-            )
-          `)
-          .order("name", { ascending: true });
-
-        if (errFallback) throw errFallback;
-        studentData = sWithoutStatus;
-      } else if (errS) {
-        throw errS;
-      } else {
-        studentData = sWithStatus;
-      }
-
+      if (errS) throw errS;
       setStudents((studentData as any[]) || []);
 
       // Fetch all user profiles for role management and parent linking

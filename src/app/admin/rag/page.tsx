@@ -443,7 +443,10 @@ export default function AdminRAGPage() {
           {/* Header block */}
           <div className="dashboard-topbar" style={{ marginBottom: "2rem" }}>
             <div>
-              <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>🤖 Basis Pengetahuan Chatbot AI</h1>
+              <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                <span>Basis Pengetahuan Chatbot AI</span>
+              </h1>
               <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
                 Kelola dokumen, jadwal, artikel penting, dan pengetahuan penunjang yang dipelajari dan dijawab oleh Chatbot AI.
               </p>
@@ -454,8 +457,18 @@ export default function AdminRAGPage() {
             
             {/* Form Panel */}
             <div className="portal-card" style={{ padding: "2rem", borderRadius: "12px", border: "1px solid var(--color-gray-100)" }}>
-              <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-                {editingId ? "📝 Sunting Pengetahuan AI" : "➕ Tambah Informasi Pengetahuan AI"}
+              <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+                {editingId ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    <span>Sunting Pengetahuan AI</span>
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Tambah Informasi Pengetahuan AI</span>
+                  </>
+                )}
               </h3>
               <form onSubmit={handleSubmit}>
                 <div className="form-group" style={{ marginBottom: "1.1rem" }}>

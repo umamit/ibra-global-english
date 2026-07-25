@@ -521,23 +521,26 @@ export default function AdminTaxPage() {
         <button
           onClick={() => setActiveSubTab("calculator")}
           className={`btn-portal-outline ${activeSubTab === "calculator" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.5rem", fontWeight: "700" }}
+          style={{ padding: "0.6rem 1.5rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
         >
-          🧮 Kalkulator Simulasi Pajak
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>
+          <span>Kalkulator Simulasi Pajak</span>
         </button>
         <button
           onClick={() => setActiveSubTab("archive")}
           className={`btn-portal-outline ${activeSubTab === "archive" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.5rem", fontWeight: "700" }}
+          style={{ padding: "0.6rem 1.5rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
         >
-          📂 Arsip Pelaporan SPT & PPh
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span>Arsip Pelaporan SPT & PPh</span>
         </button>
         <button
           onClick={() => setActiveSubTab("assets")}
           className={`btn-portal-outline ${activeSubTab === "assets" ? "active" : ""}`}
-          style={{ padding: "0.6rem 1.5rem", fontWeight: "700" }}
+          style={{ padding: "0.6rem 1.5rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
         >
-          📦 Kelola Aset & Penyusutan
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          <span>Kelola Aset & Penyusutan</span>
         </button>
       </div>
 
