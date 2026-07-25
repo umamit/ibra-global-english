@@ -105,8 +105,13 @@ export const RUBRIC_DATA_CALISTUNG: AspectRubric[] = [
   }
 ];
 
-export function calculateScoreFromRubric(selectedIds: string[], aspectRubrics: AspectRubric[]): Record<string, number> {
-  const scores: Record<string, number> = {
+export function calculateScoreFromRubric(selectedIds: string[], aspectRubrics: AspectRubric[]): {
+  speaking: number;
+  grammar: number;
+  vocabulary: number;
+  active: number;
+} {
+  const scores = {
     speaking: 0,
     grammar: 0,
     vocabulary: 0,
@@ -120,7 +125,7 @@ export function calculateScoreFromRubric(selectedIds: string[], aspectRubrics: A
         total += c.points;
       }
     });
-    scores[rubric.aspectKey] = Math.min(100, Math.max(0, total));
+    (scores as Record<string, number>)[rubric.aspectKey] = Math.min(100, Math.max(0, total));
   });
 
   return scores;

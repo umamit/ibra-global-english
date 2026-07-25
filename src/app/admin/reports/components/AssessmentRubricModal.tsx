@@ -205,7 +205,7 @@ export default function AssessmentRubricModal({
             }}
           >
             {rubrics.map(rubric => {
-              const score = calculatedScores[rubric.aspectKey] || 0;
+              const score = (calculatedScores as Record<string, number>)[rubric.aspectKey] || 0;
               const aspectTitle = isCalistung ? rubric.titleCalistung : rubric.titleEnglish;
 
               return (
