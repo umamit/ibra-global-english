@@ -26,9 +26,13 @@ export const getStudentSPPDueInfo = (
 ): SPPDueInfo => {
   const nameLower = (student.name || "").toLowerCase().trim();
 
-  // Custom Post-Paid students
-  const isPostPaidTgl5 = ["athira", "firman", "syafa", "yunda", "akhtar", "syauqi"].some(p => nameLower.includes(p));
-  const isNasyaPostPaid19 = nameLower.includes("nasya");
+  // Custom Post-Paid students using strict word boundary matching (\bname\b)
+  // Ensures future names like "anastasia" or "firmansyah" are NOT falsely categorized as postpaid
+  const isPostPaidTgl5 = ["athira", "firman", "syafa", "yunda", "akhtar", "syauqi"].some(p => {
+    const regex = new RegExp(`\\b${p}\\b`, "i");
+    return regex.test(nameLower);
+  });
+  const isNasyaPostPaid19 = (/\bnasya\b/i).test(nameLower);
 
   const isPostPaid = isPostPaidTgl5 || isNasyaPostPaid19;
 
@@ -90,7 +94,11 @@ export const getStudentSPPDueInfo = (
     }
   }
 
-  const dueDate = new Date(targetYear, targetMonth - 1, dueDay);
+  // Clamp dueDay to maximum days available in targetMonth (e.g. 28 for Feb 2026, 30 for April)
+  const maxDaysInTargetMonth = new Date(targetYear, targetMonth, 0).getDate();
+  const effectiveDueDay = Math.min(dueDay, maxDaysInTargetMonth);
+
+  const dueDate = new Date(targetYear, targetMonth - 1, effectiveDueDay);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
