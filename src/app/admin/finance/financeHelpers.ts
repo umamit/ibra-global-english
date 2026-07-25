@@ -475,10 +475,38 @@ export const printReceiptHTML = (
               </div>
             </div>
 
-            <div class="signature">
+            <div class="signature" style="position: relative;">
+              ${pay.status === "lunas" ? `
+                <div style="position: absolute; top: 15px; left: -10px; transform: rotate(-12deg); pointer-events: none; z-index: 2; opacity: 0.9; mix-blend-mode: multiply;">
+                  <svg width="125" height="125" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="70" cy="70" r="66" stroke="#216c7e" stroke-width="3" stroke-dasharray="6 3" />
+                    <circle cx="70" cy="70" r="60" stroke="#216c7e" stroke-width="2.5" />
+                    <circle cx="70" cy="70" r="44" stroke="#216c7e" stroke-width="1.5" />
+                    <path id="textPathTop" d="M 22,70 A 48,48 0 1,1 118,70" fill="none" />
+                    <text fill="#216c7e" font-size="8.5" font-weight="800" letter-spacing="1px">
+                      <textPath href="#textPathTop" startOffset="50%" text-anchor="middle">
+                        PT IBRA GLOBAL ENGLISH
+                      </textPath>
+                    </text>
+                    <path id="textPathBottom" d="M 118,70 A 48,48 0 0,1 22,70" fill="none" />
+                    <text fill="#216c7e" font-size="7.5" font-weight="700" letter-spacing="0.5px">
+                      <textPath href="#textPathBottom" startOffset="50%" text-anchor="middle">
+                        OFFICIAL VERIFIED
+                      </textPath>
+                    </text>
+                    <rect x="25" y="52" width="90" height="36" fill="#ffffff" rx="4" stroke="#216c7e" stroke-width="1.5" />
+                    <text x="70" y="67" text-anchor="middle" fill="#216c7e" font-size="11" font-weight="900" letter-spacing="1px">
+                      ★ LUNAS ★
+                    </text>
+                    <text x="70" y="81" text-anchor="middle" fill="#a68849" font-size="8" font-weight="800" letter-spacing="0.5px">
+                      VERIFIED &amp; VALID
+                    </text>
+                  </svg>
+                </div>
+              ` : ''}
               <p>Bobong, ${paymentDateStr}</p>
               <p style="margin-top: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Penerima / Admin,</p>
-              <span class="name">Husnita Usman, M.Pd.</span>
+              <span class="name" style="position: relative; z-index: 1;">Husnita Usman, M.Pd.</span>
               <p style="margin-top: 5px; font-size: 0.75rem; font-weight: 600; color: #64748b;">Ibra Global English</p>
             </div>
           </div>

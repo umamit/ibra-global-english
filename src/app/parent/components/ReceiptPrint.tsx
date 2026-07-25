@@ -6,6 +6,7 @@ interface PaymentRecord {
   id?: string;
   amount: number | string;
   month: string;
+  status?: string;
   payment_date?: string;
 }
 
@@ -120,10 +121,59 @@ export default function ReceiptPrint({ printReceipt, selectedChild, parentName, 
             </span>
           </div>
 
-          {/* Signature Area */}
-          <div style={{ textAlign: "center", width: "220px", fontSize: "0.85rem" }}>
-            <p style={{ margin: "0 0 4rem" }}>Bobong, {printReceipt.payment_date && printReceipt.payment_date !== "-" ? getIndonesianDate(printReceipt.payment_date) : getIndonesianDate(new Date().toISOString().split("T")[0])}</p>
-            <div style={{ borderBottom: "1px solid #333", width: "180px", margin: "0 auto 4px" }}></div>
+          {/* Signature Area with Official Digital Stamp */}
+          <div style={{ textAlign: "center", width: "240px", fontSize: "0.85rem", position: "relative" }}>
+            <p style={{ margin: "0 0 3.5rem" }}>Bobong, {printReceipt.payment_date && printReceipt.payment_date !== "-" ? getIndonesianDate(printReceipt.payment_date) : getIndonesianDate(new Date().toISOString().split("T")[0])}</p>
+
+            {/* Official Digital Stamp (Stempel LUNAS & VERIFIED) */}
+            {printReceipt.status === "lunas" && (
+              <div style={{
+                position: "absolute",
+                top: "1.2rem",
+                left: "-15px",
+                transform: "rotate(-12deg)",
+                pointerEvents: "none",
+                zIndex: 2,
+                opacity: 0.9,
+                mixBlendMode: "multiply"
+              }}>
+                <svg width="130" height="130" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {/* Outer Outer Circle */}
+                  <circle cx="70" cy="70" r="66" stroke="#216c7e" strokeWidth="3" strokeDasharray="6 3" />
+                  {/* Outer Solid Circle */}
+                  <circle cx="70" cy="70" r="60" stroke="#216c7e" strokeWidth="2.5" />
+                  {/* Inner Solid Circle */}
+                  <circle cx="70" cy="70" r="44" stroke="#216c7e" strokeWidth="1.5" />
+                  
+                  {/* Curved Top Text */}
+                  <path id="textPathTop" d="M 22,70 A 48,48 0 1,1 118,70" fill="none" />
+                  <text fill="#216c7e" fontSize="8.5" fontWeight="800" letterSpacing="1px">
+                    <textPath href="#textPathTop" startOffset="50%" textAnchor="middle">
+                      PT IBRA GLOBAL ENGLISH
+                    </textPath>
+                  </text>
+
+                  {/* Curved Bottom Text */}
+                  <path id="textPathBottom" d="M 118,70 A 48,48 0 0,1 22,70" fill="none" />
+                  <text fill="#216c7e" fontSize="7.5" fontWeight="700" letterSpacing="0.5px">
+                    <textPath href="#textPathBottom" startOffset="50%" textAnchor="middle">
+                      OFFICIAL VERIFIED
+                    </textPath>
+                  </text>
+
+                  {/* Center Content Box */}
+                  <rect x="25" y="52" width="90" height="36" fill="#ffffff" rx="4" stroke="#216c7e" strokeWidth="1.5" />
+                  <text x="70" y="67" textAnchor="middle" fill="#216c7e" fontSize="11" fontWeight="900" letterSpacing="1px">
+                    ★ LUNAS ★
+                  </text>
+                  <text x="70" y="81" textAnchor="middle" fill="#a68849" fontSize="8" fontWeight="800" letterSpacing="0.5px">
+                    VERIFIED &amp; VALID
+                  </text>
+                </svg>
+              </div>
+            )}
+
+            <div style={{ borderBottom: "1px solid #333", width: "180px", margin: "0 auto 4px", position: "relative", zIndex: 1 }}></div>
             <p style={{ fontWeight: "800", margin: "0", color: "var(--color-primary-dark)" }}>Kasir / Finance Office</p>
             <p style={{ fontSize: "0.7rem", color: "#777", margin: "0" }}>Ibra Global English Bobong</p>
           </div>
