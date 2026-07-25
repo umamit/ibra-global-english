@@ -74,8 +74,9 @@ export default function StudentManagement() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch students with parent info
-      const { data: studentData, error: errS } = await supabase
+      // Fetch students with parent info (with fallback if status column is not yet present)
+      let studentData: any[] | null = null;
+      const { data: sWithStatus, error: errS } = await supabase
         .from("students")
         .select(`
           id,
@@ -91,7 +92,31 @@ export default function StudentManagement() {
         `)
         .order("name", { ascending: true });
 
-      if (errS) throw errS;
+      if (errS && errS.code === "42703") {
+        // Column status does not exist yet in database -> fallback query
+        const { data: sWithoutStatus, error: errFallback } = await supabase
+          .from("students")
+          .select(`
+            id,
+            name,
+            age,
+            program,
+            parent_id,
+            profiles (
+              id,
+              full_name
+            )
+          `)
+          .order("name", { ascending: true });
+
+        if (errFallback) throw errFallback;
+        studentData = sWithoutStatus;
+      } else if (errS) {
+        throw errS;
+      } else {
+        studentData = sWithStatus;
+      }
+
       setStudents((studentData as any[]) || []);
 
       // Fetch all user profiles for role management and parent linking
@@ -331,7 +356,7 @@ export default function StudentManagement() {
     }
 
     try {
-      const studentPayload = {
+      const studentPayload: Record<string, any> = {
         name: name.trim(),
         age: parseInt(age),
         program,
@@ -341,17 +366,36 @@ export default function StudentManagement() {
 
       if (editingStudentId) {
         // Edit mode
-        const { error } = await supabase
+        let { error } = await supabase
           .from("students")
           .update(studentPayload)
           .eq("id", editingStudentId);
-        if (error) throw error;
+
+        if (error && error.code === "42703") {
+          delete studentPayload.status;
+          const { error: errRetry } = await supabase
+            .from("students")
+            .update(studentPayload)
+            .eq("id", editingStudentId);
+          if (errRetry) throw errRetry;
+        } else if (error) {
+          throw error;
+        }
       } else {
         // Add mode
-        const { error } = await supabase
+        let { error } = await supabase
           .from("students")
           .insert(studentPayload);
-        if (error) throw error;
+
+        if (error && error.code === "42703") {
+          delete studentPayload.status;
+          const { error: errRetry } = await supabase
+            .from("students")
+            .insert(studentPayload);
+          if (errRetry) throw errRetry;
+        } else if (error) {
+          throw error;
+        }
         posthog.capture("admin_student_enrolled", { program });
       }
 
