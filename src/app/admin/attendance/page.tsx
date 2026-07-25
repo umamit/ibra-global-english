@@ -469,6 +469,56 @@ export default function DailyAttendance() {
         </button>
       </div>
 
+      {/* Tutor Attendance Reminder Banner */}
+      {activeTab === "input" && !loading && (
+        (() => {
+          const isToday = selectedDate === new Date().toISOString().split("T")[0];
+          const filledCount = Object.values(attendanceMap).filter(e => e.isExisting).length;
+          const isComplete = filledCount > 0 && filledCount >= students.length;
+
+          if (isToday) {
+            if (isComplete) {
+              return (
+                <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "12px", padding: "1rem 1.25rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <span style={{ fontSize: "1.25rem" }}>✅</span>
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: 700, color: "#166534" }}>Absensi Hari Ini Lengkap!</h4>
+                      <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#15803d" }}>Seluruh data kehadiran {students.length} siswa untuk tanggal {selectedDate} sudah diisi oleh Tutor.</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            } else {
+              const waText = encodeURIComponent(`Halo Tutor Ibra Global English,\n\nMengingatkan untuk mengisi absensi kelas harian tanggal ${selectedDate} pada Portal Admin / Tutor. Terima kasih! 🙏`);
+              return (
+                <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "12px", padding: "1rem 1.25rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <span style={{ fontSize: "1.25rem" }}>🔔</span>
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: 700, color: "#92400e" }}>Pengingat Absensi Harian Tutor</h4>
+                      <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#b45309" }}>
+                        {filledCount > 0 ? `Baru ${filledCount} dari ${students.length} siswa terisi absensinya hari ini.` : `Absensi untuk kelas hari ini (${selectedDate}) belum diisi oleh Tutor.`}
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={`https://wa.me/?text=${waText}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-portal"
+                    style={{ backgroundColor: "#25d366", color: "#fff", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.45rem 0.9rem", fontSize: "0.82rem", borderRadius: "8px", fontWeight: 700 }}
+                  >
+                    💬 Ingatkan Tutor via WA
+                  </a>
+                </div>
+              );
+            }
+          }
+          return null;
+        })()
+      )}
+
       {statusMsg.text && (
         <div
           className={statusMsg.type === "success" ? "auth-success-banner" : "auth-error-banner"}

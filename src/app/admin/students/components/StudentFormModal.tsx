@@ -15,6 +15,7 @@ interface Props {
   name: string;
   age: string | number;
   program: string;
+  status?: string;
   parentId: string;
   parents: Parent[];
   errorMsg: string;
@@ -22,12 +23,13 @@ interface Props {
   onNameChange: React.ChangeEventHandler<HTMLInputElement>;
   onAgeChange: React.ChangeEventHandler<HTMLInputElement>;
   onProgramChange: React.ChangeEventHandler<HTMLSelectElement>;
+  onStatusChange?: React.ChangeEventHandler<HTMLSelectElement>;
   onParentIdChange: React.ChangeEventHandler<HTMLSelectElement>;
   onClose: () => void;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 }
 
-export default function StudentFormModal({ open, editing, name, age, program, parentId, parents, errorMsg, submitting, onNameChange, onAgeChange, onProgramChange, onParentIdChange, onClose, onSubmit }: Props) {
+export default function StudentFormModal({ open, editing, name, age, program, status = "aktif", parentId, parents, errorMsg, submitting, onNameChange, onAgeChange, onProgramChange, onStatusChange, onParentIdChange, onClose, onSubmit }: Props) {
   if (!open) return null;
 
   return (
@@ -45,7 +47,7 @@ export default function StudentFormModal({ open, editing, name, age, program, pa
             <label className="form-label">Nama Lengkap Siswa</label>
             <input type="text" className="form-input" placeholder="Masukkan nama lengkap siswa" required value={name} onChange={onNameChange} disabled={submitting} />
           </div>
-          <div className="form-grid">
+          <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
             <div className="form-group">
               <label className="form-label">Usia Siswa</label>
               <input type="number" className="form-input" placeholder="Contoh: 8" required value={age} onChange={onAgeChange} disabled={submitting} />
@@ -56,6 +58,15 @@ export default function StudentFormModal({ open, editing, name, age, program, pa
                 <option value="Kids Program">Kids Program</option>
                 <option value="Teens Program">Teens Program</option>
                 <option value="Fun Calistung">Fun Calistung</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Status Keaktifan</label>
+              <select className="form-input" value={status} onChange={onStatusChange} disabled={submitting}>
+                <option value="aktif">🟢 Aktif</option>
+                <option value="cuti">🟡 Cuti</option>
+                <option value="alumnus">🔵 Alumnus / Lulus</option>
+                <option value="non_aktif">⚫ Non-Aktif</option>
               </select>
             </div>
           </div>

@@ -24,6 +24,7 @@ interface StudentItem {
   name: string;
   age: number;
   program: string;
+  status?: string | null;
   parent_id?: string | null;
   profiles?: Profile | null;
   [key: string]: any;
@@ -58,11 +59,13 @@ export default function StudentManagement() {
   const [rejectModalId, setRejectModalId] = useState<string | null>(null);
   const [rejectNotes, setRejectNotes] = useState<string>("");
 
-  // Form State
+  // Filter & Form State
+  const [statusFilter, setStatusFilter] = useState<string>("semua");
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
   const [age, setAge] = useState<string>("");
   const [program, setProgram] = useState<string>("Kids Program");
+  const [studentStatus, setStudentStatus] = useState<string>("aktif");
   const [parentId, setParentId] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -79,6 +82,7 @@ export default function StudentManagement() {
           name,
           age,
           program,
+          status,
           parent_id,
           profiles (
             id,
@@ -298,6 +302,7 @@ export default function StudentManagement() {
     setName("");
     setAge("");
     setProgram("Kids Program");
+    setStudentStatus("aktif");
     setParentId("");
     setErrorMsg("");
     setModalOpen(true);
@@ -308,6 +313,7 @@ export default function StudentManagement() {
     setName(student.name);
     setAge(student.age.toString());
     setProgram(student.program);
+    setStudentStatus(student.status || "aktif");
     setParentId(student.parent_id || "");
     setErrorMsg("");
     setModalOpen(true);
@@ -329,6 +335,7 @@ export default function StudentManagement() {
         name: name.trim(),
         age: parseInt(age),
         program,
+        status: studentStatus,
         parent_id: parentId || null,
       };
 
@@ -474,6 +481,38 @@ export default function StudentManagement() {
         </div>
       ) : activeTab === "students" ? (
         <div className="table-wrapper">
+          {/* Status Filter Bar */}
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem", flexWrap: "wrap", alignItems: "center" }}>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-gray-700)", marginRight: "0.25rem" }}>Filter Status:</span>
+            {[
+              { id: "semua", label: `Semua (${students.length})` },
+              { id: "aktif", label: `🟢 Aktif (${students.filter(s => (s.status || "aktif") === "aktif").length})` },
+              { id: "cuti", label: `🟡 Cuti (${students.filter(s => s.status === "cuti").length})` },
+              { id: "alumnus", label: `🔵 Alumnus (${students.filter(s => s.status === "alumnus").length})` },
+              { id: "non_aktif", label: `⚫ Non-Aktif (${students.filter(s => s.status === "non_aktif").length})` },
+            ].map(f => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setStatusFilter(f.id)}
+                style={{
+                  padding: "0.35rem 0.75rem",
+                  fontSize: "0.8rem",
+                  fontWeight: statusFilter === f.id ? 800 : 600,
+                  borderRadius: "20px",
+                  border: "1px solid",
+                  borderColor: statusFilter === f.id ? "var(--color-primary)" : "var(--color-gray-300)",
+                  backgroundColor: statusFilter === f.id ? "var(--color-primary-light)" : "var(--color-surface)",
+                  color: statusFilter === f.id ? "var(--color-primary-dark)" : "var(--color-gray-700)",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
           <table className="portal-table student-table">
             <thead>
               <tr>
@@ -481,62 +520,81 @@ export default function StudentManagement() {
                 <th>Nama Siswa</th>
                 <th>Usia</th>
                 <th>Program Kursus</th>
+                <th>Status</th>
                 <th>Orang Tua Terhubung</th>
                 <th style={{ textAlign: "right" }}>Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {students.length === 0 ? (
+              {students.filter(s => statusFilter === "semua" ? true : (s.status || "aktif") === statusFilter).length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
-                    Belum ada data siswa terdaftar. Klik &ldquo;Tambah Siswa&rdquo; untuk memulai!
+                  <td colSpan={7} style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+                    Tidak ada siswa ditemukan untuk filter ini. Klik &ldquo;Tambah Siswa&rdquo; untuk membuat baru!
                   </td>
                 </tr>
               ) : (
-                students.map((student, idx) => (
-                  <tr key={student.id}>
-                    <td style={{ fontWeight: "700" }}>{idx + 1}</td>
-                    <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{student.name}</td>
-                    <td>{student.age} Tahun</td>
-                    <td>
-                      <span className="user-badge" style={{ backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", padding: "0.25rem 0.65rem", fontWeight: "700" }}>
-                        {student.program}
-                      </span>
-                    </td>
-                    <td>
-                      {student.profiles ? (
-                        <span style={{ color: "var(--color-green)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                          {student.profiles.full_name}
-                        </span>
-                      ) : (
-                        <span style={{ color: "var(--color-gray-500)", fontStyle: "italic" }}>
-                          Belum dipasangkan
-                        </span>
-                      )}
-                    </td>
-                    <td style={{ textAlign: "right" }}>
-                      <div style={{ display: "inline-flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                        <button
-                          className="btn-portal-outline"
-                          style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
-                          onClick={() => handleOpenEditModal(student)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                          <span>Edit</span>
-                        </button>
-                        <button
-                          className="btn-portal-danger"
-                          style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
-                          onClick={() => handleDeleteStudent(student.id, student.name)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                          <span>Hapus</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                students
+                  .filter(s => statusFilter === "semua" ? true : (s.status || "aktif") === statusFilter)
+                  .map((student, idx) => {
+                    const st = student.status || "aktif";
+                    const statusBadgeMap: Record<string, { label: string; bg: string; color: string }> = {
+                      aktif: { label: "🟢 Aktif", bg: "#d1fae5", color: "#065f46" },
+                      cuti: { label: "🟡 Cuti", bg: "#fef3c7", color: "#92400e" },
+                      alumnus: { label: "🔵 Alumnus", bg: "#dbeafe", color: "#1e40af" },
+                      non_aktif: { label: "⚫ Non-Aktif", bg: "#f1f5f9", color: "#475569" }
+                    };
+                    const stInfo = statusBadgeMap[st] || statusBadgeMap.aktif;
+
+                    return (
+                      <tr key={student.id}>
+                        <td style={{ fontWeight: "700" }}>{idx + 1}</td>
+                        <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{student.name}</td>
+                        <td>{student.age} Tahun</td>
+                        <td>
+                          <span className="user-badge" style={{ backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", padding: "0.25rem 0.65rem", fontWeight: "700" }}>
+                            {student.program}
+                          </span>
+                        </td>
+                        <td>
+                          <span style={{ backgroundColor: stInfo.bg, color: stInfo.color, padding: "0.25rem 0.65rem", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "800", display: "inline-block" }}>
+                            {stInfo.label}
+                          </span>
+                        </td>
+                        <td>
+                          {student.profiles ? (
+                            <span style={{ color: "var(--color-green)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                              {student.profiles.full_name}
+                            </span>
+                          ) : (
+                            <span style={{ color: "var(--color-gray-500)", fontStyle: "italic" }}>
+                              Belum dipasangkan
+                            </span>
+                          )}
+                        </td>
+                        <td style={{ textAlign: "right" }}>
+                          <div style={{ display: "inline-flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+                            <button
+                              className="btn-portal-outline"
+                              style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
+                              onClick={() => handleOpenEditModal(student)}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                              <span>Edit</span>
+                            </button>
+                            <button
+                              className="btn-portal-danger"
+                              style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
+                              onClick={() => handleDeleteStudent(student.id, student.name)}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                              <span>Hapus</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
               )}
             </tbody>
           </table>
@@ -771,7 +829,7 @@ export default function StudentManagement() {
       )}
 
       <RejectModal rejectModalId={rejectModalId} rejectNotes={rejectNotes} setRejectNotes={setRejectNotes} onClose={() => setRejectModalId(null)} onConfirm={handleReject} />
-      <StudentFormModal open={modalOpen} editing={!!editingStudentId} name={name} age={age} program={program} parentId={parentId} parents={parents as any} errorMsg={errorMsg} submitting={submitting} onNameChange={(e) => setName(e.target.value)} onAgeChange={(e) => setAge(e.target.value)} onProgramChange={(e) => setProgram(e.target.value)} onParentIdChange={(e) => setParentId(e.target.value)} onClose={() => setModalOpen(false)} onSubmit={handleSaveStudent} />
+      <StudentFormModal open={modalOpen} editing={!!editingStudentId} name={name} age={age} program={program} status={studentStatus} parentId={parentId} parents={parents as any} errorMsg={errorMsg} submitting={submitting} onNameChange={(e) => setName(e.target.value)} onAgeChange={(e) => setAge(e.target.value)} onProgramChange={(e) => setProgram(e.target.value)} onStatusChange={(e) => setStudentStatus(e.target.value)} onParentIdChange={(e) => setParentId(e.target.value)} onClose={() => setModalOpen(false)} onSubmit={handleSaveStudent} />
     </div>
   );
 }
