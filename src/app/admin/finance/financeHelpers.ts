@@ -55,7 +55,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "lunas",
-      badgeLabel: "✓ Sudah Lunas",
+      badgeLabel: "Sudah Lunas",
       badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300"
     };
   }
@@ -66,7 +66,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "menunggu_konfirmasi",
-      badgeLabel: "⏳ Menunggu Verifikasi",
+      badgeLabel: "Menunggu Verifikasi",
       badgeClass: "bg-amber-100 text-amber-800 border-amber-300"
     };
   }
@@ -115,7 +115,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "due_today",
-      badgeLabel: `⚠️ HARI H (${dueDay} ${targetMonthStr})`,
+      badgeLabel: `HARI H (${dueDay} ${targetMonthStr})`,
       badgeClass: "bg-amber-500 text-white font-bold animate-pulse"
     };
   }
@@ -126,7 +126,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "due_soon",
-      badgeLabel: `⏰ H-${diffDays} (${dueDay} ${targetMonthStr})`,
+      badgeLabel: `H-${diffDays} (${dueDay} ${targetMonthStr})`,
       badgeClass: "bg-amber-100 text-amber-900 border-amber-400 font-semibold",
       daysRemaining: diffDays
     };
@@ -138,7 +138,7 @@ export const getStudentSPPDueInfo = (
       isPostPaid,
       modelLabel,
       dueStatus: "overdue",
-      badgeLabel: `🚨 Lewat ${dueDay} ${targetMonthStr}`,
+      badgeLabel: `Lewat ${dueDay} ${targetMonthStr}`,
       badgeClass: "bg-rose-100 text-rose-800 border-rose-300 font-semibold"
     };
   }

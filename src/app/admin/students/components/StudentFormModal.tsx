@@ -63,10 +63,10 @@ export default function StudentFormModal({ open, editing, name, age, program, st
             <div className="form-group">
               <label className="form-label">Status Keaktifan</label>
               <select className="form-input" value={status} onChange={onStatusChange} disabled={submitting}>
-                <option value="aktif">🟢 Aktif</option>
-                <option value="cuti">🟡 Cuti</option>
-                <option value="alumnus">🔵 Alumnus / Lulus</option>
-                <option value="non_aktif">⚫ Non-Aktif</option>
+                <option value="aktif">Aktif</option>
+                <option value="cuti">Cuti</option>
+                <option value="alumnus">Alumnus / Lulus</option>
+                <option value="non_aktif">Non-Aktif</option>
               </select>
             </div>
           </div>

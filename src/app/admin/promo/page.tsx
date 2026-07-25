@@ -166,8 +166,9 @@ export default function AdminPromoPage() {
     <div style={{ maxWidth: "780px", margin: "0 auto", padding: "2rem 1rem" }}>
       {/* Header */}
       <div style={{ marginBottom: "2rem" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0 }}>
-          🎯 Kelola Promo Popup
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0, display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--color-primary)" }}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span>Kelola Promo Popup</span>
         </h1>
         <p style={{ color: "var(--color-gray-500)", margin: "0.3rem 0 0", fontSize: "0.9rem" }}>
           Popup promosi akan muncul otomatis kepada pengunjung 3 detik setelah membuka halaman.
@@ -203,8 +204,9 @@ export default function AdminPromoPage() {
           <div style={{ ...cardStyle, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
             <div>
               <p style={{ margin: 0, fontWeight: 700, fontSize: "1rem" }}>Status Popup</p>
-              <p style={{ margin: "0.2rem 0 0", fontSize: "0.875rem", color: "var(--color-gray-500)" }}>
-                {isActive ? "🟢 Popup sedang aktif dan terlihat pengunjung" : "⚫ Popup nonaktif, tidak ditampilkan"}
+              <p style={{ margin: "0.2rem 0 0", fontSize: "0.875rem", color: "var(--color-gray-500)", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: isActive ? "#10b981" : "#64748b", display: "inline-block" }}></span>
+                <span>{isActive ? "Popup sedang aktif dan terlihat pengunjung" : "Popup nonaktif, tidak ditampilkan"}</span>
               </p>
             </div>
             <button
@@ -223,13 +225,16 @@ export default function AdminPromoPage() {
                 transition: "all 0.2s",
               }}
             >
-              {isActive ? "✓ Aktif" : "Nonaktif"}
+              {isActive ? "Aktif" : "Nonaktif"}
             </button>
           </div>
 
           {/* Form Edit Konten */}
           <div style={cardStyle}>
-            <h2 style={{ margin: "0 0 1.25rem", fontSize: "1rem", fontWeight: 700 }}>✏️ Konten Popup</h2>
+            <h2 style={{ margin: "0 0 1.25rem", fontSize: "1rem", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span>Konten Popup</span>
+            </h2>
 
             {/* Judul */}
             <div style={{ marginBottom: "1rem" }}>
@@ -374,13 +379,16 @@ export default function AdminPromoPage() {
                 transition: "background 0.2s",
               }}
             >
-              {saving ? "Menyimpan..." : "💾 Simpan Perubahan"}
+              {saving ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
           </div>
 
           {/* Preview */}
           <div style={cardStyle}>
-            <h2 style={{ margin: "0 0 1rem", fontSize: "1rem", fontWeight: 700 }}>👁️ Preview Popup</h2>
+            <h2 style={{ margin: "0 0 1rem", fontSize: "1rem", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Preview Popup</span>
+            </h2>
             <div style={{
               border: "1px solid var(--color-gray-200)",
               borderRadius: "16px",

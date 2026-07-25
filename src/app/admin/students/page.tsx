@@ -485,11 +485,11 @@ export default function StudentManagement() {
           <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem", flexWrap: "wrap", alignItems: "center" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-gray-700)", marginRight: "0.25rem" }}>Filter Status:</span>
             {[
-              { id: "semua", label: `Semua (${students.length})` },
-              { id: "aktif", label: `🟢 Aktif (${students.filter(s => (s.status || "aktif") === "aktif").length})` },
-              { id: "cuti", label: `🟡 Cuti (${students.filter(s => s.status === "cuti").length})` },
-              { id: "alumnus", label: `🔵 Alumnus (${students.filter(s => s.status === "alumnus").length})` },
-              { id: "non_aktif", label: `⚫ Non-Aktif (${students.filter(s => s.status === "non_aktif").length})` },
+              { id: "semua", label: "Semua", count: students.length },
+              { id: "aktif", label: "Aktif", count: students.filter(s => (s.status || "aktif") === "aktif").length },
+              { id: "cuti", label: "Cuti", count: students.filter(s => s.status === "cuti").length },
+              { id: "alumnus", label: "Alumnus", count: students.filter(s => s.status === "alumnus").length },
+              { id: "non_aktif", label: "Non-Aktif", count: students.filter(s => s.status === "non_aktif").length },
             ].map(f => (
               <button
                 key={f.id}
@@ -508,7 +508,7 @@ export default function StudentManagement() {
                   transition: "all 0.2s ease"
                 }}
               >
-                {f.label}
+                {f.label} ({f.count})
               </button>
             ))}
           </div>
@@ -537,11 +537,31 @@ export default function StudentManagement() {
                   .filter(s => statusFilter === "semua" ? true : (s.status || "aktif") === statusFilter)
                   .map((student, idx) => {
                     const st = student.status || "aktif";
-                    const statusBadgeMap: Record<string, { label: string; bg: string; color: string }> = {
-                      aktif: { label: "🟢 Aktif", bg: "#d1fae5", color: "#065f46" },
-                      cuti: { label: "🟡 Cuti", bg: "#fef3c7", color: "#92400e" },
-                      alumnus: { label: "🔵 Alumnus", bg: "#dbeafe", color: "#1e40af" },
-                      non_aktif: { label: "⚫ Non-Aktif", bg: "#f1f5f9", color: "#475569" }
+                    const statusBadgeMap: Record<string, { label: string; bg: string; color: string; icon: React.ReactNode }> = {
+                      aktif: {
+                        label: "Aktif",
+                        bg: "#d1fae5",
+                        color: "#065f46",
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      },
+                      cuti: {
+                        label: "Cuti",
+                        bg: "#fef3c7",
+                        color: "#92400e",
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      },
+                      alumnus: {
+                        label: "Alumnus",
+                        bg: "#dbeafe",
+                        color: "#1e40af",
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                      },
+                      non_aktif: {
+                        label: "Non-Aktif",
+                        bg: "#f1f5f9",
+                        color: "#475569",
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                      }
                     };
                     const stInfo = statusBadgeMap[st] || statusBadgeMap.aktif;
 
@@ -556,8 +576,9 @@ export default function StudentManagement() {
                           </span>
                         </td>
                         <td>
-                          <span style={{ backgroundColor: stInfo.bg, color: stInfo.color, padding: "0.25rem 0.65rem", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "800", display: "inline-block" }}>
-                            {stInfo.label}
+                          <span style={{ backgroundColor: stInfo.bg, color: stInfo.color, padding: "0.25rem 0.65rem", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "800", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                            {stInfo.icon}
+                            <span>{stInfo.label}</span>
                           </span>
                         </td>
                         <td>
