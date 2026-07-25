@@ -13,10 +13,14 @@
 /* ──── Shared: Sembunyikan elemen UI saat print ──── */
 @media print {
   .no-print,
+  .global-topbar,
+  .dashboard-topbar,
   .dashboard-sidebar,
+  .admin-sidebar,
   .mobile-toggle-btn,
   .mobile-nav-toggle,
   .topbar-user,
+  .topbar-title,
   .btn-portal-primary,
   .btn-portal-outline,
   .btn-portal-danger,
@@ -26,11 +30,22 @@
   .dashboard-topbar .topbar-user,
   /* Sembunyikan PromoPopup & backdrop saat print */
   [role="dialog"],
-  [aria-hidden="true"] {
+  [aria-hidden="true"],
+  header,
+  aside,
+  nav {
     display: none !important;
   }
 
-  body, .dashboard-container, .dashboard-main {
+  body {
+    visibility: hidden !important;
+    background-color: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+  }
+
+  .dashboard-container, .dashboard-main {
     background-color: white !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -39,24 +54,27 @@
   }
 
   .printable-report,
-  .printable-receipt {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  .printable-report * {
+    visibility: visible !important;
   }
-}
 
-/* Fallback jika body class tidak tersedia */
-@media print {
   .printable-report {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
+    margin: 0 !important;
     color: black !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
+}
 
   .report-header-section {
     display: flex;

@@ -58,38 +58,38 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
         </h3>
 
         {/* Grid Layout containing Score Cards on Left and visual SVG Radar Chart on Right */}
-        <div className="report-scores-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center", marginBottom: "2.5rem" }}>
+        <div className="report-scores-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", alignItems: "center", marginBottom: "1.75rem" }}>
           
-          {/* Scores List */}
-          <div className="form-grid" style={{ gap: "1rem", marginBottom: 0 }}>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
-              <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+          {/* 4 Scores Grid 2x2 */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
+              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
                 {isCalistung ? "Membaca" : "Speaking"}
               </p>
             </div>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.grammar_score}</p>
-              <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.grammar_score}</p>
+              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
                 {isCalistung ? "Menulis" : "Grammar"}
               </p>
             </div>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.vocabulary_score}</p>
-              <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.vocabulary_score}</p>
+              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
                 {isCalistung ? "Berhitung" : "Vocabulary"}
               </p>
             </div>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "1.25rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.active_score}</p>
-              <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "4px" }}>
+            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
+              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.active_score}</p>
+              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
                 {isCalistung ? "Keaktifan" : "Active"}
               </p>
             </div>
           </div>
 
           {/* Visual SVG Radar Chart */}
-          <div>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <RadarChart 
               speaking={printReport.speaking_score} 
               grammar={printReport.grammar_score} 
@@ -101,24 +101,24 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
 
         </div>
 
-        <h3 style={{ fontSize: "1.1rem", fontWeight: "800", borderBottom: "1.5px solid var(--color-gray-300)", paddingBottom: "0.5rem", marginBottom: "1rem", color: "var(--color-gray-800)" }}>
+        <h3 style={{ fontSize: "1rem", fontWeight: "800", borderBottom: "1.5px solid var(--color-gray-300)", paddingBottom: "0.4rem", marginBottom: "0.75rem", color: "var(--color-gray-800)" }}>
           B. ULASAN & CATATAN MASUKAN TUTOR
         </h3>
 
-        <div className="report-notes-container" style={{ borderLeft: "4px solid var(--color-accent)", margin: "1.5rem 0 3rem", backgroundColor: "var(--color-gray-50)", padding: "1.25rem", borderRadius: "0 8px 8px 0" }}>
-          <p style={{ fontSize: "0.95rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.6", margin: "0" }}>
+        <div className="report-notes-container" style={{ borderLeft: "4px solid var(--color-accent)", margin: "1rem 0 2rem", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "0 8px 8px 0" }}>
+          <p style={{ fontSize: "0.9rem", color: "var(--color-gray-700)", fontStyle: "italic", lineHeight: "1.5", margin: "0" }}>
             &ldquo;{printReport.tutor_notes || "Siswa menunjukkan pemahaman yang luar biasa serta keaktifan tinggi selama pengerjaan modul bimbingan ini. Terus latih kemampuan bercakapnya."}&rdquo;
           </p>
         </div>
 
         {/* Signature Block */}
-        <div className="signature-block" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", marginTop: "4rem" }}>
+        <div className="signature-block" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", marginTop: "2.5rem" }}>
           <div style={{ textAlign: "center" }}>
-            <p style={{ margin: "0 0 4.5rem" }}>Mengetahui,<br /><strong>Orang Tua / Wali Siswa</strong></p>
+            <p style={{ margin: "0 0 3.5rem", fontSize: "0.9rem" }}>Mengetahui,<br /><strong>Orang Tua / Wali Siswa</strong></p>
             <p style={{ margin: "0", fontWeight: "bold" }}>___________________________</p>
           </div>
           <div style={{ textAlign: "center" }}>
-            <p style={{ margin: "0 0 4.5rem" }}>Bobong, Pulau Taliabu<br /><strong>Tutor Pendamping</strong></p>
+            <p style={{ margin: "0 0 3.5rem", fontSize: "0.9rem" }}>Bobong, Pulau Taliabu<br /><strong>Tutor Pendamping</strong></p>
             <p style={{ margin: "0", fontWeight: "bold" }}>___________________________</p>
             <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", margin: "4px 0 0" }}>Ibra Global English</p>
           </div>
