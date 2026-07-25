@@ -41,9 +41,10 @@ export default function TermsPage() {
         </h2>
         <p>
           - Biaya bimbingan belajar/SPP bulanan ditentukan secara spesifik berdasarkan program belajar aktif siswa (Kids Program, Teens Program, atau Fun Calistung).<br />
-          - Pembayaran SPP bulanan wajib diselesaikan selambat-lambatnya menyesuaikan dengan tanggal awal masuk/mulai kursus masing-masing siswa di setiap bulannya.<br />
-          - Pembayaran dilakukan melalui metode Transfer Bank ke rekening yang tertera di portal Orang Tua, atau dibayar Tunai secara langsung di kantor pendaftaran.<br />
-          - Wali murid wajib mengunggah foto bukti transfer yang valid ke dalam sistem portal Orang Tua sebagai tanda konfirmasi pembayaran. Status penagihan akan berubah menjadi **LUNAS** setelah diverifikasi oleh admin keuangan.
+          - **Model Pembayaran Pre-Paid (Standar):** Pembayaran SPP bulanan dilakukan di awal bulan bimbingan, jatuh tempo menyesuaikan dengan tanggal pendaftaran masuk siswa di setiap bulannya.<br />
+          - **Model Pembayaran Post-Paid (Khusus Kesepakatan):** Siswa mengikuti bimbingan kursus terlebih dahulu selama 1 bulan berjalan, dan pelunasan SPP diselesaikan pada tanggal kesepakatan khusus (misalnya setiap tanggal 5 atau 19 di bulan berikutnya).<br />
+          - Pembayaran dilakukan melalui metode Transfer Bank ke rekening resmi PT Ibra Global English yang tertera di portal Orang Tua, atau dibayar Tunai di kantor pendaftaran.<br />
+          - Wali murid wajib mengunggah foto bukti transfer yang valid ke dalam sistem portal Orang Tua sebagai tanda konfirmasi pembayaran. Status penagihan akan resmi berubah menjadi **LUNAS** setelah diverifikasi oleh admin keuangan.
         </p>
       </section>
 
