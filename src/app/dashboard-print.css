@@ -74,7 +74,6 @@
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-}
 
   .report-header-section {
     display: flex;
