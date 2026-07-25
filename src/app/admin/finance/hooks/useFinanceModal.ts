@@ -6,13 +6,15 @@ import { useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import posthog from "posthog-js";
 
-import { Student } from "@/types";
+import { Student, Payment } from "@/types";
 
 export const useFinanceModal = (
   fetchData: () => void,
   selectedMonth: string,
   sppPrices: Record<string, number>,
-  showToast: (msg: string, type?: "success" | "error") => void
+  showToast: (msg: string, type?: "success" | "error") => void,
+  students: Student[] = [],
+  payments: Payment[] = []
 ) => {
   const supabase = createClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,12 +60,16 @@ export const useFinanceModal = (
   };
 
   const handleOpenEditModal = (student: Student) => {
-    const pay = getStudentPayment(student.id, [], [], selectedMonth, sppPrices);
-    const program = student?.program || "Kids Program";
-    const baseAmount = sppPrices[program] || 300000;
+    const program = student?.program || "";
+    const programLower = program.toLowerCase();
+    const defaultPrice = programLower.includes("calistung") ? 350000 : 300000;
+    const matchedKey = Object.keys(sppPrices).find(k => k.toLowerCase() === programLower);
+    const baseAmount = matchedKey ? sppPrices[matchedKey] : (sppPrices[program] || defaultPrice);
+
+    const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
 
     setSelectedStudent(student);
-    setModalAmount(pay.amount || baseAmount);
+    setModalAmount(pay.status === "belum_bayar" ? baseAmount : (pay.amount || baseAmount));
     setModalStatus(pay.status || "belum_bayar");
     setModalMethod(pay.payment_method || "Transfer Bank");
     setModalReceiptUrl(pay.receipt_url || "");

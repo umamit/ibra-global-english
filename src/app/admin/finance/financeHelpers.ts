@@ -162,17 +162,12 @@ export const getStudentPayment = (
   sppPrices: Record<string, number>
 ): PaymentResult => {
   const student = students.find((s: Student) => s.id === studentId);
-  if (!student) {
-    return {
-      amount: 300000,
-      status: "belum_bayar",
-      payment_method: "Transfer Bank",
-      receipt_url: ""
-    };
-  }
+  const program = student?.program || "";
+  const programLower = program.toLowerCase();
 
-  const program = student.program || "Kids Program";
-  const baseAmount = sppPrices[program] || 300000;
+  const defaultPrice = programLower.includes("calistung") ? 350000 : 300000;
+  const matchedKey = Object.keys(sppPrices).find(k => k.toLowerCase() === programLower);
+  const baseAmount = matchedKey ? sppPrices[matchedKey] : (sppPrices[program] || defaultPrice);
 
   const pay = payments.find((p: Payment) => p.student_id === studentId);
   if (pay) {

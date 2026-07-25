@@ -138,7 +138,7 @@ export default function AdminFinance() {
     handleOpenEditModal,
     handleSavePayment,
     handleQuickConfirmLunas
-  } = useFinanceModal(fetchData, selectedMonth, sppPrices, showToast);
+  } = useFinanceModal(fetchData, selectedMonth, sppPrices, showToast, students, payments);
   // Fetch configured SPP fee amounts on mount
   useEffect(() => {
     async function fetchSppPrices(): Promise<void> {
