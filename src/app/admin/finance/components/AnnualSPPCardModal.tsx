@@ -352,7 +352,7 @@ export default function AnnualSPPCardModal({
                     {m.status === "lunas" && <span className="badge-lunas" style={{ background: "#d1fae5", color: "#065f46", fontSize: "0.65rem", fontWeight: 800, padding: "2px 6px", borderRadius: "4px" }}>LUNAS</span>}
                     {m.status === "menunggu_konfirmasi" && <span className="badge-pending" style={{ background: "#fef3c7", color: "#92400e", fontSize: "0.65rem", fontWeight: 800, padding: "2px 6px", borderRadius: "4px" }}>KONFIRMASI</span>}
                     {m.status === "belum_bayar" && <span className="badge-unpaid" style={{ background: "#ffe4e6", color: "#9f1239", fontSize: "0.65rem", fontWeight: 800, padding: "2px 6px", borderRadius: "4px" }}>BELUM BAYAR</span>}
-                    {m.status === "belum_masuk" && <span className="badge-skip" style={{ background: "#f1f5f9", color: "#64748b", fontSize: "0.65rem", fontWeight: 600, padding: "2px 6px", borderRadius: "4px" }}>BELUM DASAR</span>}
+                    {m.status === "belum_masuk" && <span className="badge-skip" style={{ background: "#f1f5f9", color: "#64748b", fontSize: "0.65rem", fontWeight: 600, padding: "2px 6px", borderRadius: "4px" }}>BELUM BERGABUNG</span>}
                   </div>
                   <div className="month-detail" style={{ fontSize: "0.72rem", color: "#475569", lineHeight: 1.3 }}>
                     <div>Nominal: <strong>{formatRupiah(m.amount)}</strong></div>
