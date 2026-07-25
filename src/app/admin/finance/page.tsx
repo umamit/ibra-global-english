@@ -10,6 +10,7 @@ import FinanceTable from "./components/FinanceTable";
 import FinanceModal from "./components/FinanceModal";
 import FinanceAnalytics from "./components/FinanceAnalytics";
 import FinanceWaModal from "./components/FinanceWaModal";
+import AnnualSPPCardModal from "./components/AnnualSPPCardModal";
 import { getMonthName, terbilang, formatRupiah, getCurrentMonth } from "../utils";
 import ToastNotification from "../components/ToastNotification";
 import { getStudentPayment, exportPaymentsCSV, printReceiptHTML, getStudentSPPDueInfo } from "./financeHelpers";
@@ -43,6 +44,15 @@ export default function AdminFinance() {
   const [waModalOpen, setWaModalOpen] = useState<boolean>(false);
   const [waStudent, setWaStudent] = useState<Student | null>(null);
   const [waPayment, setWaPayment] = useState<any | null>(null);
+
+  // Annual Card Modal States
+  const [annualModalOpen, setAnnualModalOpen] = useState<boolean>(false);
+  const [annualStudent, setAnnualStudent] = useState<Student | null>(null);
+
+  const handleOpenAnnualCardModal = (student: Student) => {
+    setAnnualStudent(student);
+    setAnnualModalOpen(true);
+  };
   const [sppPrices, setSppPrices] = useState<Record<string, number>>({
     "Kids Program": 300000,
     "Teens Program": 300000,
@@ -473,6 +483,7 @@ export default function AdminFinance() {
             onPrintReceipt={handlePrintReceipt}
             onEditPayment={handleOpenEditModal}
             onTriggerWaBilling={handleOpenWaBillingModal}
+            onViewAnnualCard={handleOpenAnnualCardModal}
             currentPage={currentPage}
             pageSize={pageSize}
             totalStudents={filteredStudents.length}
@@ -531,6 +542,17 @@ export default function AdminFinance() {
         setWaModalOpen(false);
         showToast(msg);
       }}
+    />
+
+    {/* ANNUAL SPP CARD 12-MONTH MATRIX MODAL */}
+    <AnnualSPPCardModal
+      isOpen={annualModalOpen}
+      onClose={() => setAnnualModalOpen(false)}
+      student={annualStudent}
+      allPayments={allPayments}
+      sppPrices={sppPrices}
+      formatRupiah={formatRupiah}
+      selectedYear={selectedMonth ? selectedMonth.substring(0, 4) : "2026"}
     />
 
   </div>

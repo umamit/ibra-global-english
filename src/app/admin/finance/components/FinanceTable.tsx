@@ -23,6 +23,7 @@ interface FinanceTableProps {
   onPrintReceipt: (student: Student, pay: PaymentResult) => void;
   onEditPayment: (student: Student) => void;
   onTriggerWaBilling: (student: Student, pay: PaymentResult) => void;
+  onViewAnnualCard?: (student: Student) => void;
   currentPage: number;
   pageSize: number;
   totalStudents: number;
@@ -44,6 +45,7 @@ export default function FinanceTable({
   onPrintReceipt,
   onEditPayment,
   onTriggerWaBilling,
+  onViewAnnualCard,
   currentPage,
   pageSize,
   totalStudents,
@@ -176,6 +178,16 @@ export default function FinanceTable({
                     >
                       Kelola SPP
                     </button>
+                    {onViewAnnualCard && (
+                      <button
+                        onClick={() => onViewAnnualCard(student)}
+                        className="btn-portal-outline"
+                        style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem", borderColor: "var(--color-primary)", color: "var(--color-primary)" }}
+                        title="Lihat Rekapitulasi Kartu SPP 12 Bulan"
+                      >
+                        📋 Kartu SPP
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
