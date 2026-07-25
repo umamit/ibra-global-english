@@ -3,7 +3,7 @@
    ========================================================================== */
 
 .about-wrapper {
-  padding-top: 80px; /* Header spacing */
+  padding-top: 135px; /* Header + Marquee clearance */
   background-color: var(--color-gray-50);
 }
 
