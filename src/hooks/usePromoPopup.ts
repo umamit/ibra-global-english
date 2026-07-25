@@ -17,18 +17,15 @@ export function usePromoPopup() {
   const pathname = usePathname();
   const [banner, setBanner] = useState<PromoBanner | null>(null);
   const [visible, setVisible] = useState(false);
-  const [isExcluded, setIsExcluded] = useState(true);
 
   useEffect(() => {
+    if (!pathname) return;
     const isExcludedPath = EXCLUDED_PATHS.some((p) => pathname.startsWith(p));
     const isDigitalSubdomain = typeof window !== "undefined" && (
       window.location.hostname.startsWith("digital.")
     );
-    setIsExcluded(isExcludedPath || isDigitalSubdomain);
-  }, [pathname]);
 
-  useEffect(() => {
-    if (isExcluded) return;
+    if (isExcludedPath || isDigitalSubdomain) return;
     if (typeof window !== "undefined" && sessionStorage.getItem(SESSION_KEY)) return;
 
     let timer: NodeJS.Timeout;
@@ -51,7 +48,7 @@ export function usePromoPopup() {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [isExcluded]);
+  }, [pathname]);
 
   const dismiss = () => {
     setVisible(false);

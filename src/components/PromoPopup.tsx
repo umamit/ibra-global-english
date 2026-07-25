@@ -1,12 +1,17 @@
 "use client";
 
-import React from "react";
+import { usePathname } from "next/navigation";
 import { usePromoPopup } from "@/hooks/usePromoPopup";
 
+const EXCLUDED_PATHS = ["/admin", "/student", "/parent", "/tutor", "/login", "/auth", "/digital-agency"];
+
 export default function PromoPopup() {
+  const pathname = usePathname();
   const { banner, visible, dismiss } = usePromoPopup();
 
-  if (!visible || !banner) return null;
+  const isExcludedPath = pathname ? EXCLUDED_PATHS.some((p) => pathname.startsWith(p)) : false;
+
+  if (isExcludedPath || !visible || !banner) return null;
 
   return (
     <>
