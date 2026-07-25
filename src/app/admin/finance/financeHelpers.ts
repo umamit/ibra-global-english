@@ -25,21 +25,25 @@ export const getStudentSPPDueInfo = (
   selectedMonth: string // format "YYYY-MM" (misal "2026-07")
 ): SPPDueInfo => {
   const nameLower = (student.name || "").toLowerCase().trim();
-  const isPostPaidCustom = CUSTOM_POSTPAID_NAME_PATTERNS.some(p => nameLower.includes(p));
 
-  // Determine Due Day of Month
+  // Custom Post-Paid students
+  const isPostPaidTgl5 = ["athira", "firman", "syafa", "yunda", "akhtar", "syauqi"].some(p => nameLower.includes(p));
+  const isNasyaPostPaid19 = nameLower.includes("nasya");
+
+  const isPostPaid = isPostPaidTgl5 || isNasyaPostPaid19;
+
   let dueDay = 5;
-  let isPostPaid = isPostPaidCustom;
-
-  if (!isPostPaidCustom) {
-    if (student.created_at) {
-      dueDay = new Date(student.created_at).getDate();
-    } else {
-      dueDay = 5; // Default fallback
-    }
+  if (isNasyaPostPaid19) {
+    dueDay = 19;
+  } else if (isPostPaidTgl5) {
+    dueDay = 5;
+  } else if (student.created_at) {
+    dueDay = new Date(student.created_at).getDate();
   }
 
-  const modelLabel = isPostPaid ? "Post-Paid (Kursus Dulu, Bayar Tgl 5 Bln Depan)" : "Pre-Paid (Bayar Awal)";
+  const modelLabel = isPostPaid
+    ? `Post-Paid (Kursus Dulu, Bayar Tgl ${dueDay} Bln Depan)`
+    : "Pre-Paid (Bayar Awal)";
 
   if (paymentStatus === "lunas") {
     return {
