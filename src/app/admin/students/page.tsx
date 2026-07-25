@@ -82,6 +82,7 @@ export default function StudentManagement() {
           name,
           age,
           program,
+          status,
           parent_id,
           profiles (
             id,
