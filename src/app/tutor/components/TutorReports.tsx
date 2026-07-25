@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 interface Student {
   id: string;
   name: string;
@@ -158,6 +160,13 @@ export default function TutorReports({
             </p>
           </div>
           <div style={{ display: "flex", gap: "0.5rem" }}>
+            <Link
+              href="/admin/reports"
+              className="btn-portal-outline no-print"
+              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
+            >
+              💡 Input Nilai & Rubrik
+            </Link>
             <button
               onClick={onExportCSV}
               className="btn-portal-outline no-print"

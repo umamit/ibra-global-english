@@ -8,6 +8,8 @@ import { createClient } from "@/utils/supabase/client";
 import ReportStatusBanner from "./components/ReportStatusBanner";
 import Link from "next/link";
 import PrintReportView from "./components/PrintReportView";
+import AssessmentRubricModal from "./components/AssessmentRubricModal";
+import AiReportModal from "./components/AiReportModal";
 import posthog from "posthog-js";
 
 import { Student, Report } from "@/types";
@@ -45,6 +47,21 @@ export default function ReportCardManagement() {
   const [aiFocus, setAiFocus] = useState<string>("");
   const [aiAchievements, setAiAchievements] = useState<string>("");
   const [aiChallenges, setAiChallenges] = useState<string>("");
+
+  // Rubric Modal State
+  const [isRubricModalOpen, setIsRubricModalOpen] = useState<boolean>(false);
+
+  const handleApplyRubricScores = (
+    scores: { speaking: number; grammar: number; vocabulary: number; active: number },
+    notes: string
+  ) => {
+    setSpeakingScore(String(scores.speaking));
+    setGrammarScore(String(scores.grammar));
+    setVocabularyScore(String(scores.vocabulary));
+    setActiveScore(String(scores.active));
+    setTutorNotes(notes);
+    setStatusMsg({ type: "success", text: "Nilai dan draf catatan deskriptif berhasil diterapkan dari rubrik indikator!" });
+  };
 
   const handleGenerateAiNotes = async () => {
     if (!studentId) {
@@ -408,6 +425,31 @@ export default function ReportCardManagement() {
             </div>
           </div>
 
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem", flexWrap: "wrap", gap: "0.5rem" }}>
+            <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-gray-800)" }}>
+              Aspek Penilaian (Skor 0 - 100)
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsRubricModalOpen(true)}
+              className="btn-portal-outline"
+              style={{
+                height: "auto",
+                padding: "0.35rem 0.8rem",
+                fontSize: "0.8rem",
+                fontWeight: "700",
+                borderColor: "var(--color-primary)",
+                color: "var(--color-primary)",
+                backgroundColor: "rgba(33, 108, 126, 0.05)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.4rem"
+              }}
+            >
+              💡 Pilih Indikator & Rubrik Penilaian
+            </button>
+          </div>
+
           <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "1.25rem" }}>
             <div className="form-group">
               <label className="form-label">
@@ -674,118 +716,29 @@ export default function ReportCardManagement() {
         )}
       </div>
 
-      {/* AI Draft Prompt Modal */}
-      {isAiModalOpen && (
-        <div className="modal-backdrop" style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.4)",
-          backdropFilter: "blur(4px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          animation: "fadeIn 0.2s ease"
-        }}>
-          <div className="modal-container" style={{
-            backgroundColor: "white",
-            borderRadius: "14px",
-            width: "100%",
-            maxWidth: "500px",
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
-            border: "1px solid rgba(0, 0, 0, 0.05)",
-            overflow: "hidden",
-            animation: "slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
-          }}>
-            <div style={{
-              padding: "1.25rem 1.5rem",
-              borderBottom: "1px solid rgba(0,0,0,0.06)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: "var(--color-bg-teal-50, #eef6f8)"
-            }}>
-              <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "var(--color-primary-dark)" }}>
-                ✨ Panduan Draf Rapor AI
-              </h3>
-              <button 
-                type="button"
-                onClick={() => setIsAiModalOpen(false)}
-                style={{
-                  background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "var(--color-gray-500)"
-                }}
-              >
-                &times;
-              </button>
-            </div>
-            
-            <form onSubmit={handleGenerateAiProgressReport} style={{ padding: "1.5rem" }}>
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, marginBottom: "0.35rem", color: "var(--color-gray-700)" }}>
-                  Materi Fokus Bulan Ini
-                </label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={aiFocus}
-                  onChange={e => setAiFocus(e.target.value)}
-                  placeholder="Contoh: Greetings, Daily Activities, Reading..."
-                  required
-                />
-              </div>
+      {/* Assessment Rubric Interactive Modal */}
+      <AssessmentRubricModal
+        isOpen={isRubricModalOpen}
+        onClose={() => setIsRubricModalOpen(false)}
+        programName={selectedStudentProgram}
+        studentName={students.find(s => s.id === studentId)?.name || ""}
+        moduleName={moduleName}
+        onApplyRubricScores={handleApplyRubricScores}
+      />
 
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, marginBottom: "0.35rem", color: "var(--color-gray-700)" }}>
-                  Pencapaian Positif Siswa
-                </label>
-                <textarea
-                  className="form-input"
-                  rows={2}
-                  value={aiAchievements}
-                  onChange={e => setAiAchievements(e.target.value)}
-                  placeholder="Contoh: sangat aktif berdiskusi dan pelafalan membaik..."
-                  style={{ resize: "vertical", minHeight: "60px" }}
-                  required
-                />
-              </div>
-
-              <div style={{ marginBottom: "1.5rem" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, marginBottom: "0.35rem", color: "var(--color-gray-700)" }}>
-                  Tantangan / Aspek yang Perlu Ditingkatkan
-                </label>
-                <textarea
-                  className="form-input"
-                  rows={2}
-                  value={aiChallenges}
-                  onChange={e => setAiChallenges(e.target.value)}
-                  placeholder="Contoh: rasa percaya diri berbicara perlu ditingkatkan..."
-                  style={{ resize: "vertical", minHeight: "60px" }}
-                  required
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
-                <button
-                  type="button"
-                  onClick={() => setIsAiModalOpen(false)}
-                  className="btn-portal-outline"
-                  style={{ padding: "0.5rem 1.25rem", height: "auto" }}
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="btn-portal-primary"
-                  style={{ padding: "0.5rem 1.5rem", height: "auto" }}
-                  disabled={aiProgressLoading}
-                >
-                  {aiProgressLoading ? "⏳ Membuat Draf..." : "✨ Buat Draf AI"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* AI Progress Report Guidance Modal */}
+      <AiReportModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+        onSubmit={handleGenerateAiProgressReport}
+        aiFocus={aiFocus}
+        setAiFocus={setAiFocus}
+        aiAchievements={aiAchievements}
+        setAiAchievements={setAiAchievements}
+        aiChallenges={aiChallenges}
+        setAiChallenges={setAiChallenges}
+        aiProgressLoading={aiProgressLoading}
+      />
     </div>
   );
 }
