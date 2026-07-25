@@ -283,10 +283,14 @@ export const printReceiptHTML = (
           <div class="watermark">IBRA GLOBAL</div>
 
           <div class="header">
-            <div class="logo-text">
-              <h1>IBRA GLOBAL ENGLISH</h1>
-              <p>Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794</p>
-              <p>HP/WA: +62 813-5700-1357 | Email: admin@ibraglobalenglish.uk</p>
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <img src="${window.location.origin}/assets/logo.png" alt="Ibra Logo" style="width: 60px; height: 60px; object-fit: contain;" />
+              <div class="logo-text">
+                <h1>IBRA GLOBAL ENGLISH</h1>
+                <p style="font-weight: 800; color: #a68849; margin: 0 0 2px 0;">Belajar Seru, Lancar Bicara</p>
+                <p>Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794</p>
+                <p>HP/WA: +62 813-5700-1357 | Email: admin@ibraglobalenglish.uk</p>
+              </div>
             </div>
             <div class="receipt-title">
               <h2>Kuitansi</h2>
