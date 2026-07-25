@@ -58,9 +58,9 @@ export default function ReceiptPrint({ printReceipt, selectedChild, parentName, 
       <div className="printable-receipt" style={{ border: "2px solid #333", padding: "2.5rem", borderRadius: "8px", maxWidth: "700px", margin: "0 auto", position: "relative" }}>
 
         {/* Header Kop Surat */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "3px double #333", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "56px", height: "56px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "3px double var(--color-primary, #216c7e)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
+            <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "60px", height: "60px", objectFit: "contain" }} />
             <div style={{ textAlign: "left" }}>
               <h1 style={{ fontSize: "1.35rem", fontWeight: "900", margin: "0", color: "var(--color-primary-dark)" }}>IBRA GLOBAL ENGLISH</h1>
               <p style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-accent)", margin: "0" }}>Belajar Seru, Lancar Bicara</p>
@@ -69,7 +69,7 @@ export default function ReceiptPrint({ printReceipt, selectedChild, parentName, 
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <h2 style={{ fontSize: "1.1rem", fontWeight: "900", color: "#333", margin: "0", letterSpacing: "1px" }}>KUITANSI PEMBAYARAN</h2>
+            <h2 style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0", letterSpacing: "1px" }}>KUITANSI PEMBAYARAN</h2>
             <p style={{ fontSize: "0.75rem", color: "#555", margin: "4px 0 0", fontFamily: "monospace" }}>No: {receiptNo}</p>
           </div>
         </div>
