@@ -1,6 +1,7 @@
 "use client";
 
 import { Student, Payment, PaymentResult } from "@/types";
+import { getStudentSPPDueInfo } from "../financeHelpers";
 
 interface FinanceTableProps {
   filteredStudents: Student[];
@@ -62,6 +63,7 @@ export default function FinanceTable({
           <tr style={{ background: "rgba(33, 108, 126, 0.05)" }}>
             <th style={{ textAlign: "left", padding: "12px" }}>Nama Siswa</th>
             <th style={{ textAlign: "left", padding: "12px" }}>Program</th>
+            <th style={{ textAlign: "left", padding: "12px" }}>Jatuh Tempo SPP</th>
             <th style={{ textAlign: "left", padding: "12px" }}>Wali Murid (Ortu)</th>
             <th style={{ textAlign: "left", padding: "12px" }}>Nominal Biaya</th>
             <th style={{ textAlign: "left", padding: "12px" }}>Metode</th>
@@ -72,6 +74,7 @@ export default function FinanceTable({
         <tbody>
           {filteredStudents.map((student) => {
              const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
+             const dueInfo = getStudentSPPDueInfo(student, pay.status, selectedMonth);
             return (
               <tr key={student.id} style={{ borderBottom: "1px solid var(--color-gray-100)" }} className="table-row-hover">
                 <td style={{ padding: "12px", fontWeight: "700", color: "var(--color-gray-800)" }} data-label="Nama Siswa">
@@ -79,6 +82,26 @@ export default function FinanceTable({
                 </td>
                 <td style={{ padding: "12px" }} data-label="Program">
                   <span className="badge-program">{student.program}</span>
+                </td>
+                <td style={{ padding: "12px" }} data-label="Jatuh Tempo">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                    <span style={{
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      padding: "0.2rem 0.5rem",
+                      borderRadius: "6px",
+                      display: "inline-block",
+                      width: "fit-content",
+                      backgroundColor: dueInfo.dueStatus === "due_today" ? "#f59e0b" : dueInfo.dueStatus === "due_soon" ? "#fef3c7" : dueInfo.dueStatus === "overdue" ? "#ffe4e6" : dueInfo.dueStatus === "lunas" ? "#d1fae5" : "#f1f5f9",
+                      color: dueInfo.dueStatus === "due_today" ? "#ffffff" : dueInfo.dueStatus === "due_soon" ? "#92400e" : dueInfo.dueStatus === "overdue" ? "#9f1239" : dueInfo.dueStatus === "lunas" ? "#065f46" : "#475569",
+                      border: dueInfo.dueStatus === "due_soon" ? "1px solid #fcd34d" : dueInfo.dueStatus === "overdue" ? "1px solid #fecdd3" : "none"
+                    }}>
+                      {dueInfo.badgeLabel}
+                    </span>
+                    <span style={{ fontSize: "0.68rem", color: "var(--color-gray-500)", fontWeight: "500" }}>
+                      {dueInfo.modelLabel}
+                    </span>
+                  </div>
                 </td>
                 <td style={{ padding: "12px", color: "var(--color-gray-600)" }} data-label="Orang Tua">
                   {student.profiles?.full_name || <em style={{ color: "var(--color-red)" }}>Belum terhubung</em>}

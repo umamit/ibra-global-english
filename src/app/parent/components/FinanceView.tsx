@@ -54,7 +54,7 @@ export default function FinanceView({
           <div>
             <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>Panduan Transfer Pembayaran SPP</h3>
             <p style={{ color: "var(--color-gray-600)", fontSize: "0.875rem", marginTop: "4px" }}>
-              Pembayaran SPP sebesar <strong>Rp {getChildProgramPrice(selectedChild?.program).toLocaleString("id-ID")} / bulan</strong> paling lambat tanggal 10 setiap bulannya.
+              Pembayaran SPP sebesar <strong>Rp {getChildProgramPrice(selectedChild?.program).toLocaleString("id-ID")} / bulan</strong> disesuaikan dengan jadwal jatuh tempo bulanan siswa.
             </p>
           </div>
           <div style={{ padding: "0.5rem 1rem", backgroundColor: "var(--color-accent-light)", color: "var(--color-accent)", borderRadius: "8px", fontWeight: "700", fontSize: "0.875rem" }}>

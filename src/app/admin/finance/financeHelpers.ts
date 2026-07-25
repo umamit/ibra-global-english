@@ -1,5 +1,133 @@
 import { Student, Payment, PaymentResult } from "@/types";
 
+export interface SPPDueInfo {
+  dueDay: number;
+  isPostPaid: boolean;
+  modelLabel: string;
+  dueStatus: "lunas" | "menunggu_konfirmasi" | "due_today" | "due_soon" | "overdue" | "normal";
+  badgeLabel: string;
+  badgeClass: string;
+  daysRemaining?: number;
+}
+
+/**
+ * Siswa dengan penyesuaian khusus Tanggal 5 (Model Post-Paid: Kursus Dulu Baru Bayar)
+ * Pengecualian nama siswa (case-insensitive partial match):
+ * Athira, Firman, Syafa, Yunda, Akhtar, Syauqi, Nasya
+ */
+const CUSTOM_POSTPAID_NAME_PATTERNS = [
+  "athira", "firman", "syafa", "yunda", "akhtar", "syauqi", "nasya"
+];
+
+export const getStudentSPPDueInfo = (
+  student: Student,
+  paymentStatus: string,
+  selectedMonth: string
+): SPPDueInfo => {
+  const nameLower = (student.name || "").toLowerCase().trim();
+  const isPostPaidCustom = CUSTOM_POSTPAID_NAME_PATTERNS.some(p => nameLower.includes(p));
+
+  // Determine Due Day of Month
+  let dueDay = 5;
+  let isPostPaid = isPostPaidCustom;
+
+  if (!isPostPaidCustom) {
+    if (student.created_at) {
+      dueDay = new Date(student.created_at).getDate();
+    } else {
+      dueDay = 5; // Default fallback
+    }
+  }
+
+  const modelLabel = isPostPaid ? "Post-Paid (Kursus Dulu)" : "Pre-Paid (Bayar Awal)";
+
+  if (paymentStatus === "lunas") {
+    return {
+      dueDay,
+      isPostPaid,
+      modelLabel,
+      dueStatus: "lunas",
+      badgeLabel: "✓ Sudah Lunas",
+      badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300"
+    };
+  }
+
+  if (paymentStatus === "menunggu_konfirmasi") {
+    return {
+      dueDay,
+      isPostPaid,
+      modelLabel,
+      dueStatus: "menunggu_konfirmasi",
+      badgeLabel: "⏳ Menunggu Verifikasi",
+      badgeClass: "bg-amber-100 text-amber-800 border-amber-300"
+    };
+  }
+
+  // Calculate current day & due date proximity for selected month
+  const today = new Date();
+  const currentDay = today.getDate();
+  
+  // Format current month YYYY-MM
+  const currentYearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const isCurrentMonth = selectedMonth ? selectedMonth === currentYearMonth : true;
+
+  if (!isCurrentMonth) {
+    return {
+      dueDay,
+      isPostPaid,
+      modelLabel,
+      dueStatus: "normal",
+      badgeLabel: `Jatuh Tempo Tgl ${dueDay}`,
+      badgeClass: "bg-slate-100 text-slate-700 border-slate-200"
+    };
+  }
+
+  const diffDays = dueDay - currentDay;
+
+  if (diffDays === 0) {
+    return {
+      dueDay,
+      isPostPaid,
+      modelLabel,
+      dueStatus: "due_today",
+      badgeLabel: `⚠️ HARI H (Tgl ${dueDay})`,
+      badgeClass: "bg-amber-500 text-white font-bold animate-pulse"
+    };
+  }
+
+  if (diffDays > 0 && diffDays <= 3) {
+    return {
+      dueDay,
+      isPostPaid,
+      modelLabel,
+      dueStatus: "due_soon",
+      badgeLabel: `⏰ H-${diffDays} (Tgl ${dueDay})`,
+      badgeClass: "bg-amber-100 text-amber-900 border-amber-400 font-semibold",
+      daysRemaining: diffDays
+    };
+  }
+
+  if (diffDays < 0) {
+    return {
+      dueDay,
+      isPostPaid,
+      modelLabel,
+      dueStatus: "overdue",
+      badgeLabel: `🚨 Lewat Tgl ${dueDay}`,
+      badgeClass: "bg-rose-100 text-rose-800 border-rose-300 font-semibold"
+    };
+  }
+
+  return {
+    dueDay,
+    isPostPaid,
+    modelLabel,
+    dueStatus: "normal",
+    badgeLabel: `Jatuh Tempo Tgl ${dueDay}`,
+    badgeClass: "bg-slate-100 text-slate-700 border-slate-200"
+  };
+};
+
 /**
  * Get payment information for a specific student
  * @param {string} studentId - The ID of the student

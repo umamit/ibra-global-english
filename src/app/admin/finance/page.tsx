@@ -12,7 +12,7 @@ import FinanceAnalytics from "./components/FinanceAnalytics";
 import FinanceWaModal from "./components/FinanceWaModal";
 import { getMonthName, terbilang, formatRupiah, getCurrentMonth } from "../utils";
 import ToastNotification from "../components/ToastNotification";
-import { getStudentPayment, exportPaymentsCSV, printReceiptHTML } from "./financeHelpers";
+import { getStudentPayment, exportPaymentsCSV, printReceiptHTML, getStudentSPPDueInfo } from "./financeHelpers";
 import { useFinanceModal } from "./hooks/useFinanceModal";
 
 import { Student, Payment } from "@/types";
@@ -269,6 +269,23 @@ export default function AdminFinance() {
     return { expected, collected, pendingCount, unpaidCount, paidCount };
   })();
 
+  // Due Date Alert Calculations
+  const dueAlertStats = (() => {
+    let dueSoonCount = 0;
+    let dueTodayCount = 0;
+    let overdueCount = 0;
+
+    students.forEach(student => {
+      const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
+      const dueInfo = getStudentSPPDueInfo(student, pay.status, selectedMonth);
+      if (dueInfo.dueStatus === "due_today") dueTodayCount++;
+      if (dueInfo.dueStatus === "due_soon") dueSoonCount++;
+      if (dueInfo.dueStatus === "overdue") overdueCount++;
+    });
+
+    return { dueSoonCount, dueTodayCount, overdueCount, totalAlerts: dueSoonCount + dueTodayCount + overdueCount };
+  })();
+
   const handlePrintReceipt = (student: Student, pay: any) => {
     printReceiptHTML(student, pay, selectedMonth, getMonthName, formatRupiah, terbilang);
   };
@@ -323,6 +340,32 @@ export default function AdminFinance() {
           )}
         </div>
       </div>
+
+      {/* 🔔 Notification Banner for SPP Due Dates */}
+      {dueAlertStats.totalAlerts > 0 && (
+        <div style={{
+          backgroundColor: "#fffbe6",
+          border: "1px solid #ffe58f",
+          borderRadius: "10px",
+          padding: "0.85rem 1.25rem",
+          marginBottom: "1.5rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.85rem",
+          boxShadow: "0 2px 6px rgba(250, 173, 20, 0.08)"
+        }}>
+          <div style={{ fontSize: "1.4rem" }}>🔔</div>
+          <div style={{ flex: 1, fontSize: "0.88rem", color: "#873800" }}>
+            <strong>Pengingat SPP Bulanan ({selectedMonth}):</strong> Terdapat{" "}
+            {dueAlertStats.dueTodayCount > 0 && <span style={{ color: "#d48806", fontWeight: "800" }}>{dueAlertStats.dueTodayCount} siswa Hari H Jatuh Tempo</span>}
+            {dueAlertStats.dueTodayCount > 0 && dueAlertStats.dueSoonCount > 0 && ", "}
+            {dueAlertStats.dueSoonCount > 0 && <span style={{ color: "#b7eb8f", backgroundColor: "#389e0d", padding: "0.15rem 0.4rem", borderRadius: "4px", fontWeight: "700" }}>{dueAlertStats.dueSoonCount} siswa H-3 s/d H-1</span>}
+            {(dueAlertStats.dueTodayCount > 0 || dueAlertStats.dueSoonCount > 0) && dueAlertStats.overdueCount > 0 && ", dan "}
+            {dueAlertStats.overdueCount > 0 && <span style={{ color: "#cf1322", fontWeight: "800" }}>{dueAlertStats.overdueCount} siswa lewat tanggal jatuh tempo</span>}
+            . Silakan periksa kolom <em>Jatuh Tempo SPP</em> pada tabel di bawah.
+          </div>
+        </div>
+      )}
 
       {/* Tab Switcher */}
       <div style={{ display: "flex", gap: "1rem", borderBottom: "2px solid var(--color-gray-100)", marginBottom: "2rem", paddingBottom: "0.5rem" }}>
