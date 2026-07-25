@@ -595,13 +595,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.13.3</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.13.4</span>
         </div>
       </aside>
 
       <main className="dashboard-main">
         {/* Global Topbar */}
-        <div className="global-topbar" style={{
+        <div className="global-topbar no-print" style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",

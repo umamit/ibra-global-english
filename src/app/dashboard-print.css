@@ -13,7 +13,9 @@
 /* ──── Shared: Sembunyikan elemen UI saat print ──── */
 @media print {
   .no-print,
+  div.global-topbar,
   .global-topbar,
+  .global-topbar *,
   .dashboard-topbar,
   .dashboard-sidebar,
   .admin-sidebar,
@@ -35,6 +37,9 @@
   aside,
   nav {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
   }
 
   body {
