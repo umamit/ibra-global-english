@@ -109,14 +109,23 @@ Mohon hubungi saya kembali. Terima kasih!`;
         {/* ── Hero Section ── */}
         <section className={styles.hero}>
           <FluidCanvas />
-          <span className={styles.heroTagline}>Professional Web Development</span>
+          <span className={styles.heroTagline}>Your Growth Partner — digital.ibraglobalenglish.uk</span>
           <h1 className={styles.heroTitle}>
-            Desain Website <span className={styles.gradientText}>Premium & Berperforma Tinggi</span> Untuk Bisnis Anda
+            Helping Businesses Scale with <span className={styles.gradientText}>Digital Excellence</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Kami membangun landing page, portal bisnis, dan aplikasi web modern berbasis Next.js, Supabase, 
+            Your Success Starts with the Right Strategy. Kami membangun landing page, portal bisnis, dan aplikasi web modern berbasis Next.js, Supabase, 
             dan Cloudflare. Menghadirkan estetika premium Apple HIG, keamanan data super ketat, dan kecepatan optimal.
           </p>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.5rem 1rem", marginBottom: "2rem", position: "relative", zIndex: 1 }}>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary)", backgroundColor: "var(--color-primary-light)", padding: "0.3rem 0.8rem", borderRadius: "9999px" }}>SEO</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary)", backgroundColor: "var(--color-primary-light)", padding: "0.3rem 0.8rem", borderRadius: "9999px" }}>•</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary)", backgroundColor: "var(--color-primary-light)", padding: "0.3rem 0.8rem", borderRadius: "9999px" }}>Social Media</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary)", backgroundColor: "var(--color-primary-light)", padding: "0.3rem 0.8rem", borderRadius: "9999px" }}>•</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary)", backgroundColor: "var(--color-primary-light)", padding: "0.3rem 0.8rem", borderRadius: "9999px" }}>Branding</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary)", backgroundColor: "var(--color-primary-light)", padding: "0.3rem 0.8rem", borderRadius: "9999px" }}>•</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary)", backgroundColor: "var(--color-primary-light)", padding: "0.3rem 0.8rem", borderRadius: "9999px" }}>Web & App Development</span>
+          </div>
           <div className={styles.heroActions}>
             <a href="#order" className={styles.btnPrimary}>Mulai Proyek</a>
             <a href="#portfolio" className={styles.btnSecondary}>Lihat Karya Kami</a>
@@ -498,8 +507,8 @@ Mohon hubungi saya kembali. Terima kasih!`;
         {/* ── Order/Contact Form Section ── */}
         <section id="order" className={styles.section} style={{ textCombineUpright: "all" }}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Mulai Proyek Website Anda</h2>
-            <p className={styles.sectionDesc}>Diskusikan ide proyek Anda. Kami akan merespons secepat mungkin via WhatsApp.</p>
+            <h2 className={styles.sectionTitle}>Your Success Starts with the Right Strategy</h2>
+            <p className={styles.sectionDesc}>Diskusikan kebutuhan SEO, Branding, atau Web & App Development bisnis Anda. Kami siap menjadi partner pertumbuhan digital Anda.</p>
           </div>
           
           <div className={styles.formSection}>
