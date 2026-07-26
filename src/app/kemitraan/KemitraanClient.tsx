@@ -99,8 +99,8 @@ export default function KemitraanClient() {
                       type="text"
                       className="form-input"
                       placeholder="Contoh: SD Negeri 1 Bobong / SMP N 2 Taliabu"
-                      value={form.schoolName}
-                      onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
+                      value={form.institution_name}
+                      onChange={(e) => setForm({ ...form, institution_name: e.target.value })}
                       required
                     />
                   </div>
@@ -111,8 +111,8 @@ export default function KemitraanClient() {
                       type="text"
                       className="form-input"
                       placeholder="Contoh: Ibu Rina (Kepala Sekolah / Guru B.Inggris)"
-                      value={form.contactPerson}
-                      onChange={(e) => setForm({ ...form, contactPerson: e.target.value })}
+                      value={form.rep_name}
+                      onChange={(e) => setForm({ ...form, rep_name: e.target.value })}
                       required
                     />
                   </div>
@@ -130,16 +130,14 @@ export default function KemitraanClient() {
                   </div>
 
                   <div className="form-group">
-                    <label>Estimasi Jumlah Siswa</label>
-                    <select
+                    <label>Jabatan / Peran di Sekolah</label>
+                    <input
+                      type="text"
                       className="form-input"
-                      value={form.studentCount}
-                      onChange={(e) => setForm({ ...form, studentCount: e.target.value })}
-                    >
-                      <option value="1-50 Siswa">1 - 50 Siswa</option>
-                      <option value="51-100 Siswa">51 - 100 Siswa</option>
-                      <option value="100+ Siswa">Lebih dari 100 Siswa</option>
-                    </select>
+                      placeholder="Contoh: Kepala Sekolah, Guru B.Inggris, Tata Usaha"
+                      value={form.rep_role}
+                      onChange={(e) => setForm({ ...form, rep_role: e.target.value })}
+                    />
                   </div>
                 </div>
 
