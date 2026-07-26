@@ -124,17 +124,6 @@ export default function ParentPortal() {
     return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
   };
 
-  const getRecentMonths = (): string[] => {
-    const list: string[] = [];
-    const d = new Date();
-    for (let i = 0; i < 6; i++) {
-      const temp = new Date(d.getFullYear(), d.getMonth() - i, 1);
-      const mm = String(temp.getMonth() + 1).padStart(2, "0");
-      const yyyy = temp.getFullYear();
-      list.push(`${yyyy}-${mm}`);
-    }
-    return list;
-  };
 
   const getChildProgramPrice = (program: string | null | undefined): number => {
     if (!program) return 300000;

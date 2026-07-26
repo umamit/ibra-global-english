@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useGallery } from "@/hooks/useGallery";
 import "./Gallery.css";
 

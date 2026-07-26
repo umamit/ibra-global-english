@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
+import { getAdminSupabase } from "@/app/api/_middleware";
 import { detectPromptInjection } from "@/utils/security";
 import { getAdminOrTutorUser } from "@/utils/supabase/adminAuth";
 import { getRagContext } from "@/utils/rag";

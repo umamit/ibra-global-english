@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import React from 'react';
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { DEFAULT_TAX_RECORDS, DEFAULT_TAX_ASSETS } from "@/utils/fallbackData";
 import { formatRupiah } from "../utils";

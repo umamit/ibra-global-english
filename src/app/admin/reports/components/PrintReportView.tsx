@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import RadarChart from "@/components/RadarChart";
 
 interface PrintReportViewProps {

@@ -11,7 +11,7 @@ import FinanceModal from "./components/FinanceModal";
 import FinanceAnalytics from "./components/FinanceAnalytics";
 import FinanceWaModal from "./components/FinanceWaModal";
 import AnnualSPPCardModal from "./components/AnnualSPPCardModal";
-import { getMonthName, terbilang, formatRupiah, getCurrentMonth } from "../utils";
+import { getMonthName, terbilang, formatRupiah } from "../utils";
 import ToastNotification from "../components/ToastNotification";
 import { getStudentPayment, exportPaymentsCSV, printReceiptHTML, getStudentSPPDueInfo } from "./financeHelpers";
 import { useFinanceModal } from "./hooks/useFinanceModal";

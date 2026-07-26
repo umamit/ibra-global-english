@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import posthog from "posthog-js";
 
 interface DashboardStats {
   totalStudents: number;

@@ -91,7 +91,6 @@ export default function AdminOnlineSchedulePage() {
     return "🎥";
   };
 
-  const isUpcoming = (dt: string): boolean => new Date(dt) > new Date();
   const isPast = (dt: string): boolean => new Date(dt) < new Date();
 
   return (

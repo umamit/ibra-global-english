@@ -1,5 +1,4 @@
 // Mock implementation of posthog-js and posthog-js/react.
-import React from "react";
 
 const posthogMock = {
   init: (...args: any[]) => {},

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { z } from "zod";
 import { useFAQ } from "@/hooks/useFAQ";
 import "./FAQ.css";

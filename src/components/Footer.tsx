@@ -4,7 +4,7 @@ import "./Footer.css";
 import { z } from "zod";
 import { useState } from "react";
 import packageInfo from "../../package.json";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const footerPropsSchema = z.object({
   initialSettings: z.object({
@@ -45,7 +45,6 @@ export default function Footer({ initialSettings }: FooterProps) {
     return "Belajar Seru Lancar Bicara";
   });
 
-  const queryClient = useQueryClient();
 
   // Menggunakan useQuery untuk mengambil data awal dan melacak pengunjung
   const { data: visitorData } = useQuery({
