@@ -57,8 +57,22 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  transition: background-color var(--transition-normal);
+  transition: background-color var(--transition-normal), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   container-type: inline-size;
+}
+
+@media print {
+  .certificate-page-2:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+@media screen {
+  .certificate-page-2:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.15);
+  }
 }
 
 [data-theme="dark"] .certificate-page-2 {
@@ -412,6 +426,12 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.verify-legal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] .verify-legal-card {
