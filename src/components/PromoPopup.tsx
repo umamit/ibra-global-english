@@ -108,6 +108,7 @@ export default function PromoPopup() {
                 fontSize: "1.25rem",
                 fontWeight: 700,
                 color: "var(--color-primary, #216c7e)",
+                textAlign: "center",
               }}
             >
               {banner.title}
@@ -120,6 +121,7 @@ export default function PromoPopup() {
               lineHeight: 1.6,
               color: "var(--color-text-secondary, #555)",
               whiteSpace: "pre-line",
+              textAlign: "justify",
             }}
           >
             {banner.message}
