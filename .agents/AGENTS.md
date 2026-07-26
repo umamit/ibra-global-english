@@ -173,6 +173,35 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
 
 21k. **Penggunaan Icon vs Emoji (Strict Icon Over Emoji Rule):**
     - AI wajib selalu menggunakan icon (seperti Lucide Icons / SVG icons) dan dilarang keras menggunakan emoji pada antarmuka web, teks UI, maupun komponen aplikasi, kecuali jika diminta secara spesifik oleh pengguna.
+    - Setelah setiap sesi penggantian emoji, AI WAJIB menjalankan skrip Python berikut untuk memverifikasi bahwa tidak ada emoji tersisa di seluruh file `.js/.jsx/.ts/.tsx` dalam folder `src/` (kecuali `app/admin` jika diinginkan):
+
+```python
+# Jalankan dari root project: python3 -c "..."
+import os, re
+emoji_pattern = re.compile(
+    r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF'
+    r'\U0001F680-\U0001F6FF\U0001F1E6-\U0001F1FF'
+    r'\U0001F900-\U0001F9FF\U0001FA70-\U0001FAFF'
+    r'\u2600-\u26FF\u2700-\u27BF\u2300-\u23FF]'
+)
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        found = emoji_pattern.findall(line)
+                        if found:
+                            matches.append((filepath, idx, ''.join(set(found)), line.strip()))
+            except: pass
+print(f'Total emoji occurrences found: {len(matches)}')
+for path, line_no, emojis, content in matches:
+    print(f'{path}:{line_no} [{emojis}] -> {content}')
+```
+    - Jika hasil scan menunjukkan `Total emoji occurrences found: 0`, maka pembersihan dinyatakan selesai.
+    - Pengecualian yang diizinkan: emoji yang berada di dalam **regex string filter** (bukan rendering UI), contoh: `.replace(/[👋🤖]/g, "")`.
 
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
