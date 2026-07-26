@@ -407,7 +407,6 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
             {/* Modal Body */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", borderTop: "1px solid var(--color-gray-150)", paddingTop: "1.25rem", marginBottom: "1.5rem" }}>
               <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", fontSize: "0.9rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", fontSize: "0.9rem" }}>
                 <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-calendar"></i> Hari & Tanggal:</span>
                 <span style={{ color: "var(--color-gray-800)", fontWeight: "800" }}>
                   {new Date(selectedSchedule.start_time).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
