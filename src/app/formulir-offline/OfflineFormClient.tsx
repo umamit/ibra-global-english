@@ -75,23 +75,24 @@ export default function OfflineFormPage() {
         </div>
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <button
+            className="btn-print"
             onClick={handlePrint}
             style={{
-              backgroundColor: "var(--color-primary, #4a9ba8)",
+              backgroundColor: "var(--color-primary)",
               color: "white",
-              border: "none",
-              padding: "0.6rem 1.25rem",
+              padding: "0.75rem 1.5rem",
               borderRadius: "8px",
-              fontWeight: "700",
-              fontSize: "0.9rem",
+              fontWeight: "bold",
+              border: "none",
               cursor: "pointer",
-              boxShadow: "0 4px 10px rgba(74, 155, 168, 0.2)",
+              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
               display: "inline-flex",
               alignItems: "center",
               gap: "0.5rem"
             }}
           >
-            🖨️ Cetak Formulir (Print / Save PDF)
+            <i className="fi fi-rr-print"></i>
+            <span>Cetak Formulir (Print / Save PDF)</span>
           </button>
         </div>
       </div>
@@ -246,7 +247,7 @@ export default function OfflineFormPage() {
           {/* Section 3: Program Pilihan */}
           <div>
             <h3 style={{ fontSize: "0.85rem", fontWeight: "800", borderBottom: "1.5px solid #374151", paddingBottom: "0.15rem", marginBottom: "0.4rem", color: "#1f2937", textTransform: "uppercase" }}>
-              C. PROGRAM YANG DIMINATI (Beri tanda centang ✓)
+              C. PROGRAM YANG DIMINATI (Beri Tanda Centang)
             </h3>
 
             <div style={{ display: "flex", gap: "2.5rem", paddingLeft: "0.5rem", paddingTop: "0.15rem", fontSize: "0.78rem", color: "#1f2937", fontWeight: "600" }}>

@@ -81,7 +81,7 @@ export default function PromoPopup() {
             zIndex: 1,
           }}
         >
-          ✕
+          <i className="fi fi-rr-cross-small"></i>
         </button>
 
         {/* Banner Image */}

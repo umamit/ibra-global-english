@@ -500,7 +500,8 @@ export default function UndanganClient() {
             onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
           >
-            ✉️ Buka Undangan
+            <i className="fi fi-rr-envelope-open" style={{ marginRight: "0.4rem" }}></i>
+            <span>Buka Undangan</span>
           </button>
         </div>
       </div>
@@ -554,7 +555,7 @@ export default function UndanganClient() {
             <div className="undangan-container">
             {/* 2. Opening & Quote */}
             <div className="undangan-card text-center scroll-reveal">
-              <span className="ornament-floral">🌸</span>
+              <span className="ornament-floral"><i className="fi fi-rr-flower"></i></span>
               <h2 className="section-greeting-title">Assalamualaikum Wr. Wb.</h2>
               <p className="section-greeting-intro">
                 Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri hari bahagia pernikahan kami:
@@ -632,7 +633,7 @@ export default function UndanganClient() {
             <div className="undangan-card scroll-reveal">
               <h3 className="card-title text-center">Detail Acara</h3>
               <div className="event-item">
-                <span className="event-icon">💍</span>
+                <span className="event-icon"><i className="fi fi-rr-ring"></i></span>
                 <div className="event-info">
                   <h4 className="event-name">Akad Nikah</h4>
                   <p className="event-detail">Kamis, 20 Agustus 2026</p>
@@ -641,7 +642,7 @@ export default function UndanganClient() {
               </div>
 
               <div className="event-item">
-                <span className="event-icon">🎉</span>
+                <span className="event-icon"><i className="fi fi-rr-glass-cheers"></i></span>
                 <div className="event-info">
                   <h4 className="event-name">Resepsi Pernikahan</h4>
                   <p className="event-detail">Kamis, 20 Agustus 2026</p>
@@ -650,7 +651,10 @@ export default function UndanganClient() {
               </div>
 
               <div className="venue-section">
-                <h4 className="venue-title">📍 Lokasi Acara</h4>
+                <h4 className="venue-title" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.3rem" }}>
+                  <i className="fi fi-rr-marker"></i>
+                  <span>Lokasi Acara</span>
+                </h4>
                 <p className="venue-address font-bold">Kediaman Mempelai Wanita</p>
                 <p className="venue-address-details">Waibau, Kecamatan Sanana, Kabupaten Kepulauan Sula, Maluku Utara</p>
                 <a
@@ -658,8 +662,10 @@ export default function UndanganClient() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="maps-button"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
                 >
-                  🗺️ Buka Google Maps
+                  <i className="fi fi-rr-map-marker"></i>
+                  <span>Buka Google Maps</span>
                 </a>
               </div>
             </div>
@@ -759,7 +765,7 @@ export default function UndanganClient() {
               >
                 <div className="atm-card-header">
                   <span className="bank-logo">BANK MANDIRI</span>
-                  <span className="chip-logo">📠</span>
+                  <span className="chip-logo"><i className="fi fi-rr-sim-card"></i></span>
                 </div>
                 <div className="atm-card-number">
                   186-00-0216402-4
@@ -772,8 +778,12 @@ export default function UndanganClient() {
               <button
                 className="copy-btn"
                 onClick={() => handleCopyAccount("1860002164024")}
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
               >
-                {copiedBank ? "✓ Nomor Rekening Tersalin!" : "📋 Salin Nomor Rekening"}
+                {copiedBank 
+                  ? <><i className="fi fi-rr-check"></i><span>Nomor Rekening Tersalin!</span></>
+                  : <><i className="fi fi-rr-copy-alt"></i><span>Salin Nomor Rekening</span></>
+                }
               </button>
             </div>
 
