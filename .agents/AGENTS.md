@@ -171,6 +171,9 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
     - AI dilarang keras mengubah, mereset, atau mengganti nama kelas CSS (`className`) dan struktur elemen JSX visual yang sudah ada ketika menambah atau mengintegrasikan komponen/fitur baru ke dalam suatu halaman.
     - Setiap modifikasi pada berkas tampilan wajib mempertahankan keselarasan nama kelas dengan berkas CSS stylesheet yang bersangkutan agar tidak memicu kepecahan tampilan (*CSS layout breakage*).
 
+21k. **Penggunaan Icon vs Emoji (Strict Icon Over Emoji Rule):**
+    - AI wajib selalu menggunakan icon (seperti Lucide Icons / SVG icons) dan dilarang keras menggunakan emoji pada antarmuka web, teks UI, maupun komponen aplikasi, kecuali jika diminta secara spesifik oleh pengguna.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
