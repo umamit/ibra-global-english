@@ -62,7 +62,6 @@ export default function Testimonials() {
         const { data, error } = await supabase
           .from("testimonials")
           .select("*")
-          .eq("is_active", true)
           .order("created_at", { ascending: false });
         if (isMounted) {
           if (!error && data) {
