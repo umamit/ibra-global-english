@@ -372,9 +372,321 @@ for folder, data in sorted(stats.items(), key=lambda x: -x[1]['lines']):
     print(f'{folder:<30} {data["files"]:>6} {data["lines"]:>8}')
 ```
 
+---
+
+### G. Scan TypeScript `any` (Type Safety)
+Mendeteksi penggunaan `any` yang melemahkan type safety.
+```python
+import os, re
+pattern = re.compile(r'(:\s*any\b|as\s+any\b)')
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if pattern.search(line) and not line.strip().startswith('//'):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'TypeScript `any` usages: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'{path}:{line_no} -> {content}')
+```
+
+---
+
+### H. Scan `dangerouslySetInnerHTML` (Anti-XSS)
+Wajib diaudit setiap kali ada perubahan yang menyentuh rendering HTML dinamis.
+```python
+import os
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if 'dangerouslySetInnerHTML' in line:
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'dangerouslySetInnerHTML occurrences: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[XSS RISK] {path}:{line_no} -> {content}')
+```
+
+---
+
+### I. Scan `SELECT *` di Query Supabase (Rule 5)
+Mendeteksi query yang memilih semua kolom — wajib diganti dengan kolom spesifik.
+```python
+import os, re
+pattern = re.compile(r'\.select\(\s*["\']?\*["\']?\s*\)')
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if pattern.search(line):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'SELECT * violations: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[RULE 5] {path}:{line_no} -> {content}')
+```
+
+---
+
+### J. Scan URL Hardcoded (localhost / 127.0.0.1)
+Mendeteksi URL development yang lupa diganti sebelum deploy.
+```python
+import os, re
+pattern = re.compile(r'(http://localhost|127\.0\.0\.1|http://0\.0\.0\.0)')
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if pattern.search(line) and not line.strip().startswith('//'):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'Hardcoded localhost URLs: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[DEV URL] {path}:{line_no} -> {content}')
+```
+
+---
+
+### K. Scan `TODO` / `FIXME` (Hutang Teknis)
+Laporan hutang teknis yang belum diselesaikan di seluruh codebase.
+```python
+import os, re
+pattern = re.compile(r'\b(TODO|FIXME|HACK|XXX|BUG)\b', re.IGNORECASE)
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        m = pattern.search(line)
+                        if m:
+                            matches.append((filepath, idx, m.group(), line.strip()))
+            except: pass
+print(f'Technical debt markers: {len(matches)}')
+for path, line_no, marker, content in matches:
+    print(f'[{marker}] {path}:{line_no} -> {content}')
+```
+
+---
+
+### L. Scan `NEXT_PUBLIC_` Berbahaya (Rule 1 — Anti-SSRF)
+Mendeteksi variabel server-side yang salah diberi prefix `NEXT_PUBLIC_`.
+```python
+import os, re
+# Nama variabel server yang TIDAK boleh punya prefix NEXT_PUBLIC_
+dangerous = ['SERVICE_ROLE_KEY', 'ADMIN_KEY', 'SECRET', 'PRIVATE_KEY', 'WEBHOOK_SECRET']
+pattern = re.compile(r'NEXT_PUBLIC_(' + '|'.join(dangerous) + r')')
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if pattern.search(line):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'Dangerous NEXT_PUBLIC_ variables: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[SECURITY] {path}:{line_no} -> {content}')
+```
+
+---
+
+### M. Scan Regex Strip Tag Berbahaya (Anti-XSS)
+Mendeteksi pola sanitasi HTML yang tidak aman dan rentan bypass.
+```python
+import os, re
+pattern = re.compile(r'/<\[.*?\].*?>/g')
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if '/<[^>]*>/g' in line or pattern.search(line):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'Unsafe HTML strip regex: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[XSS BYPASS] {path}:{line_no} -> {content}')
+```
+
+---
+
+### N. Scan `window`/`document` di Luar `useEffect` (Anti-Hydration Crash)
+Mendeteksi akses browser globals yang menyebabkan React hydration error (Rule 11).
+```python
+import os, re
+pattern = re.compile(r'\b(window\.|document\.|localStorage\.|sessionStorage\.)')
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.tsx', '.ts', '.jsx', '.js')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    inside_useeffect = False
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if 'useEffect(' in line: inside_useeffect = True
+                        if inside_useeffect and '})' in line: inside_useeffect = False
+                        if not inside_useeffect and pattern.search(line) and not line.strip().startswith('//'):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'Browser globals outside useEffect: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[HYDRATION] {path}:{line_no} -> {content}')
+```
+
+---
+
+### O. Scan Google Fonts CDN (Rule 3 — Local Fonts Only)
+Mendeteksi pemuatan font dari CDN eksternal yang dilarang.
+```python
+import os
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if 'fonts.googleapis.com' in line or 'fonts.gstatic.com' in line:
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'External Google Fonts CDN references: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[RULE 3] {path}:{line_no} -> {content}')
+```
+
+---
+
+### P. Scan `<img>` Tanpa `width`/`height` (Anti-CLS)
+Mendeteksi tag `<img>` yang tidak memiliki dimensi eksplisit — penyebab CLS score buruk.
+```python
+import os, re
+pattern = re.compile(r'<img\b(?![^>]*(width|height))[^>]*>', re.IGNORECASE)
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.jsx', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    for m in pattern.finditer(content):
+                        line_no = content[:m.start()].count('\n') + 1
+                        matches.append((filepath, line_no, m.group().strip()))
+            except: pass
+print(f'<img> without width/height: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[CLS] {path}:{line_no} -> {content}')
+```
+
+---
+
+### Q. Scan `priority` Berlebihan pada `next/image` (Rule 5)
+Mendeteksi penggunaan prop `priority` pada gambar non-LCP yang memboroskan resource.
+```python
+import os, re
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.jsx', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if re.search(r'<Image\b', line) and 'priority' in line:
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'next/image with priority prop: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[PRIORITY] {path}:{line_no} -> {content}')
+```
+
+---
+
+### R. Scan Duplikat Import Supabase Client (Rule 11)
+Mendeteksi `createClient` dari path yang salah (client di server atau sebaliknya).
+```python
+import os, re
+server_pattern = re.compile(r'from ["\']@/utils/supabase/server["\']')
+client_pattern = re.compile(r'from ["\']@/utils/supabase/client["\']')
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                is_client = '"use client"' in content or "'use client'" in content
+                has_server_import = bool(server_pattern.search(content))
+                has_client_import = bool(client_pattern.search(content))
+                if is_client and has_server_import:
+                    matches.append(('CLIENT FILE uses SERVER client', filepath))
+                if not is_client and has_client_import and '/api/' in filepath:
+                    matches.append(('API ROUTE uses CLIENT client', filepath))
+            except: pass
+print(f'Supabase client mismatches: {len(matches)}')
+for issue, path in matches:
+    print(f'[{issue}] {path}')
+```
+
+---
+
+### S. Scan Mutasi Tanpa `revalidatePath` (Rule 2a — Anti-Stale)
+Mendeteksi API route yang melakukan mutasi data tapi tidak memanggil revalidasi cache.
+```python
+import os
+matches = []
+api_dir = './src/app/api'
+for root, dirs, files in os.walk(api_dir):
+    for file in files:
+        if file == 'route.ts' or file == 'route.js':
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                has_mutation = any(kw in content for kw in ['.insert(', '.update(', '.delete(', '.upsert('])
+                has_revalidate = 'revalidatePath' in content or 'revalidateTag' in content
+                if has_mutation and not has_revalidate:
+                    matches.append(filepath)
+            except: pass
+print(f'API routes with mutation but no revalidation: {len(matches)}')
+for path in matches:
+    print(f'[STALE RISK] {path}')
+```
+
 ## Tool Execution Protocol
 28. **Schema Verification:** Always verify schema requirements before invoking any external APIs or database tools.
 29. **No Placeholders:** Do not populate parameters with placeholder data. If a mandatory parameter is missing, ask the user for clarification first.
 
 ## Compliance & Strict Rule Enforcement
 30. **Strict Enforcement:** If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
+
