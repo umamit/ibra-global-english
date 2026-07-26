@@ -151,16 +151,6 @@ export default function PromoPopup() {
         </div>
       </div>
 
-      <style jsx global>{`
-        @keyframes promo-fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes promo-scale-in {
-          from { opacity: 0; transform: translate(-50%, -46%) scale(0.95); }
-          to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-      `}</style>
     </>
   );
 }

@@ -214,7 +214,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const nonce = headersList.get("x-nonce") || "";
 
   return (
-    <html lang="id" className={montserrat.variable}>
+    <html lang="id" className={montserrat.variable} suppressHydrationWarning>
       <head>
         {/* Flaticon UIcons */}
         <link href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css" rel="stylesheet" />
