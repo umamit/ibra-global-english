@@ -108,8 +108,9 @@ export default function ProgressView({
       {/* B1: Pengumuman Aktif */}
       {announcements.length > 0 && (
         <div>
-          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
-            📢 Pengumuman untuk {selectedChild?.name || "Anak Anda"}
+          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+            <i className="fi fi-rr-bullhorn"></i>
+            <span>Pengumuman untuk {selectedChild?.name || "Anak Anda"}</span>
           </h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
             {announcements.slice(0, 3).map(ann => {
@@ -144,8 +145,9 @@ export default function ProgressView({
       {/* B2: Jadwal Kelas Online */}
       {onlineSchedules.length > 0 && (
         <div>
-          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
-            🎥 Jadwal Kelas Online Mendatang
+          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+            <i className="fi fi-rr-video-camera"></i>
+            <span>Jadwal Kelas Online Mendatang</span>
           </h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
             {onlineSchedules.slice(0, 2).map(s => {
@@ -158,12 +160,15 @@ export default function ProgressView({
                       <span style={{ fontSize: "0.7rem", fontWeight: "600", padding: "2px 8px", borderRadius: "20px", background: "var(--color-gray-100)", color: "var(--color-gray-600)" }}>{s.duration_minutes} menit</span>
                     </div>
                     <p style={{ fontWeight: "800", fontSize: "0.875rem", color: "var(--color-gray-900)" }}>{s.title}</p>
-                    <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)" }}>
-                      📅 {dt.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })} · ⏰ {dt.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                    <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                      <span><i className="fi fi-rr-calendar"></i> {dt.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })}</span>
+                      <span>·</span>
+                      <span><i className="fi fi-rr-clock"></i> {dt.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</span>
                     </p>
                   </div>
-                  <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="btn-portal-primary" style={{ textDecoration: "none", padding: "0.5rem 1rem", fontSize: "0.825rem", whiteSpace: "nowrap" }}>
-                    🚀 Masuk Kelas
+                  <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="btn-portal-primary" style={{ textDecoration: "none", padding: "0.5rem 1rem", fontSize: "0.825rem", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                    <i className="fi fi-rr-paper-plane"></i>
+                    <span>Masuk Kelas</span>
                   </a>
                 </div>
               );

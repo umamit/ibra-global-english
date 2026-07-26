@@ -114,7 +114,7 @@ export default function ParentHeader({ parentName, notifications, showNotificati
                       }}
                     >
                       <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-start" }}>
-                        <span style={{ fontSize: "1rem" }}>{n.type === "warning" ? "⚠️" : "🔔"}</span>
+                        <span style={{ fontSize: "0.9rem" }}>{n.type === "warning" ? <i className="fi fi-rr-exclamation" style={{ color: "#dc2626" }}></i> : <i className="fi fi-rr-bell" style={{ color: "var(--color-primary)" }}></i>}</span>
                         <div style={{ flex: 1 }}>
                           <p style={{ fontSize: "0.8rem", fontWeight: "800", color: n.type === "warning" ? "#dc2626" : "var(--color-gray-900)", marginBottom: "2px" }}>
                             {n.title}

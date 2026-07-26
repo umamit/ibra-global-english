@@ -304,7 +304,17 @@ export default function VerifyCertificate() {
           </div>
 
           <h1 style={{ fontSize: "1.75rem", fontWeight: "900", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }} className={cert ? "verify-title-success" : "verify-title-error"}>
-            {cert ? "✓ Sertifikat Terverifikasi Asli" : "✗ Sertifikat Tidak Valid"}
+            {cert ? (
+              <>
+                <i className="fi fi-rr-check-circle" style={{ color: "#10b981" }}></i>
+                <span>Sertifikat Terverifikasi Asli</span>
+              </>
+            ) : (
+              <>
+                <i className="fi fi-rr-cross-circle" style={{ color: "#ef4444" }}></i>
+                <span>Sertifikat Tidak Valid</span>
+              </>
+            )}
           </h1>
           <p className="verify-subtitle" style={{ fontSize: "0.9rem", marginTop: "0.25rem" }}>
             Sistem Verifikasi Kelulusan LKP Ibra Global English Bobong (Dinas Pendidikan)

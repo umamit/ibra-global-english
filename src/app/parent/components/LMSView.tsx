@@ -165,7 +165,10 @@ export default function LMSView({
                         gap: "0.5rem"
                       }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span style={{ fontWeight: "800", color: "var(--color-gray-800)", fontSize: "0.85rem" }}>🏆 Evaluasi Tutor</span>
+                          <span style={{ fontWeight: "800", color: "var(--color-gray-800)", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                            <i className="fi fi-rr-trophy"></i>
+                            <span>Evaluasi Tutor</span>
+                          </span>
                           <span style={{
                             backgroundColor: "var(--color-accent)",
                             color: "white",
@@ -215,9 +218,13 @@ export default function LMSView({
                         fontSize: "0.78rem",
                         color: "var(--color-red)",
                         fontWeight: "600",
-                        lineHeight: 1.4
+                        lineHeight: 1.4,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.35rem"
                       }}>
-                        ⚠️ Menunggu Jawaban Anak
+                        <i className="fi fi-rr-exclamation"></i>
+                        <span>Menunggu Jawaban Anak</span>
                       </div>
                     )}
                   </div>

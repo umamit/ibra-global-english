@@ -54,26 +54,31 @@ export default function Testimonials() {
     submitTestimonial,
   } = useTestimonialForm();
 
-  const fetchSupabaseTestimonials = async () => {
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("testimonials")
-        .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
-      if (!error && data) {
-        setSupabaseData(data);
-      }
-    } catch (err) {
-      console.error("Gagal memuat testimoni dari Supabase:", err);
-    } finally {
-      setSupabaseLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchSupabaseTestimonials();
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("*")
+          .eq("is_active", true)
+          .order("created_at", { ascending: false });
+        if (isMounted) {
+          if (!error && data) {
+            setSupabaseData(data);
+          }
+          setSupabaseLoading(false);
+        }
+      } catch (err) {
+        console.error("Gagal memuat testimoni dari Supabase:", err);
+        if (isMounted) setSupabaseLoading(false);
+      }
+    }
+    loadData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const testimonials: Testimonial[] = useMemo(() => {
@@ -126,8 +131,9 @@ export default function Testimonials() {
 
         {/* Toast Alert */}
         {toastMsg.msg && (
-          <div style={{ padding: "1rem 1.25rem", borderRadius: "12px", background: "#d1e7dd", color: "#0f5132", marginBottom: "2rem", fontSize: "0.95rem", fontWeight: 600 }}>
-            ✓ {toastMsg.msg}
+          <div style={{ padding: "1rem 1.25rem", borderRadius: "12px", background: "#d1e7dd", color: "#0f5132", marginBottom: "2rem", fontSize: "0.95rem", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.4rem" }}>
+            <i className="fi fi-rr-check-circle"></i>
+            <span>{toastMsg.msg}</span>
           </div>
         )}
 
@@ -182,9 +188,10 @@ export default function Testimonials() {
               <button
                 type="button"
                 onClick={closeModal}
-                style={{ background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "#888" }}
+                style={{ background: "none", border: "none", fontSize: "1.1rem", cursor: "pointer", color: "#888" }}
+                aria-label="Tutup modal"
               >
-                ✕
+                <i className="fi fi-rr-cross"></i>
               </button>
             </div>
 
@@ -223,9 +230,9 @@ export default function Testimonials() {
                   onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })}
                   style={{ width: "100%", padding: "0.7rem", borderRadius: "10px", border: "1px solid #ccc", fontSize: "0.95rem" }}
                 >
-                  <option value={5}>⭐⭐⭐⭐⭐ (5 Bintang - Sangat Bagus)</option>
-                  <option value={4}>⭐⭐⭐⭐ (4 Bintang - Bagus)</option>
-                  <option value={3}>⭐⭐⭐ (3 Bintang - Cukup)</option>
+                  <option value={5}>5 Bintang (Sangat Bagus)</option>
+                  <option value={4}>4 Bintang (Bagus)</option>
+                  <option value={3}>3 Bintang (Cukup)</option>
                 </select>
               </div>
 

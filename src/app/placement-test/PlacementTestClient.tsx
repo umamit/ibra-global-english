@@ -357,11 +357,18 @@ export default function PlacementTestClient() {
                         width: "100%"
                       }}>
                         <h4 style={{ fontWeight: "800", fontSize: "1.1rem" }}>Akurasi Pengucapan: {speakingScore}%</h4>
-                        <p style={{ fontSize: "0.85rem", marginTop: "4px" }}>
-                          {speakingScore >= 70 
-                            ? "✓ Pelafalan Anda sangat baik! (+1 poin)" 
-                            : "✗ Pelafalan kurang presisi. Klik tombol di atas untuk mengulangi."
-                          }
+                        <p style={{ fontSize: "0.85rem", marginTop: "4px", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+                          {speakingScore >= 70 ? (
+                            <>
+                              <i className="fi fi-rr-check-circle" style={{ color: "#10b981" }}></i>
+                              <span>Pelafalan Anda sangat baik! (+1 poin)</span>
+                            </>
+                          ) : (
+                            <>
+                              <i className="fi fi-rr-cross-circle" style={{ color: "#ef4444" }}></i>
+                              <span>Pelafalan kurang presisi. Klik tombol di atas untuk mengulangi.</span>
+                            </>
+                          )}
                         </p>
                       </div>
                     )}

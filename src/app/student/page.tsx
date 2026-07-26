@@ -385,7 +385,7 @@ export default function StudentPortal() {
               fontSize: "0.9rem",
               border: "1px solid rgba(250, 204, 21, 0.3)"
             }}>
-              <span className="spinning-coin" style={{ display: "inline-block", animation: "spin 3s linear infinite" }}>🪙</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#a16207" className="spinning-coin" style={{ display: "inline-block", animation: "spin 3s linear infinite" }} aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5c0-1.38-1.34-2.5-3-2.5s-3 1.12-3 2.5 1.34 2.5 3 2.5 3 1.12 3 2.5-1.34 2.5-3 2.5" stroke="#fff" strokeWidth="2" fill="none"/></svg>
               <span>{totalCoins} Koin Ibra</span>
             </div>
             <button onClick={handleLogout} className="btn-logout" style={{ width: "auto", padding: "0.4rem 0.85rem", fontSize: "0.8rem", display: "inline-flex" }}>

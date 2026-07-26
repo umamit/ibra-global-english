@@ -226,8 +226,8 @@ export default function TermsPage() {
           Apabila Anda membutuhkan bantuan atau klarifikasi lebih lanjut mengenai Syarat & Ketentuan Layanan ini, silakan hubungi pusat bantuan kami:
         </p>
         <p style={{ marginTop: "0.5rem" }}>
-          📧 Email: <strong>admin@ibraglobalenglish.uk</strong><br />
-          📍 Alamat: <strong>Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794</strong>
+          <i className="fi fi-rr-envelope" style={{ marginRight: "0.3rem" }}></i> Email: <strong>admin@ibraglobalenglish.uk</strong><br />
+          <i className="fi fi-rr-marker" style={{ marginRight: "0.3rem" }}></i> Alamat: <strong>Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794</strong>
         </p>
       </section>
     </LegalLayout>

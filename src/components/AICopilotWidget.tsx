@@ -54,7 +54,7 @@ export default function AICopilotWidget() {
     handleKeyDown,
     formatTime,
     sendMessage,
-  } = useAIChat("/api/admin/ai-assist", "Halo Coach! 👋 Saya **Ibra AI Admin Copilot**, siap asisten harian Anda!\n\nBagaimana saya bisa membantu Anda hari ini?\n• 📢 **Ide Draf Pengumuman**: Tulis ide pesan baru untuk wali siswa\n• 📚 **Tips Mengajar**: Metode fun-learning Kids/Calistung\n• 📊 **Bantuan Administrasi**: Pertanyaan operasional kelas");
+  } = useAIChat("/api/admin/ai-assist", "Halo Coach! Saya **Ibra AI Admin Copilot**, siap asisten harian Anda!\n\nBagaimana saya bisa membantu Anda hari ini?\n• **Ide Draf Pengumuman**: Tulis ide pesan baru untuk wali siswa\n• **Tips Mengajar**: Metode fun-learning Kids/Calistung\n• **Bantuan Administrasi**: Pertanyaan operasional kelas");
 
   const quickReplies = [
     "Draf pengumuman libur kelas?",
@@ -169,7 +169,7 @@ export default function AICopilotWidget() {
       </button>
 
       {!isOpen && !hasOpened && (
-        <div className="ai-chat-tooltip" style={{ left: "80px", right: "auto" }}>Tanya Admin Copilot! 🤖</div>
+        <div className="ai-chat-tooltip" style={{ left: "80px", right: "auto" }}>Tanya Admin Copilot!</div>
       )}
     </>
   );

@@ -164,7 +164,7 @@ export default function ReceiptPrint({ printReceipt, selectedChild, parentName, 
                   {/* Center Content Box */}
                   <rect x="25" y="52" width="90" height="36" fill="#ffffff" rx="4" stroke="#216c7e" strokeWidth="1.5" />
                   <text x="70" y="67" textAnchor="middle" fill="#216c7e" fontSize="11" fontWeight="900" letterSpacing="1px">
-                    ★ LUNAS ★
+                    LUNAS
                   </text>
                   <text x="70" y="81" textAnchor="middle" fill="#a68849" fontSize="8" fontWeight="800" letterSpacing="0.5px">
                     VERIFIED &amp; VALID

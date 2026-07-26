@@ -59,7 +59,7 @@ export default function AIChatWidget() {
     handleKeyDown,
     formatTime,
     sendMessage,
-  } = useAIChat("/api/ai-chat", "Halo! 👋 Saya **Ibra AI Assistant**, siap membantu kamu!\n\nSaya bisa:\n• 📚 Jelaskan program kursus kami (Kids, Teens, Calistung)\n• 🗣️ Latih percakapan Bahasa Inggris\n• ✅ Koreksi grammar kamu\n• 🎯 Rekomendasikan program yang tepat\n\nMau mulai dari mana?");
+  } = useAIChat("/api/ai-chat", "Halo! Saya **Ibra AI Assistant**, siap membantu kamu!\n\nSaya bisa:\n• Jelaskan program kursus kami (Kids, Teens, Calistung)\n• Latih percakapan Bahasa Inggris\n• Koreksi grammar kamu\n• Rekomendasikan program yang tepat\n\nMau mulai dari mana?");
 
   // Cancel speech on unmount
   useEffect(() => {

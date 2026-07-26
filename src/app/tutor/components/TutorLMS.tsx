@@ -197,8 +197,9 @@ export default function TutorLMS({
         {activeLmsGrading && (
           <div className="portal-card" style={{ padding: "1.5rem", border: "1.5px solid var(--color-primary-light)", background: "var(--color-gray-50)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <h4 style={{ fontWeight: "800", color: "var(--color-primary-dark)", fontSize: "0.95rem" }}>
-                📥 Daftar Pengumpulan Tugas
+              <h4 style={{ fontWeight: "800", color: "var(--color-primary-dark)", fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <i className="fi fi-rr-inbox"></i>
+                <span>Daftar Pengumpulan Tugas</span>
               </h4>
               <button
                 onClick={() => setSelectedSubmission(null)}
@@ -225,15 +226,16 @@ export default function TutorLMS({
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <strong>{sub.students?.name}</strong>
                       <span style={{ fontSize: "0.75rem", color: sub.grade ? "var(--color-green)" : "var(--color-accent)", fontWeight: "700" }}>
-                        {sub.grade ? `Nilai: ${sub.grade}` : "⏳ Belum Dinilai"}
+                        {sub.grade ? `Nilai: ${sub.grade}` : "Belum Dinilai"}
                       </span>
                     </div>
                     <p style={{ fontSize: "0.72rem", color: "var(--color-gray-400)", marginTop: "2px" }}>
                       Dikumpul: {new Date(sub.submitted_at).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                     </p>
                     <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.5rem" }}>
-                      <a href={sub.file_url} target="_blank" rel="noopener noreferrer" className="btn-portal-outline" style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem", textDecoration: "none" }}>
-                        📎 Buka File
+                      <a href={sub.file_url} target="_blank" rel="noopener noreferrer" className="btn-portal-outline" style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                        <i className="fi fi-rr-paperclip"></i>
+                        <span>Buka File</span>
                       </a>
                       <button
                         onClick={() => {
@@ -242,9 +244,10 @@ export default function TutorLMS({
                           setStudentFeedback(sub.notes || "");
                         }}
                         className="btn-portal-primary"
-                        style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem", height: "auto" }}
+                        style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem", height: "auto", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}
                       >
-                        ✍️ Beri Nilai
+                        <i className="fi fi-rr-edit"></i>
+                        <span>Beri Nilai</span>
                       </button>
                     </div>
                   </div>
@@ -339,17 +342,19 @@ export default function TutorLMS({
 
                   <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.85rem", borderTop: "1px dashed var(--color-gray-150)", paddingTop: "0.75rem" }}>
                     {mat.file_url && (
-                      <a href={mat.file_url} target="_blank" rel="noopener noreferrer" className="btn-portal-outline" style={{ padding: "0.3rem 0.75rem", fontSize: "0.78rem", textDecoration: "none" }}>
-                        📂 Unduh Berkas
+                      <a href={mat.file_url} target="_blank" rel="noopener noreferrer" className="btn-portal-outline" style={{ padding: "0.3rem 0.75rem", fontSize: "0.78rem", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                        <i className="fi fi-rr-folder"></i>
+                        <span>Unduh Berkas</span>
                       </a>
                     )}
                     {mat.type === "tugas" && (
                       <button
                         onClick={() => handleViewSubmissions(mat)}
                         className="btn-portal-primary"
-                        style={{ padding: "0.3rem 0.75rem", fontSize: "0.78rem", height: "auto" }}
+                        style={{ padding: "0.3rem 0.75rem", fontSize: "0.78rem", height: "auto", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}
                       >
-                        📥 Cek Pengumpulan
+                        <i className="fi fi-rr-inbox"></i>
+                        <span>Cek Pengumpulan</span>
                       </button>
                     )}
                   </div>

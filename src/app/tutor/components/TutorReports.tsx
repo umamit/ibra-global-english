@@ -96,7 +96,7 @@ export default function TutorReports({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #10b981", background: "rgba(16, 185, 129, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Hadir</span>
-            <span style={{ fontSize: "1.5rem" }}>✓</span>
+            <i className="fi fi-rr-check-circle" style={{ color: "#10b981", fontSize: "1.25rem" }}></i>
           </div>
           <h3 style={{ fontSize: "1.75rem", fontWeight: "800", color: "#10b981", margin: 0 }}>{stats.hadir}</h3>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>dari {stats.total} siswa</p>
@@ -105,7 +105,7 @@ export default function TutorReports({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #f59e0b", background: "rgba(245, 158, 11, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Sakit</span>
-            <span style={{ fontSize: "1.5rem" }}>🤒</span>
+            <i className="fi fi-rr-heart" style={{ color: "#f59e0b", fontSize: "1.25rem" }}></i>
           </div>
           <h3 style={{ fontSize: "1.75rem", fontWeight: "800", color: "#f59e0b", margin: 0 }}>{stats.sakit}</h3>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>siswa</p>
@@ -114,7 +114,7 @@ export default function TutorReports({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #3b82f6", background: "rgba(59, 130, 246, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Izin</span>
-            <span style={{ fontSize: "1.5rem" }}>📋</span>
+            <i className="fi fi-rr-document" style={{ color: "#3b82f6", fontSize: "1.25rem" }}></i>
           </div>
           <h3 style={{ fontSize: "1.75rem", fontWeight: "800", color: "#3b82f6", margin: 0 }}>{stats.izin}</h3>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>siswa</p>
@@ -123,7 +123,7 @@ export default function TutorReports({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #ef4444", background: "rgba(239, 68, 68, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Alfa</span>
-            <span style={{ fontSize: "1.5rem" }}>⚠️</span>
+            <i className="fi fi-rr-exclamation" style={{ color: "#ef4444", fontSize: "1.25rem" }}></i>
           </div>
           <h3 style={{ fontSize: "1.75rem", fontWeight: "800", color: "#ef4444", margin: 0 }}>{stats.alfa}</h3>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>siswa</p>
@@ -132,7 +132,7 @@ export default function TutorReports({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #6b7280", background: "rgba(107, 114, 128, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Tidak ada Kelas</span>
-            <span style={{ fontSize: "1.5rem" }}>—</span>
+            <span style={{ fontSize: "1.25rem", color: "#6b7280" }}>—</span>
           </div>
           <h3 style={{ fontSize: "1.75rem", fontWeight: "800", color: "#6b7280", margin: 0 }}>{stats.tidakAdaKelas}</h3>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>siswa</p>
@@ -141,7 +141,7 @@ export default function TutorReports({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid var(--color-primary)", background: "rgba(33, 108, 126, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Tingkat Kehadiran</span>
-            <span style={{ fontSize: "1.5rem" }}>📊</span>
+            <i className="fi fi-rr-stats" style={{ color: "var(--color-primary)", fontSize: "1.25rem" }}></i>
           </div>
           <h3 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)", margin: 0 }}>{stats.attendanceRate}%</h3>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>rata-rata hadir</p>
@@ -163,23 +163,26 @@ export default function TutorReports({
             <Link
               href="/admin/reports"
               className="btn-portal-outline no-print"
-              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
+              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
             >
-              💡 Input Nilai & Rubrik
+              <i className="fi fi-rr-bulb"></i>
+              <span>Input Nilai & Rubrik</span>
             </Link>
             <button
               onClick={onExportCSV}
               className="btn-portal-outline no-print"
-              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700" }}
+              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
             >
-              📥 Export CSV
+              <i className="fi fi-rr-download"></i>
+              <span>Export CSV</span>
             </button>
             <button
               onClick={onPrintReport}
               className="btn-portal-primary no-print"
-              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700" }}
+              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
             >
-              🖨️ Cetak Laporan
+              <i className="fi fi-rr-print"></i>
+              <span>Cetak Laporan</span>
             </button>
           </div>
         </div>

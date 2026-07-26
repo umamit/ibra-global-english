@@ -50,13 +50,13 @@ export default function SpeakingPractice({ student }: any) {
 
     // Provide feedback
     if (accuracyScore >= 90) {
-      setFeedback("🤩 Sempurna! Pengucapan Anda sangat jelas dan fasih!");
+      setFeedback("Sempurna! Pengucapan Anda sangat jelas dan fasih!");
     } else if (accuracyScore >= 75) {
-      setFeedback("😊 Sangat Bagus! Pengucapan sudah baik, terus berlatih beberapa kata lagi.");
+      setFeedback("Sangat Bagus! Pengucapan sudah baik, terus berlatih beberapa kata lagi.");
     } else if (accuracyScore >= 50) {
-      setFeedback("👍 Cukup Baik! Cobalah dengarkan pelafalan tutor (tombol dengar) lalu rekam ulang.");
+      setFeedback("Cukup Baik! Cobalah dengarkan pelafalan tutor (tombol dengar) lalu rekam ulang.");
     } else {
-      setFeedback("💪 Semangat! Coba rekam ulang secara perlahan dan dekatkan mikrofon.");
+      setFeedback("Semangat! Coba rekam ulang secara perlahan dan dekatkan mikrofon.");
     }
   }
 
@@ -144,8 +144,9 @@ export default function SpeakingPractice({ student }: any) {
   return (
     <div className="portal-card" style={{ padding: "2.5rem 2rem", maxWidth: "680px", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-        <h3 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>
-          🎙️ AI English Speaking Practice
+        <h3 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-primary-dark)", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
+          <i className="fi fi-rr-microphone"></i>
+          <span>AI English Speaking Practice</span>
         </h3>
         <p style={{ color: "var(--color-gray-500)", fontSize: "0.9rem", marginTop: "4px" }}>
           Latih pengucapan bahasa Inggris Anda secara mandiri di rumah dan dapatkan penilaian instan!
@@ -277,8 +278,13 @@ export default function SpeakingPractice({ student }: any) {
           </button>
         </div>
 
-        <span style={{ fontSize: "0.85rem", fontWeight: "800", color: isRecording ? "#ef4444" : "var(--color-gray-500)" }}>
-          {isRecording ? "🔴 PEREKAMAN AKTIF - Ucapkan Kalimat Di Atas..." : "Ketuk Mikrofon untuk Mulai Perekaman"}
+        <span style={{ fontSize: "0.85rem", fontWeight: "800", color: isRecording ? "#ef4444" : "var(--color-gray-500)", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+          {isRecording ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="#ef4444"><circle cx="12" cy="12" r="10"/></svg>
+              <span>PEREKAMAN AKTIF - Ucapkan Kalimat Di Atas...</span>
+            </>
+          ) : "Ketuk Mikrofon untuk Mulai Perekaman"}
         </span>
 
         {/* Results Block */}

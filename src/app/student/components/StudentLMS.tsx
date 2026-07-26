@@ -70,8 +70,9 @@ export default function StudentLMS({
             </div>
             {/* Stats */}
             <div style={{ flex: 1 }}>
-              <p style={{ fontWeight: "800", fontSize: "0.95rem", color: "var(--color-gray-800)", marginBottom: "0.5rem" }}>
-                📋 Progress Tugas LMS
+              <p style={{ fontWeight: "800", fontSize: "0.95rem", color: "var(--color-gray-800)", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <i className="fi fi-rr-clip"></i>
+                <span>Progress Tugas LMS</span>
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem" }}>
@@ -114,10 +115,14 @@ export default function StudentLMS({
               padding: "0.45rem 1.25rem",
               borderRadius: "20px",
               fontSize: "0.85rem",
-              fontWeight: "700"
+              fontWeight: "700",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.35rem"
             }}
           >
-            📚 Materi Bimbingan
+            <i className="fi fi-rr-book-alt"></i>
+            <span>Materi Bimbingan</span>
           </button>
           <button
             onClick={() => setLmsSubTab("tugas")}
@@ -126,10 +131,14 @@ export default function StudentLMS({
               padding: "0.45rem 1.25rem",
               borderRadius: "20px",
               fontSize: "0.85rem",
-              fontWeight: "700"
+              fontWeight: "700",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.35rem"
             }}
           >
-            ✍️ Tugas Rumah (PR)
+            <i className="fi fi-rr-edit"></i>
+            <span>Tugas Rumah (PR)</span>
           </button>
         </div>
       </div>
@@ -164,7 +173,8 @@ export default function StudentLMS({
                         className="btn-portal-outline"
                         style={{ padding: "0.45rem 1rem", fontSize: "0.8rem", display: "flex", gap: "0.3rem", alignItems: "center", whiteSpace: "nowrap" }}
                       >
-                        📂 Buka File
+                        <i className="fi fi-rr-folder"></i>
+                        <span>Buka File</span>
                       </a>
                     )}
                   </div>
@@ -188,8 +198,9 @@ export default function StudentLMS({
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1.5rem", flexWrap: "wrap" }}>
                       <div style={{ flex: "1 1 300px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                          <span style={{ fontSize: "0.7rem", fontWeight: "800", padding: "2px 8px", borderRadius: "4px", background: sub ? "#e6f4ea" : "#fff7ed", color: sub ? "#137333" : "#b06000" }}>
-                            {sub ? "✓ Sudah Dikumpul" : "⏳ Belum Dikumpul"}
+                          <span style={{ fontSize: "0.7rem", fontWeight: "800", padding: "2px 8px", borderRadius: "4px", background: sub ? "#e6f4ea" : "#fff7ed", color: sub ? "#137333" : "#b06000", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                            <i className={`fi ${sub ? "fi-rr-check" : "fi-rr-time-fast"}`}></i>
+                            <span>{sub ? "Sudah Dikumpul" : "Belum Dikumpul"}</span>
                           </span>
                           {sub?.grade && (
                             <span style={{ fontSize: "0.7rem", fontWeight: "800", padding: "2px 8px", borderRadius: "4px", background: "var(--color-primary-light)", color: "var(--color-primary-dark)" }}>
@@ -214,7 +225,8 @@ export default function StudentLMS({
                               rel="noopener noreferrer"
                               style={{ fontSize: "0.8rem", color: "var(--color-primary)", fontWeight: "600", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
                             >
-                              📥 Download Berkas Soal Tugas
+                              <i className="fi fi-rr-download"></i>
+                              <span>Download Berkas Soal Tugas</span>
                             </a>
                           </div>
                         )}
@@ -229,9 +241,10 @@ export default function StudentLMS({
                               href={sub.file_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{ display: "block", fontSize: "0.82rem", color: "var(--color-primary)", textDecoration: "none", marginTop: "4px", fontWeight: "700", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                              style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", fontSize: "0.82rem", color: "var(--color-primary)", textDecoration: "none", marginTop: "4px", fontWeight: "700", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                             >
-                              📎 Lihat Berkas Jawaban
+                              <i className="fi fi-rr-paperclip"></i>
+                              <span>Lihat Berkas Jawaban</span>
                             </a>
                             <p style={{ fontSize: "0.7rem", color: "var(--color-gray-400)", marginTop: "4px" }}>
                               Dikumpul pada: {new Date(sub.submitted_at).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}

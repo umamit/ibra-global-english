@@ -17,7 +17,7 @@ export default function MarqueeBanner({ initialSettings }: any) {
         <div className="marquee-content-block">
           {marqueeItems.map((item, idx) => (
             <div key={`set1-${idx}`} className="marquee-item">
-              <span className="marquee-divider">✨</span>
+              <span className="marquee-divider"><i className="fi fi-rr-sparkles"></i></span>
               <span>{item}</span>
             </div>
           ))}
@@ -26,7 +26,7 @@ export default function MarqueeBanner({ initialSettings }: any) {
         <div className="marquee-content-block">
           {marqueeItems.map((item, idx) => (
             <div key={`set2-${idx}`} className="marquee-item">
-              <span className="marquee-divider">✨</span>
+              <span className="marquee-divider"><i className="fi fi-rr-sparkles"></i></span>
               <span>{item}</span>
             </div>
           ))}

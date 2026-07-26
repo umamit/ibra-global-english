@@ -54,8 +54,9 @@ export default function StudentDashboard({
       {/* B1: Pengumuman Aktif */}
       {announcements.length > 0 && (
         <div>
-          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
-            📢 Pengumuman
+          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+            <i className="fi fi-rr-bullhorn"></i>
+            <span>Pengumuman</span>
           </h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {announcements.slice(0, 3).map(ann => {
@@ -90,8 +91,9 @@ export default function StudentDashboard({
       {/* B2: Jadwal Kelas Online Berikutnya */}
       {onlineSchedules.length > 0 && (
         <div>
-          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
-            🎥 Jadwal Kelas Online Berikutnya
+          <h4 style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+            <i className="fi fi-rr-video-camera"></i>
+            <span>Jadwal Kelas Online Berikutnya</span>
           </h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {onlineSchedules.slice(0, 2).map(s => {
@@ -104,13 +106,16 @@ export default function StudentDashboard({
                       <span style={{ fontSize: "0.7rem", fontWeight: "600", padding: "2px 8px", borderRadius: "20px", background: "var(--color-gray-100)", color: "var(--color-gray-600)" }}>{s.duration_minutes} menit</span>
                     </div>
                     <p style={{ fontWeight: "800", fontSize: "0.9rem", color: "var(--color-gray-900)" }}>{s.title}</p>
-                    <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)" }}>
-                      📅 {dt.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })} · ⏰ {dt.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                    <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                      <span><i className="fi fi-rr-calendar"></i> {dt.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })}</span>
+                      <span>·</span>
+                      <span><i className="fi fi-rr-clock"></i> {dt.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</span>
                     </p>
-                    {s.tutor_name && <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)" }}>👤 {s.tutor_name}</p>}
+                    {s.tutor_name && <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", display: "flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-user"></i> {s.tutor_name}</p>}
                   </div>
-                  <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="btn-portal-primary" style={{ textDecoration: "none", padding: "0.6rem 1.25rem", fontSize: "0.875rem", whiteSpace: "nowrap" }}>
-                    🚀 Masuk Kelas
+                  <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="btn-portal-primary" style={{ textDecoration: "none", padding: "0.6rem 1.25rem", fontSize: "0.875rem", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                    <i className="fi fi-rr-paper-plane"></i>
+                    <span>Masuk Kelas</span>
                   </a>
                 </div>
               );
@@ -138,7 +143,7 @@ export default function StudentDashboard({
             </span>
           </div>
           <h3 style={{ fontSize: "1.6rem", fontWeight: "900", color: "white", marginBottom: "0.4rem" }}>
-            Halo, {student.name}! 👋
+            Halo, {student.name}!
           </h3>
           <p style={{ color: "rgba(255,255,255,0.88)", fontSize: "0.92rem", lineHeight: "1.5" }}>
             Senang melihatmu kembali! Terus kumpulkan koin prestasi dengan menghadiri kelas tepat waktu, aktif bertanya, dan menyelesaikan tugas harianmu!
@@ -154,7 +159,7 @@ export default function StudentDashboard({
           border: "1px solid rgba(255,255,255,0.2)",
           backdropFilter: "blur(10px)"
         }}>
-          <div style={{ fontSize: "2.75rem" }}>🪙</div>
+          <div style={{ fontSize: "2.25rem", color: "white", display: "flex", alignItems: "center" }}><i className="fi fi-rr-coins"></i></div>
           <div>
             <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "rgba(255,255,255,0.75)", textTransform: "uppercase" }}>Koin Prestasimu</p>
             <p style={{ fontSize: "2.25rem", fontWeight: "900", color: "white", lineHeight: "1.1" }}>{totalCoins} <span style={{ fontSize: "1.1rem", fontWeight: "700", color: "rgba(255,255,255,0.85)" }}>Koin</span></p>
@@ -168,7 +173,10 @@ export default function StudentDashboard({
         {/* Rapor Belajar */}
         <div className="portal-card" style={{ padding: "1.75rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "0.75rem" }}>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)" }}>✍️ Rapor Belajar Terakhir</h3>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+              <i className="fi fi-rr-document-signed"></i>
+              <span>Rapor Belajar Terakhir</span>
+            </h3>
             <span style={{ fontSize: "0.72rem", padding: "2px 8px", background: "var(--color-primary-light)", color: "var(--color-primary)", borderRadius: "4px", fontWeight: "700" }}>Resmi</span>
           </div>
 
@@ -190,8 +198,9 @@ export default function StudentDashboard({
                     </div>
                   </div>
                   
-                  <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)", borderTop: "1px dashed var(--color-gray-200)", paddingTop: "0.75rem", lineHeight: "1.4" }}>
-                    📝 <strong>Catatan Tutor:</strong> {rep.tutor_notes || "Pertahankan prestasi belajar aktifmu!"}
+                  <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)", borderTop: "1px dashed var(--color-gray-200)", paddingTop: "0.75rem", lineHeight: "1.4", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                    <i className="fi fi-rr-edit"></i>
+                    <span><strong>Catatan Tutor:</strong> {rep.tutor_notes || "Pertahankan prestasi belajar aktifmu!"}</span>
                   </p>
                 </div>
               ))}
@@ -206,7 +215,10 @@ export default function StudentDashboard({
         {/* Sertifikat Kelulusan */}
         <div className="portal-card" style={{ padding: "1.75rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", borderBottom: "1px solid var(--color-gray-100)", paddingBottom: "0.75rem" }}>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)" }}>🏅 Sertifikat Kelulusan</h3>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+              <i className="fi fi-rr-award"></i>
+              <span>Sertifikat Kelulusan</span>
+            </h3>
             <span style={{ fontSize: "0.72rem", padding: "2px 8px", background: "var(--color-accent-light)", color: "var(--color-accent)", borderRadius: "4px", fontWeight: "700" }}>Terverifikasi</span>
           </div>
 
@@ -223,9 +235,10 @@ export default function StudentDashboard({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-portal-outline"
-                    style={{ padding: "0.4rem 0.8rem", fontSize: "0.75rem", whiteSpace: "nowrap" }}
+                    style={{ padding: "0.4rem 0.8rem", fontSize: "0.75rem", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
                   >
-                    🔍 Lihat Sertifikat
+                    <i className="fi fi-rr-search"></i>
+                    <span>Lihat Sertifikat</span>
                   </a>
                 </div>
               ))}
