@@ -68,7 +68,7 @@ export default function KemitraanClient() {
               </div>
 
               <div className="benefit-card">
-                <div className="benefit-icon-wrapper"><i className="fi fi-rr-tag"></i></div>
+                <div className="benefit-icon-wrapper"><i className="fi fi-rr-label"></i></div>
                 <h3>Voucher Khusus Siswa Mitra</h3>
                 <p>Siswa dari sekolah mitra mendapatkan potongan biaya pendaftaran dan prioritas kuota kelas offline maupun online.</p>
               </div>
