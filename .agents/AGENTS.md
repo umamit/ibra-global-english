@@ -213,11 +213,168 @@ for path, line_no, emojis, content in matches:
 26. **Test Execution:** Always run `npm test` (or equivalent) to verify changes against the real runtime environment.
 27. **Test Failure Actions:** If a test fails, you must read the error logs and fix the actual code, not change the test to bypass it.
 
+---
+
+## 🐍 Python Audit Scripts (Terminal-Only Tools)
+
+> **Catatan Penting**: Skrip-skrip di bawah ini adalah **alat inspeksi terminal saja** — dijalankan sementara oleh AI untuk memverifikasi kualitas kode. Tidak ada satu baris pun Python yang masuk ke dalam proyek Next.js. Jalankan semua dari **root project** menggunakan `python3 -c "..."`.
+
+---
+
+### A. Scan Emoji (Rule 21k)
+Wajib dijalankan setelah setiap sesi penggantian emoji.
+```python
+import os, re
+emoji_pattern = re.compile(
+    r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF'
+    r'\U0001F680-\U0001F6FF\U0001F1E6-\U0001F1FF'
+    r'\U0001F900-\U0001F9FF\U0001FA70-\U0001FAFF'
+    r'\u2600-\u26FF\u2700-\u27BF\u2300-\u23FF]'
+)
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        found = emoji_pattern.findall(line)
+                        if found:
+                            matches.append((filepath, idx, ''.join(set(found)), line.strip()))
+            except: pass
+print(f'Total emoji occurrences found: {len(matches)}')
+for path, line_no, emojis, content in matches:
+    print(f'{path}:{line_no} [{emojis}] -> {content}')
+```
+
+---
+
+### B. Scan File Terlalu Panjang (Rule 5 — Maks 800 Baris)
+Wajib dijalankan jika menambah fitur besar atau refaktorisasi.
+```python
+import os
+violations = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx', '.css')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    count = sum(1 for _ in f)
+                if count > 800:
+                    violations.append((count, filepath))
+            except: pass
+violations.sort(reverse=True)
+print(f'Files exceeding 800 lines: {len(violations)}')
+for count, path in violations:
+    print(f'{count} lines -> {path}')
+```
+
+---
+
+### C. Scan `console.log` yang Tertinggal
+Jalankan sebelum push ke production untuk menghapus debug log.
+```python
+import os, re
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if 'console.log(' in line and not line.strip().startswith('//'):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'console.log occurrences: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'{path}:{line_no} -> {content}')
+```
+
+---
+
+### D. Scan Secret / Credential Bocor (Rule 1 — Anti-Leak)
+Jalankan jika ada perubahan pada file konfigurasi atau environment.
+```python
+import os, re
+danger_patterns = [
+    r'sk_live_', r'sk_test_', r'ghp_', r'gho_', r'ghu_',
+    r'SUPABASE_SERVICE_ROLE_KEY\s*=\s*["\']ey',
+    r'groq_[a-zA-Z0-9]{20,}',
+    r'NEXT_PUBLIC_SUPABASE_SERVICE',
+]
+pattern = re.compile('|'.join(danger_patterns))
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        if pattern.search(line):
+                            matches.append((filepath, idx, line.strip()))
+            except: pass
+print(f'Potential secret leaks: {len(matches)}')
+for path, line_no, content in matches:
+    print(f'[DANGER] {path}:{line_no} -> {content}')
+```
+
+---
+
+### E. Scan Warna Hardcoded (Rule 21a — Brand Color Locking)
+Pastikan warna brand selalu pakai CSS variable, bukan nilai hex langsung.
+```python
+import os, re
+# Warna brand yang wajib pakai CSS variable
+hardcoded_colors = ['#216c7e', '#164d57', '#A68849', '#a68849', '#eef6f8']
+matches = []
+for root, dirs, files in os.walk('./src'):
+    for file in files:
+        if file.endswith(('.js', '.jsx', '.ts', '.tsx')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for idx, line in enumerate(f.readlines(), 1):
+                        for color in hardcoded_colors:
+                            if color.lower() in line.lower():
+                                matches.append((filepath, idx, color, line.strip()))
+            except: pass
+print(f'Hardcoded brand colors found: {len(matches)}')
+for path, line_no, color, content in matches:
+    print(f'{path}:{line_no} [{color}] -> {content}')
+```
+
+---
+
+### F. Laporan Statistik File (Overview Codebase)
+Gunakan untuk mendapatkan gambaran ukuran dan distribusi komponen.
+```python
+import os
+from collections import defaultdict
+stats = defaultdict(lambda: {'files': 0, 'lines': 0})
+for root, dirs, files in os.walk('./src'):
+    folder = root.replace('./src/', '').split('/')[0] or 'root'
+    for file in files:
+        if file.endswith(('.ts', '.tsx', '.js', '.jsx', '.css')):
+            filepath = os.path.join(root, file)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    lines = sum(1 for _ in f)
+                stats[folder]['files'] += 1
+                stats[folder]['lines'] += lines
+            except: pass
+print(f'{"Folder":<30} {"Files":>6} {"Lines":>8}')
+print('-' * 46)
+for folder, data in sorted(stats.items(), key=lambda x: -x[1]['lines']):
+    print(f'{folder:<30} {data["files"]:>6} {data["lines"]:>8}')
+```
+
 ## Tool Execution Protocol
 28. **Schema Verification:** Always verify schema requirements before invoking any external APIs or database tools.
 29. **No Placeholders:** Do not populate parameters with placeholder data. If a mandatory parameter is missing, ask the user for clarification first.
 
 ## Compliance & Strict Rule Enforcement
 30. **Strict Enforcement:** If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
-
-
