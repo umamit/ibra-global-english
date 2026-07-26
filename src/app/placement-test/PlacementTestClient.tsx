@@ -245,7 +245,7 @@ export default function PlacementTestClient() {
                     width: `${(secondsLeft / 15) * 100}%`, 
                     height: "100%", 
                     backgroundColor: secondsLeft <= 5 ? "#ef4444" : "var(--color-accent)", 
-                    transition: "width 1s linear" 
+                    transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)" 
                   }}></div>
                 </div>
               </div>

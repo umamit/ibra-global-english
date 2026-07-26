@@ -113,7 +113,7 @@
 
 [data-theme='dark'] .faq-item:hover,
 [data-theme='dark'] .faq-item.active {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
   border-color: rgba(33, 108, 126, 0.25);
 }
 

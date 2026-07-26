@@ -65,7 +65,7 @@
 [data-theme='dark'] .step-card-item:hover {
   background-color: rgba(22, 36, 44, 0.8);
   border-color: rgba(33, 108, 126, 0.3);
-  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
 }
 
 /* Highlighted last step card */

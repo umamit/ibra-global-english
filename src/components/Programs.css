@@ -187,7 +187,7 @@
 
 [data-theme='dark'] .program-card:hover {
   border-color: rgba(33, 108, 126, 0.4);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(33, 108, 126, 0.15);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(33, 108, 126, 0.15);
 }
 
 /* ── Icon box ───────────────────────────────────────────────────────── */
