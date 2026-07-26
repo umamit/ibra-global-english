@@ -256,12 +256,13 @@ export default function MaintenancePage() {
 
           <p className="maint-subtitle">
             Website Ibra Global English sedang kami tingkatkan untuk pengalaman belajar yang lebih baik.
-            Kami akan kembali online sebentar lagi. Terima kasih atas kesabarannya! 🙏
+            Kami akan kembali online sebentar lagi. Terima kasih atas kesabarannya!
           </p>
 
           {/* Tagline */}
-          <div className="maint-trilogy">
-            <span>✨ Building Confident English Communicators.</span>
+          <div className="maint-trilogy" style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+            <i className="fi fi-rr-sparkles"></i>
+            <span>Building Confident English Communicators.</span>
           </div>
 
           {/* WhatsApp CTA */}

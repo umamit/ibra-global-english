@@ -41,7 +41,7 @@ export default function KemitraanClient() {
             {/* Banner Transparansi Biaya */}
             <div className="fee-notice-banner" style={{ maxWidth: "800px", marginInline: "auto", marginTop: "2rem" }}>
               <div className="fee-notice-icon">
-                💡
+                <i className="fi fi-rr-bulb"></i>
               </div>
               <div className="fee-notice-content">
                 <h4>Transparansi Biaya & Model Kemitraan</h4>
@@ -63,19 +63,19 @@ export default function KemitraanClient() {
 
             <div className="benefits-grid">
               <div className="benefit-card">
-                <div className="benefit-icon-wrapper">🎯</div>
+                <div className="benefit-icon-wrapper"><i className="fi fi-rr-crosshair"></i></div>
                 <h3>Free English Diagnostic Test</h3>
                 <p>Akses pemetaan kemampuan bahasa Inggris gratis untuk seluruh siswa sekolah mitra guna mengetahui level awal mereka secara akurat.</p>
               </div>
 
               <div className="benefit-card">
-                <div className="benefit-icon-wrapper">🎟️</div>
+                <div className="benefit-icon-wrapper"><i className="fi fi-rr-ticket"></i></div>
                 <h3>Voucher Khusus Siswa Mitra</h3>
                 <p>Siswa dari sekolah mitra mendapatkan potongan biaya pendaftaran dan prioritas kuota kelas offline maupun online.</p>
               </div>
 
               <div className="benefit-card">
-                <div className="benefit-icon-wrapper">📜</div>
+                <div className="benefit-icon-wrapper"><i className="fi fi-rr-diploma"></i></div>
                 <h3>Sertifikat Penghargaan Kemitraan</h3>
                 <p>Sekolah menerima Piagam Kemitraan Resmi Ibra Global English sebagai pelopor pendukung literasi bahasa Inggris di Bobong.</p>
               </div>
@@ -84,74 +84,70 @@ export default function KemitraanClient() {
         </section>
 
         {/* Form Registration Section */}
-        <section className="kemitraan-section kemitraan-form-section">
+        <section className="kemitraan-section kemitraan-form-section scroll-fade-up">
           <div className="kemitraan-container">
             <div className="kemitraan-form-card">
-              <h2>Formulir Pengajuan Mitra Sekolah</h2>
-              <p className="kemitraan-form-desc">Isi formulir singkat di bawah ini. Tim Ibra Global English akan menghubungi Anda untuk diskusi jadwal audiens resmi.</p>
+              <div className="form-header">
+                <h2>Formulir Pengajuan Kemitraan Sekolah</h2>
+                <p>Isi data singkat sekolah Anda. Tim kami akan menghubungi Kepala Sekolah atau Perwakilan dalam 1x24 jam.</p>
+              </div>
 
               <form onSubmit={handleSubmit} className="kemitraan-form">
-                <div className="kemitraan-form-grid">
-                  <div className="form-group kemitraan-form-group">
-                    <label htmlFor="institution_name">Nama Sekolah / Instansi *</label>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Nama Sekolah / Instansi *</label>
                     <input
-                      id="institution_name"
                       type="text"
                       className="form-input"
+                      placeholder="Contoh: SD Negeri 1 Bobong / SMP N 2 Taliabu"
+                      value={form.schoolName}
+                      onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
                       required
-                      placeholder="Contoh: SD Negeri 1 Bobong"
-                      value={form.institution_name}
-                      onChange={(e) => setForm({ ...form, institution_name: e.target.value })}
                     />
                   </div>
 
-                  <div className="form-group kemitraan-form-group">
-                    <label htmlFor="rep_name">Nama Penanggung Jawab / Perwakilan *</label>
+                  <div className="form-group">
+                    <label>Nama Penanggung Jawab / Perwakilan *</label>
                     <input
-                      id="rep_name"
                       type="text"
                       className="form-input"
+                      placeholder="Contoh: Ibu Rina (Kepala Sekolah / Guru B.Inggris)"
+                      value={form.contactPerson}
+                      onChange={(e) => setForm({ ...form, contactPerson: e.target.value })}
                       required
-                      placeholder="Contoh: Bapak Ahmad, S.Pd."
-                      value={form.rep_name}
-                      onChange={(e) => setForm({ ...form, rep_name: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="kemitraan-form-grid">
-                  <div className="form-group kemitraan-form-group">
-                    <label htmlFor="rep_role">Jabatan Perwakilan *</label>
-                    <input
-                      id="rep_role"
-                      type="text"
-                      className="form-input"
-                      required
-                      placeholder="Contoh: Kepala Sekolah / Guru Bahasa Inggris"
-                      value={form.rep_role}
-                      onChange={(e) => setForm({ ...form, rep_role: e.target.value })}
                     />
                   </div>
 
-                  <div className="form-group kemitraan-form-group">
-                    <label htmlFor="phone">Nomor WhatsApp Aktif *</label>
+                  <div className="form-group">
+                    <label>Nomor WhatsApp Aktif *</label>
                     <input
-                      id="phone"
                       type="tel"
                       className="form-input"
-                      required
                       placeholder="Contoh: 081234567890"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      required
                     />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Estimasi Jumlah Siswa</label>
+                    <select
+                      className="form-input"
+                      value={form.studentCount}
+                      onChange={(e) => setForm({ ...form, studentCount: e.target.value })}
+                    >
+                      <option value="1-50 Siswa">1 - 50 Siswa</option>
+                      <option value="51-100 Siswa">51 - 100 Siswa</option>
+                      <option value="100+ Siswa">Lebih dari 100 Siswa</option>
+                    </select>
                   </div>
                 </div>
 
-                <div className="form-group kemitraan-form-group">
-                  <label htmlFor="notes">Catatan Tambahan / Pesan Khusus (Opsional)</label>
+                <div className="form-group">
+                  <label>Catatan Tambahan / Kebutuhan Pembelajaran</label>
                   <textarea
-                    id="notes"
-                    rows={4}
+                    rows={3}
                     className="form-input"
                     placeholder="Tuliskan harapan atau jadwal diskusi yang diinginkan..."
                     value={form.notes}
@@ -159,8 +155,9 @@ export default function KemitraanClient() {
                   />
                 </div>
 
-                <button type="submit" className="submit-btn kemitraan-submit-btn">
-                  Kirim Pengajuan via WhatsApp Official 💬
+                <button type="submit" className="submit-btn kemitraan-submit-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
+                  <i className="fi fi-rr-paper-plane"></i>
+                  <span>Kirim Pengajuan via WhatsApp Official</span>
                 </button>
               </form>
             </div>

@@ -273,14 +273,14 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)" }}>🖥️ LIVE SYSTEM VIEW</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> LIVE SYSTEM VIEW</span>
                 <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Realtime Attendance Logs</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Interactive Placement Quiz & Timer</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Secured Role-Based Access Control</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> WhatsApp Push Notifications</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Realtime Attendance Logs</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Interactive Placement Quiz & Timer</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Secured Role-Based Access Control</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> WhatsApp Push Notifications</li>
               </ul>
               <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
@@ -323,14 +323,14 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)" }}>🖥️ LIVE SYSTEM VIEW</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> LIVE SYSTEM VIEW</span>
                 <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Official Academic Profiles</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Interactive Student Activity Gallery</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Online Enrollment Information</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Search Engine Optimized (.id domain)</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Official Academic Profiles</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Interactive Student Activity Gallery</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Online Enrollment Information</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Search Engine Optimized (.id domain)</li>
               </ul>
               <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
@@ -373,14 +373,14 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)" }}>🏠 LIVE SYSTEM VIEW</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-home"></i> LIVE SYSTEM VIEW</span>
                 <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Kalkulator Estimasi Biaya Interaktif</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Galeri Tipe Kamar & Spesifikasi</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Integrasi WhatsApp & Google Maps</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Dark Mode & Responsive Design</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Kalkulator Estimasi Biaya Interaktif</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Galeri Tipe Kamar & Spesifikasi</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Integrasi WhatsApp & Google Maps</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Dark Mode & Responsive Design</li>
               </ul>
               <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
@@ -404,11 +404,11 @@ Mohon hubungi saya kembali. Terima kasih!`;
               <p className={styles.cardText}>Ideal untuk portofolio, profil perusahaan, promosi event, atau bisnis lokal.</p>
               <div className={styles.price}>Mulai Rp 899.000</div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> 1 Halaman Desain Berkelas</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Integrasi Kontak & WhatsApp</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Optimasi SEO & Metadata</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Desain Responsive Mobile-First</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Google Maps & FAQ Terintegrasi</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> 1 Halaman Desain Berkelas</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Integrasi Kontak & WhatsApp</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Optimasi SEO & Metadata</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Desain Responsive Mobile-First</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Google Maps & FAQ Terintegrasi</li>
               </ul>
               <a href="#order" className={styles.btnSecondary} style={{ textAlign: "center" }}>Pilih Paket</a>
             </div>
@@ -420,11 +420,11 @@ Mohon hubungi saya kembali. Terima kasih!`;
               <p className={styles.cardText}>Sistem web terintegrasi dengan database, dasbor admin, dan autentikasi multi-user.</p>
               <div className={styles.price}>Mulai Rp 1.999.000</div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Desain Apple HIG Terkustomisasi</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Database Supabase / PostgreSQL</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Manajemen Role & Proteksi Rute</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Dasbor Admin & CRUD Data</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Ekspor Laporan & Unggah File</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Desain Apple HIG Terkustomisasi</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Database Supabase / PostgreSQL</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Manajemen Role & Proteksi Rute</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Dasbor Admin & CRUD Data</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Ekspor Laporan & Unggah File</li>
               </ul>
               <a href="#order" className={styles.btnPrimary} style={{ textAlign: "center" }}>Pilih Paket</a>
             </div>
@@ -435,11 +435,11 @@ Mohon hubungi saya kembali. Terima kasih!`;
               <p className={styles.cardText}>Platform digital komplit untuk bimbingan belajar, sekolah formal, atau pelatihan mandiri.</p>
               <div className={styles.price}>Mulai Rp 2.999.000</div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Semua Fitur Portal Bisnis</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Ujian Online / Placement Test</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Pengelolaan SPP / Tagihan Keuangan</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Realtime Chat & Absensi Harian</li>
-                <li className={styles.featureItem}><span className={styles.checkIcon}>✓</span> Laporan Nilai & Grafik Kemajuan</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Semua Fitur Portal Bisnis</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Ujian Online / Placement Test</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Pengelolaan SPP / Tagihan Keuangan</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Realtime Chat & Absensi Harian</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Laporan Nilai & Grafik Kemajuan</li>
               </ul>
               <a href="#order" className={styles.btnSecondary} style={{ textAlign: "center" }}>Pilih Paket</a>
             </div>
@@ -505,7 +505,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
           <div className={styles.formSection}>
             {submitted ? (
               <div style={{ textAlign: "center", padding: "20px" }}>
-                <div style={{ fontSize: "3rem", color: "var(--color-green)", marginBottom: "16px" }}>✓</div>
+                <div style={{ fontSize: "3rem", color: "var(--color-green)", marginBottom: "16px" }}><i className="fi fi-rr-check-circle"></i></div>
                 <h3 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "8px" }}>Permintaan Dikirim!</h3>
                 <p style={{ color: "var(--color-gray-500)", marginBottom: "24px" }}>
                   Terima kasih, data Anda telah dikonfigurasi. Anda akan diarahkan ke obrolan WhatsApp kami untuk konsultasi lanjutan.

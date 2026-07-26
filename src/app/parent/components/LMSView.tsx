@@ -56,7 +56,10 @@ export default function LMSView({
           <div style={{ marginBottom: "2rem", padding: "1.25rem 1.5rem", background: "linear-gradient(135deg, var(--color-primary-light) 0%, rgba(255,255,255,0.9) 100%)", borderRadius: "14px", border: "1px solid var(--color-primary-light)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem", flexWrap: "wrap", gap: "0.75rem" }}>
               <div>
-                <p style={{ fontWeight: "800", fontSize: "0.95rem", color: "var(--color-primary-dark)", marginBottom: "2px" }}>📊 Ringkasan Progress Tugas</p>
+                <p style={{ fontWeight: "800", fontSize: "0.95rem", color: "var(--color-primary-dark)", marginBottom: "2px", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                  <i className="fi fi-rr-chart-histogram"></i>
+                  <span>Ringkasan Progress Tugas</span>
+                </p>
                 <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>Data real-time dari LMS Ibra Global English</p>
               </div>
               <div style={{ textAlign: "center", background: "white", borderRadius: "10px", padding: "0.35rem 0.85rem", boxShadow: "0 2px 6px rgba(33,108,126,0.06)", border: "1px solid var(--color-primary-light)" }}>
@@ -68,9 +71,15 @@ export default function LMSView({
               <div style={{ width: `${pct}%`, height: "100%", background: barColor, borderRadius: "99px", transition: "width 1s ease" }} />
             </div>
             <div style={{ display: "flex", gap: "1.5rem", fontSize: "0.8rem", flexWrap: "wrap" }}>
-              <span style={{ color: "var(--color-green)", fontWeight: "700" }}>✅ {done} Selesai</span>
-              <span style={{ color: "var(--color-gray-500)", fontWeight: "600" }}>⏳ {total - done} Belum</span>
-              <span style={{ color: "var(--color-primary-dark)", fontWeight: "600" }}>📚 {total} Total Tugas</span>
+              <span style={{ color: "var(--color-green)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                <i className="fi fi-rr-check-circle"></i> {done} Selesai
+              </span>
+              <span style={{ color: "var(--color-gray-500)", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                <i className="fi fi-rr-hourglass-end"></i> {total - done} Belum
+              </span>
+              <span style={{ color: "var(--color-primary-dark)", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                <i className="fi fi-rr-book-alt"></i> {total} Total Tugas
+              </span>
             </div>
           </div>
         ) : null;

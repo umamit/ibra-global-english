@@ -91,8 +91,9 @@ export default function FeedbackView({ selectedChild, detailsLoading }: Feedback
 
   return (
     <div className="portal-card" style={{ padding: "2rem", borderRadius: "14px", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 4px 20px rgba(0,0,0,0.02)" }}>
-      <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-primary-dark)", marginBottom: "0.5rem" }}>
-        📝 Umpan Balik Kinerja Tutor
+      <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-primary-dark)", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+        <i className="fi fi-rr-comment-alt-middle"></i>
+        <span>Umpan Balik Kinerja Tutor</span>
       </h2>
       <p style={{ color: "var(--color-gray-500)", fontSize: "0.9rem", marginBottom: "1.5rem", lineHeight: "1.5" }}>
         Evaluasi Anda sangat membantu kami untuk mempertahankan dan meningkatkan kualitas bimbingan belajar untuk <strong>{selectedChild?.name}</strong>.
@@ -179,11 +180,11 @@ export default function FeedbackView({ selectedChild, detailsLoading }: Feedback
               );
             })}
             <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-gray-500)", marginLeft: "0.5rem" }}>
-              {rating === 5 ? "🤩 Sangat Memuaskan" :
-               rating === 4 ? "😊 Memuaskan" :
-               rating === 3 ? "👍 Cukup Baik" :
-               rating === 2 ? "😐 Perlu Ditingkatkan" :
-               "💪 Kurang Memuaskan"}
+              {rating === 5 ? "Sangat Memuaskan" :
+               rating === 4 ? "Memuaskan" :
+               rating === 3 ? "Cukup Baik" :
+               rating === 2 ? "Perlu Ditingkatkan" :
+               "Kurang Memuaskan"}
             </span>
           </div>
         </div>

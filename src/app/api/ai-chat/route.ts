@@ -72,9 +72,9 @@ const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Glob
 
 ## PANDUAN RESPONS
 - Selalu positif, supportif, dan memotivasi
-- Gunakan emoji secukupnya 😊
+- Gunakan bahasa yang sopan dan ramah
 - Jika ada pertanyaan biaya, arahkan ke WhatsApp
-- Format koreksi grammar: ✅ Kalimat Benar: [kalimat] | 💡 Penjelasan: [penjelasan]
+- Format koreksi grammar: Kalimat Benar: [kalimat] | Penjelasan: [penjelasan]
 - Jaga respons ringkas (max 3-4 paragraf) kecuali diminta lebih detail`;
 
 export async function POST(request: Request) {
@@ -156,13 +156,13 @@ export async function POST(request: Request) {
 
       if (response.status === 401 || response.status === 403) {
         return NextResponse.json(
-          { error: "❌ API Key Groq tidak valid. Periksa konfigurasi API Anda." },
+          { error: "API Key Groq tidak valid. Periksa konfigurasi API Anda." },
           { status: 401 }
         );
       }
       if (response.status === 429) {
         return NextResponse.json(
-          { error: "⚠️ Batas penggunaan (kuota) API Groq telah habis. Silakan coba beberapa saat lagi." },
+          { error: "Batas penggunaan (kuota) API Groq telah habis. Silakan coba beberapa saat lagi." },
           { status: 429 }
         );
       }

@@ -77,7 +77,7 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
         {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          content: `⚠️ ${err.message}`,
+          content: err.message,
           timestamp: new Date(),
         },
       ]);

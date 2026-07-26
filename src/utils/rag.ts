@@ -144,14 +144,14 @@ function embeddingToPgVector(embedding: number[]) {
  * @returns {Promise<Object>} - The created/updated document
  */
 export async function upsertRagDocument({ title, content, source = "manual", metadata = {}, id }: { title: string; content: string; source?: string; metadata?: any; id?: string }) {
-  console.log(`🔄 Generating embedding for: "${title}"`);
+  console.log(`[RAG] Generating embedding for: "${title}"`);
   
   let vectorStr: string | null = null;
   try {
     const embedding = await generateEmbedding(`${title}. ${content}`);
     vectorStr = embeddingToPgVector(embedding);
   } catch (err: any) {
-    console.warn("⚠️ Gagal membuat vector embedding (Hugging Face gagal/offline/diblokir):", err.message);
+    console.warn("[RAG] Gagal membuat vector embedding (Hugging Face gagal/offline/diblokir):", err.message);
     console.warn("Dokumen akan disimpan tanpa vector embedding (hanya teks).");
   }
 
@@ -169,7 +169,7 @@ export async function upsertRagDocument({ title, content, source = "manual", met
       );
     }
     const updated = await prisma.ragDocument.findUnique({ where: { id } });
-    console.log(`✅ Updated document: ${id}`);
+    console.log(`[RAG] Updated document: ${id}`);
     return updated;
   } else {
     // Create new document
@@ -183,7 +183,7 @@ export async function upsertRagDocument({ title, content, source = "manual", met
         vectorStr, doc.id
       );
     }
-    console.log(`✅ Created document: ${doc.id}`);
+    console.log(`[RAG] Created document: ${doc.id}`);
     return doc;
   }
 }

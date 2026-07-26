@@ -74,8 +74,8 @@ export default function AgencyTermsPage() {
           Apabila Anda memiliki pertanyaan lebih lanjut mengenai ketentuan layanan pengerjaan proyek digital ini, silakan hubungi tim kami melalui:
         </p>
         <p style={{ marginTop: "0.5rem" }}>
-          📧 Email: <strong>digital@ibraglobalenglish.uk</strong><br />
-          💬 WhatsApp Support: <strong>+62 813-5700-1357</strong>
+          <i className="fi fi-rr-envelope" style={{ marginRight: "0.3rem" }}></i> Email: <strong>digital@ibraglobalenglish.uk</strong><br />
+          <i className="fi fi-rr-comment" style={{ marginRight: "0.3rem" }}></i> WhatsApp Support: <strong>+62 813-5700-1357</strong>
         </p>
       </section>
     </LegalLayout>

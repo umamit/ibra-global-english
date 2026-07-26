@@ -191,10 +191,11 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
           <button 
             type="button"
             className="btn-portal-outline" 
-            style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", border: "1px dashed var(--color-primary)", color: "var(--color-primary-dark)" }} 
+            style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", border: "1px dashed var(--color-primary)", color: "var(--color-primary-dark)", display: "inline-flex", alignItems: "center", gap: "0.3rem" }} 
             onClick={() => setSyncModalOpen(true)}
           >
-            🔗 Sinkronkan ke HP
+            <i className="fi fi-rr-link"></i>
+            <span>Sinkronkan ke HP</span>
           </button>
           <button 
             className="btn-portal-outline" 
@@ -406,24 +407,25 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
             {/* Modal Body */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", borderTop: "1px solid var(--color-gray-150)", paddingTop: "1.25rem", marginBottom: "1.5rem" }}>
               <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", fontSize: "0.9rem" }}>
-                <span style={{ color: "var(--color-gray-500)", fontWeight: "700" }}>📅 Hari & Tanggal:</span>
+              <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", fontSize: "0.9rem" }}>
+                <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-calendar"></i> Hari & Tanggal:</span>
                 <span style={{ color: "var(--color-gray-800)", fontWeight: "800" }}>
                   {new Date(selectedSchedule.start_time).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                 </span>
 
-                <span style={{ color: "var(--color-gray-500)", fontWeight: "700" }}>⏱ Jam Pelajaran:</span>
+                <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-clock"></i> Jam Pelajaran:</span>
                 <span style={{ color: "var(--color-primary-dark)", fontWeight: "900" }}>
                   {new Date(selectedSchedule.start_time).toTimeString().slice(0, 5)} - {new Date(selectedSchedule.end_time).toTimeString().slice(0, 5)} WIB
                 </span>
 
-                <span style={{ color: "var(--color-gray-500)", fontWeight: "700" }}>🎓 Program Sasaran:</span>
+                <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-graduation-cap"></i> Program Sasaran:</span>
                 <span style={{ color: "var(--color-gray-800)", fontWeight: "700" }}>
                   {selectedSchedule.program}
                 </span>
 
                 {selectedSchedule.instructor && (
                   <>
-                    <span style={{ color: "var(--color-gray-500)", fontWeight: "700" }}>👤 Tutor Pendamping:</span>
+                    <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-user"></i> Tutor Pendamping:</span>
                     <span style={{ color: "var(--color-gray-800)", fontWeight: "800" }}>
                       {selectedSchedule.instructor}
                     </span>
@@ -471,8 +473,9 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
           }} onClick={(e) => e.stopPropagation()}>
             
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-              <h4 style={{ fontSize: "1.2rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-                🔗 Hubungkan ke Kalender HP
+              <h4 style={{ fontSize: "1.2rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0, display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <i className="fi fi-rr-link"></i>
+                <span>Hubungkan ke Kalender HP</span>
               </h4>
               <button 
                 type="button" 
@@ -519,7 +522,10 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
               </div>
 
               <div style={{ backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-primary-dark)", color: "var(--color-primary-dark)" }}>
-                <h5 style={{ margin: "0 0 0.5rem 0", fontWeight: "800", fontSize: "0.85rem" }}>📱 Cara Menghubungkan ke HP:</h5>
+                <h5 style={{ margin: "0 0 0.5rem 0", fontWeight: "800", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                  <i className="fi fi-rr-mobile"></i>
+                  <span>Cara Menghubungkan ke HP:</span>
+                </h5>
                 <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <li>
                     <strong>iPhone (Apple Calendar):</strong> Buka <em>Pengaturan</em> &gt; <em>Kalender</em> &gt; <em>Akun</em> &gt; <em>Tambah Akun</em> &gt; <em>Lainnya</em> &gt; <em>Tambah Kalender Berlangganan</em>, lalu tempel (*paste*) tautan di atas.
