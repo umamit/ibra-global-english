@@ -71,19 +71,73 @@
 /* ── Card ────────────────────────────────────────────────────────────── */
 .auth-card {
   width: 100%;
-  max-width: 400px;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(1.6);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: var(--radius-xl, 18px);
+  max-width: 440px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(28px) saturate(1.8);
+  -webkit-backdrop-filter: blur(28px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: var(--radius-2xl, 24px);
   box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 24px rgba(0, 0, 0, 0.06),
-    0 32px 64px rgba(0, 0, 0, 0.04);
-  padding: 2.5rem;
+    0 4px 12px rgba(0, 0, 0, 0.03),
+    0 16px 36px rgba(33, 108, 126, 0.08),
+    0 40px 80px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem 2.25rem;
   z-index: 10;
-  animation: card-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: card-enter 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.04),
+    0 24px 48px rgba(33, 108, 126, 0.12),
+    0 48px 96px rgba(0, 0, 0, 0.07);
+}
+
+[data-theme='dark'] .auth-card {
+  background: rgba(26, 38, 46, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Role Picker ─────────────────────────────────────────────────────── */
+.auth-role-picker {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: rgba(33, 108, 126, 0.05);
+  padding: 4px;
+  border-radius: 14px;
+  border: 1px solid rgba(33, 108, 126, 0.1);
+}
+
+.role-pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.role-pill.active {
+  background: var(--color-white);
+  color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] .role-pill.active {
+  background: var(--color-primary);
+  color: #fff;
 }
 
 @keyframes card-enter {

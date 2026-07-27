@@ -423,6 +423,34 @@ export default function LoginPage() {
           <p className="auth-subtitle">Ibra Global English Bobong</p>
         </div>
 
+        {/* Role Selector */}
+        <div className="auth-role-picker">
+          <button
+            type="button"
+            onClick={() => setRole("parent")}
+            className={`role-pill ${role === "parent" ? "active" : ""}`}
+          >
+            <i className="fi fi-rr-users"></i>
+            <span>Orang Tua</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setRole("tutor")}
+            className={`role-pill ${role === "tutor" ? "active" : ""}`}
+          >
+            <i className="fi fi-rr-graduation-cap"></i>
+            <span>Tutor</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setRole("admin")}
+            className={`role-pill ${role === "admin" ? "active" : ""}`}
+          >
+            <i className="fi fi-rr-shield-check"></i>
+            <span>Admin</span>
+          </button>
+        </div>
+
         {/* Tab Switcher */}
         <div className="auth-tabs">
           <button

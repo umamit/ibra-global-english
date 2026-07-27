@@ -3,8 +3,10 @@
    ========================================================================== */
 
 footer {
-  background-color: #1d1d1f;  /* Apple dark near-black */
-  color: rgba(255, 255, 255, 0.85);
+  background-color: var(--color-primary-dark, #164d57);
+  background-image: radial-gradient(circle at 50% 0%, rgba(33, 108, 126, 0.4) 0%, transparent 75%),
+                    linear-gradient(180deg, #164d57 0%, #0d2f35 100%);
+  color: rgba(255, 255, 255, 0.9);
   padding-block: 0 3rem;
   overflow: hidden;
   max-width: 100%;
@@ -12,12 +14,13 @@ footer {
 
 /* ── Top Ribbon ── */
 .footer-yellow-ribbon {
-  background-color: var(--color-accent);
-  padding-block: 1.5rem;
+  background: linear-gradient(135deg, var(--color-accent, #A68849) 0%, #8c7136 100%);
+  padding-block: 1.25rem;
   margin-bottom: 2.5rem;
   width: 100%;
   max-width: 100%;
   overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .footer-yellow-ribbon .footer-logo-text h3 {
