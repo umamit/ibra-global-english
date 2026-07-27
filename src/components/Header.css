@@ -3,49 +3,63 @@
    Inspired by apple.com navigation bar
    ========================================================================== */
 
-/* ── Header Bar — Apple translucent nav ── */
+/* ── Header Bar — Apple Floating Glass Pill Nav ── */
 header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: var(--color-header-bg);
-  backdrop-filter: saturate(190%) blur(24px);
-  -webkit-backdrop-filter: saturate(190%) blur(24px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01), 0 4px 12px rgba(0, 0, 0, 0.02);
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2.5rem);
+  max-width: var(--container-max-width, 1200px);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: saturate(190%) blur(28px);
+  -webkit-backdrop-filter: saturate(190%) blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(33, 108, 126, 0.08);
   z-index: 100;
-  transition: background-color var(--transition-normal), border-color var(--transition-normal), top 0s;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="dark"] header {
+  background: rgba(22, 36, 44, 0.82);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 /* ── Marquee offset ── */
 header.has-marquee {
-  top: 40px;
-  top: max(0px, calc(40px - var(--scroll-y, 0px)));
+  top: 54px;
 }
 
 @supports (animation-timeline: scroll()) {
   @keyframes header-slide {
-    from { top: 40px; }
-    to   { top: 0px;  }
+    from { top: 54px; }
+    to   { top: 12px; }
   }
 
   header.has-marquee {
-    top: 40px;
+    top: 54px;
     animation: header-slide linear both;
     animation-timeline: scroll();
-    animation-range: 0px 40px;
+    animation-range: 0px 42px;
   }
 }
 
 header.has-marquee.scrolled {
-  top: 0;
+  top: 12px;
 }
 
 /* ── Scrolled state ── */
 header.scrolled {
-  background-color: var(--color-header-bg-scrolled);
-  border-bottom-color: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 16px 40px rgba(33, 108, 126, 0.12);
+  border-color: rgba(33, 108, 126, 0.2);
+}
+
+[data-theme="dark"] header.scrolled {
+  background: rgba(18, 30, 38, 0.94);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
 }
 
 /* ── Nav Container ── */
@@ -53,13 +67,13 @@ header.scrolled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-block: 1rem;
+  padding: 0.5rem 1.5rem;
   transition: padding var(--transition-normal);
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 header.scrolled .nav-container {
-  padding-block: 0.55rem;
+  padding: 0.35rem 1.25rem;
 }
 
 /* ── Logo ── */
