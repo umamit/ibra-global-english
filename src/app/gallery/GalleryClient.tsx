@@ -11,6 +11,8 @@ import { createClient } from "@/utils/supabase/client";
 
 import { DEFAULT_VIDEOS } from "@/utils/fallbackData";
 import { STATIC_GALLERY } from "./galleryData";
+import SegmentedControl from "@/components/ui/SegmentedControl";
+import SkeletonCard from "@/components/ui/SkeletonCard";
 import "./gallery.css";
 
 interface GalleryItem {
@@ -327,17 +329,13 @@ export default function GalleryClient() {
           {/* Gallery Photos Section */}
           {galleryItems.length > 0 && (
             <>
-              {/* Apple-style Category Pills */}
-              <div className="apple-filter-bar">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={activeCategory === cat ? "apple-pill apple-pill--active" : "apple-pill"}
-                  >
-                    {cat}
-                  </button>
-                ))}
+              {/* Apple-style Segmented Control Filter */}
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "2.5rem" }}>
+                <SegmentedControl
+                  options={categories.map((cat) => ({ id: cat, label: cat }))}
+                  value={activeCategory}
+                  onChange={setActiveCategory}
+                />
               </div>
 
               {/* Apple-style Photo Grid */}

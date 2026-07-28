@@ -3,6 +3,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useTestimonialForm } from "@/hooks/useTestimonialForm";
+import SkeletonCard from "@/components/ui/SkeletonCard";
 import "./Testimonials.css";
 
 const TESTIMONIALS_FALLBACK = [
@@ -136,7 +137,11 @@ export default function Testimonials() {
           </div>
         )}
 
-        {supabaseLoading && <p style={{ textAlign: 'center' }}>Memuat testimoni...</p>}
+        {supabaseLoading && (
+          <div className="testimonials-grid">
+            <SkeletonCard count={3} />
+          </div>
+        )}
 
         {!supabaseLoading && (
           <div className={`testimonials-grid ${testimonials.length < 3 ? 'justify-center-flex' : ''}`}>

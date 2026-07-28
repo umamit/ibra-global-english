@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import SkeletonCard from "@/components/ui/SkeletonCard";
 
 interface Schedule {
   id: string;
@@ -65,22 +66,7 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
           Jadwal & Agenda Belajar Siswa
         </h3>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="portal-card" style={{ borderLeft: "5px solid var(--color-gray-200)", padding: "1.5rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
-              <div style={{ flex: "1 1 300px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <div className="skeleton-pulse skeleton-text" style={{ width: "60px" }} />
-                  <div className="skeleton-pulse skeleton-text" style={{ width: "100px" }} />
-                </div>
-                <div className="skeleton-pulse skeleton-title" style={{ width: "220px", marginBottom: "0.5rem" }} />
-                <div className="skeleton-pulse skeleton-text" style={{ width: "320px" }} />
-              </div>
-              <div style={{ textAlign: "right", minWidth: "200px" }}>
-                <div className="skeleton-pulse skeleton-text" style={{ width: "140px", marginBottom: "0.5rem" }} />
-                <div className="skeleton-pulse skeleton-text" style={{ width: "100px" }} />
-              </div>
-            </div>
-          ))}
+          <SkeletonCard variant="table" count={3} height="100px" />
         </div>
       </div>
     );
