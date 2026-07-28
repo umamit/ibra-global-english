@@ -1,11 +1,63 @@
 "use client";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./Curriculum.css";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Curriculum({ initialSettings }: any) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Parallax halus untuk kartu kurikulum utama
+      if (cardRef.current && sectionRef.current) {
+        gsap.fromTo(
+          cardRef.current,
+          { y: 30 },
+          {
+            y: -30,
+            ease: "none",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1.2,
+            },
+          }
+        );
+      }
+
+      // Subtle Parallax & fade in untuk container tabel CEFR
+      if (tableRef.current) {
+        gsap.fromTo(
+          tableRef.current,
+          { opacity: 0.85, scale: 0.98 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: tableRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="curriculum" className="curriculum-section">
+    <section id="curriculum" className="curriculum-section" ref={sectionRef}>
       <div className="container">
-        <div className="curriculum-card scroll-fade-up">
+        <div className="curriculum-card" ref={cardRef}>
           <div className="curriculum-card-header">
             <img src="/assets/logo.png" alt="Logo PT. Ibra Global English" className="curriculum-logo" />
             <div>
@@ -21,7 +73,7 @@ export default function Curriculum({ initialSettings }: any) {
               Jalur pembelajaran Ibra Global English dirancang secara bertahap untuk membantu siswa mencapai kompetensi bahasa Inggris sesuai target CEFR pada setiap fase pembelajaran:
             </p>
 
-            <div className="curriculum-table-container">
+            <div className="curriculum-table-container" ref={tableRef}>
               <table className="curriculum-table">
                 <thead>
                   <tr>
