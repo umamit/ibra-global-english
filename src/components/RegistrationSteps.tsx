@@ -1,9 +1,40 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import "./RegistrationSteps.css";
 
 export default function RegistrationSteps() {
+  useEffect(() => {
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const gsap = gsapModule.default || gsapModule;
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        ctx = gsap.context(() => {
+          if (window.innerWidth > 768) {
+            gsap.from(".step-card-item", {
+              y: 40,
+              opacity: 0.8,
+              stagger: 0.2,
+              duration: 1,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: ".steps-grid",
+                start: "top 80%",
+                end: "bottom 40%",
+                scrub: 0.8,
+              },
+            });
+          }
+        });
+      });
+    });
+
+    return () => ctx && ctx.revert();
+  }, []);
   return (
     <section className="steps-section" id="alur-pendaftaran">
       <div className="container">

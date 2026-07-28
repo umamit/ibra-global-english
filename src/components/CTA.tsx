@@ -1,7 +1,7 @@
 "use client";
 import "./CTA.css";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import posthog from "posthog-js";
 import Button from "@/components/Button";
 
@@ -10,6 +10,34 @@ export default function CTA({ initialSettings }: { initialSettings: any }) {
   const [ctaTitle] = useState(initialSettings?.cta_title || "Kuasai Bahasa Inggris Lebih Cepat di Bobong & Jadi Percaya Diri!");
   const [ctaDesc] = useState(initialSettings?.cta_desc || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
   const [ctaBrochureImage] = useState(initialSettings?.cta_brochure_image || "/assets/brochure.png");
+
+  useEffect(() => {
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const gsap = gsapModule.default || gsapModule;
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        ctx = gsap.context(() => {
+          if (window.innerWidth > 768) {
+            gsap.to(".cta-brochure-card", {
+              yPercent: -8,
+              ease: "none",
+              scrollTrigger: {
+                trigger: ".cta-section",
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1.2,
+              },
+            });
+          }
+        });
+      });
+    });
+
+    return () => ctx && ctx.revert();
+  }, []);
 
   const getCanvaEmbedUrl = (url: string) => {
     if (!url) return null;

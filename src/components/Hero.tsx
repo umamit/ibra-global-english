@@ -2,7 +2,7 @@
 import "./Hero.css";
 
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import CountUp from "./CountUp";
 import posthog from "posthog-js";
@@ -44,6 +44,47 @@ export default function Hero({ initialSettings }: HeroProps) {
     staleTime: 5 * 60 * 1000,
     placeholderData: { count: 100 },
   });
+
+  // Subtle GSAP Parallax Effect (Apple Style)
+  useEffect(() => {
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const gsap = gsapModule.default || gsapModule;
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        ctx = gsap.context(() => {
+          // Hanya aktifkan parallax jika bukan layar sentuh / mobile kecil
+          if (window.innerWidth > 768) {
+            gsap.to(".hero-card", {
+              yPercent: 12,
+              ease: "none",
+              scrollTrigger: {
+                trigger: ".hero-section",
+                start: "top top",
+                end: "bottom top",
+                scrub: 1.2,
+              },
+            });
+
+            gsap.to(".hero-stats-badge", {
+              yPercent: -25,
+              ease: "none",
+              scrollTrigger: {
+                trigger: ".hero-section",
+                start: "top top",
+                end: "bottom top",
+                scrub: 1.5,
+              },
+            });
+          }
+        });
+      });
+    });
+
+    return () => ctx && ctx.revert();
+  }, []);
 
   const renderSubtitle = (text: string) => {
     if (text.includes('|')) {
