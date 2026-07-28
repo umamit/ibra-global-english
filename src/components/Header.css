@@ -161,8 +161,9 @@ header.scrolled .logo-text p {
   }
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1260px) {
   .nav-links { display: none; }
+  .nav-btn-desktop { display: none !important; }
 }
 
 .nav-link {
@@ -267,9 +268,9 @@ header.scrolled .logo-text p {
   background-color: var(--color-gray-300);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1260px) {
   .menu-toggle { display: flex; }
-  .nav-btn-desktop { display: none; }
+  .nav-btn-desktop { display: none !important; }
 }
 
 /* ── Mobile Drawer — Apple iOS sidebar sheet ── */

@@ -139,8 +139,10 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
               </svg>
             </button>
             
-            <Button href="/login" variant="nav-btn-outline" style={{ marginRight: "0.75rem" }}>Portal Login</Button>
-            <Button href="/#contact" variant="nav-btn">Daftar Sekarang</Button>
+            <div className="nav-btn-desktop" style={{ display: "inline-flex", alignItems: "center" }}>
+              <Button href="/login" variant="nav-btn-outline" style={{ marginRight: "0.5rem" }}>Portal Login</Button>
+              <Button href="/#contact" variant="nav-btn">Daftar Sekarang</Button>
+            </div>
             
             <button 
               className="menu-toggle" 
