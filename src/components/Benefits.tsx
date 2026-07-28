@@ -36,6 +36,45 @@ export default function Benefits({ initialSettings }: { initialSettings: any }) 
     loadBenefits();
   }, [initialSettings]);
 
+  // Subtle GSAP Wave Parallax Effect for Benefit Cards
+  useEffect(() => {
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const gsap = gsapModule.default || gsapModule;
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        ctx = gsap.context(() => {
+          if (window.innerWidth > 768) {
+            gsap.fromTo(
+              ".benefit-card",
+              { y: 35, opacity: 0.85 },
+              {
+                y: -15,
+                opacity: 1,
+                stagger: {
+                  amount: 0.4,
+                  grid: [2, 3],
+                  from: "start",
+                },
+                ease: "power1.out",
+                scrollTrigger: {
+                  trigger: ".benefits-grid",
+                  start: "top 85%",
+                  end: "bottom 30%",
+                  scrub: 1.2,
+                },
+              }
+            );
+          }
+        });
+      });
+    });
+
+    return () => ctx && ctx.revert();
+  }, [benefits]);
+
   return (
     <section id="benefits" className="benefits-section">
       <div className="container">
