@@ -117,11 +117,8 @@ footer {
   position: fixed;
   bottom: 28px !important;
   right: 28px !important;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  gap: 0.75rem;
   z-index: 9997;
+  width: 56px;
   height: 56px;
 }
 
@@ -159,6 +156,9 @@ footer {
 }
 
 .social-float-children {
+  position: absolute;
+  bottom: 68px;
+  right: 6px;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
@@ -166,7 +166,6 @@ footer {
   pointer-events: none;
   transform: translateY(15px) scale(0.9);
   transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
   z-index: 1;
 }
 
@@ -206,12 +205,18 @@ footer {
 
 @media (max-width: 576px) {
   .social-float-group {
-    bottom: 20px;
-    right: 20px;
-  }
-  .social-float-trigger {
+    bottom: 20px !important;
+    right: 20px !important;
     width: 50px;
     height: 50px;
+  }
+  .social-float-trigger {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  .social-float-children {
+    bottom: 60px;
+    right: 5px;
   }
   .social-float {
     width: 40px;
