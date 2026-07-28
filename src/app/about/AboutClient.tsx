@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
@@ -20,14 +20,12 @@ interface Tutor {
   image_url: string;
 }
 
-
 export default function AboutPage() {
+  const mainRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [tutors, setTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-
 
   // Handle theme initialization
   useEffect(() => {
@@ -40,6 +38,46 @@ export default function AboutPage() {
     }, 0);
     document.documentElement.setAttribute("data-theme", initialTheme);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || window.innerWidth <= 768 || loading) return;
+
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      const gsap = gsapModule.default;
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (!mainRef.current) return;
+
+        ctx = gsap.context(() => {
+          const cards = mainRef.current?.querySelectorAll(".about-value-card, .tutor-card");
+          cards?.forEach((card, idx) => {
+            const yOffset = (idx % 2 === 0) ? -20 : -10;
+            gsap.fromTo(
+              card,
+              { y: 20 },
+              {
+                y: yOffset,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: 1.2,
+                },
+              }
+            );
+          });
+        }, mainRef);
+      });
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, [loading, tutors]);
 
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -100,7 +138,7 @@ export default function AboutPage() {
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       <MarqueeBanner />
 
-      <main className="about-wrapper">
+      <main className="about-main" ref={mainRef}>
         
         {/* 1. Hero Section */}
         <section className="about-hero-section reveal">

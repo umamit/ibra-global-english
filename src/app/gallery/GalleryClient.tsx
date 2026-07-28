@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SocialFloat from "@/components/SocialFloat";
@@ -45,6 +45,7 @@ interface VideoItem {
 }
 
 export default function GalleryClient() {
+  const galleryRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);

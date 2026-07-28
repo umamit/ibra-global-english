@@ -1,7 +1,7 @@
 "use client";
 
 import "./Programs.css";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DEFAULT_PROGRAMS } from "../utils/fallbackData";
 
 const ICON_MAP = {
@@ -11,6 +11,8 @@ const ICON_MAP = {
 };
 
 export default function Programs({ initialSettings }: any) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
   const [programs] = useState(() => {
     if (initialSettings && initialSettings.landing_programs) {
       try {
@@ -28,10 +30,50 @@ export default function Programs({ initialSettings }: any) {
     return DEFAULT_PROGRAMS;
   });
 
+  useEffect(() => {
+    if (typeof window === "undefined" || window.innerWidth <= 768) return;
+
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      const gsap = gsapModule.default;
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (!sectionRef.current) return;
+
+        ctx = gsap.context(() => {
+          const cards = sectionRef.current?.querySelectorAll(".program-card");
+          cards?.forEach((card, idx) => {
+            const yOffset = idx === 1 ? -30 : -12; // Kartu tengah melayang lebih tinggi
+            gsap.fromTo(
+              card,
+              { y: 25 },
+              {
+                y: yOffset,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: sectionRef.current,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: 1.2,
+                },
+              }
+            );
+          });
+        }, sectionRef);
+      });
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, []);
+
   return (
-    <section id="programs" className="programs-section">
+    <section id="programs" className="programs-section" ref={sectionRef}>
       <div className="container">
-        <div className="section-header scroll-fade-up">
+        <div className="section-header">
           <h2>Program Kursus di Bobong</h2>
           <p>
             Pilih program kursus di Bobong terbaik: kursus bahasa Inggris dan
@@ -39,12 +81,12 @@ export default function Programs({ initialSettings }: any) {
           </p>
         </div>
 
-        <div className="programs-grid scroll-stagger">
+        <div className="programs-grid">
           {programs.map((prog: any, idx: number) => (
             <div
               key={idx}
               id={prog.title.toLowerCase().replace(/\s+/g, "-")}
-              className={`program-card glowing-card bento-card-${idx} scroll-fade-up`}
+              className={`program-card glowing-card bento-card-${idx}`}
             >
               <div className="bento-content-wrapper">
                 <div className="bento-main-info">

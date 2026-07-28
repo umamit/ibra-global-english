@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useTestimonialForm } from "@/hooks/useTestimonialForm";
 import SkeletonCard from "@/components/ui/SkeletonCard";
@@ -40,6 +40,7 @@ interface Testimonial {
 }
 
 export default function Testimonials() {
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [supabaseData, setSupabaseData] = useState<any[]>([]);
   const [supabaseLoading, setSupabaseLoading] = useState<boolean>(true);
 
@@ -107,8 +108,48 @@ export default function Testimonials() {
     return TESTIMONIALS_FALLBACK;
   }, [supabaseData]);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || window.innerWidth <= 768 || supabaseLoading) return;
+
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      const gsap = gsapModule.default;
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (!sectionRef.current) return;
+
+        ctx = gsap.context(() => {
+          const cards = sectionRef.current?.querySelectorAll(".testimonial-card");
+          cards?.forEach((card, idx) => {
+            const yOffset = (idx % 3) === 1 ? -28 : -14;
+            gsap.fromTo(
+              card,
+              { y: 20 },
+              {
+                y: yOffset,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: sectionRef.current,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: 1.2,
+                },
+              }
+            );
+          });
+        }, sectionRef);
+      });
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, [supabaseLoading, testimonials]);
+
   return (
-    <section id="testimonials" className="testimonials-section">
+    <section id="testimonials" className="testimonials-section" ref={sectionRef}>
       <div className="container">
         {/* Header Group with Submit Button */}
         <div className="testimonials-header-group">

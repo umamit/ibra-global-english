@@ -1,10 +1,14 @@
 "use client";
 import "./Contact.css";
-
+import React, { useEffect, useRef } from "react";
 import Button from "@/components/Button";
 import { useContactForm } from "@/hooks/useContactForm";
 
 export default function Contact({ form, setForm, honeypot, setHoneypot, initialSettings }: any) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const leftPanelRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+
   const {
     address,
     phone,
@@ -23,11 +27,66 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
     handleRegSubmit,
   } = useContactForm({ form, setForm, honeypot, initialSettings });
 
+  useEffect(() => {
+    if (typeof window === "undefined" || window.innerWidth <= 768) return;
+
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      const gsap = gsapModule.default;
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (!sectionRef.current) return;
+
+        ctx = gsap.context(() => {
+          if (leftPanelRef.current) {
+            gsap.fromTo(
+              leftPanelRef.current,
+              { y: 20 },
+              {
+                y: -25,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: sectionRef.current,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: 1.2,
+                },
+              }
+            );
+          }
+
+          if (rightPanelRef.current) {
+            gsap.fromTo(
+              rightPanelRef.current,
+              { y: -10 },
+              {
+                y: 20,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: sectionRef.current,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: 1.2,
+                },
+              }
+            );
+          }
+        }, sectionRef);
+      });
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, []);
+
   return (
-    <section id="contact" className="contact-section">
+    <section id="contact" className="contact-section" ref={sectionRef}>
       <div className="container contact-grid">
         {/* Info Left */}
-        <div className="contact-info-panel scroll-fade-right">
+        <div className="contact-info-panel" ref={leftPanelRef}>
           <h2>Hubungi Kami di Bobong</h2>
           <p>Siap meningkatkan kemampuan bahasa Inggris Anda di Pulau Taliabu? Hubungi kami sekarang untuk konsultasi gratis!</p>
           
@@ -119,7 +178,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
         </div>
         
         {/* Form Right */}
-        <div className="form-panel scroll-fade-left" id="registration-form-panel">
+        <div className="form-panel" id="registration-form-panel" ref={rightPanelRef}>
 
           {/* Tab Switcher */}
           <div className="contact-tab-switcher">
