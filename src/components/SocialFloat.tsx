@@ -1,8 +1,7 @@
 "use client";
-import "./Footer.css";
 
 import React, { useState } from "react";
-import "./Footer.css";
+import "./SocialFloat.css";
 
 export default function SocialFloat() {
   const [isOpen, setIsOpen] = useState(false);
