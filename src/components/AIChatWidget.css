@@ -6,7 +6,7 @@
 .ai-chat-fab {
   position: fixed;
   bottom: 28px;
-  right: 28px;
+  left: 28px;
   z-index: 9998;
   width: 56px;
   height: 56px;
@@ -61,7 +61,7 @@
 .ai-chat-tooltip {
   position: fixed;
   bottom: 39px;
-  right: 98px;
+  left: 98px;
   background: rgba(28, 28, 30, 0.92);
   color: #fff;
   padding: 0.5rem 0.875rem;
@@ -79,11 +79,11 @@
   content: "";
   position: absolute;
   top: 50%;
-  left: 100%;
+  right: 100%;
   transform: translateY(-50%);
   border: 6px solid transparent;
-  border-left-color: rgba(28, 28, 30, 0.92);
-  border-right: 0;
+  border-right-color: rgba(28, 28, 30, 0.92);
+  border-left: 0;
 }
 
 @keyframes tooltip-in {
@@ -95,7 +95,7 @@
 .ai-chat-window {
   position: fixed;
   bottom: 100px;
-  right: 28px;
+  left: 28px;
   z-index: 9998;
   width: 370px;
   height: 530px;
@@ -470,16 +470,16 @@
 @media (max-width: 480px) {
   .ai-chat-window {
     width: calc(100vw - 24px);
-    right: 12px;
-    left: auto;
-    bottom: 88px;
+    left: 12px;
+    right: auto;
+    bottom: 80px;
     max-height: calc(100dvh - 110px);
     border-radius: var(--radius-xl);
   }
   .ai-chat-fab {
     bottom: 20px;
-    right: 16px;
-    left: auto;
+    left: 16px;
+    right: auto;
     width: 50px;
     height: 50px;
   }
