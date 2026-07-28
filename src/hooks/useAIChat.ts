@@ -2,9 +2,17 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 
+export interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+  isStreaming?: boolean;
+}
+
 export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState(() => [
+  const [messages, setMessages] = useState<Message[]>(() => [
     {
       id: "welcome",
       role: "assistant",
@@ -14,8 +22,11 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
   ]);
   const [input, setInput] = useState("");
   const [hasOpened, setHasOpened] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement | null>(null);
+  const streamTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -29,6 +40,15 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
     }
   }, [isOpen]);
 
+  // Clean up streaming timer on unmount
+  useEffect(() => {
+    return () => {
+      if (streamTimerRef.current) {
+        clearInterval(streamTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleOpen = useCallback(() => {
     setIsOpen(true);
     setHasOpened(true);
@@ -38,9 +58,77 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
     setIsOpen(false);
   }, []);
 
+  const handleResetChat = useCallback(() => {
+    if (streamTimerRef.current) {
+      clearInterval(streamTimerRef.current);
+    }
+    setIsStreaming(false);
+    setMessages([
+      {
+        id: "welcome",
+        role: "assistant",
+        content: welcomeMessage,
+        timestamp: new Date(),
+      }
+    ]);
+  }, [welcomeMessage]);
+
+  /**
+   * Fungsi untuk mensimulasikan efek pengetikan balasan AI huruf demi huruf (Typewriter Streaming)
+   */
+  const streamAssistantReply = useCallback((fullReply: string) => {
+    const assistantId = (Date.now() + 1).toString();
+    const timestamp = new Date();
+
+    // Inisialisasi pesan awal kosong
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: assistantId,
+        role: "assistant",
+        content: "",
+        timestamp,
+        isStreaming: true,
+      }
+    ]);
+
+    setIsStreaming(true);
+
+    let currentIndex = 0;
+    const chunkSize = 2; // Mengetik 2 karakter per tick untuk animasi yang halus namun responsif
+
+    if (streamTimerRef.current) {
+      clearInterval(streamTimerRef.current);
+    }
+
+    streamTimerRef.current = setInterval(() => {
+      currentIndex += chunkSize;
+      const currentContent = fullReply.slice(0, currentIndex);
+
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantId
+            ? { ...msg, content: currentContent }
+            : msg
+        )
+      );
+
+      if (currentIndex >= fullReply.length) {
+        if (streamTimerRef.current) clearInterval(streamTimerRef.current);
+        setIsStreaming(false);
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantId
+              ? { ...msg, content: fullReply, isStreaming: false }
+              : msg
+          )
+        );
+      }
+    }, 18);
+  }, []);
+
   /**
    * Mutation untuk mengirim pesan chat ke AI backend.
-   * Menggunakan TanStack Query useMutation untuk menangani loading, error, dan retry otomatis.
    */
   const chatMutation = useMutation({
     mutationFn: async (text: string) => {
@@ -63,13 +151,7 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
       return data.reply;
     },
     onSuccess: (reply) => {
-      const assistantMessage = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: reply,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      streamAssistantReply(reply);
     },
     onError: (err) => {
       setMessages((prev) => [
@@ -79,15 +161,16 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
           role: "assistant",
           content: err.message,
           timestamp: new Date(),
+          isStreaming: false,
         },
       ]);
     },
   });
 
   const sendMessage = useCallback((text: string) => {
-    if (!text || chatMutation.isPending) return;
+    if (!text || chatMutation.isPending || isStreaming) return;
 
-    const userMessage = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
       content: text,
@@ -97,7 +180,7 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     chatMutation.mutate(text);
-  }, [chatMutation]);
+  }, [chatMutation, isStreaming]);
 
   const handleSend = useCallback(() => {
     const text = input.trim();
@@ -119,11 +202,13 @@ export function useAIChat(apiEndpoint: string, welcomeMessage: string) {
     messages, setMessages,
     input, setInput,
     isLoading: chatMutation.isPending,
+    isStreaming,
     hasOpened,
     messagesEndRef,
     inputRef,
     handleOpen,
     handleClose,
+    handleResetChat,
     handleSend,
     handleKeyDown,
     formatTime,

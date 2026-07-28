@@ -44,17 +44,20 @@ const RobotIcon = ({ size = 20 }) => (
 export default function AIChatWidget() {
   const [unreadCount, setUnreadCount] = useState(1);
   const [activeSpeechId, setActiveSpeechId] = useState<string | null>(null);
+  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
 
   const {
     isOpen, setIsOpen,
     messages,
     input, setInput,
     isLoading,
+    isStreaming,
     hasOpened,
     messagesEndRef,
     inputRef,
     handleOpen,
     handleClose,
+    handleResetChat,
     handleSend,
     handleKeyDown,
     formatTime,
@@ -82,6 +85,13 @@ export default function AIChatWidget() {
       window.speechSynthesis.cancel();
     }
     setActiveSpeechId(null);
+  };
+
+  const handleCopyText = (msgId: string, text: string) => {
+    const cleanText = text.replace(/\*\*/g, "").replace(/\*/g, "").replace(/`/g, "");
+    navigator.clipboard.writeText(cleanText);
+    setCopiedMsgId(msgId);
+    setTimeout(() => setCopiedMsgId(null), 2000);
   };
 
   const handleToggleSpeech = (msgId: string, text: string) => {
@@ -125,8 +135,6 @@ export default function AIChatWidget() {
     "Cara daftar kursus?",
   ];
 
-
-
   return (
     <>
       <div className={`ai-chat-window ${isOpen ? "open" : ""}`} role="dialog" aria-label="Ibra AI Assistant">
@@ -143,15 +151,28 @@ export default function AIChatWidget() {
               <div className="ai-chat-header-name">Ibra AI Assistant</div>
               <div className="ai-chat-header-status">
                 <span className="ai-status-dot"></span>
-                Online — Siap Membantu
+                {isStreaming ? "Sedang Mengetik..." : "Online — Siap Membantu"}
               </div>
             </div>
           </div>
-          <button className="ai-chat-close-btn" onClick={onClose} aria-label="Tutup chat">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <button 
+              className="ai-chat-close-btn" 
+              onClick={handleResetChat} 
+              aria-label="Bersihkan Percakapan"
+              title="Reset Chat"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+              </svg>
+            </button>
+            <button className="ai-chat-close-btn" onClick={onClose} aria-label="Tutup chat">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div className="ai-chat-messages">
@@ -167,35 +188,58 @@ export default function AIChatWidget() {
                 </div>
               )}
               <div className="ai-msg-bubble-wrap">
-                <div className="ai-msg-bubble" dangerouslySetInnerHTML={{ __html: parseMarkdownSecure(msg.content) }} />
+                <div className="ai-msg-bubble">
+                  <span dangerouslySetInnerHTML={{ __html: parseMarkdownSecure(msg.content) }} />
+                  {msg.isStreaming && <span className="ai-typing-cursor">|</span>}
+                </div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", marginTop: "4px" }}>
                   <div className="ai-msg-time">{formatTime(msg.timestamp)}</div>
                   {msg.role === "assistant" && (
-                    <button
-                      onClick={() => handleToggleSpeech(msg.id, msg.content)}
-                      style={{
-                        background: "none", border: "none", cursor: "pointer",
-                        color: activeSpeechId === msg.id ? "var(--color-primary)" : "var(--color-gray-400)",
-                        display: "inline-flex", alignItems: "center", padding: "2px",
-                        marginRight: msg.role === "assistant" ? "0" : "auto",
-                        transition: "color 0.2s",
-                      }}
-                      title={activeSpeechId === msg.id ? "Hentikan Suara" : "Dengarkan Suara"}
-                      aria-label={activeSpeechId === msg.id ? "Hentikan Suara" : "Dengarkan Suara"}
-                    >
-                      {activeSpeechId === msg.id ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/></svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-                      )}
-                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      {/* Copy Button */}
+                      <button
+                        onClick={() => handleCopyText(msg.id, msg.content)}
+                        style={{
+                          background: "none", border: "none", cursor: "pointer",
+                          color: copiedMsgId === msg.id ? "#10b981" : "var(--color-gray-400)",
+                          display: "inline-flex", alignItems: "center", padding: "2px",
+                          transition: "color 0.2s",
+                        }}
+                        title={copiedMsgId === msg.id ? "Tersalin!" : "Salin Teks"}
+                        aria-label="Salin jawaban AI"
+                      >
+                        {copiedMsgId === msg.id ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        )}
+                      </button>
+                      {/* Audio Button */}
+                      <button
+                        onClick={() => handleToggleSpeech(msg.id, msg.content)}
+                        style={{
+                          background: "none", border: "none", cursor: "pointer",
+                          color: activeSpeechId === msg.id ? "var(--color-primary)" : "var(--color-gray-400)",
+                          display: "inline-flex", alignItems: "center", padding: "2px",
+                          transition: "color 0.2s",
+                        }}
+                        title={activeSpeechId === msg.id ? "Hentikan Suara" : "Dengarkan Suara"}
+                        aria-label={activeSpeechId === msg.id ? "Hentikan Suara" : "Dengarkan Suara"}
+                      >
+                        {activeSpeechId === msg.id ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/></svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                        )}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
             </div>
           ))}
 
-          {isLoading && (
+          {isLoading && !isStreaming && (
             <div className="ai-chat-msg assistant">
               <div className="ai-msg-avatar">
                 <img 
@@ -229,10 +273,10 @@ export default function AIChatWidget() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             rows={1}
-            disabled={isLoading}
+            disabled={isLoading || isStreaming}
             aria-label="Ketik pesan ke AI Assistant"
           />
-          <button className="ai-chat-send-btn" onClick={handleSend} disabled={!input.trim() || isLoading} aria-label="Kirim">
+          <button className="ai-chat-send-btn" onClick={handleSend} disabled={!input.trim() || isLoading || isStreaming} aria-label="Kirim">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"/>
               <polygon points="22 2 15 22 11 13 2 9 22 2"/>

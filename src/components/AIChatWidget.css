@@ -269,6 +269,20 @@
   border-bottom-left-radius: 4px;
 }
 
+/* ── Streaming Cursor ── */
+.ai-typing-cursor {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-left: 2px;
+  animation: cursor-blink 0.8s infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .ai-chat-msg.user .ai-msg-bubble {
   background-color: var(--color-primary);
   color: #fff;
