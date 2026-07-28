@@ -40,9 +40,9 @@
   margin-inline: auto;
 }
 
-/* ── 2. Visi & Misi Section (Soft Teal Background) ── */
+/* ── 2. Visi & Misi Section (Uniform Gray Canvas) ── */
 .about-vision-mission-section {
-  background-color: var(--color-primary-light);
+  background-color: var(--color-gray-50);
   padding: 5.5rem 0;
 }
 
@@ -100,9 +100,9 @@
   color: var(--color-accent);
 }
 
-/* ── 3. Core Values Section (White Background) ── */
+/* ── 3. Core Values Section (Uniform Gray Canvas) ── */
 .about-values-section {
-  background-color: var(--color-white);
+  background-color: var(--color-gray-50);
   padding: 5.5rem 0;
 }
 
@@ -156,9 +156,9 @@
   margin: 0;
 }
 
-/* ── 4. Tutors Section (Soft Gold/Cream Background) ── */
+/* ── 4. Tutors Section (Uniform Gray Canvas) ── */
 .about-tutors-section {
-  background-color: var(--color-accent-light);
+  background-color: var(--color-gray-50);
   padding: 5.5rem 0;
 }
 
