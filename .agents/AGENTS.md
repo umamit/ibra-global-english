@@ -203,6 +203,10 @@ for path, line_no, emojis, content in matches:
     - Jika hasil scan menunjukkan `Total emoji occurrences found: 0`, maka pembersihan dinyatakan selesai.
     - Pengecualian yang diizinkan: emoji yang berada di dalam **regex string filter** (bukan rendering UI), contoh: `.replace(/[👋🤖]/g, "")`.
 
+21l. **Kunci Verifikasi Kode Sebelum Penawaran (Strict Pre-Recommendation Audit Rule):**
+    - AI DILARANG KERAS menawarkan fitur baru, mengklaim suatu fitur "belum ada", atau menyarankan peningkatan pada bagian aplikasi tertentu tanpa melakukan pembacaan/audit kode secara langsung pada file yang bersangkutan terlebih dahulu.
+    - Sebelum menyampaikan laporan, saran, atau penawaran pengerjaan kepada pengguna, AI WAJIB menggunakan tool pencari/pembaca kode (`grep_search` / `view_file`) untuk memeriksa status riil di dalam codebase. Asumsi spekulatif tanpa verifikasi file adalah pelanggaran berat.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
