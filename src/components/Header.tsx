@@ -56,7 +56,7 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
                       <Link href="/#kids-program" className="dropdown-item">Kids Program</Link>
                       <Link href="/#teens-program" className="dropdown-item">Teens Program</Link>
                       <Link href="/#fun-calistung" className="dropdown-item">Fun Calistung</Link>
-                      <Link href="/placement-test" className="dropdown-item" style={{ color: "var(--color-primary)", fontWeight: "700" }}>📝 Tes Penempatan Level</Link>
+                      <Link href="/placement-test" className="dropdown-item" style={{ color: "var(--color-primary)", fontWeight: "700" }}>Tes Penempatan Level</Link>
                     </div>
                   </div>
                 );
@@ -226,7 +226,7 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
                       <Link href="/#kids-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Kids Program</Link>
                       <Link href="/#teens-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Teens Program</Link>
                       <Link href="/#fun-calistung" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Fun Calistung</Link>
-                      <Link href="/placement-test" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary)", fontWeight: "700" }}>📝 Tes Penempatan Level</Link>
+                      <Link href="/placement-test" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)} style={{ color: "var(--color-primary)", fontWeight: "700" }}>Tes Penempatan Level</Link>
                     </div>
                   </div>
                 );
