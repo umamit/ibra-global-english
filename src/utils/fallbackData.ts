@@ -202,7 +202,6 @@ export const DEFAULT_NAVIGATION_MENU: NavigationItem[] = [
   { label: "Tentang Kami", path: "/about" },
   { label: "Program", path: "/#programs" },
   { label: "Galeri", path: "/gallery" },
-  { label: "Tes Penempatan", path: "/placement-test" },
   { label: "Kalender", path: "/calendar" },
   { label: "Kemitraan", path: "/kemitraan" },
   { label: "FAQ", path: "/#faq" }
