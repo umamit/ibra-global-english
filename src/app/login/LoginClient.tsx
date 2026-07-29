@@ -60,10 +60,17 @@ export default function LoginPage() {
         setHomeUrl("/");
       }
 
-      // Periksa apakah dikeluarkan otomatis karena inaktif (idle)
+      // Periksa apakah dikeluarkan otomatis atau ada pesan kesalahan dari auth callback
       const params = new URLSearchParams(window.location.search);
       if (params.get("reason") === "idle") {
         setErrorBanner("Sesi Anda telah berakhir karena tidak ada aktivitas selama 1 jam. Silakan masuk kembali.");
+      } else if (params.get("error")) {
+        const errorParam = params.get("error") || "";
+        if (errorParam.includes("unauthorized")) {
+          setErrorBanner("Akses ditolak: Akun Anda tidak memiliki wewenang untuk membuka portal tersebut.");
+        } else {
+          setErrorBanner(decodeURIComponent(errorParam));
+        }
       }
     };
 
@@ -325,7 +332,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?selected_role=${role}`,
         },
       });
 
@@ -348,7 +355,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "facebook",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?selected_role=${role}`,
         },
       });
 

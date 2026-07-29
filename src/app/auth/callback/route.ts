@@ -42,10 +42,33 @@ export async function GET(request: any) {
       });
 
       const { data: { user } } = await supabase.auth.getUser();
-      const role = user?.app_metadata?.role;
+      let role = user?.app_metadata?.role;
+
+      if (user && !role) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        role = profile?.role;
+      }
+
+      // Validasi tab portal pilihan pengguna
+      const selectedRole = searchParams.get("selected_role");
+      if (selectedRole && role && selectedRole !== role) {
+        await supabase.auth.signOut();
+        const roleLabels: Record<string, string> = {
+          student: "Siswa",
+          parent: "Orang Tua",
+          tutor: "Tutor",
+          admin: "Admin",
+        };
+        const actualLabel = roleLabels[role] || role;
+        const encodedMsg = encodeURIComponent(`Akun Anda terdaftar sebagai portal ${actualLabel}. Harap masuk melalui tab portal "${actualLabel}".`);
+        return NextResponse.redirect(`${origin}/login?error=${encodedMsg}`);
+      }
 
       // Jika sudah memiliki peran, ubah lokasi redirect langsung pada header response yang sama
-      // Ini menjaga seluruh cookie (termasuk path "/" dan httpOnly) tetap utuh tanpa terbuang!
       if (role) {
         let dashboardUrl = `${origin}/parent`;
         if (role === "admin") dashboardUrl = `${origin}/admin`;
