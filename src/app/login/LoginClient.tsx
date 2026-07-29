@@ -169,7 +169,7 @@ export default function LoginPage() {
       const user = data.user;
 
       // Ambil role riil dari public.profiles karena user_metadata bisa out-of-sync
-      let role = "parent";
+      let userRole = "parent";
       try {
         const { data: profile } = await supabase
           .from("profiles")
@@ -177,16 +177,32 @@ export default function LoginPage() {
           .eq("id", user.id)
           .single();
         if (profile?.role) {
-          role = profile.role;
+          userRole = profile.role;
         } else {
-          role = user?.app_metadata?.role || user?.user_metadata?.role || "parent";
+          userRole = user?.app_metadata?.role || user?.user_metadata?.role || "parent";
         }
       } catch (_) {
-        role = user?.app_metadata?.role || user?.user_metadata?.role || "parent";
+        userRole = user?.app_metadata?.role || user?.user_metadata?.role || "parent";
+      }
+
+      // ISOLASI KETAT: Validasi bahwa tab portal yang dipilih pengguna SAMA DENGAN role akun riil
+      if (role !== userRole) {
+        await supabase.auth.signOut();
+        const roleLabels: Record<string, string> = {
+          student: "Siswa",
+          parent: "Orang Tua",
+          tutor: "Tutor",
+          admin: "Admin",
+        };
+        const selectedLabel = roleLabels[role] || role;
+        const actualLabel = roleLabels[userRole] || userRole;
+        setErrorBanner(`Akun Anda terdaftar sebagai portal ${actualLabel}. Harap berpindah ke tab portal "${actualLabel}" untuk masuk.`);
+        setLoading(false);
+        return;
       }
 
       // Jika bukan admin, cek mode maintenance sebelum melanjutkan
-      if (role !== "admin") {
+      if (userRole !== "admin") {
         try {
           const { data: maintData } = await supabase
             .from("landing_settings")
@@ -215,26 +231,26 @@ export default function LoginPage() {
       // Identifikasi pengguna di PostHog & Sentry untuk pelacakan yang selaras
       posthog.identify(user.id, {
         email: user.email,
-        role: role,
+        role: userRole,
         name: user.user_metadata?.full_name || user.email
       });
-      posthog.capture("user_logged_in", { role });
+      posthog.capture("user_logged_in", { role: userRole });
 
       Sentry.setUser({
         id: user.id,
         email: user.email,
         username: user.user_metadata?.full_name || email,
-        role: role
+        role: userRole
       });
 
       setSuccessBanner("Masuk berhasil! Mengalihkan ke halaman dashboard...");
 
       setTimeout(() => {
-        if (role === "admin") {
+        if (userRole === "admin") {
           router.push("/admin");
-        } else if (role === "tutor") {
+        } else if (userRole === "tutor") {
           router.push("/tutor");
-        } else if (role === "student") {
+        } else if (userRole === "student") {
           router.push("/student");
         } else {
           router.push("/parent");
