@@ -1,18 +1,59 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import styles from "./digital-agency.module.css";
 
 const FluidCanvas = dynamic(() => import("./components/FluidCanvas"), { ssr: false });
 
 export default function DigitalAgencyClient() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
     projectType: "Company Profile / Landing Page",
     details: "",
   });
+
+  useEffect(() => {
+    if (typeof window === "undefined" || window.innerWidth <= 768) return;
+
+    let ctx: any;
+    import("gsap").then((gsapModule) => {
+      const gsap = gsapModule.default;
+      import("gsap/ScrollTrigger").then((stModule) => {
+        const ScrollTrigger = stModule.ScrollTrigger || stModule.default;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (!containerRef.current) return;
+
+        ctx = gsap.context(() => {
+          const cards = containerRef.current?.querySelectorAll(`.${styles.card}, .${styles.pricingCard}`);
+          cards?.forEach((card, idx) => {
+            const yOffset = (idx % 2 === 0) ? -20 : -10;
+            gsap.fromTo(
+              card,
+              { y: 20 },
+              {
+                y: yOffset,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: 1.2,
+                },
+              }
+            );
+          });
+        }, containerRef);
+      });
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, []);
 
   const [submitted, setSubmitted] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -81,7 +122,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
   };
 
   return (
-    <div className={styles.pageWrapper}>
+    <div className={styles.pageWrapper} ref={containerRef}>
       {/* ── Navigation Bar ── */}
       <header className={styles.navbar}>
         <div className={styles.navContainer}>
