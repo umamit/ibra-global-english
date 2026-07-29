@@ -150,7 +150,7 @@ export default function TaxCalculator({
               <div>
                 <div style={{ marginTop: "1rem", backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "10px", borderLeft: "4px solid var(--color-primary)" }}>
                   <p style={{ fontSize: "0.8rem", color: "var(--color-primary-dark)", lineHeight: "1.4" }}>
-                    💡 **Catatan Kepatuhan**: PPh Final 0.5% Badan PT Perseorangan berlaku maksimal 4 tahun pajak sejak didirikan. Penyetoran bulanan paling lambat tanggal 15 bulan berikutnya, dan pelaporan SPT Tahunan paling lambat 30 April tahun berikutnya.
+                     **Catatan Kepatuhan**: PPh Final 0.5% Badan PT Perseorangan berlaku maksimal 4 tahun pajak sejak didirikan. Penyetoran bulanan paling lambat tanggal 15 bulan berikutnya, dan pelaporan SPT Tahunan paling lambat 30 April tahun berikutnya.
                   </p>
                 </div>
                 <div className="no-print" style={{ display: "flex", gap: "0.5rem", marginTop: "1.25rem" }}>
@@ -159,14 +159,14 @@ export default function TaxCalculator({
                     className="btn-portal-primary"
                     style={{ flex: 1, padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
                   >
-                    🖨️ Cetak Hasil (PDF)
+                    ️ Cetak Hasil (PDF)
                   </button>
                   <button
                     onClick={onSaveToArchive}
                     className="btn-portal-outline"
                     style={{ padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
                   >
-                    💾 Simpan ke Arsip
+                     Simpan ke Arsip
                   </button>
                 </div>
               </div>
@@ -286,14 +286,14 @@ export default function TaxCalculator({
                     className="btn-portal-primary"
                     style={{ flex: 1, padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
                   >
-                    🖨️ Cetak Hasil (PDF)
+                    ️ Cetak Hasil (PDF)
                   </button>
                   <button
                     onClick={onSaveToArchive}
                     className="btn-portal-outline"
                     style={{ padding: "0.6rem 1.25rem", fontSize: "0.85rem", fontWeight: "700" }}
                   >
-                    💾 Simpan ke Arsip
+                     Simpan ke Arsip
                   </button>
                 </div>
               </div>

@@ -80,7 +80,11 @@ export default function MaintenanceSettings({
             color: maintenanceEnabled ? "var(--color-red-700)" : "var(--color-green-700)",
             margin: 0
           }}>
-            Status Saat Ini: {maintenanceEnabled ? "🔴 Mode Pemeliharaan AKTIF" : "🟢 Mode Pemeliharaan NONAKTIF"}
+            Status Saat Ini: {maintenanceEnabled ? (
+              <span style={{ color: "#dc2626", fontWeight: "700" }}>● Mode Pemeliharaan AKTIF</span>
+            ) : (
+              <span style={{ color: "#16a34a", fontWeight: "700" }}>● Mode Pemeliharaan NONAKTIF</span>
+            )}
           </p>
         </div>
       </div>

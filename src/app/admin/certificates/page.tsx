@@ -192,7 +192,7 @@ export default function AdminCertificatesPage() {
       {/* Page Header */}
       <div style={{ marginBottom: "1.5rem" }}>
         <h1 style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--color-gray-900)", margin: 0 }}>
-          🏅 Kelola Sertifikat
+           Kelola Sertifikat
         </h1>
         <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", margin: "0.25rem 0 0" }}>
           Terbitkan sertifikat kelulusan dan kelola arsip sertifikat siswa.
@@ -202,7 +202,7 @@ export default function AdminCertificatesPage() {
       <div className="cert-page-grid">
         {/* ── Form Terbitkan ────────────────────────────────────── */}
         <div className="cert-card">
-          <h2 className="cert-card-title">✍️ Terbitkan Sertifikat Baru</h2>
+          <h2 className="cert-card-title">️ Terbitkan Sertifikat Baru</h2>
           <form onSubmit={handleSubmit}>
 
             {/* Pilih Siswa */}
@@ -232,7 +232,7 @@ export default function AdminCertificatesPage() {
               </select>
               {availableReports.length === 0 && !loading && (
                 <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", margin: "0.3rem 0 0" }}>
-                  ✅ Semua rapor sudah memiliki sertifikat.
+                   Semua rapor sudah memiliki sertifikat.
                 </p>
               )}
             </div>
@@ -288,7 +288,7 @@ export default function AdminCertificatesPage() {
             </div>
 
             <button type="submit" className="cert-submit-btn" disabled={submitting}>
-              {submitting ? "⏳ Menerbitkan..." : "🏅 Terbitkan Sertifikat"}
+              {submitting ? " Menerbitkan..." : " Terbitkan Sertifikat"}
             </button>
           </form>
         </div>
@@ -296,7 +296,7 @@ export default function AdminCertificatesPage() {
         {/* ── Arsip Sertifikat ───────────────────────────────────── */}
         <div className="cert-card">
           <h2 className="cert-card-title">
-            📋 Arsip Sertifikat
+             Arsip Sertifikat
             <span style={{ marginLeft: "auto", fontSize: "0.8rem", fontWeight: 600, color: "var(--color-gray-500)" }}>
               {certificates.length} sertifikat
             </span>
@@ -306,7 +306,7 @@ export default function AdminCertificatesPage() {
             <p style={{ textAlign: "center", color: "var(--color-gray-500)", padding: "2rem" }}>Memuat data...</p>
           ) : certificates.length === 0 ? (
             <div className="cert-empty-state">
-              <p style={{ fontSize: "2rem" }}>🏅</p>
+              <p style={{ fontSize: "2rem" }}></p>
               <p style={{ fontWeight: 700 }}>Belum ada sertifikat diterbitkan</p>
               <p>Terbitkan sertifikat pertama menggunakan formulir di sebelah kiri.</p>
             </div>

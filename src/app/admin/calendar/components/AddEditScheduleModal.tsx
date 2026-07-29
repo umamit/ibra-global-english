@@ -317,7 +317,7 @@ export default function AddEditScheduleModal({
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", padding: "1.5rem 2rem 0" }}>
           <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0, display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span>{selectedSchedule ? "✏️" : "📅"}</span>
+              <span>{selectedSchedule ? "️" : ""}</span>
               <span>{selectedSchedule ? "Edit Jadwal Belajar" : "Tambah Jadwal Belajar"}</span>
             </h2>
           <button 
@@ -359,9 +359,9 @@ export default function AddEditScheduleModal({
               <div className="form-group">
                 <label className="form-label" style={{ fontWeight: "800" }}>Jenis Agenda</label>
                 <select className="form-input" value={type} onChange={(e) => setType(e.target.value)}>
-                  <option value="class">📖 Kelas Regular</option>
-                  <option value="event">🎉 Kegiatan Khusus / Event</option>
-                  <option value="holiday">🔴 Hari Libur</option>
+                  <option value="class"> Kelas Regular</option>
+                  <option value="event"> Kegiatan Khusus / Event</option>
+                  <option value="holiday"> Hari Libur</option>
                 </select>
               </div>
 
@@ -450,7 +450,7 @@ export default function AddEditScheduleModal({
                     onChange={(e) => setIsRecurring(e.target.checked)} 
                     style={{ width: "16px", height: "16px" }} 
                   />
-                  <span>🔁 Buat Jadwal Berulang (Recurrent Event)</span>
+                  <span> Buat Jadwal Berulang (Recurrent Event)</span>
                 </label>
 
                 {isRecurring && (
@@ -484,7 +484,7 @@ export default function AddEditScheduleModal({
             {selectedSchedule && selectedSchedule.recurrence_id && (
               <div style={{ border: "1px solid var(--color-accent)", padding: "1rem", borderRadius: "8px", backgroundColor: "var(--color-bg-teal-50)" }}>
                 <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.85rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>
-                  ⚠️ Agenda ini berulang. Pilih cakupan perubahan:
+                  ️ Agenda ini berulang. Pilih cakupan perubahan:
                 </p>
                 <div style={{ display: "flex", gap: "1.5rem" }}>
                   <label style={{ display: "flex", alignItems: "center", gap: "0.4rem", cursor: "pointer", fontSize: "0.85rem" }}>

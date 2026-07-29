@@ -113,7 +113,7 @@ export default function AdminFeedbackPage() {
       {/* Header */}
       <div className="dashboard-header" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>📈 Umpan Balik Kelas & Kinerja Tutor</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)" }}> Umpan Balik Kelas & Kinerja Tutor</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem", marginTop: "0.25rem" }}>
             Rekap evaluasi dan penilaian performa mengajar tutor oleh orang tua siswa.
           </p>
@@ -160,7 +160,7 @@ export default function AdminFeedbackPage() {
           <span style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", fontWeight: "700" }}>RATA-RATA GLOBAL</span>
           <h2 style={{ fontSize: "2rem", fontWeight: "900", color: "var(--color-accent)", marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <span>{overallAverage}</span>
-            <span style={{ fontSize: "1.2rem", color: "var(--color-accent)" }}>★</span>
+            <span style={{ fontSize: "1.2rem", color: "var(--color-accent)" }}></span>
           </h2>
           <p style={{ fontSize: "0.8rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>Skor kepuasan keseluruhan</p>
         </div>
@@ -172,7 +172,7 @@ export default function AdminFeedbackPage() {
         {/* Left Column: Tutor Performance Stats */}
         <div className="portal-card" style={{ padding: "1.5rem", borderRadius: "14px", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 4px 20px rgba(0,0,0,0.02)" }}>
           <h2 style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--color-primary-dark)", marginBottom: "1rem" }}>
-            🏆 Peringkat Kepuasan Tutor
+             Peringkat Kepuasan Tutor
           </h2>
           {loading ? (
             <p style={{ fontSize: "0.9rem", color: "var(--color-gray-400)", textAlign: "center", padding: "2rem 0" }}>Memuat peringkat...</p>
@@ -192,7 +192,7 @@ export default function AdminFeedbackPage() {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontWeight: "900", fontSize: "1.1rem", color: "var(--color-accent)" }}>
-                      ★ {stat.average}
+                       {stat.average}
                     </div>
                   </div>
                 </div>
@@ -228,11 +228,11 @@ export default function AdminFeedbackPage() {
                   style={{ width: "100%", padding: "0.5rem 1rem", fontSize: "0.85rem" }}
                 >
                   <option value="">Semua Rating</option>
-                  <option value="5">★ 5 Sangat Puas</option>
-                  <option value="4">★ 4 Puas</option>
-                  <option value="3">★ 3 Cukup</option>
-                  <option value="2">★ 2 Kurang</option>
-                  <option value="1">★ 1 Sangat Kurang</option>
+                  <option value="5"> 5 Sangat Puas</option>
+                  <option value="4"> 4 Puas</option>
+                  <option value="3"> 3 Cukup</option>
+                  <option value="2"> 2 Kurang</option>
+                  <option value="1"> 1 Sangat Kurang</option>
                 </select>
               </div>
             </div>

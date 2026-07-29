@@ -79,7 +79,7 @@ export default function AiSchedulerModal({ isOpen, onClose, onSuccess }: AiSched
       const { error } = await supabase.from("academic_schedules").insert(dbInserts);
       if (error) throw error;
 
-      onSuccess(`✓ Berhasil menyimpan ${aiDraftSchedules.length} jadwal hasil penyusunan AI!`);
+      onSuccess(` Berhasil menyimpan ${aiDraftSchedules.length} jadwal hasil penyusunan AI!`);
       setAiDraftSchedules([]);
       setAiPrompt(" ");
     } catch (err: any) {
@@ -100,7 +100,7 @@ export default function AiSchedulerModal({ isOpen, onClose, onSuccess }: AiSched
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
           <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-            🤖 Asisten AI Penyusun Jadwal (Groq Copilot)
+             Asisten AI Penyusun Jadwal (Groq Copilot)
           </h2>
           <button 
             type="button" 
@@ -114,7 +114,7 @@ export default function AiSchedulerModal({ isOpen, onClose, onSuccess }: AiSched
 
         {aiError && (
           <div className="auth-error-banner" style={{ marginBottom: "1rem", padding: "0.75rem 1rem", fontSize: "0.85rem" }}>
-            <span>⚠️ {aiError}</span>
+            <span>️ {aiError}</span>
           </div>
         )}
 
@@ -126,7 +126,7 @@ export default function AiSchedulerModal({ isOpen, onClose, onSuccess }: AiSched
               </p>
               
               <div style={{ backgroundColor: "#f0fdf4", padding: "0.75rem 1rem", borderRadius: "var(--radius-md)", border: "1px solid #bbf7d0", color: "#166534", fontSize: "0.82rem" }}>
-                <strong>💡 Contoh Instruksi:</strong>
+                <strong> Contoh Instruksi:</strong>
                 <p style={{ margin: "0.25rem 0 0 0", fontStyle: "italic" }}>
                   "Buat kelas Teen hari Selasa dan Kamis jam 16.25-17.40 selama 4 minggu mulai tanggal 6 Juli 2026. Tutor coach Husni."
                 </p>
@@ -151,14 +151,14 @@ export default function AiSchedulerModal({ isOpen, onClose, onSuccess }: AiSched
                 Batal
               </button>
               <button type="submit" className="btn-portal-primary" disabled={aiLoading || !aiPrompt.trim()}>
-                <span>{aiLoading ? "🤖 Menyusun Draf..." : "Draf Jadwal dengan AI"}</span>
+                <span>{aiLoading ? " Menyusun Draf..." : "Draf Jadwal dengan AI"}</span>
               </button>
             </div>
           </form>
         ) : (
           <div>
             <p style={{ margin: "0 0 1rem 0", fontSize: "0.9rem", color: "var(--color-gray-700)", fontWeight: "700" }}>
-              🎉 AI berhasil mendraf {aiDraftSchedules.length} jadwal! Silakan tinjau terlebih dahulu:
+               AI berhasil mendraf {aiDraftSchedules.length} jadwal! Silakan tinjau terlebih dahulu:
             </p>
 
             <div style={{ overflowX: "auto", maxHeight: "250px", overflowY: "auto", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-md)", marginBottom: "1.5rem" }}>

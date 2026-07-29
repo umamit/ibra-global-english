@@ -121,8 +121,13 @@ export default function AssessmentRubricModal({
           }}
         >
           <div>
-            <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800" }}>
-              💡 Rubrik & Indikator Penilaian Rapor
+            <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+                <path d="M9 18h6"/>
+                <path d="M10 22h4"/>
+              </svg>
+              Rubrik & Indikator Penilaian Rapor
             </h3>
             <p style={{ margin: "2px 0 0", fontSize: "0.8rem", opacity: 0.9 }}>
               Siswa: <strong>{studentName || "Pilih Siswa"}</strong> | Program: <strong>{programName || "Bahasa Inggris"}</strong> {moduleName ? `| Modul: ${moduleName}` : ""}
@@ -139,7 +144,7 @@ export default function AssessmentRubricModal({
               lineHeight: 1
             }}
           >
-            ✕
+            
           </button>
         </div>
 
@@ -174,7 +179,7 @@ export default function AssessmentRubricModal({
                 cursor: "pointer"
               }}
             >
-              ✓ Centang Semua (Skor 100)
+               Centang Semua (Skor 100)
             </button>
             <button
               type="button"
@@ -190,7 +195,7 @@ export default function AssessmentRubricModal({
                 cursor: "pointer"
               }}
             >
-              ✕ Riset Pilihan
+               Riset Pilihan
             </button>
           </div>
         </div>
@@ -291,7 +296,7 @@ export default function AssessmentRubricModal({
             }}
           >
             <h5 style={{ margin: "0 0 0.35rem", fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-700)" }}>
-              📝 Draf Catatan Deskriptif Evaluasi (Otomatis Terbentuk):
+              Draf Catatan Deskriptif Evaluasi (Otomatis Terbentuk):
             </h5>
             <p style={{ margin: 0, fontSize: "0.825rem", fontStyle: "italic", color: "var(--color-gray-600)", lineHeight: "1.5" }}>
               &ldquo;{draftNotes}&rdquo;
@@ -340,7 +345,7 @@ export default function AssessmentRubricModal({
                 fontWeight: "700"
               }}
             >
-              ✓ Gunakan Nilai & Indikator Ini
+              Gunakan Nilai & Indikator Ini
             </button>
           </div>
         </div>

@@ -17,7 +17,7 @@ export default function SyncModal({ isOpen, onClose }: SyncModalProps) {
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
           <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-            🔗 Sinkronkan Kalender ke HP
+             Sinkronkan Kalender ke HP
           </h2>
           <button 
             type="button" 
@@ -64,7 +64,7 @@ export default function SyncModal({ isOpen, onClose }: SyncModalProps) {
           </div>
 
           <div style={{ backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-primary-dark)", color: "var(--color-primary-dark)" }}>
-            <h4 style={{ margin: "0 0 0.5rem 0", fontWeight: "800", fontSize: "0.88rem" }}>📱 Cara Menghubungkan ke HP:</h4>
+            <h4 style={{ margin: "0 0 0.5rem 0", fontWeight: "800", fontSize: "0.88rem" }}> Cara Menghubungkan ke HP:</h4>
             <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "0.82rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <li>
                 <strong>iPhone (Apple Calendar):</strong> Buka menu <em>Pengaturan (Settings)</em> &gt; <em>Kalender (Calendar)</em> &gt; <em>Akun (Accounts)</em> &gt; <em>Tambah Akun (Add Account)</em> &gt; <em>Lainnya (Other)</em> &gt; <em>Tambah Kalender Berlangganan (Add Subscribed Calendar)</em>, lalu tempel (*paste*) tautan di atas.

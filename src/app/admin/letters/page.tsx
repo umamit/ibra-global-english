@@ -357,8 +357,11 @@ export default function AdminLettersPage() {
           
           {/* AI Drafting Assistant Card */}
           <div className="letters-card ai-box">
-            <h2 className="card-title" style={{ color: "var(--color-primary)", marginBottom: "0.75rem" }}>
-              🪄 Groq AI Letter Assistant
+            <h2 className="card-title" style={{ color: "var(--color-primary)", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2v20M2 12h20"/>
+              </svg>
+              Groq AI Letter Assistant
             </h2>
             <p style={{ fontSize: "0.85rem", color: "var(--color-gray-600)", marginBottom: "1rem" }}>
               Ketik instruksi surat (misal: *"Surat izin siswa mengikuti program Tour Guide tanggal 7-8 Juli"*). Groq akan menyusun isinya secara otomatis.
@@ -385,14 +388,14 @@ export default function AdminLettersPage() {
               onClick={handleGenerateLetterWithAI}
               disabled={aiLoading}
             >
-              {aiLoading ? "Sedang Menyusun Draf..." : "🪄 Buat Draf Surat"}
+              {aiLoading ? "Sedang Menyusun Draf..." : " Buat Draf Surat"}
             </button>
           </div>
 
           {/* Letter Editor Form */}
           <div className="letters-card">
             <h2 className="card-title">
-              {isEditing ? "✏️ Edit Surat" : "✍️ Buat Surat Baru"}
+              {isEditing ? "️ Edit Surat" : "️ Buat Surat Baru"}
             </h2>
             <form onSubmit={handleSaveLetter}>
               <div className="form-group">
@@ -512,7 +515,7 @@ export default function AdminLettersPage() {
                     }}
                     onClick={handleInsertTableTemplate}
                   >
-                    ➕ Sisipkan Tabel Lampiran
+                     Sisipkan Tabel Lampiran
                   </button>
                 </div>
                 <textarea
@@ -581,7 +584,7 @@ export default function AdminLettersPage() {
 
           {/* Letter History/Archive */}
           <div className="letters-card">
-            <h2 className="card-title">📦 Arsip Surat Resmi</h2>
+            <h2 className="card-title"> Arsip Surat Resmi</h2>
             <div className="form-group">
               <input
                 type="text"
@@ -617,7 +620,7 @@ export default function AdminLettersPage() {
                         title="Edit Surat"
                         onClick={() => handleEditLetter(l)}
                       >
-                        ✏️
+                        ️
                       </button>
                       <button
                         type="button"
@@ -625,7 +628,7 @@ export default function AdminLettersPage() {
                         title="Hapus Surat"
                         onClick={() => handleDeleteLetter(l.id!)}
                       >
-                        🗑️
+                        ️
                       </button>
                     </div>
                   </div>
@@ -638,7 +641,14 @@ export default function AdminLettersPage() {
         {/* RIGHT COLUMN: Real-time Letter Preview & Letterhead */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <div className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h2 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-900)" }}>🖨️ Pratinjau Cetak Lembar A4</h2>
+            <h2 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-900)", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect width="12" height="8" x="6" y="14"/>
+              </svg>
+              Pratinjau Cetak Lembar A4
+            </h2>
             <button
               type="button"
               className="no-print"
@@ -650,12 +660,20 @@ export default function AdminLettersPage() {
                 border: "none",
                 fontWeight: "700",
                 cursor: "pointer",
-                boxShadow: "var(--shadow-sm)"
+                boxShadow: "var(--shadow-sm)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.3rem"
               }}
               onClick={handlePrint}
               disabled={!content}
             >
-              🖨️ Cetak Surat (PDF)
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect width="12" height="8" x="6" y="14"/>
+              </svg>
+              Cetak Surat (PDF)
             </button>
           </div>
 
@@ -733,7 +751,7 @@ export default function AdminLettersPage() {
             {attachment && (
               <div className="letter-attachment-page">
                 <div className="no-print" style={{ borderBottom: "1px dashed #ccc", paddingBottom: "0.5rem", marginBottom: "1.5rem", color: "var(--color-primary-dark)", fontWeight: "bold" }}>
-                  📄 Halaman 2: Lampiran Surat
+                   Halaman 2: Lampiran Surat
                 </div>
                 <h3 className="attachment-title">LAMPIRAN</h3>
                 <div

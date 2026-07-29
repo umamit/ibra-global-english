@@ -446,7 +446,7 @@ export default function ReportCardManagement() {
                 gap: "0.4rem"
               }}
             >
-              💡 Pilih Indikator & Rubrik Penilaian
+               Pilih Indikator & Rubrik Penilaian
             </button>
           </div>
 
@@ -562,10 +562,13 @@ export default function ReportCardManagement() {
                   }}
                 >
                   {aiLoading ? (
-                    <span>⏳ Sedang menyusun...</span>
+                    <span>Sedang menyusun...</span>
                   ) : (
                     <>
-                      <span>✨ Tulis Catatan Otomatis (AI)</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2v20M2 12h20"/>
+                      </svg>
+                      <span>Tulis Catatan Otomatis (AI)</span>
                     </>
                   )}
                 </button>
@@ -587,10 +590,13 @@ export default function ReportCardManagement() {
                   }}
                 >
                   {aiProgressLoading ? (
-                    <span>⏳ Sedang menyusun Laporan...</span>
+                    <span>Sedang menyusun Laporan...</span>
                   ) : (
                     <>
-                      <span>✨ Draf Laporan Bulanan (AI)</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2v20M2 12h20"/>
+                      </svg>
+                      <span>Draf Laporan Bulanan (AI)</span>
                     </>
                   )}
                 </button>
@@ -686,7 +692,7 @@ export default function ReportCardManagement() {
                           href="/admin/certificates"
                           style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--color-primary)", textDecoration: "none" }}
                         >
-                          🏅 Sertifikat →
+                          Sertifikat &rarr;
                         </Link>
                       </td>
                       <td style={{ textAlign: "right" }}>
@@ -694,9 +700,14 @@ export default function ReportCardManagement() {
                           <button
                             onClick={() => triggerPrint(report)}
                             className="btn-portal-outline"
-                            style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                            style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
                           >
-                            🖨️ Cetak PDF
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="6 9 6 2 18 2 18 9"/>
+                              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                              <rect width="12" height="8" x="6" y="14"/>
+                            </svg>
+                            Cetak PDF
                           </button>
                           <button
                             onClick={() => handleDeleteReport(report.id, report.module_name, report.students?.name || "Siswa")}

@@ -504,7 +504,7 @@ export const printReceiptHTML = (
                     </text>
                     <rect x="25" y="52" width="90" height="36" fill="#ffffff" rx="4" stroke="#216c7e" stroke-width="1.5" />
                     <text x="70" y="67" text-anchor="middle" fill="#216c7e" font-size="11" font-weight="900" letter-spacing="1px">
-                      ★ LUNAS ★
+                       LUNAS 
                     </text>
                     <text x="70" y="81" text-anchor="middle" fill="#a68849" font-size="8" font-weight="800" letter-spacing="0.5px">
                       VERIFIED &amp; VALID

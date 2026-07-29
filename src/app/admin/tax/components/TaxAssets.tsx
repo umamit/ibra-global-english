@@ -68,7 +68,7 @@ export default function TaxAssets({
       {/* Ketentuan Fiskal Callout */}
       <div style={{ backgroundColor: "var(--color-primary-light)", padding: "1.25rem", borderRadius: "10px", borderLeft: "4px solid var(--color-primary)", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <h4 style={{ fontWeight: "800", color: "var(--color-primary-dark)", fontSize: "0.95rem" }}>
-          💡 Ketentuan Penyusutan Fiskal (Metode Garis Lurus)
+           Ketentuan Penyusutan Fiskal (Metode Garis Lurus)
         </h4>
         <p style={{ fontSize: "0.85rem", color: "var(--color-gray-700)", lineHeight: "1.5" }}>
           Berdasarkan Undang-Undang Pajak Penghasilan (UU PPh) di Indonesia, wajib pajak dapat menyusutkan harta berwujud menggunakan Metode Garis Lurus (Straight Line Method) dengan masa manfaat per kelompok sebagai berikut:
@@ -87,7 +87,7 @@ export default function TaxAssets({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid var(--color-primary)", background: "rgba(33, 108, 126, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Total Harga Perolehan</span>
-            <span style={{ fontSize: "1.2rem" }}>📦</span>
+            <span style={{ fontSize: "1.2rem" }}></span>
           </div>
           <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>
             {formatRupiah(assetsSummary.totalCost)}
@@ -100,7 +100,7 @@ export default function TaxAssets({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #f59e0b", background: "rgba(245, 158, 11, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Penyusutan Bulanan</span>
-            <span style={{ fontSize: "1.2rem" }}>📉</span>
+            <span style={{ fontSize: "1.2rem" }}></span>
           </div>
           <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "#92400e" }}>
             {formatRupiah(assetsSummary.totalMonthlyDep)}
@@ -113,7 +113,7 @@ export default function TaxAssets({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #ef4444", background: "rgba(239, 68, 68, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Akumulasi Penyusutan</span>
-            <span style={{ fontSize: "1.2rem" }}>📊</span>
+            <span style={{ fontSize: "1.2rem" }}></span>
           </div>
           <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "#991b1b" }}>
             {formatRupiah(assetsSummary.totalAccumDep)}
@@ -126,7 +126,7 @@ export default function TaxAssets({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #10b981", background: "rgba(16, 185, 129, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Sisa Nilai Buku Fiskal</span>
-            <span style={{ fontSize: "1.2rem" }}>📑</span>
+            <span style={{ fontSize: "1.2rem" }}></span>
           </div>
           <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "#065f46" }}>
             {formatRupiah(assetsSummary.totalBookValue)}
@@ -214,7 +214,7 @@ export default function TaxAssets({
               className="btn-portal-primary"
               style={{ marginTop: "0.5rem" }}
             >
-              {savingAssets ? "Menyimpan Aset..." : "💾 Rekam Aset Baru"}
+              {savingAssets ? "Menyimpan Aset..." : " Rekam Aset Baru"}
             </button>
           </form>
         </div>
@@ -228,13 +228,13 @@ export default function TaxAssets({
 
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem", fontSize: "0.9rem", color: "var(--color-gray-700)" }}>
               <div style={{ borderBottom: "1px solid var(--color-gray-150)", paddingBottom: "0.75rem" }}>
-                <p style={{ fontWeight: "700", color: "var(--color-primary-dark)", marginBottom: "0.25rem" }}>💻 Kelompok 1 (Masa Manfaat 4 Tahun)</p>
+                <p style={{ fontWeight: "700", color: "var(--color-primary-dark)", marginBottom: "0.25rem" }}> Kelompok 1 (Masa Manfaat 4 Tahun)</p>
                 <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
                   Perangkat komputer, printer, scanner, handphone, tablet, sepeda motor, alat komunikasi, perkakas kayu/logam ringan.
                 </p>
               </div>
               <div>
-                <p style={{ fontWeight: "700", color: "var(--color-primary-dark)", marginBottom: "0.25rem" }}>🏢 Kelompok 2 (Masa Manfaat 8 Tahun)</p>
+                <p style={{ fontWeight: "700", color: "var(--color-primary-dark)", marginBottom: "0.25rem" }}> Kelompok 2 (Masa Manfaat 8 Tahun)</p>
                 <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
                   Pendingin ruangan (AC), kipas angin besar, mebel kayu/besi (meja belajar, kursi kelas, lemari buku), mesin cuci, mobil box, sepeda, kulkas, genset portabel.
                 </p>
@@ -244,7 +244,7 @@ export default function TaxAssets({
 
           <div style={{ marginTop: "1.5rem", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "8px", border: "1px solid var(--color-gray-200)" }}>
             <p style={{ fontSize: "0.8rem", color: "var(--color-gray-600)", lineHeight: "1.4" }}>
-              ⚠️ <strong>Penting</strong>: Penyusutan fiskal ini sangat penting sebagai pengurang laba bruto usaha dalam SPT Tahunan PPh Badan 1771 untuk memperoleh Laba Bersih Fiskal yang sah secara hukum pajak.
+              ️ <strong>Penting</strong>: Penyusutan fiskal ini sangat penting sebagai pengurang laba bruto usaha dalam SPT Tahunan PPh Badan 1771 untuk memperoleh Laba Bersih Fiskal yang sah secara hukum pajak.
             </p>
           </div>
         </div>

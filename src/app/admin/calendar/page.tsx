@@ -417,13 +417,13 @@ export default function AdminCalendar() {
         </div>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button type="button" className="btn-portal-outline" onClick={() => setAiPromptModalOpen(true)} style={{ border: "1px dashed var(--color-accent)", color: "var(--color-accent-dark)" }}>
-            <span>✨ Susun via AI</span>
+            <span> Susun via AI</span>
           </button>
           <button type="button" className="btn-portal-outline" onClick={() => setSyncModalOpen(true)}>
-            <span>🔗 Sinkronkan ke HP</span>
+            <span> Sinkronkan ke HP</span>
           </button>
           <button type="button" className="btn-portal-outline" onClick={handleDeleteAllSchedules} style={{ borderColor: "#ef4444", color: "#ef4444" }}>
-            <span>🗑️ Hapus Semua</span>
+            <span>️ Hapus Semua</span>
           </button>
           <button className="btn-portal-primary" onClick={() => handleOpenAddModal(selectedDate)}>
             <span>+ Tambah Agenda</span>
@@ -493,7 +493,7 @@ export default function AdminCalendar() {
               padding: "0.5rem 1rem"
             }}
           >
-            <span>📥 Unduh Excel (CSV)</span>
+            <span> Unduh Excel (CSV)</span>
           </button>
           <button 
             type="button"
@@ -508,7 +508,7 @@ export default function AdminCalendar() {
               padding: "0.5rem 1rem"
             }}
           >
-            <span>🖨️ Cetak Jadwal ({filterProgram === 'All' ? 'Semua' : filterProgram})</span>
+            <span>️ Cetak Jadwal ({filterProgram === 'All' ? 'Semua' : filterProgram})</span>
           </button>
         </div>
       </div>
@@ -773,7 +773,7 @@ export default function AdminCalendar() {
             
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
               <h3 style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-                📅 Agenda: {new Date(viewAllDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                 Agenda: {new Date(viewAllDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
               </h3>
               <button 
                 type="button" 
@@ -821,7 +821,7 @@ export default function AdminCalendar() {
                     }}
                   >
                     <span>{cleanTimeStr} - {s.title} ({s.program})</span>
-                    <span style={{ fontSize: "0.75rem", opacity: 0.85 }}>⚙️ Ubah</span>
+                    <span style={{ fontSize: "0.75rem", opacity: 0.85 }}>️ Ubah</span>
                   </div>
                 );
               })}
@@ -895,7 +895,7 @@ export default function AdminCalendar() {
               {hoveredSchedule.type === "holiday" ? "Libur" : hoveredSchedule.type === "event" ? "Kegiatan" : "Kelas"}
             </span>
             <span style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
-              🕒 {new Date(hoveredSchedule.start_time).toTimeString().slice(0, 5)} - {new Date(hoveredSchedule.end_time).toTimeString().slice(0, 5)}
+               {new Date(hoveredSchedule.start_time).toTimeString().slice(0, 5)} - {new Date(hoveredSchedule.end_time).toTimeString().slice(0, 5)}
             </span>
           </div>
           <h4 style={{ margin: "0 0 0.25rem 0", fontSize: "0.85rem", fontWeight: "800", color: "var(--color-gray-900)", lineHeight: "1.25" }}>
@@ -903,7 +903,7 @@ export default function AdminCalendar() {
           </h4>
           {hoveredSchedule.instructor && (
             <p style={{ margin: "0 0 0.25rem 0", fontSize: "0.72rem", color: "var(--color-gray-600)", display: "flex", alignItems: "center", gap: "3px" }}>
-              🧑‍🏫 <strong>Pengajar:</strong> {hoveredSchedule.instructor}
+              ‍ <strong>Pengajar:</strong> {hoveredSchedule.instructor}
             </p>
           )}
           {hoveredSchedule.description && (

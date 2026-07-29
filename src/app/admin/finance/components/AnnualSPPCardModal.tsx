@@ -293,7 +293,7 @@ export default function AnnualSPPCardModal({
         }}>
           <div>
             <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-primary-dark)", margin: 0 }}>
-              📋 Kartu SPP Tahunan ({selectedYear})
+               Kartu SPP Tahunan ({selectedYear})
             </h3>
             <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", margin: "2px 0 0" }}>
               Rekapitulasi 12 bulan pembayaran SPP an. <strong>{student.name}</strong>
@@ -305,14 +305,14 @@ export default function AnnualSPPCardModal({
               className="btn-portal-primary"
               style={{ padding: "0.45rem 0.9rem", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
             >
-              🖨️ Cetak Kartu SPP
+              ️ Cetak Kartu SPP
             </button>
             <button
               onClick={onClose}
               className="btn-portal-outline"
               style={{ padding: "0.45rem 0.75rem", fontSize: "0.85rem" }}
             >
-              ✕ Tutup
+               Tutup
             </button>
           </div>
         </div>

@@ -55,7 +55,7 @@ export default function AiReportModal({
           backgroundColor: "var(--color-bg-teal-50, #eef6f8)"
         }}>
           <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "var(--color-primary-dark)" }}>
-            ✨ Panduan Draf Rapor AI
+             Panduan Draf Rapor AI
           </h3>
           <button 
             type="button"
@@ -128,7 +128,7 @@ export default function AiReportModal({
               style={{ padding: "0.5rem 1.5rem", height: "auto" }}
               disabled={aiProgressLoading}
             >
-              {aiProgressLoading ? "⏳ Membuat Draf..." : "✨ Buat Draf AI"}
+              {aiProgressLoading ? " Membuat Draf..." : " Buat Draf AI"}
             </button>
           </div>
         </form>

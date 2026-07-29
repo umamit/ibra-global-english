@@ -61,7 +61,13 @@ export default function AuditLogsPage() {
       {/* Page Header */}
       <div className="dashboard-header" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>📜 Log Aktivitas Sistem</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-primary-dark)", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 8v4l3 3"/>
+              <circle cx="12" cy="12" r="9"/>
+            </svg>
+            Log Aktivitas Sistem
+          </h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem", marginTop: "0.25rem" }}>
             Riwayat log audit tindakan administrator dan aktivitas tutor di platform.
           </p>

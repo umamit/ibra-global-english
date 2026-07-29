@@ -198,7 +198,7 @@ export default function ScheduleList({
               padding: "4rem 1rem",
               textAlign: "center"
             }}>
-              <span style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📅</span>
+              <span style={{ fontSize: "2rem", marginBottom: "0.5rem" }}></span>
               <p style={{ fontSize: "0.9rem", color: "var(--color-gray-400)", fontWeight: "600", margin: "0 0 1rem 0" }}>
                 Tidak ada agenda terdaftar untuk tanggal ini.
               </p>
@@ -243,7 +243,7 @@ export default function ScheduleList({
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
                       <span style={{ fontSize: "0.78rem", fontWeight: "800", color: styles.color }}>
-                        ⏰ {timeStr}
+                         {timeStr}
                       </span>
                       <span style={{
                         fontSize: "0.68rem",
@@ -265,19 +265,19 @@ export default function ScheduleList({
 
                     {s.program !== "All" && (
                       <div style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
-                        📚 Program: <span style={{ color: "var(--color-primary-dark)" }}>{s.program}</span>
+                         Program: <span style={{ color: "var(--color-primary-dark)" }}>{s.program}</span>
                       </div>
                     )}
 
                     {s.instructor && (
                       <div style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
-                        👤 Tutor: <span style={{ color: "var(--color-gray-700)" }}>{s.instructor}</span>
+                         Tutor: <span style={{ color: "var(--color-gray-700)" }}>{s.instructor}</span>
                       </div>
                     )}
 
                     {s.description && (
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.78rem", color: "#59616e", lineHeight: "1.4" }}>
-                        📝 {s.description}
+                         {s.description}
                       </p>
                     )}
 
@@ -298,7 +298,7 @@ export default function ScheduleList({
                         }}
                         className="btn-text-hover"
                       >
-                        ⚙️ Ubah / Hapus
+                        ️ Ubah / Hapus
                       </button>
                     </div>
                   </div>

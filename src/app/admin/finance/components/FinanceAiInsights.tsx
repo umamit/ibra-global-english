@@ -145,7 +145,7 @@ export default function FinanceAiInsights({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
         <div>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", margin: "0 0 0.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <span>✨</span> Proyeksi Keuangan & Insights AI
+            <span></span> Proyeksi Keuangan & Insights AI
           </h3>
           <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", margin: 0 }}>
             Analisis kecerdasan buatan berbasis realisasi data tagihan SPP bulan {selectedMonth}
@@ -167,7 +167,7 @@ export default function FinanceAiInsights({
             </>
           ) : (
             <>
-              <span>🤖 Hasilkan Analisis</span>
+              <span> Hasilkan Analisis</span>
             </>
           )}
         </button>
@@ -175,7 +175,7 @@ export default function FinanceAiInsights({
 
       {errorMsg && (
         <div style={{ padding: "1rem", backgroundColor: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.2)", borderRadius: "8px", color: "#b91c1c", fontSize: "0.85rem", margin: "1rem 0" }}>
-          ⚠️ {errorMsg}
+          ️ {errorMsg}
         </div>
       )}
 

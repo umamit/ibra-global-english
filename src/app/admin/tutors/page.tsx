@@ -114,7 +114,7 @@ export default function AdminTutorsPage() {
         setIsActive(true);
         setEditingId(null);
         fetchTutors();
-        showToast(editingId ? "Tutor berhasil disunting! ✅" : "Tutor baru berhasil ditambahkan! ✅");
+        showToast(editingId ? "Tutor berhasil disunting!" : "Tutor baru berhasil ditambahkan!");
       } else {
         showToast(`Error: ${result.error}`);
       }

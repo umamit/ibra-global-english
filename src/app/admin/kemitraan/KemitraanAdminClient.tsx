@@ -104,20 +104,20 @@ export default function KemitraanAdminClient() {
           className="admin-btn-secondary"
           style={{ padding: "0.55rem 1.1rem", borderRadius: "10px", textDecoration: "none", fontSize: "0.88rem", fontWeight: 600, background: "#eef6f8", color: "#216c7e" }}
         >
-          🌐 Buka Halaman Kemitraan Publik
+           Buka Halaman Kemitraan Publik
         </Link>
       </div>
 
       {/* Alert Banner */}
       {successMsg && (
         <div style={{ padding: "0.85rem 1.25rem", borderRadius: "10px", background: "#d1e7dd", color: "#0f5132", marginBottom: "1.25rem", fontSize: "0.9rem" }}>
-          ✓ {successMsg}
+           {successMsg}
         </div>
       )}
 
       {error && (
         <div style={{ padding: "0.85rem 1.25rem", borderRadius: "10px", background: "#f8d7da", color: "#842029", marginBottom: "1.25rem", fontSize: "0.9rem" }}>
-          ⚠ {error}
+           {error}
         </div>
       )}
 
@@ -125,7 +125,7 @@ export default function KemitraanAdminClient() {
       <div style={{ background: "#ffffff", borderRadius: "14px", border: "1px solid rgba(0,0,0,0.08)", padding: "1.5rem", marginBottom: "2rem", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <div>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0, color: "#1a1a1a" }}>📄 Berkas Proposal Kemitraan PDF Aktif</h3>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0, color: "#1a1a1a" }}> Berkas Proposal Kemitraan PDF Aktif</h3>
             <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.25rem", marginBottom: 0 }}>
               Berkas proposal resmi yang diakses publik dan dilampirkan ke pihak sekolah/dinas.
             </p>
@@ -148,7 +148,7 @@ export default function KemitraanAdminClient() {
               }}
               style={{ padding: "0.5rem 1rem", borderRadius: "8px", border: "1px solid #ccc", background: "#f8f9fa", cursor: "pointer", fontSize: "0.85rem", fontWeight: 600 }}
             >
-              {isEditingPdf ? "Batal Edit" : "✏ Edit Tautan PDF"}
+              {isEditingPdf ? "Batal Edit" : " Edit Tautan PDF"}
             </button>
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function KemitraanAdminClient() {
       <div style={{ background: "#ffffff", borderRadius: "14px", border: "1px solid rgba(0,0,0,0.08)", padding: "1.5rem", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
           <div>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0, color: "#1a1a1a" }}>🏫 Daftar Pengajuan Kemitraan Sekolah & Instansi</h3>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0, color: "#1a1a1a" }}> Daftar Pengajuan Kemitraan Sekolah & Instansi</h3>
             <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.25rem", marginBottom: 0 }}>
               Daftar permohonan diskusi kemitraan rujukan dari sekolah dan dinas lokal.
             </p>
@@ -192,7 +192,7 @@ export default function KemitraanAdminClient() {
             onClick={fetchSubmissions}
             style={{ padding: "0.4rem 0.8rem", borderRadius: "6px", border: "1px solid #ddd", background: "#fff", cursor: "pointer", fontSize: "0.8rem" }}
           >
-            🔄 Refresh
+             Refresh
           </button>
         </div>
 
@@ -233,7 +233,7 @@ export default function KemitraanAdminClient() {
                         onClick={() => handleOpenWhatsApp(sub.phone, sub.rep_name, sub.institution_name)}
                         style={{ padding: "0.35rem 0.65rem", borderRadius: "6px", background: "#25D366", color: "#fff", border: "none", fontWeight: 600, fontSize: "0.78rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
                       >
-                        💬 {sub.phone}
+                         {sub.phone}
                       </button>
                     </td>
                     <td style={{ padding: "0.75rem", maxWidth: "200px" }}>
@@ -254,9 +254,9 @@ export default function KemitraanAdminClient() {
                         }}
                       >
                         <option value="pending">🟡 Pending</option>
-                        <option value="contacted">🔵 Hubungi</option>
+                        <option value="contacted"> Hubungi</option>
                         <option value="approved">🟢 Disetujui</option>
-                        <option value="rejected">🔴 Ditolak</option>
+                        <option value="rejected"> Ditolak</option>
                       </select>
                     </td>
                     <td style={{ padding: "0.75rem", textAlign: "right" }}>
@@ -265,7 +265,7 @@ export default function KemitraanAdminClient() {
                         onClick={() => setSelectedSub(sub)}
                         style={{ padding: "0.35rem 0.65rem", borderRadius: "6px", background: "#eef6f8", color: "#216c7e", border: "1px solid rgba(33,108,126,0.2)", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}
                       >
-                        🖨 Surat Pengantar
+                         Surat Pengantar
                       </button>
                     </td>
                   </tr>
@@ -281,8 +281,8 @@ export default function KemitraanAdminClient() {
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
           <div style={{ background: "#fff", width: "100%", maxWidth: "650px", borderRadius: "14px", padding: "2rem", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", borderBottom: "1px solid #eee", paddingBottom: "0.75rem" }}>
-              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700 }}>🖨 Pratinjau Surat Pengantar Kemitraan</h3>
-              <button type="button" onClick={() => setSelectedSub(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer" }}>✕</button>
+              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700 }}> Pratinjau Surat Pengantar Kemitraan</h3>
+              <button type="button" onClick={() => setSelectedSub(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer" }}></button>
             </div>
 
             <div id="print-area" style={{ border: "1px solid #ddd", padding: "1.75rem", borderRadius: "8px", background: "#fff", fontFamily: "serif", lineHeight: 1.6, color: "#111" }}>
@@ -310,7 +310,7 @@ export default function KemitraanAdminClient() {
 
             <div style={{ marginTop: "1.5rem", display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
               <button type="button" onClick={() => setSelectedSub(null)} style={{ padding: "0.5rem 1rem", borderRadius: "8px", border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}>Tutup</button>
-              <button type="button" onClick={handlePrintCoverLetter} style={{ padding: "0.5rem 1.25rem", borderRadius: "8px", background: "#216c7e", color: "#fff", border: "none", fontWeight: 700, cursor: "pointer" }}>🖨 Cetak Surat</button>
+              <button type="button" onClick={handlePrintCoverLetter} style={{ padding: "0.5rem 1.25rem", borderRadius: "8px", background: "#216c7e", color: "#fff", border: "none", fontWeight: 700, cursor: "pointer" }}> Cetak Surat</button>
             </div>
           </div>
         </div>

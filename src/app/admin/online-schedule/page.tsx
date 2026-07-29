@@ -69,7 +69,7 @@ export default function AdminOnlineSchedulePage() {
     if (res.ok) {
       setTitle(""); setMeetingLink(""); setScheduledAt(""); setNotes(""); setTutorName("");
       fetchSchedules();
-      showToast("Jadwal kelas online berhasil ditambahkan! ✅");
+      showToast("Jadwal kelas online berhasil ditambahkan! ");
     } else {
       const { error } = await res.json();
       showToast(`Error: ${error}`);
@@ -85,10 +85,10 @@ export default function AdminOnlineSchedulePage() {
   };
 
   const platformIcon = (p: string): string => {
-    if (p === "Zoom") return "📹";
-    if (p === "Webex") return "💼";
+    if (p === "Zoom") return "";
+    if (p === "Webex") return "";
     if (p === "Microsoft Teams") return "🟣";
-    return "🎥";
+    return "";
   };
 
   const isPast = (dt: string): boolean => new Date(dt) < new Date();
@@ -103,7 +103,7 @@ export default function AdminOnlineSchedulePage() {
 
       <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>🎥 Jadwal Kelas Online</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}> Jadwal Kelas Online</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Kelola sesi kelas online via Google Meet, Zoom, atau platform lainnya.
           </p>
@@ -113,7 +113,7 @@ export default function AdminOnlineSchedulePage() {
           className="btn-portal-outline"
           style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}
         >
-          {showAll ? "🔮 Tampilkan Mendatang Saja" : "📅 Tampilkan Semua"}
+          {showAll ? " Tampilkan Mendatang Saja" : " Tampilkan Semua"}
         </button>
       </div>
 
@@ -122,7 +122,7 @@ export default function AdminOnlineSchedulePage() {
         {/* Form */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            ➕ Jadwalkan Kelas Baru
+             Jadwalkan Kelas Baru
           </h3>
           <form onSubmit={handleSubmit}>
             <div className="form-group" style={{ marginBottom: "1rem" }}>
@@ -172,7 +172,7 @@ export default function AdminOnlineSchedulePage() {
             </div>
 
             <button type="submit" className="btn-portal-primary" style={{ width: "100%", padding: "0.85rem" }} disabled={saving}>
-              {saving ? "Menyimpan..." : "🎥 Tambah Jadwal Kelas"}
+              {saving ? "Menyimpan..." : " Tambah Jadwal Kelas"}
             </button>
           </form>
         </div>
@@ -180,7 +180,7 @@ export default function AdminOnlineSchedulePage() {
         {/* Daftar Jadwal */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            {showAll ? "📅 Semua Jadwal" : "🔮 Jadwal Mendatang"} ({schedules.length})
+            {showAll ? " Semua Jadwal" : " Jadwal Mendatang"} ({schedules.length})
           </h3>
 
           {loading ? (
@@ -217,9 +217,9 @@ export default function AdminOnlineSchedulePage() {
                         </div>
                         <p style={{ fontWeight: "800", fontSize: "0.9rem", color: "var(--color-gray-900)", marginBottom: "2px" }}>{s.title}</p>
                         <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>
-                          📅 {scheduledDate.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} · ⏰ {scheduledDate.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} · ⏱ {s.duration_minutes} menit
+                           {scheduledDate.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} ·  {scheduledDate.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} ·  {s.duration_minutes} menit
                         </p>
-                        {s.tutor_name && <p style={{ fontSize: "0.78rem", color: "var(--color-gray-400)", marginTop: "2px" }}>👤 {s.tutor_name}</p>}
+                        {s.tutor_name && <p style={{ fontSize: "0.78rem", color: "var(--color-gray-400)", marginTop: "2px" }}> {s.tutor_name}</p>}
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", flexShrink: 0 }}>
                         {!past && (
@@ -232,7 +232,7 @@ export default function AdminOnlineSchedulePage() {
                         </button>
                       </div>
                     </div>
-                    {s.notes && <p style={{ fontSize: "0.78rem", color: "var(--color-gray-500)", marginTop: "0.5rem", fontStyle: "italic" }}>📝 {s.notes}</p>}
+                    {s.notes && <p style={{ fontSize: "0.78rem", color: "var(--color-gray-500)", marginTop: "0.5rem", fontStyle: "italic" }}> {s.notes}</p>}
                   </div>
                 );
               })}

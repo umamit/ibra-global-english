@@ -207,7 +207,7 @@ export default function TaxArchive({
               className="btn-portal-primary"
               style={{ padding: "0.75rem 2rem" }}
             >
-              {saving ? "Menyimpan..." : "💾 Rekam Laporan SPT"}
+              {saving ? "Menyimpan..." : " Rekam Laporan SPT"}
             </button>
           </div>
         </form>
@@ -225,7 +225,7 @@ export default function TaxArchive({
               className="btn-portal-outline no-print"
               style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700" }}
             >
-              🖨️ Cetak Riwayat (PDF)
+              ️ Cetak Riwayat (PDF)
             </button>
           )}
         </div>
@@ -286,9 +286,9 @@ export default function TaxArchive({
                       </span>
                     </td>
                     <td style={{ padding: "14px 10px", fontSize: "0.8rem", color: "var(--color-gray-500)", lineHeight: "1.4" }}>
-                      <div>📅 Tgl: {rec.payment_date}</div>
-                      <div>🔑 NTPN: {rec.ntpn_code}</div>
-                      <div>📄 BPE: {rec.bpe_code}</div>
+                      <div> Tgl: {rec.payment_date}</div>
+                      <div> NTPN: {rec.ntpn_code}</div>
+                      <div> BPE: {rec.bpe_code}</div>
                     </td>
                     <td className="no-print" style={{ padding: "14px 10px", textAlign: "right" }}>
                       <button

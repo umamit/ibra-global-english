@@ -158,7 +158,7 @@ export default function FinanceTable({
                         style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem", borderColor: "var(--color-primary-dark)", color: "var(--color-primary-dark)" }}
                         title="Cetak Kuitansi Pembayaran"
                       >
-                        🖨️ Kuitansi
+                        ️ Kuitansi
                       </button>
                     )}
                     {pay.status !== "lunas" && (

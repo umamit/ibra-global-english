@@ -192,9 +192,9 @@ export default function WhatsAppDashboard() {
   };
 
   const statusStyle: Record<string, { label: string; color: string; bg: string }> = {
-    SENT: { label: "✓ Terkirim", color: "#166534", bg: "#dcfce7" },
+    SENT: { label: " Terkirim", color: "#166534", bg: "#dcfce7" },
     SIMULATED: { label: "◎ Simulasi", color: "#92400e", bg: "#fef3c7" },
-    FAILED: { label: "✗ Gagal", color: "#991b1b", bg: "#fee2e2" },
+    FAILED: { label: " Gagal", color: "#991b1b", bg: "#fee2e2" },
     UNKNOWN: { label: "? Tidak diketahui", color: "#6b7280", bg: "#f3f4f6" },
   };
 
@@ -297,7 +297,7 @@ export default function WhatsAppDashboard() {
                 }} />
                 <div>
                   <p style={{ fontWeight: "800", fontSize: "0.95rem", color: deviceStatus?.connected ? "#166534" : "#991b1b", margin: 0 }}>
-                    {deviceStatus?.connected ? "Perangkat Terhubung ✓" : "Perangkat Tidak Terhubung"}
+                    {deviceStatus?.connected ? "Perangkat Terhubung " : "Perangkat Tidak Terhubung"}
                   </p>
                   {deviceStatus?.device?.device && (
                     <p style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", margin: "0.2rem 0 0" }}>
@@ -434,12 +434,12 @@ export default function WhatsAppDashboard() {
                 border: `1px solid ${sendResult.stats?.sent > 0 || sendResult.sentReal ? "#bbf7d0" : sendResult.stats?.simulated > 0 || sendResult.status === "SIMULATED" ? "#fde68a" : "#fecaca"}`
               }}>
                 {sendResult.stats
-                  ? `🚀 Berhasil memproses ${sendResult.stats.total} nomor: ${sendResult.stats.sent} Terkirim, ${sendResult.stats.simulated} Simulasi, ${sendResult.stats.failed} Gagal`
+                  ? `Berhasil memproses ${sendResult.stats.total} nomor: ${sendResult.stats.sent} Terkirim, ${sendResult.stats.simulated} Simulasi, ${sendResult.stats.failed} Gagal`
                   : sendResult.sentReal
-                  ? "✅ Pesan berhasil terkirim via Fonnte!"
+                  ? "Pesan berhasil terkirim via Fonnte!"
                   : sendResult.status === "SIMULATED"
-                  ? "⚠️ Pesan disimulasikan (token Fonnte belum aktif). Log sudah disimpan."
-                  : `❌ Gagal mengirim: ${sendResult.error || "Periksa konfigurasi."}`}
+                  ? "Pesan disimulasikan (token Fonnte belum aktif). Log sudah disimpan."
+                  : `Gagal mengirim: ${sendResult.error || "Periksa konfigurasi."}`}
               </div>
             )}
 

@@ -116,7 +116,7 @@ export default function FinanceWaModal({
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
           <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-            💬 Kirim Tagihan SPP via AI (WhatsApp)
+             Kirim Tagihan SPP via AI (WhatsApp)
           </h2>
           <button 
             type="button" 
@@ -130,7 +130,7 @@ export default function FinanceWaModal({
 
         {waError && (
           <div className="auth-error-banner" style={{ marginBottom: "1rem", padding: "0.75rem 1rem", fontSize: "0.85rem" }}>
-            <span>⚠️ {waError}</span>
+            <span>️ {waError}</span>
           </div>
         )}
 
@@ -166,7 +166,7 @@ export default function FinanceWaModal({
               fontWeight: "600",
               lineHeight: "1.4"
             }}>
-              ⚠️ Peringatan: Ditemukan lebih dari 1 data pendaftaran dengan nama siswa &quot;{student.name}&quot;. Harap verifikasi nomor WhatsApp dan nama orang tua penerima di bawah ini dengan teliti.
+              ️ Peringatan: Ditemukan lebih dari 1 data pendaftaran dengan nama siswa &quot;{student.name}&quot;. Harap verifikasi nomor WhatsApp dan nama orang tua penerima di bawah ini dengan teliti.
             </div>
           )}
 
@@ -194,7 +194,7 @@ export default function FinanceWaModal({
                 onClick={handleGenerateWaBillingDraft}
                 disabled={waLoading || !waPhone.trim()}
               >
-                <span>{waLoading ? "🤖 Menghubungi Groq AI..." : "Draf Pesan dengan AI"}</span>
+                <span>{waLoading ? " Menghubungi Groq AI..." : "Draf Pesan dengan AI"}</span>
               </button>
             </div>
           ) : (
@@ -235,7 +235,7 @@ export default function FinanceWaModal({
                     disabled={waLoading || !waPhone.trim() || !waMessage.trim()}
                     style={{ background: "#25d366", borderColor: "#25d366" }}
                   >
-                    <span>💬 Kirim ke WhatsApp</span>
+                    <span> Kirim ke WhatsApp</span>
                   </button>
                 </div>
               </div>

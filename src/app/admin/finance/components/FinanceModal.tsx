@@ -271,7 +271,7 @@ export default function FinanceModal({
                 className="btn-portal-outline"
                 style={{ padding: "0.5rem 1.2rem", fontWeight: "600", color: "#10b981", borderColor: "#10b981", marginRight: "auto" }}
               >
-                🖨️ Cetak Kuitansi
+                ️ Cetak Kuitansi
               </button>
             )}
             <button

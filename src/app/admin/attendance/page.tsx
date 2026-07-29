@@ -492,7 +492,7 @@ export default function DailyAttendance() {
                 </div>
               );
             } else {
-              const waText = encodeURIComponent(`Halo Tutor Ibra Global English,\n\nMengingatkan untuk mengisi absensi kelas harian tanggal ${selectedDate} pada Portal Admin / Tutor. Terima kasih! 🙏`);
+              const waText = encodeURIComponent(`Halo Tutor Ibra Global English,\n\nMengingatkan untuk mengisi absensi kelas harian tanggal ${selectedDate} pada Portal Admin / Tutor. Terima kasih! `);
               return (
                 <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "12px", padding: "1rem 1.25rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>

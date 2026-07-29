@@ -234,7 +234,7 @@ export default function StudentImportModal({ isOpen, onClose, onSuccess }: Stude
               fontWeight: "600",
               marginBottom: "1.25rem"
             }}>
-              ⚠️ {errorMsg}
+              ️ {errorMsg}
             </div>
           )}
 
@@ -286,7 +286,7 @@ export default function StudentImportModal({ isOpen, onClose, onSuccess }: Stude
           {/* Preview Table */}
           {loading ? (
             <p style={{ textAlign: "center", padding: "2rem", color: "var(--color-gray-500)", fontSize: "0.9rem" }}>
-              ⏳ Membaca dan menganalisis data berkas CSV...
+               Membaca dan menganalisis data berkas CSV...
             </p>
           ) : parsedRows.length > 0 && (
             <div>
@@ -296,11 +296,11 @@ export default function StudentImportModal({ isOpen, onClose, onSuccess }: Stude
                 </h4>
                 <div style={{ display: "flex", gap: "0.5rem", fontSize: "0.78rem" }}>
                   <span style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", color: "#047857", padding: "0.15rem 0.5rem", borderRadius: "6px", fontWeight: "700" }}>
-                    ✓ {validCount} Valid
+                     {validCount} Valid
                   </span>
                   {invalidCount > 0 && (
                     <span style={{ backgroundColor: "rgba(239, 68, 68, 0.15)", color: "#b91c1c", padding: "0.15rem 0.5rem", borderRadius: "6px", fontWeight: "700" }}>
-                      ✕ {invalidCount} Tidak Valid
+                       {invalidCount} Tidak Valid
                     </span>
                   )}
                 </div>
@@ -322,10 +322,10 @@ export default function StudentImportModal({ isOpen, onClose, onSuccess }: Stude
                       <tr key={idx} style={{ backgroundColor: row.isValid ? "transparent" : "rgba(239, 68, 68, 0.05)" }}>
                         <td>
                           {row.isValid ? (
-                            <span style={{ color: "var(--color-green)", fontWeight: "700" }}>✓ Valid</span>
+                            <span style={{ color: "var(--color-green)", fontWeight: "700" }}> Valid</span>
                           ) : (
                             <span style={{ color: "var(--color-red)", fontWeight: "700" }} title={row.errorReason}>
-                              ✕ {row.errorReason}
+                               {row.errorReason}
                             </span>
                           )}
                         </td>
@@ -360,7 +360,7 @@ export default function StudentImportModal({ isOpen, onClose, onSuccess }: Stude
             className="btn-portal-primary"
             style={{ padding: "0.5rem 1.25rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
           >
-            {importing ? "⏳ Mengimpor..." : `Simpan ${validCount} Siswa ke Database`}
+            {importing ? "Mengimpor..." : `Simpan ${validCount} Siswa ke Database`}
           </button>
         </div>
       </div>

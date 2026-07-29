@@ -197,13 +197,13 @@ export default function StudentManagement() {
         const errorMsg = result.error || "Gagal menyetujui pendaftaran.";
         const details = result.details ? `\n\nDetail: ${result.details}` : "";
         const hint = result.hint ? `\n\nSaran: ${result.hint}` : "";
-        alert(`❌ ${errorMsg}${details}${hint}`);
+        alert(` ${errorMsg}${details}${hint}`);
         return;
       }
 
       // Tampilkan pesan sukses jika ada
       if (result.message) {
-        setWaFeedback({ id: reg.id, success: true, msg: `✅ ${result.message}` });
+        setWaFeedback({ id: reg.id, success: true, msg: ` ${result.message}` });
         setTimeout(() => setWaFeedback({ id: null, success: null, msg: "" }), 5000);
       }
 
@@ -213,7 +213,7 @@ export default function StudentManagement() {
 
       // 2. Kirim notifikasi WA otomatis
       const waNumber = reg.whatsapp.replace(/[^0-9]/g, "");
-      const msg = `Assalamu'alaikum, Bapak/Ibu ${reg.parent_name || "Wali"}! 🎉\n\nPendaftaran *${reg.student_name}* ke program *${reg.program}* di *Ibra Global English Bobong* telah kami *SETUJUI* ✅.\n\nKami akan segera menghubungi Anda untuk informasi jadwal belajar perdana. Terima kasih telah mempercayakan pendidikan anak kepada kami! 🌟\n\n_Tim Ibra Global English_`;
+      const msg = `Assalamu'alaikum, Bapak/Ibu ${reg.parent_name || "Wali"}! \n\nPendaftaran *${reg.student_name}* ke program *${reg.program}* di *Ibra Global English Bobong* telah kami *SETUJUI* .\n\nKami akan segera menghubungi Anda untuk informasi jadwal belajar perdana. Terima kasih telah mempercayakan pendidikan anak kepada kami! \n\n_Tim Ibra Global English_`;
 
       setWaSendingId(reg.id);
       const waRes = await fetch("/api/whatsapp-simulator", {
@@ -225,15 +225,15 @@ export default function StudentManagement() {
       setWaSendingId(null);
 
       if (waData.sentReal) {
-        setWaFeedback({ id: reg.id, success: true, msg: "✅ Notifikasi WA berhasil terkirim via Fonnte!" });
+        setWaFeedback({ id: reg.id, success: true, msg: " Notifikasi WA berhasil terkirim via Fonnte!" });
       } else if (waData.status === "SIMULATED") {
-        setWaFeedback({ id: reg.id, success: null, msg: "⚠️ WA disimulasikan (token Fonnte belum aktif). Cek log di /admin/whatsapp." });
+        setWaFeedback({ id: reg.id, success: null, msg: "️ WA disimulasikan (token Fonnte belum aktif). Cek log di /admin/whatsapp." });
       } else {
-        setWaFeedback({ id: reg.id, success: false, msg: "❌ Gagal kirim WA via Fonnte. Cek konfigurasi token." });
+        setWaFeedback({ id: reg.id, success: false, msg: " Gagal kirim WA via Fonnte. Cek konfigurasi token." });
       }
       setTimeout(() => setWaFeedback({ id: null, success: null, msg: "" }), 5000);
     } catch (err: any) {
-      alert(`❌ Terjadi kesalahan: ${err.message}`);
+      alert(` Terjadi kesalahan: ${err.message}`);
     }
   };
 
@@ -830,10 +830,10 @@ export default function StudentManagement() {
                   ) : (
                     registrations.filter(r => r.status !== "approved").map((reg, idx) => {
                       const statusColor = reg.status === "approved"
-                        ? { bg: "var(--color-green-light)", text: "var(--color-green)", label: "✓ Disetujui" }
+                        ? { bg: "var(--color-green-light)", text: "var(--color-green)", label: " Disetujui" }
                         : reg.status === "rejected"
-                        ? { bg: "rgba(239,68,68,0.1)", text: "var(--color-red)", label: "✗ Ditolak" }
-                        : { bg: "rgba(234,179,8,0.1)", text: "#b45309", label: "⏳ Menunggu" };
+                        ? { bg: "rgba(239,68,68,0.1)", text: "var(--color-red)", label: " Ditolak" }
+                        : { bg: "rgba(234,179,8,0.1)", text: "#b45309", label: " Menunggu" };
 
                       return (
                         <tr key={reg.id}>
@@ -879,7 +879,7 @@ export default function StudentManagement() {
                                     onClick={() => handleApprove(reg)}
                                     disabled={waSendingId === reg.id}
                                   >
-                                    {waSendingId === reg.id ? "⏳ Mengirim WA..." : "Setujui"}
+                                    {waSendingId === reg.id ? " Mengirim WA..." : "Setujui"}
                                   </button>
                                   <button
                                     className="btn-portal-danger"

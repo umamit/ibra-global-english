@@ -127,7 +127,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       fetchPendingCount();
     }, 0);
 
-    // 🔴 Realtime: Supabase WebSocket Channel untuk notifikasi instan
+    //  Realtime: Supabase WebSocket Channel untuk notifikasi instan
     const channel = supabase
       .channel("admin-realtime-all")
       .on(
@@ -137,7 +137,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           // Ada pendaftaran baru masuk!
           const name = payload.new?.student_name || "Seseorang";
           const program = payload.new?.program || "Program";
-          setNewRegToast(`📩 Pendaftaran baru: ${name} (${program})`);
+          setNewRegToast(` Pendaftaran baru: ${name} (${program})`);
           setTimeout(() => setNewRegToast(""), 6000);
           fetchPendingCount();
         }
@@ -157,7 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           const name = payload.new?.full_name || payload.new?.name || "Seseorang";
           const level = payload.new?.level || payload.new?.result_level || "";
           const levelText = level ? ` — Level: ${level}` : "";
-          setNewTestToast(`📝 Placement test selesai: ${name}${levelText}`);
+          setNewTestToast(` Placement test selesai: ${name}${levelText}`);
           setTimeout(() => setNewTestToast(""), 6000);
         }
       )
@@ -236,7 +236,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className={`dashboard-container ${mobileOpen ? "sidebar-open" : ""}`}>
-      {/* 🔔 Realtime Toast Notifikasi Pendaftaran Baru */}
+      {/*  Realtime Toast Notifikasi Pendaftaran Baru */}
       {newRegToast && (
         <div
           role="alert"
@@ -261,7 +261,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             borderLeft: "4px solid #63cab7",
           }}
         >
-          <span style={{ fontSize: "1.3rem" }}>🔔</span>
+          <span style={{ display: "inline-flex", color: "#63cab7" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </span>
           <span>{newRegToast}</span>
           <button
             onClick={() => setNewRegToast("")}
@@ -277,11 +282,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             }}
             aria-label="Tutup notifikasi"
           >
-            ✕
+            
           </button>
         </div>
       )}
-      {/* 🔔 Realtime Toast Notifikasi Placement Test Selesai */}
+      {/* Realtime Toast Notifikasi Placement Test Selesai */}
       {newTestToast && (
         <div
           role="alert"
@@ -307,7 +312,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             transition: "top 0.3s ease",
           }}
         >
-          <span style={{ fontSize: "1.3rem" }}>📝</span>
+          <span style={{ display: "inline-flex", color: "#63b763" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </span>
           <span>{newTestToast}</span>
           <button
             onClick={() => setNewTestToast("")}
@@ -323,7 +333,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             }}
             aria-label="Tutup notifikasi placement test"
           >
-            ✕
+            
           </button>
         </div>
       )}
@@ -595,7 +605,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.13.55</span>
+          <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.13.56</span>
         </div>
       </aside>
 

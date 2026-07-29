@@ -26,8 +26,8 @@ interface Priority {
 const PROGRAMS = ["Semua Program", "Kids Program", "Teens Program", "Fun Calistung"];
 const PRIORITIES: Priority[] = [
   { value: "normal", label: "ℹ️ Normal", color: "var(--color-primary)" },
-  { value: "penting", label: "⚠️ Penting", color: "#f59e0b" },
-  { value: "urgent", label: "🚨 Urgent", color: "#ef4444" },
+  { value: "penting", label: "️ Penting", color: "#f59e0b" },
+  { value: "urgent", label: " Urgent", color: "#ef4444" },
 ];
 
 export default function AdminAnnouncementsPage() {
@@ -74,10 +74,10 @@ export default function AdminAnnouncementsPage() {
           const polishedContent = parts.slice(1).join("---").trim();
           setTitle(polishedTitle);
           setContent(polishedContent);
-          showToast("Pengumuman berhasil dipoles dengan AI! ✨", "success");
+          showToast("Pengumuman berhasil dipoles dengan AI! ", "success");
         } else {
           setContent(reply);
-          showToast("Pengumuman dipoles dengan AI! ✨", "success");
+          showToast("Pengumuman dipoles dengan AI! ", "success");
         }
       } else {
         showToast(`Gagal memoles: ${data.error || "Error tidak diketahui"}`, "error");
@@ -124,7 +124,7 @@ export default function AdminAnnouncementsPage() {
     if (res.ok) {
       setTitle(""); setContent(""); setProgram("Semua Program"); setPriority("normal"); setExpiresAt("");
       fetchAnnouncements();
-      showToast("Pengumuman berhasil diterbitkan! ✅", "success");
+      showToast("Pengumuman berhasil diterbitkan! ", "success");
     }
     setSaving(false);
   };
@@ -155,7 +155,7 @@ export default function AdminAnnouncementsPage() {
       {/* Header */}
       <div className="dashboard-topbar" style={{ marginBottom: "2rem" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>📢 Kelola Pengumuman</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}> Kelola Pengumuman</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Kirim pengumuman ke semua siswa dan orang tua berdasarkan program.
           </p>
@@ -167,7 +167,7 @@ export default function AdminAnnouncementsPage() {
         {/* Form Buat Pengumuman */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            ✏️ Buat Pengumuman Baru
+            ️ Buat Pengumuman Baru
           </h3>
           <form onSubmit={handleSubmit}>
             <div className="form-group" style={{ marginBottom: "1rem" }}>
@@ -184,7 +184,7 @@ export default function AdminAnnouncementsPage() {
                   style={{ fontSize: "0.75rem", padding: "2px 8px", borderRadius: "4px", backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", border: "1px solid var(--color-primary-light)", cursor: "pointer", fontWeight: "bold" }}
                   disabled={aiLoading}
                 >
-                  {aiLoading ? "🪄 Memoles..." : "✨ Poles Pengumuman dengan AI"}
+                  {aiLoading ? " Memoles..." : " Poles Pengumuman dengan AI"}
                 </button>
               </div>
               <textarea
@@ -219,7 +219,7 @@ export default function AdminAnnouncementsPage() {
             </div>
 
             <button type="submit" className="btn-portal-primary" style={{ width: "100%", padding: "0.85rem" }} disabled={saving}>
-              {saving ? "Menerbitkan..." : "📢 Terbitkan Pengumuman"}
+              {saving ? "Menerbitkan..." : " Terbitkan Pengumuman"}
             </button>
           </form>
         </div>
@@ -227,7 +227,7 @@ export default function AdminAnnouncementsPage() {
         {/* Daftar Pengumuman */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            📋 Semua Pengumuman ({announcements.length})
+             Semua Pengumuman ({announcements.length})
           </h3>
 
           {loading ? (

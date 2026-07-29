@@ -113,7 +113,7 @@ export default function AdminCurriculumPage() {
 
       const result = await res.json();
       if (res.ok) {
-        showToast(editingId ? "Silabus berhasil disunting! ✅" : "Silabus baru berhasil ditambahkan! ✅", "success");
+        showToast(editingId ? "Silabus berhasil disunting! " : "Silabus baru berhasil ditambahkan! ", "success");
         setEditingId(null);
         setLevelName("");
         setDuration("");
@@ -174,7 +174,7 @@ export default function AdminCurriculumPage() {
 
       <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>📖 Kelola Kurikulum & Silabus</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}> Kelola Kurikulum & Silabus</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Kelola detail silabus, tingkatan level, dan materi pembelajaran program Ibra Global English.
           </p>
@@ -186,7 +186,7 @@ export default function AdminCurriculumPage() {
         {/* Form Panel */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            {editingId ? "📝 Sunting Detail Silabus" : "➕ Tambah Silabus Baru"}
+            {editingId ? " Sunting Detail Silabus" : " Tambah Silabus Baru"}
           </h3>
           <form onSubmit={handleSubmit}>
             <div className="form-group" style={{ marginBottom: "1rem" }}>

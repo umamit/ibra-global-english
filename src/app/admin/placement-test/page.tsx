@@ -213,7 +213,7 @@ export default function AdminPlacementTest() {
         ? "Teens Program (Intermediate Class)"
         : "Teens Program (Advanced Class / TOEFL Prep)";
 
-    const message = `Halo Kak ${sub.full_name}!\n\nKami dari *Ibra Global English Bobong* ingin mengucapkan selamat atas penyelesaian *Tes Penempatan Bahasa Inggris Online* Anda.\n\nBerikut hasil ringkasan tes Anda:\n📌 *Rekomendasi Level:* ${sub.level}\n📌 *Skor Tes:* ${sub.score} / 20\n📌 *Program Belajar:* ${courseRecommendation}\n\nTutor kami sangat merekomendasikan Anda untuk bergabung bersama kami di tingkat ini guna mengembangkan kompetensi secara optimal. Apakah Kak ${sub.full_name} berminat berkonsultasi mengenai jadwal kelas dan penawaran biaya khusus? \n\nKami tunggu kehadirannya! 😊`;
+    const message = `Halo Kak ${sub.full_name}!\n\nKami dari *Ibra Global English Bobong* ingin mengucapkan selamat atas penyelesaian *Tes Penempatan Bahasa Inggris Online* Anda.\n\nBerikut hasil ringkasan tes Anda:\n *Rekomendasi Level:* ${sub.level}\n *Skor Tes:* ${sub.score} / 20\n *Program Belajar:* ${courseRecommendation}\n\nTutor kami sangat merekomendasikan Anda untuk bergabung bersama kami di tingkat ini guna mengembangkan kompetensi secara optimal. Apakah Kak ${sub.full_name} berminat berkonsultasi mengenai jadwal kelas dan penawaran biaya khusus? \n\nKami tunggu kehadirannya! `;
 
     setFollowUpStudent(sub);
     setFollowUpMessage(message);
@@ -318,8 +318,12 @@ export default function AdminPlacementTest() {
         {/* Panel Diagnostik AI */}
         <div className="portal-card" style={{ padding: "1.5rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
-              🤖 Status Koneksi & Diagnostik Groq AI
+            <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+                <path d="M12 12L2.5 7.5"/>
+              </svg>
+              Status Koneksi & Diagnostik Groq AI
             </h3>
             <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginBottom: "1.5rem" }}>
               Verifikasi integrasi generator AI untuk tes penempatan secara real-time.
@@ -369,14 +373,18 @@ export default function AdminPlacementTest() {
             onClick={testAiConnection}
             disabled={aiConnectionStatus === "testing"}
           >
-            {aiConnectionStatus === "testing" ? "Menguji Koneksi..." : "🔄 Cek Koneksi Groq AI"}
+            {aiConnectionStatus === "testing" ? "Menguji Koneksi..." : "Cek Koneksi Groq AI"}
           </button>
         </div>
 
         {/* SVG Donut Chart Distribusi CEFR */}
         <div className="portal-card" style={{ padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between" }}>
-          <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", alignSelf: "flex-start", width: "100%", marginBottom: "0.25rem" }}>
-            🍩 Distribusi Level CEFR Siswa
+          <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", alignSelf: "flex-start", width: "100%", marginBottom: "0.25rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+              <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+            </svg>
+            Distribusi Level CEFR Siswa
           </h3>
           <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", alignSelf: "flex-start", width: "100%" }}>
             Sebaran tingkat penguasaan bahasa Inggris pendaftar tes penempatan.
@@ -592,9 +600,9 @@ export default function AdminPlacementTest() {
                   value={sub.status}
                   onChange={(e) => handleUpdateStatus(sub.id, e.target.value)}
                 >
-                  <option value="pending">🔴 Pending</option>
-                  <option value="contacted">🟡 Contacted</option>
-                  <option value="enrolled">🟢 Enrolled</option>
+                  <option value="pending">Pending</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="enrolled">Enrolled</option>
                 </select>
               </td>
               <td style={{ textAlign: "right" }}>
@@ -643,8 +651,11 @@ export default function AdminPlacementTest() {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
-                💬 Follow-Up Calon Siswa (AI Assistant)
+              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                Follow-Up Calon Siswa (AI Assistant)
               </h3>
               <button
                 onClick={() => setFollowUpStudent(null)}
@@ -688,7 +699,7 @@ export default function AdminPlacementTest() {
                       <span>Mendraf...</span>
                     </>
                   ) : (
-                    <span>🤖 Draf dengan AI</span>
+                    <span>Draf dengan AI</span>
                   )}
                 </button>
 

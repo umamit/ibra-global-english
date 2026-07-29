@@ -71,7 +71,7 @@ export default function AdminPromoPage() {
         body: JSON.stringify({ id: banner.id, is_active: newVal }),
       });
       if (!res.ok) throw new Error();
-      showToast(newVal ? "Popup diaktifkan ✓" : "Popup dinonaktifkan ✓");
+      showToast(newVal ? "Popup diaktifkan " : "Popup dinonaktifkan ");
     } catch {
       setIsActive(!newVal);
       showToast("Gagal mengubah status.", "error");
@@ -90,7 +90,7 @@ export default function AdminPromoPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Upload gagal.");
       setImageUrl(json.image_url);
-      showToast("Gambar berhasil diunggah ✓");
+      showToast("Gambar berhasil diunggah ");
     } catch (err: unknown) {
       showToast(err instanceof Error ? err.message : "Upload gagal.", "error");
     } finally {
@@ -120,7 +120,7 @@ export default function AdminPromoPage() {
         }),
       });
       if (!res.ok) throw new Error();
-      showToast("Perubahan berhasil disimpan ✓");
+      showToast("Perubahan berhasil disimpan ");
     } catch {
       showToast("Gagal menyimpan perubahan.", "error");
     } finally {
@@ -243,7 +243,7 @@ export default function AdminPromoPage() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Penawaran Spesial! 🎉"
+                placeholder="Penawaran Spesial! "
                 style={inputStyle}
                 maxLength={80}
               />
@@ -321,7 +321,7 @@ export default function AdminPromoPage() {
                       fontSize: "0.85rem",
                     }}
                   >
-                    ✕
+                    
                   </button>
                 </div>
               ) : (
@@ -340,10 +340,16 @@ export default function AdminPromoPage() {
                   onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--color-gray-300)")}
                 >
                   {uploading ? (
-                    <p style={{ margin: 0, fontSize: "0.9rem" }}>⏳ Mengunggah gambar...</p>
+                    <p style={{ margin: 0, fontSize: "0.9rem" }}>Mengunggah gambar...</p>
                   ) : (
                     <>
-                      <p style={{ margin: "0 0 0.3rem", fontSize: "1.5rem" }}>🖼️</p>
+                      <div style={{ margin: "0 0 0.5rem", display: "flex", justifyContent: "center", color: "var(--color-primary)" }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                          <circle cx="9" cy="9" r="2"/>
+                          <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                        </svg>
+                      </div>
                       <p style={{ margin: 0, fontSize: "0.875rem" }}>Klik untuk unggah gambar banner</p>
                     </>
                   )}

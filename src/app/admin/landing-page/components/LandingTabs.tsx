@@ -16,7 +16,7 @@ export default function LandingTabs({ activeTab, setActiveTab, maintenanceMode }
     { key: "programs", label: "Program Kursus" },
     { key: "benefits", label: "Keunggulan" },
     { key: "faq", label: "Tanya Jawab (FAQ)" },
-    { key: "maintenance", label: maintenanceMode ? "🔴 Sistem & Keamanan" : "⚙️ Sistem & Keamanan" },
+    { key: "maintenance", label: "Sistem & Keamanan" },
   ];
 
   return (

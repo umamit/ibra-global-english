@@ -216,7 +216,11 @@ export default function AdminDashboard() {
           <div className="portal-card" style={{ padding: "2rem", marginBottom: "1.5rem", borderLeft: "5px solid var(--color-accent)", background: "linear-gradient(135deg, rgba(166, 136, 73, 0.05) 0%, rgba(255,255,255,0) 100%)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <span style={{ fontSize: "1.25rem" }}>🧠</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--color-accent)" }}>
+                  <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+                  <path d="M12 12L2.5 7.5"/>
+                  <path d="m12 12 8.5 4.5"/>
+                </svg>
                 <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", margin: 0 }}>Analisis AI Insights & Rekomendasi</h3>
               </div>
               <button
@@ -224,13 +228,13 @@ export default function AdminDashboard() {
                 style={{ fontSize: "0.75rem", padding: "4px 10px", borderRadius: "4px", backgroundColor: "rgba(166, 136, 73, 0.1)", color: "var(--color-accent)", border: "1px solid rgba(166, 136, 73, 0.2)", cursor: "pointer", fontWeight: "bold" }}
                 disabled={aiLoading}
               >
-                {aiLoading ? "⏳ Memproses..." : "🔄 Refresh Analisis"}
+                {aiLoading ? "Memproses..." : "Refresh Analisis"}
               </button>
             </div>
             {aiLoading ? (
               <div className="skeleton-pulse" style={{ height: "90px", borderRadius: "8px" }} />
             ) : aiError ? (
-              <p style={{ color: "var(--color-red)", fontSize: "0.85rem", margin: 0 }}>⚠️ Gagal memuat analisis: {aiError}</p>
+              <p style={{ color: "var(--color-red)", fontSize: "0.85rem", margin: 0 }}>Gagal memuat analisis: {aiError}</p>
             ) : (
               <div style={{ fontSize: "0.875rem", color: "var(--color-gray-700)", lineHeight: 1.6 }}>
                 {renderSafeInsights(aiInsights)}

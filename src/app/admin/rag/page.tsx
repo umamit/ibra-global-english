@@ -349,7 +349,7 @@ export default function AdminRAGPage() {
 
             <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: "1.5rem", marginBottom: "1.5rem" }}>
               <h3 style={{ fontSize: "1.05rem", fontWeight: "800", color: "#1f2937", marginBottom: "0.75rem" }}>
-                🛠️ Langkah Aktivasi (Gratis & Instan):
+                ️ Langkah Aktivasi (Gratis & Instan):
               </h3>
               <ol style={{ paddingLeft: "1.25rem", margin: 0, fontSize: "0.9rem", color: "#4b5563", lineHeight: "1.7" }}>
                 <li>Buka dashboard proyek <strong>Supabase</strong> Anda di browser.</li>
@@ -426,7 +426,7 @@ export default function AdminRAGPage() {
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)"
                 }}
               >
-                🔄 Konfirmasi & Muat Ulang Halaman
+                 Konfirmasi & Muat Ulang Halaman
               </button>
               <Link 
                 href="/admin" 

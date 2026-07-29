@@ -205,7 +205,7 @@ export default function FinanceAnalytics({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid var(--color-primary)", background: "rgba(33, 108, 126, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Rasio Kolektabilitas</span>
-            <span style={{ fontSize: "1.25rem" }}>📈</span>
+            <span style={{ fontSize: "1.25rem" }}></span>
           </div>
           <h2 style={{ fontSize: "1.6rem", fontWeight: "900", color: "var(--color-primary-dark)" }}>{collectionRate}%</h2>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>Target pencapaian dana masuk bulan ini.</p>
@@ -215,7 +215,7 @@ export default function FinanceAnalytics({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #ef4444", background: "rgba(239, 68, 68, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Total Piutang SPP</span>
-            <span style={{ fontSize: "1.25rem" }}>💸</span>
+            <span style={{ fontSize: "1.25rem" }}></span>
           </div>
           <h2 style={{ fontSize: "1.6rem", fontWeight: "900", color: "#991b1b" }}>{formatRupiah(outstanding)}</h2>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>Akumulasi tunggakan siswa belum lunas.</p>
@@ -225,7 +225,7 @@ export default function FinanceAnalytics({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid var(--color-accent)", background: "rgba(166, 136, 73, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Rata-rata SPP Murid</span>
-            <span style={{ fontSize: "1.25rem" }}>🧑‍🎓</span>
+            <span style={{ fontSize: "1.25rem" }}>‍</span>
           </div>
           <h2 style={{ fontSize: "1.6rem", fontWeight: "900", color: "#92400e" }}>{formatRupiah(averageSPP)}</h2>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>Rata-rata kontribusi per siswa terbayar.</p>
@@ -235,7 +235,7 @@ export default function FinanceAnalytics({
         <div className="portal-card" style={{ padding: "1.25rem", borderLeft: "4px solid #0f172a", background: "rgba(15, 23, 42, 0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Top Program Revenue</span>
-            <span style={{ fontSize: "1.25rem" }}>💎</span>
+            <span style={{ fontSize: "1.25rem" }}></span>
           </div>
           <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: "0.35rem" }}>{topProgram}</h2>
           <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>Program dengan perolehan kas lunas tertinggi.</p>
@@ -249,7 +249,7 @@ export default function FinanceAnalytics({
         {/* Tren Pendapatan 6 Bulan */}
         <div className="portal-card" style={{ padding: "1.5rem", position: "relative" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
-            📈 Tren Pendapatan Bulanan (6 Bulan Terakhir)
+             Tren Pendapatan Bulanan (6 Bulan Terakhir)
           </h3>
 
           <div style={{ position: "relative", width: "100%" }}>
@@ -364,7 +364,7 @@ export default function FinanceAnalytics({
         {/* Donut Chart Status Pembayaran */}
         <div className="portal-card" style={{ padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between" }}>
           <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--color-gray-900)", alignSelf: "flex-start", width: "100%" }}>
-            🍩 Status Pembayaran SPP
+             Status Pembayaran SPP
           </h3>
 
           <div style={{ position: "relative", width: "160px", height: "160px", margin: "1.5rem 0" }}>
@@ -465,7 +465,7 @@ export default function FinanceAnalytics({
       {/* Program Breakdown Contribution Chart */}
       <div className="portal-card" style={{ padding: "1.5rem" }}>
         <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "1.5rem" }}>
-          💸 Kontribusi Pendapatan per Program Studi
+           Kontribusi Pendapatan per Program Studi
         </h3>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
