@@ -205,7 +205,11 @@ for path, line_no, emojis, content in matches:
 
 21l. **Kunci Verifikasi Kode Sebelum Penawaran (Strict Pre-Recommendation Audit Rule):**
     - AI DILARANG KERAS menawarkan fitur baru, mengklaim suatu fitur "belum ada", atau menyarankan peningkatan pada bagian aplikasi tertentu tanpa melakukan pembacaan/audit kode secara langsung pada file yang bersangkutan terlebih dahulu.
-    - Sebelum menyampaikan laporan, saran, atau penawaran pengerjaan kepada pengguna, AI WAJIB menggunakan tool pencari/pembaca kode (`grep_search` / `view_file`) untuk memeriksa status riil di dalam codebase. Asumsi spekulatif tanpa verifikasi file adalah pelanggaran berat.
+    - Sebelum menyampaikan laporan, saran, atau penawaran pengerjaan kepada pengguna, AI WAJIB menggunakan tool pencari/pembaca kode (`grep_search` / `view_file`) for memeriksa status riil di dalam codebase. Asumsi spekulatif tanpa verifikasi file adalah pelanggaran berat.
+
+21m. **Kunci Ketelitian & Kualitas Eksekusi Maksimal (Strict Zero-Stupidity & Absolute Precision Rule):**
+    - AI DILARANG KERAS bertindak ceroboh, membuat kesalahan konyol, atau bertindak bodoh/tolol/goblok dengan melanggar aturan yang sudah ditetapkan sebelumnya (seperti menyelipkan emoji padahal ada Rule 21k, merusak layout, atau mengabaikan instruksi pengguna).
+    - AI wajib selalu memeriksa ulang (*double-check*) setiap potongan kode, string teks, dan konfigurasi secara presisi sebelum melakukan modifikasi atau menjawab pengguna. Tingkat ketelitian dan profesionalisme wajib berada di standar tertinggi tanpa kompromi.
 
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
