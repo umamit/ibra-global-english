@@ -55,7 +55,21 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
                       <Link href="/#programs" className="dropdown-item">Semua Program</Link>
                       <Link href="/#kids-program" className="dropdown-item">Kids Program</Link>
                       <Link href="/#teens-program" className="dropdown-item">Teens Program</Link>
-                      <Link href="/#fun-calistung" className="dropdown-item">Fun Calistung</Link>
+                    </div>
+                  </div>
+                );
+              }
+              if (item.label.toLowerCase() === "kemitraan") {
+                return (
+                  <div className="dropdown-container" key={idx}>
+                    <button className={`nav-link dropdown-toggle ${activeSection === "kemitraan" ? "active" : ""}`} aria-haspopup="true" aria-expanded="false">
+                      {item.label} <span className="dropdown-chevron">▼</span>
+                    </button>
+                    <div className="dropdown-menu">
+                      <Link href="/kemitraan" className="dropdown-item">Kemitraan Bimbel</Link>
+                      <a href="https://digital.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" className="dropdown-item" style={{ color: "var(--color-primary)", fontWeight: "700" }}>
+                        Ibra Digital Agency ↗
+                      </a>
                     </div>
                   </div>
                 );
@@ -140,6 +154,28 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
             </button>
             
             <div className="nav-btn-desktop" style={{ display: "inline-flex", alignItems: "center" }}>
+              <a 
+                href="/assets/brochure.png" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="nav-link" 
+                style={{ 
+                  fontSize: "0.85rem", 
+                  marginRight: "0.5rem", 
+                  color: "var(--color-accent)", 
+                  fontWeight: "700",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px"
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                E-Brosur
+              </a>
               <Button href="/login" variant="nav-btn-outline" style={{ marginRight: "0.5rem" }}>Portal Login</Button>
               <Button href="/#contact" variant="nav-btn">Daftar Sekarang</Button>
             </div>

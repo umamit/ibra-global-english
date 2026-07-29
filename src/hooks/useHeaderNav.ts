@@ -37,6 +37,14 @@ export function useHeaderNav(initialSettings?: any) {
       const t = setTimeout(() => setActiveSection("placement-test"), 0);
       return () => clearTimeout(t);
     }
+    if (pathname === "/calendar") {
+      const t = setTimeout(() => setActiveSection("calendar"), 0);
+      return () => clearTimeout(t);
+    }
+    if (pathname === "/kemitraan") {
+      const t = setTimeout(() => setActiveSection("kemitraan"), 0);
+      return () => clearTimeout(t);
+    }
     if (pathname !== "/") {
       const t = setTimeout(() => setActiveSection(""), 0);
       return () => clearTimeout(t);
