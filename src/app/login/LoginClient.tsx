@@ -427,10 +427,26 @@ export default function LoginPage() {
         <div className="auth-role-picker">
           <button
             type="button"
+            onClick={() => setRole("student")}
+            className={`role-pill ${role === "student" ? "active" : ""}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+            <span>Siswa</span>
+          </button>
+          <button
+            type="button"
             onClick={() => setRole("parent")}
             className={`role-pill ${role === "parent" ? "active" : ""}`}
           >
-            <i className="fi fi-rr-users"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
             <span>Orang Tua</span>
           </button>
           <button
@@ -438,7 +454,11 @@ export default function LoginPage() {
             onClick={() => setRole("tutor")}
             className={`role-pill ${role === "tutor" ? "active" : ""}`}
           >
-            <i className="fi fi-rr-graduation-cap"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10"/>
+              <path d="M6 10h10"/>
+            </svg>
             <span>Tutor</span>
           </button>
           <button
@@ -446,7 +466,9 @@ export default function LoginPage() {
             onClick={() => setRole("admin")}
             className={`role-pill ${role === "admin" ? "active" : ""}`}
           >
-            <i className="fi fi-rr-shield-check"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
             <span>Admin</span>
           </button>
         </div>
