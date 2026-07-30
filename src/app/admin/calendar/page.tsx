@@ -415,7 +415,23 @@ export default function AdminCalendar() {
             Buat jadwal kelas rutin, liburan sekolah, serta kegiatan bimbingan belajar Ibra Global English Bobong
           </p>
         </div>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <button type="button" className="btn-portal-outline" onClick={async () => {
+            try {
+              setStatusMsg({ type: "success", text: "Memperbarui struktur database..." });
+              const res = await fetch("/api/admin/run-migration", { method: "POST" });
+              const json = await res.json();
+              if (json.success) {
+                setStatusMsg({ type: "success", text: "Struktur database berhasil diperbarui! Silakan simpan jadwal kembali." });
+              } else {
+                setStatusMsg({ type: "error", text: "Perhatian: " + (json.error || "Gagal otomatis, harap jalankan SQL script.") });
+              }
+            } catch (err: any) {
+              setStatusMsg({ type: "error", text: "Gagal memperbarui DB: " + err.message });
+            }
+          }} style={{ borderColor: "var(--color-primary)", color: "var(--color-primary)" }}>
+            <span>Perbarui DB (Auto Fix)</span>
+          </button>
           <button type="button" className="btn-portal-outline" onClick={() => setAiPromptModalOpen(true)} style={{ border: "1px dashed var(--color-accent)", color: "var(--color-accent-dark)" }}>
             <span> Susun via AI</span>
           </button>

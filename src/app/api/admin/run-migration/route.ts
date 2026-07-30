@@ -9,20 +9,25 @@ const adminSupabase = getAdminSupabase();
 
 export const POST = withAdminAuth(async () => {
   try {
-    const sqlPath = path.join(process.cwd(), "scripts", "migrate-registrations.sql");
-    const sql = fs.readFileSync(sqlPath, "utf-8");
-    const statements = sql.split(";").map(s => s.trim()).filter(Boolean);
+    const files = ["migrate-registrations.sql", "add-pending-schedule-columns.sql"];
+    for (const fileName of files) {
+      const sqlPath = path.join(process.cwd(), "scripts", fileName);
+      if (fs.existsSync(sqlPath)) {
+        const sql = fs.readFileSync(sqlPath, "utf-8");
+        const statements = sql.split(";").map(s => s.trim()).filter(Boolean);
 
-    for (const stmt of statements) {
-      let rpcResult;
-      try {
-        rpcResult = await adminSupabase.rpc("exec_sql", { sql: stmt });
-      } catch {
-        rpcResult = { error: { message: "RPC tidak tersedia, jalankan manual." } };
-      }
-      const { error } = rpcResult;
-      if (error) {
-        console.warn("Migration skipped via RPC:", stmt.slice(0, 80));
+        for (const stmt of statements) {
+          let rpcResult;
+          try {
+            rpcResult = await adminSupabase.rpc("exec_sql", { sql: stmt });
+          } catch {
+            rpcResult = { error: { message: "RPC tidak tersedia, jalankan manual." } };
+          }
+          const { error } = rpcResult;
+          if (error) {
+            console.warn("Migration skipped via RPC:", stmt.slice(0, 80));
+          }
+        }
       }
     }
 
