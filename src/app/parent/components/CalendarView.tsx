@@ -12,6 +12,9 @@ interface Schedule {
   title: string;
   description?: string;
   instructor?: string;
+  status?: string;
+  pending_reason?: string;
+  rescheduled_to?: string;
 }
 
 interface SelectedChild {
@@ -402,25 +405,25 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
                 <span style={{ color: "var(--color-gray-500)", fontWeight: "700" }}>Status Sesi:</span>
                 <span style={{
                   fontWeight: "800",
-                  color: (selectedSchedule as any).status === "pending" ? "#d97706" : (selectedSchedule as any).status === "rescheduled" ? "#2563eb" : "#166534"
+                  color: selectedSchedule.status === "pending" ? "#d97706" : selectedSchedule.status === "rescheduled" ? "#2563eb" : "#166534"
                 }}>
-                  {(selectedSchedule as any).status === "pending" ? "Pending (Ditunda Minggu Ini)" : (selectedSchedule as any).status === "rescheduled" ? "Rescheduled (Dijadwalkan Ulang)" : "Aktif (Berjalan Normal)"}
+                  {selectedSchedule.status === "pending" ? "Pending (Ditunda Minggu Ini)" : selectedSchedule.status === "rescheduled" ? "Rescheduled (Dijadwalkan Ulang)" : "Aktif (Berjalan Normal)"}
                 </span>
 
-                {(selectedSchedule as any).pending_reason && (
+                {selectedSchedule.pending_reason && (
                   <>
                     <span style={{ color: "#b45309", fontWeight: "700" }}>Alasan Penundaan:</span>
                     <span style={{ color: "#b45309", fontWeight: "700" }}>
-                      {(selectedSchedule as any).pending_reason}
+                      {selectedSchedule.pending_reason}
                     </span>
                   </>
                 )}
 
-                {(selectedSchedule as any).rescheduled_to && (
+                {selectedSchedule.rescheduled_to && (
                   <>
                     <span style={{ color: "#1d4ed8", fontWeight: "700" }}>Jadwal Pengganti:</span>
                     <span style={{ color: "#1d4ed8", fontWeight: "800" }}>
-                      {new Date((selectedSchedule as any).rescheduled_to).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })} WIB
+                      {new Date(selectedSchedule.rescheduled_to).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })} WIB
                     </span>
                   </>
                 )}
