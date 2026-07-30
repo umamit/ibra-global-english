@@ -135,7 +135,7 @@ export default function ScheduleList({
               padding: "0.5rem 0.25rem",
               borderRadius: "7px",
               border: "none",
-              fontSize: "0.78rem",
+              fontSize: "0.8rem",
               fontWeight: "700",
               cursor: "pointer",
               backgroundColor: activeTab === 'day' ? "white" : "transparent",
@@ -154,7 +154,7 @@ export default function ScheduleList({
               padding: "0.5rem 0.25rem",
               borderRadius: "7px",
               border: "none",
-              fontSize: "0.78rem",
+              fontSize: "0.8rem",
               fontWeight: "700",
               cursor: "pointer",
               backgroundColor: activeTab === 'month' ? "white" : "transparent",
@@ -165,25 +165,6 @@ export default function ScheduleList({
           >
             Bulan Ini
           </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('pending')}
-            style={{
-              flex: 1,
-              padding: "0.5rem 0.25rem",
-              borderRadius: "7px",
-              border: "none",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-              cursor: "pointer",
-              backgroundColor: activeTab === 'pending' ? "white" : "transparent",
-              color: activeTab === 'pending' ? "#d97706" : "var(--color-gray-500)",
-              boxShadow: activeTab === 'pending' ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-              transition: "all 0.15s ease"
-            }}
-          >
-            Pending ({pendingSchedules.length})
-          </button>
         </div>
 
         {activeTab === 'day' ? (
@@ -193,15 +174,6 @@ export default function ScheduleList({
             </h3>
             <p style={{ margin: "2px 0 0 0", fontSize: "1.05rem", fontWeight: "900", color: "var(--color-gray-900)" }}>
               {formattedSelectedDate}
-            </p>
-          </div>
-        ) : activeTab === 'pending' ? (
-          <div>
-            <h3 style={{ margin: 0, fontSize: "0.8rem", fontWeight: "800", color: "var(--color-gray-400)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              Daftar Kelas Ditunda
-            </h3>
-            <p style={{ margin: "2px 0 0 0", fontSize: "1.05rem", fontWeight: "900", color: "#d97706" }}>
-              Pending & Reschedule ({pendingSchedules.length})
             </p>
           </div>
         ) : (

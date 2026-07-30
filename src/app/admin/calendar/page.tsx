@@ -9,6 +9,8 @@ import ScheduleList from "./ScheduleList";
 import SyncModal from "./components/SyncModal";
 import AiSchedulerModal from "./components/AiSchedulerModal";
 import AddEditScheduleModal from "./components/AddEditScheduleModal";
+import QuickPendingModal from "./components/QuickPendingModal";
+import PendingSchedulesCard from "./components/PendingSchedulesCard";
 
 interface AcademicSchedule {
   id: string;
@@ -64,6 +66,7 @@ export default function AdminCalendar() {
   
   // AI Scheduler States
   const [aiPromptModalOpen, setAiPromptModalOpen] = useState<boolean>(false);
+  const [quickPendingModalOpen, setQuickPendingModalOpen] = useState<boolean>(false);
   const [filterProgram, setFilterProgram] = useState<string>("All");
   const [hoveredSchedule, setHoveredSchedule] = useState<AcademicSchedule | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -441,6 +444,9 @@ export default function AdminCalendar() {
           <button type="button" className="btn-portal-outline" onClick={handleDeleteAllSchedules} style={{ borderColor: "#ef4444", color: "#ef4444" }}>
             <span>️ Hapus Semua</span>
           </button>
+          <button type="button" className="btn-portal-primary" onClick={() => setQuickPendingModalOpen(true)} style={{ backgroundColor: "#d97706", borderColor: "#d97706" }}>
+            <span>+ Catat Kelas Pending</span>
+          </button>
           <button className="btn-portal-primary" onClick={() => handleOpenAddModal(selectedDate)}>
             <span>+ Tambah Agenda</span>
           </button>
@@ -777,6 +783,23 @@ export default function AdminCalendar() {
           </div>
         </div>
       )}
+
+      {/* KOTAK MANDIRI TERPISAH: PEMANTAUAN KELAS PENDING & RESCHEDULE */}
+      <PendingSchedulesCard
+        schedules={schedules}
+        onRefresh={fetchData}
+        onOpenQuickModal={() => setQuickPendingModalOpen(true)}
+      />
+
+      {/* QUICK PENDING MODAL */}
+      <QuickPendingModal
+        isOpen={quickPendingModalOpen}
+        onClose={() => setQuickPendingModalOpen(false)}
+        onSuccess={(msg) => {
+          setStatusMsg({ type: "success", text: msg });
+          fetchData();
+        }}
+      />
 
       {/* VIEW ALL AGENDA FOR SPECIFIC DAY MODAL */}
       {viewAllDate && (
