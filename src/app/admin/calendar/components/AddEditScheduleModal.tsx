@@ -48,6 +48,10 @@ export default function AddEditScheduleModal({
   const [endDate, setEndDate] = useState<string>("");
   const [endTime, setEndTime] = useState<string>("10:30");
   const [instructor, setInstructor] = useState<string>("");
+  const [status, setStatus] = useState<string>("active"); // 'active', 'pending', 'rescheduled'
+  const [pendingReason, setPendingReason] = useState<string>("");
+  const [rescheduledDate, setRescheduledDate] = useState<string>("");
+  const [rescheduledTime, setRescheduledTime] = useState<string>("09:00");
 
   // Recurrence states
   const [isRecurring, setIsRecurring] = useState<boolean>(false);
@@ -64,7 +68,19 @@ export default function AddEditScheduleModal({
         setDescription(selectedSchedule.description || "");
         setType(selectedSchedule.type);
         setProgram(selectedSchedule.program || "All");
+        setStatus((selectedSchedule as any).status || "active");
+        setPendingReason((selectedSchedule as any).pending_reason || "");
         
+        const resTo = (selectedSchedule as any).rescheduled_to;
+        if (resTo) {
+          const resObj = new Date(resTo);
+          setRescheduledDate(getLocalDateString(resObj));
+          setRescheduledTime(resObj.toTimeString().slice(0, 5));
+        } else {
+          setRescheduledDate("");
+          setRescheduledTime("09:00");
+        }
+
         const startObj = new Date(selectedSchedule.start_time);
         const endObj = new Date(selectedSchedule.end_time);
 
@@ -84,6 +100,10 @@ export default function AddEditScheduleModal({
         setDescription("");
         setType("class");
         setProgram("All");
+        setStatus("active");
+        setPendingReason("");
+        setRescheduledDate("");
+        setRescheduledTime("09:00");
         const defaultDate = initialDateStr || getLocalDateString(new Date());
         setStartDate(defaultDate);
         setStartTime("09:00");
@@ -111,6 +131,10 @@ export default function AddEditScheduleModal({
     const startISO = new Date(`${startDate}T${startTime}:00`).toISOString();
     const endISO = new Date(`${endDate}T${endTime}:00`).toISOString();
 
+    const rescheduledISO = (status === "rescheduled" && rescheduledDate) 
+      ? new Date(`${rescheduledDate}T${rescheduledTime}:00`).toISOString() 
+      : null;
+
     const payload = {
       title: title.trim(),
       description: description.trim() || null,
@@ -118,7 +142,10 @@ export default function AddEditScheduleModal({
       program,
       start_time: startISO,
       end_time: endISO,
-      instructor: instructor.trim() || null
+      instructor: instructor.trim() || null,
+      status,
+      pending_reason: status !== "active" ? (pendingReason.trim() || null) : null,
+      rescheduled_to: rescheduledISO
     };
 
     try {
@@ -374,6 +401,54 @@ export default function AddEditScheduleModal({
                   <option value="Fun Calistung">Fun Calistung</option>
                 </select>
               </div>
+            </div>
+
+            {/* Status Sesi & Pengaturan Penundaan (Pending) */}
+            <div style={{ backgroundColor: "rgba(0, 0, 0, 0.02)", padding: "1rem", borderRadius: "10px", border: "1px solid rgba(0, 0, 0, 0.06)", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label className="form-label" style={{ fontWeight: "800" }}>Status Sesi Belajar</label>
+                <select className="form-input" value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <option value="active">Berjalan Normal (Aktif)</option>
+                  <option value="pending">Pending (Ditunda Minggu Ini)</option>
+                  <option value="rescheduled">Rescheduled (Dijadwalkan Ulang)</option>
+                </select>
+              </div>
+
+              {status !== "active" && (
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label className="form-label" style={{ fontWeight: "800", color: "#b45309" }}>Alasan Penundaan Kelas</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="Misal: Lampu padam / Perbaikan jaringan internet" 
+                    value={pendingReason} 
+                    onChange={(e) => setPendingReason(e.target.value)} 
+                  />
+                </div>
+              )}
+
+              {status === "rescheduled" && (
+                <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "0.75rem", margin: 0 }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label className="form-label" style={{ fontWeight: "800", color: "#1d4ed8" }}>Tanggal Pengganti</label>
+                    <input 
+                      type="date" 
+                      className="form-input" 
+                      value={rescheduledDate} 
+                      onChange={(e) => setRescheduledDate(e.target.value)} 
+                    />
+                  </div>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label className="form-label" style={{ fontWeight: "800", color: "#1d4ed8" }}>Jam Pengganti</label>
+                    <input 
+                      type="time" 
+                      className="form-input" 
+                      value={rescheduledTime} 
+                      onChange={(e) => setRescheduledTime(e.target.value)} 
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>

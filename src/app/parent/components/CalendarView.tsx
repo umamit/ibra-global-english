@@ -290,7 +290,13 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
                       let badgeBg = "var(--color-primary-light)";
                       let badgeColor = "var(--color-primary-dark)";
 
-                      if (s.type === "holiday") {
+                      if (s.status === "pending") {
+                        badgeBg = "#fef3c7";
+                        badgeColor = "#d97706";
+                      } else if (s.status === "rescheduled") {
+                        badgeBg = "#dbeafe";
+                        badgeColor = "#2563eb";
+                      } else if (s.type === "holiday") {
                         badgeBg = "#fee2e2";
                         badgeColor = "#ef4444";
                       } else if (s.type === "event") {
@@ -306,7 +312,7 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
                           onClick={(e) => handleOpenDetailModal(s, e)}
                           role="button"
                           tabIndex={0}
-                          aria-label={`Agenda: ${s.title}, Jam: ${cleanTimeStr}. Tekan Enter untuk melihat detail.`}
+                          aria-label={`Agenda: ${s.title}, Status: ${s.status || 'Aktif'}, Jam: ${cleanTimeStr}. Tekan Enter untuk melihat detail.`}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault();
@@ -393,6 +399,32 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
             {/* Modal Body */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", borderTop: "1px solid var(--color-gray-150)", paddingTop: "1.25rem", marginBottom: "1.5rem" }}>
               <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", fontSize: "0.9rem" }}>
+                <span style={{ color: "var(--color-gray-500)", fontWeight: "700" }}>Status Sesi:</span>
+                <span style={{
+                  fontWeight: "800",
+                  color: (selectedSchedule as any).status === "pending" ? "#d97706" : (selectedSchedule as any).status === "rescheduled" ? "#2563eb" : "#166534"
+                }}>
+                  {(selectedSchedule as any).status === "pending" ? "Pending (Ditunda Minggu Ini)" : (selectedSchedule as any).status === "rescheduled" ? "Rescheduled (Dijadwalkan Ulang)" : "Aktif (Berjalan Normal)"}
+                </span>
+
+                {(selectedSchedule as any).pending_reason && (
+                  <>
+                    <span style={{ color: "#b45309", fontWeight: "700" }}>Alasan Penundaan:</span>
+                    <span style={{ color: "#b45309", fontWeight: "700" }}>
+                      {(selectedSchedule as any).pending_reason}
+                    </span>
+                  </>
+                )}
+
+                {(selectedSchedule as any).rescheduled_to && (
+                  <>
+                    <span style={{ color: "#1d4ed8", fontWeight: "700" }}>Jadwal Pengganti:</span>
+                    <span style={{ color: "#1d4ed8", fontWeight: "800" }}>
+                      {new Date((selectedSchedule as any).rescheduled_to).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })} WIB
+                    </span>
+                  </>
+                )}
+
                 <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-calendar"></i> Hari & Tanggal:</span>
                 <span style={{ color: "var(--color-gray-800)", fontWeight: "800" }}>
                   {new Date(selectedSchedule.start_time).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}

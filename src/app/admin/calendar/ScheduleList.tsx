@@ -10,6 +10,9 @@ export interface AcademicSchedule {
   end_time: string;
   instructor?: string | null;
   recurrence_id?: string | null;
+  status?: "active" | "pending" | "rescheduled" | string;
+  pending_reason?: string | null;
+  rescheduled_to?: string | null;
   created_at?: string;
 }
 
@@ -30,7 +33,7 @@ export default function ScheduleList({
   onEdit,
   onAddEvent
 }: ScheduleListProps) {
-  const [activeTab, setActiveTab] = useState<'day' | 'month'>('day');
+  const [activeTab, setActiveTab] = useState<'day' | 'month' | 'pending'>('day');
 
   const getLocalDateString = (dateObj: Date): string => {
     const y = dateObj.getFullYear();
@@ -43,6 +46,11 @@ export default function ScheduleList({
   const daySchedules = schedules.filter(s => {
     const sDateStr = getLocalDateString(new Date(s.start_time));
     return sDateStr === selectedDate;
+  }).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+  // 2. Filter schedules for pending or rescheduled status
+  const pendingSchedules = schedules.filter(s => {
+    return s.status === 'pending' || s.status === 'rescheduled';
   }).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
   // 2. Filter schedules for current calendar view month
@@ -127,7 +135,7 @@ export default function ScheduleList({
               padding: "0.5rem 0.25rem",
               borderRadius: "7px",
               border: "none",
-              fontSize: "0.8rem",
+              fontSize: "0.78rem",
               fontWeight: "700",
               cursor: "pointer",
               backgroundColor: activeTab === 'day' ? "white" : "transparent",
@@ -146,7 +154,7 @@ export default function ScheduleList({
               padding: "0.5rem 0.25rem",
               borderRadius: "7px",
               border: "none",
-              fontSize: "0.8rem",
+              fontSize: "0.78rem",
               fontWeight: "700",
               cursor: "pointer",
               backgroundColor: activeTab === 'month' ? "white" : "transparent",
@@ -157,6 +165,25 @@ export default function ScheduleList({
           >
             Bulan Ini
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('pending')}
+            style={{
+              flex: 1,
+              padding: "0.5rem 0.25rem",
+              borderRadius: "7px",
+              border: "none",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              backgroundColor: activeTab === 'pending' ? "white" : "transparent",
+              color: activeTab === 'pending' ? "#d97706" : "var(--color-gray-500)",
+              boxShadow: activeTab === 'pending' ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+              transition: "all 0.15s ease"
+            }}
+          >
+            Pending ({pendingSchedules.length})
+          </button>
         </div>
 
         {activeTab === 'day' ? (
@@ -166,6 +193,15 @@ export default function ScheduleList({
             </h3>
             <p style={{ margin: "2px 0 0 0", fontSize: "1.05rem", fontWeight: "900", color: "var(--color-gray-900)" }}>
               {formattedSelectedDate}
+            </p>
+          </div>
+        ) : activeTab === 'pending' ? (
+          <div>
+            <h3 style={{ margin: 0, fontSize: "0.8rem", fontWeight: "800", color: "var(--color-gray-400)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              Daftar Kelas Ditunda
+            </h3>
+            <p style={{ margin: "2px 0 0 0", fontSize: "1.05rem", fontWeight: "900", color: "#d97706" }}>
+              Pending & Reschedule ({pendingSchedules.length})
             </p>
           </div>
         ) : (
@@ -298,7 +334,109 @@ export default function ScheduleList({
                         }}
                         className="btn-text-hover"
                       >
-                        ️ Ubah / Hapus
+                        Ubah / Status
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        ) : activeTab === 'pending' ? (
+          pendingSchedules.length === 0 ? (
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "4rem 1rem",
+              textAlign: "center"
+            }}>
+              <p style={{ fontSize: "0.9rem", color: "var(--color-gray-400)", fontWeight: "600", margin: 0 }}>
+                Tidak ada kelas yang ditunda atau pending. Semua jadwal berjalan lancar!
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {pendingSchedules.map((s) => {
+                const styles = getEventStyles(s.type);
+                const startObj = new Date(s.start_time);
+                const dateStr = startObj.toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
+                });
+                const timeStr = `${startObj.toTimeString().slice(0, 5)} WIB`;
+
+                return (
+                  <div
+                    key={s.id}
+                    style={{
+                      borderLeft: s.status === 'rescheduled' ? '4px solid #3b82f6' : '4px solid #f59e0b',
+                      backgroundColor: s.status === 'rescheduled' ? 'rgba(59, 130, 246, 0.05)' : 'rgba(245, 158, 11, 0.05)',
+                      borderRadius: "0 10px 10px 0",
+                      padding: "0.85rem 1rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      position: "relative"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
+                      <span style={{ fontSize: "0.78rem", fontWeight: "800", color: "var(--color-gray-600)" }}>
+                        {dateStr} ({timeStr})
+                      </span>
+                      <span style={{
+                        fontSize: "0.68rem",
+                        fontWeight: "800",
+                        padding: "2px 8px",
+                        borderRadius: "12px",
+                        backgroundColor: s.status === 'rescheduled' ? "rgba(59, 130, 246, 0.15)" : "rgba(245, 158, 11, 0.15)",
+                        color: s.status === 'rescheduled' ? "#2563eb" : "#d97706"
+                      }}>
+                        {s.status === 'rescheduled' ? 'Rescheduled' : 'Pending'}
+                      </span>
+                    </div>
+
+                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
+                      {s.title}
+                    </h4>
+
+                    {s.program !== "All" && (
+                      <div style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-gray-500)" }}>
+                        Program: <span style={{ color: "var(--color-primary-dark)" }}>{s.program}</span>
+                      </div>
+                    )}
+
+                    {s.pending_reason && (
+                      <div style={{ fontSize: "0.78rem", fontWeight: "600", color: "#b45309", backgroundColor: "rgba(245, 158, 11, 0.1)", padding: "0.4rem 0.6rem", borderRadius: "6px" }}>
+                        Alasan Penundaan: {s.pending_reason}
+                      </div>
+                    )}
+
+                    {s.rescheduled_to && (
+                      <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "#1d4ed8", backgroundColor: "rgba(59, 130, 246, 0.1)", padding: "0.4rem 0.6rem", borderRadius: "6px" }}>
+                        Jadwal Pengganti: {new Date(s.rescheduled_to).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
+                      </div>
+                    )}
+
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
+                      <button
+                        type="button"
+                        onClick={(e) => onEdit(s, e)}
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          fontSize: "0.78rem",
+                          fontWeight: "800",
+                          color: "var(--color-primary)",
+                          cursor: "pointer",
+                          padding: "2px 6px",
+                          borderRadius: "4px"
+                        }}
+                        className="btn-text-hover"
+                      >
+                        Ubah / Atur Pengganti
                       </button>
                     </div>
                   </div>
