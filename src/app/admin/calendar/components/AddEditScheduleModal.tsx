@@ -415,15 +415,41 @@ export default function AddEditScheduleModal({
               </div>
 
               {status !== "active" && (
-                <div className="form-group" style={{ margin: 0 }}>
+                <div className="form-group" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <label className="form-label" style={{ fontWeight: "800", color: "#b45309" }}>Alasan Penundaan Kelas</label>
-                  <input 
-                    type="text" 
+                  <select 
                     className="form-input" 
-                    placeholder="Misal: Lampu padam / Perbaikan jaringan internet" 
-                    value={pendingReason} 
-                    onChange={(e) => setPendingReason(e.target.value)} 
-                  />
+                    value={
+                      ["Pemadaman Listrik / Listrik Padam", "Gangguan Jaringan / Internet", "Cuaca Buruk / Hujan Deras", "Tutor Sakit / Halangan Darurat", "Ujian Sekolah / Kegiatan Sekolah Siswa", "Hari Libur Nasional / Tanggal Merah"].includes(pendingReason)
+                        ? pendingReason
+                        : pendingReason ? "custom" : "Pemadaman Listrik / Listrik Padam"
+                    }
+                    onChange={(e) => {
+                      if (e.target.value === "custom") {
+                        setPendingReason("");
+                      } else {
+                        setPendingReason(e.target.value);
+                      }
+                    }}
+                  >
+                    <option value="Pemadaman Listrik / Listrik Padam">Pemadaman Listrik / Listrik Padam</option>
+                    <option value="Gangguan Jaringan / Internet">Gangguan Jaringan / Internet</option>
+                    <option value="Cuaca Buruk / Hujan Deras">Cuaca Buruk / Hujan Deras</option>
+                    <option value="Tutor Sakit / Halangan Darurat">Tutor Sakit / Halangan Darurat</option>
+                    <option value="Ujian Sekolah / Kegiatan Sekolah Siswa">Ujian Sekolah / Kegiatan Sekolah Siswa</option>
+                    <option value="Hari Libur Nasional / Tanggal Merah">Hari Libur Nasional / Tanggal Merah</option>
+                    <option value="custom">Alasan Lainnya (Ketik Manual...)</option>
+                  </select>
+
+                  {!["Pemadaman Listrik / Listrik Padam", "Gangguan Jaringan / Internet", "Cuaca Buruk / Hujan Deras", "Tutor Sakit / Halangan Darurat", "Ujian Sekolah / Kegiatan Sekolah Siswa", "Hari Libur Nasional / Tanggal Merah"].includes(pendingReason) && (
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      placeholder="Ketikkan alasan spesifik penundaan..." 
+                      value={pendingReason} 
+                      onChange={(e) => setPendingReason(e.target.value)} 
+                    />
+                  )}
                 </div>
               )}
 
