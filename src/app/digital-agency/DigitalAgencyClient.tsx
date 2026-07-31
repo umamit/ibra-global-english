@@ -392,6 +392,56 @@ Mohon hubungi saya kembali. Terima kasih!`;
 
           <div className={styles.showcase} style={{ marginTop: "40px" }}>
             <div className={styles.showcaseContent}>
+              <span className={styles.showcaseTag}>Attendance System App</span>
+              <h3 className={styles.showcaseTitle}>Sistem Presensi Digital SD Negeri Bobong</h3>
+              <p className={styles.showcaseDesc}>
+                Aplikasi sistem presensi dan absensi digital terintegrasi untuk SD Negeri Bobong. Dilengkapi pencatatan kehadiran pendidik 
+                dan siswa secara akurat, laporan rekapitulasi kehadiran otomatis, proteksi keunikan data harian, serta akses portal multi-level.
+              </p>
+              <div className={styles.techTags}>
+                <span className={styles.techTag}>Next.js</span>
+                <span className={styles.techTag}>Supabase Storage & DB</span>
+                <span className={styles.techTag}>Realtime Attendance</span>
+                <span className={styles.techTag}>Apple HIG UI</span>
+                <span className={styles.techTag}>SSL Secured</span>
+              </div>
+              <div style={{ marginTop: "32px" }}>
+                <a href="https://presensi.sdnegeribobong.sch.id" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                  Kunjungi Sistem Presensi
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div className={styles.showcaseCard}>
+              <div className={styles.macOSHeader}>
+                <span className={`${styles.macOSDot} ${styles.macOSDotRed}`}></span>
+                <span className={`${styles.macOSDot} ${styles.macOSDotYellow}`}></span>
+                <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
+              </div>
+              <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> DIGITAL ATTENDANCE SYSTEM</span>
+                <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>Online System</span>
+              </div>
+              <ul className={styles.featuresList}>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Presensi Harian Siswa & Guru</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Rekapitulasi Kehadiran Otomatis</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Validasi Data Server-side Ketat</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Tampilan Ringan & Kompatibel HP</li>
+              </ul>
+              <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+                <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
+                  "Memodernisasi kedisiplinan dan pencatatan absensi sekolah secara digital dan akurat."
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.showcase} style={{ marginTop: "40px" }}>
+            <div className={styles.showcaseContent}>
               <span className={styles.showcaseTag}>Business Landing Page</span>
               <h3 className={styles.showcaseTitle}>Kos Fitrah Bobong</h3>
               <p className={styles.showcaseDesc}>
