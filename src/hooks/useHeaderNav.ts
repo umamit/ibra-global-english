@@ -10,17 +10,19 @@ export function useHeaderNav(initialSettings?: any) {
   const pathname = usePathname();
 
   const [navigationMenu] = useState<NavigationItem[]>(() => {
+    let list = DEFAULT_NAVIGATION_MENU;
     if (initialSettings && initialSettings.landing_navigation_menu) {
       try {
         const parsed = typeof initialSettings.landing_navigation_menu === "string"
           ? JSON.parse(initialSettings.landing_navigation_menu)
           : initialSettings.landing_navigation_menu;
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          list = parsed;
         }
       } catch (e) {}
     }
-    return DEFAULT_NAVIGATION_MENU;
+    // Saring agar item mandiri "Kalender" tidak muncul ganda karena sudah menjadi bagian dari Dropdown Program
+    return list.filter((item: NavigationItem) => item.label.toLowerCase() !== "kalender" && item.path !== "/calendar");
   });
 
   // Scrollspy logic
