@@ -114,6 +114,25 @@ export default function TechLogoGrid() {
           </svg>
           <span>Vite</span>
         </div>
+
+        {/* Python */}
+        <div className={styles.techLogoItem}>
+          <svg className={styles.techLogoSvg} viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M54.02 0c-14.73 0-23.77.64-28.38 4.41-5.74 4.7-5.06 13.97-5.06 21.65v10.51h34.09v4.83H7.07c-7.68 0-14.43 4.62-16.5 13.25-2.37 9.87-2.47 16.03 0 26.41 1.84 7.74 6.13 13.25 13.81 13.25h9.08v-12.4c0-8.91 7.74-16.65 16.65-16.65h33.88c7.47 0 13.48-6.01 13.48-13.48V25.96c0-7.47-6.22-13.06-13.48-15.45C59.98.8 54.02 0 54.02 0zM38.86 10.97c3.34 0 6.04 2.7 6.04 6.04 0 3.34-2.7 6.04-6.04 6.04s-6.04-2.7-6.04-6.04c0-3.34 2.7-6.04 6.04-6.04z" fill="url(#py_a)" />
+            <path d="M55.98 109.91c14.73 0 23.77-.64 28.38-4.41 5.74-4.7 5.06-13.97 5.06-21.65V73.34H55.33v-4.83h47.5c7.68 0 14.43-4.62 16.5-13.25 2.37-9.87 2.47-16.03 0-26.41-1.84-7.74-6.13-13.25-13.81-13.25h-9.08v12.4c0 8.91-7.74 16.65-16.65 16.65H45.91c-7.47 0-13.48 6.01-13.48 13.48v25.96c0 7.47 6.22 13.06 13.48 15.45 5.01 1.71 10.97 2.51 10.97 2.51zM71.14 98.94c-3.34 0-6.04-2.7-6.04-6.04 0-3.34 2.7-6.04 6.04-6.04s6.04 2.7 6.04 6.04c0 3.34-2.7 6.04-6.04 6.04z" fill="url(#py_b)" />
+            <defs>
+              <linearGradient id="py_a" x1="12.07" y1="0" x2="80" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#3776AB" />
+                <stop offset="1" stopColor="#2B5B84" />
+              </linearGradient>
+              <linearGradient id="py_b" x1="40" y1="60" x2="110" y2="109.91" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#FFD43B" />
+                <stop offset="1" stopColor="#FFE873" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span>Python</span>
+        </div>
       </div>
     </section>
   );
