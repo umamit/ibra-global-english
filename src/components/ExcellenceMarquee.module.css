@@ -1,0 +1,111 @@
+.marqueeSection {
+  background-color: #ebf0f4;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 18px 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+/* Masking Gradient di Kiri & Kanan untuk Efek Fade Out Halus */
+.marqueeSection::before,
+.marqueeSection::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marqueeSection::before {
+  left: 0;
+  background: linear-gradient(to right, #ebf0f4 0%, rgba(235, 240, 244, 0) 100%);
+}
+
+.marqueeSection::after {
+  right: 0;
+  background: linear-gradient(to left, #ebf0f4 0%, rgba(235, 240, 244, 0) 100%);
+}
+
+/* Track Animasi Marquee Berjalan */
+.marqueeTrack {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: scrollMarquee 35s linear infinite;
+}
+
+.marqueeTrack:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Kartu / Pill Badge Accent */
+.marqueeCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #ffffff;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.marqueeCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-accent);
+  box-shadow: 0 6px 16px rgba(166, 136, 73, 0.18);
+}
+
+/* Icon Wrapper */
+.iconWrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(33, 108, 126, 0.08);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.marqueeCard:hover .iconWrapper {
+  background-color: var(--color-accent);
+  color: #ffffff;
+}
+
+/* Text Wrapper */
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.itemTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  line-height: 1.25;
+}
+
+.itemSubtitle {
+  font-size: 0.72rem;
+  color: var(--color-gray-600);
+  line-height: 1.2;
+}

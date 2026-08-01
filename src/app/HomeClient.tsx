@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 // CSS di-import per-komponen masing-masing
 
 // Import modular components
+import MarqueeBanner from "@/components/MarqueeBanner";
+import ExcellenceMarquee from "@/components/ExcellenceMarquee";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Programs from "@/components/Programs";
@@ -192,6 +194,7 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} initialSettings={initialSettings} />
       <main>
         <Hero initialSettings={initialSettings} />
+        <ExcellenceMarquee />
         <Programs initialSettings={initialSettings} />
         <RegistrationSteps />
         <Curriculum initialSettings={initialSettings} />
