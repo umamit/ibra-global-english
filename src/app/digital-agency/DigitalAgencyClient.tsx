@@ -593,7 +593,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
             ) : (
               <form onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
-                  <label htmlFor="name" className={styles.label}>Nama Lengkap / Nama Bisnis</label>
+                  <label htmlFor="name" className={styles.formLabel}>Nama Lengkap / Nama Bisnis</label>
                   <input
                     type="text"
                     id="name"
@@ -602,12 +602,12 @@ Mohon hubungi saya kembali. Terima kasih!`;
                     placeholder="Contoh: Ibra Global English"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className={styles.input}
+                    className={styles.formInput}
                   />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="contact" className={styles.label}>Nomor WhatsApp / Email Kontak</label>
+                  <label htmlFor="contact" className={styles.formLabel}>Nomor WhatsApp / Email Kontak</label>
                   <input
                     type="text"
                     id="contact"
@@ -616,18 +616,18 @@ Mohon hubungi saya kembali. Terima kasih!`;
                     placeholder="Contoh: 081234567890"
                     value={formData.contact}
                     onChange={handleInputChange}
-                    className={styles.input}
+                    className={styles.formInput}
                   />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="projectType" className={styles.label}>Tipe Proyek Website</label>
+                  <label htmlFor="projectType" className={styles.formLabel}>Tipe Proyek Website</label>
                   <select
                     id="projectType"
                     name="projectType"
                     value={formData.projectType}
                     onChange={handleInputChange}
-                    className={styles.select}
+                    className={styles.formSelect}
                   >
                     <option value="Company Profile / Landing Page">Landing Page Premium</option>
                     <option value="Portal Bisnis / Custom Web App">Portal Bisnis / Custom Web App</option>
@@ -637,7 +637,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="details" className={styles.label}>Jelaskan Singkat Kebutuhan Anda</label>
+                  <label htmlFor="details" className={styles.formLabel}>Jelaskan Singkat Kebutuhan Anda</label>
                   <textarea
                     id="details"
                     name="details"
@@ -645,11 +645,11 @@ Mohon hubungi saya kembali. Terima kasih!`;
                     placeholder="Contoh: Saya butuh website landing page kursus dengan menu pendaftaran online dan galeri foto."
                     value={formData.details}
                     onChange={handleInputChange}
-                    className={styles.textarea}
+                    className={styles.formTextarea}
                   />
                 </div>
 
-                <button type="submit" className={styles.btnPrimary} style={{ width: "100%", padding: "14px" }}>
+                <button type="submit" className={styles.btnSubmit}>
                   Kirim & Hubungi via WhatsApp
                 </button>
               </form>
