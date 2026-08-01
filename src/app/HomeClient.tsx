@@ -15,7 +15,6 @@ import RegistrationSteps from "@/components/RegistrationSteps";
 import Benefits from "@/components/Benefits";
 import Curriculum from "@/components/Curriculum";
 import Footer from "@/components/Footer";
-import MarqueeBanner from "@/components/MarqueeBanner";
 
 
 // Dynamically load below-the-fold and interactive elements
