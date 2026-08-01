@@ -438,21 +438,20 @@ Mohon hubungi saya kembali. Terima kasih!`;
 
           <div className={styles.showcase} style={{ marginTop: "40px" }}>
             <div className={styles.showcaseContent}>
-              <span className={styles.showcaseTag}>Business Landing Page</span>
-              <h3 className={styles.showcaseTitle}>Kos Fitrah Bobong</h3>
+              <span className={styles.showcaseTag}>Property & Business Landing Page</span>
+              <h3 className={styles.showcaseTitle}>Website Kos Fitrah — kosfitrah.uk</h3>
               <p className={styles.showcaseDesc}>
-                Website landing page premium untuk jasa sewa kos harian & bulanan di Bobong, Pulau Taliabu. Menampilkan tipe kamar, spesifikasi lengkap, 
-                kalkulator estimasi biaya interaktif, tata tertib, FAQ, dan peta lokasi terintegrasi—semuanya dalam satu halaman yang cepat dan mobile-friendly.
+                Landing page profesional bisnis sewa kos properti di Bobong. Dibangun menggunakan HTML5, CSS3, dan Vanilla JavaScript ES6 murni. Menampilkan Hero Section animasi gradient glassmorphism, galeri 4 tipe kamar lengkap dengan spesifikasi & tabel harga (harian/bulanan/tahunan), Kalkulator Harga Real-time interaktif, FAQ accordion halus, Peta Lokasi SVG kustom (tanpa Google Maps API), serta tombol WA floating. Dihosting di Vercel dengan Cloudflare DNS & High Lighthouse Score.
               </p>
               <div className={styles.techTags}>
-                <span className={styles.techTag}>HTML & CSS</span>
-                <span className={styles.techTag}>Vanilla JavaScript</span>
-                <span className={styles.techTag}>Cloudflare Pages</span>
-                <span className={styles.techTag}>SEO Optimized</span>
-                <span className={styles.techTag}>Mobile-First</span>
+                <span className={styles.techTag}>HTML5 & CSS3</span>
+                <span className={styles.techTag}>Vanilla JS ES6</span>
+                <span className={styles.techTag}>Vercel Production</span>
+                <span className={styles.techTag}>Cloudflare DNS</span>
+                <span className={styles.techTag}>Lighthouse High Score</span>
               </div>
               <div style={{ marginTop: "32px" }}>
-                <a href="https://www.kosfitrah.uk" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                <a href="https://kosfitrah.uk" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
                   Kunjungi Website Kos
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -469,18 +468,18 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-home"></i> LIVE SYSTEM VIEW</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-home"></i> PROPERTY PORTAL SITE</span>
                 <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Kalkulator Estimasi Biaya Interaktif</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Galeri Tipe Kamar & Spesifikasi</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Integrasi WhatsApp & Google Maps</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Dark Mode & Responsive Design</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Galeri 4 Tipe Kamar & Tabel Harga</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Kalkulator Harga Real-time Interaktif</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Peta Lokasi SVG Kustom & FAQ Accordion</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Sticky Blur Nav & WA Floating Button</li>
               </ul>
               <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
-                  "Landing page bisnis kos pertama di Pulau Taliabu dengan kalkulator biaya digital dan dark mode."
+                  "Landing page sewa kos dengan kalkulasi instan dan performa memukau."
                 </span>
               </div>
             </div>
