@@ -20,8 +20,9 @@
 /* ── Continuous Marquee / Swiper Slider Container ── */
 .swiperContainer {
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
+  padding: 12px 0;
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
@@ -31,6 +32,7 @@
   align-items: center;
   gap: 32px;
   width: max-content;
+  padding: 8px 0;
   animation: infiniteScroll 30s linear infinite;
   will-change: transform;
 }

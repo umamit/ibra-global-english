@@ -1,6 +1,6 @@
 {
   "name": "next-app-temp",
-  "version": "3.25.0",
+  "version": "3.25.1",
   "private": true,
   "engines": {
     "node": "24.x"
