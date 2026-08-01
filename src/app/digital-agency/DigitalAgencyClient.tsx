@@ -137,6 +137,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
               height={80} 
               className={styles.logoImg} 
             />
+            <span className={styles.logoText}>IBRA Digital Engineering</span>
           </a>
           <nav className={styles.navLinks}>
             <a href="#features" className={styles.navLink}>Keunggulan</a>
