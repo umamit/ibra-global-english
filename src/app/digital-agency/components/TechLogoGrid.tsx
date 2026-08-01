@@ -94,6 +94,26 @@ export default function TechLogoGrid() {
           </svg>
           <span>Prisma ORM</span>
         </div>
+
+        {/* Vite */}
+        <div className={styles.techLogoItem}>
+          <svg className={styles.techLogoSvg} viewBox="0 0 410 404" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M399.641 40.5222L215.82 398.941C211.758 406.861 200.324 406.973 196.104 399.141L3.71714 41.4728C-0.840742 33.0135 7.1054 23.4682 16.2731 26.1158L202.977 80.068C205.894 80.9109 208.971 80.8711 211.865 79.9535L386.837 24.4746C396.095 21.5398 404.28 31.48 399.641 40.5222Z" fill="url(#vite_a)" />
+            <path d="M291.93 0.655848L193.303 19.3879C189.626 20.0864 186.757 23.0101 186.208 26.7161L170.835 130.436C170.178 134.872 174.153 138.647 178.536 137.769L223.364 128.789C228.106 127.839 231.848 132.553 230.129 137.07L203.87 206.07C202.046 210.863 207.251 215.358 211.597 212.753L224.237 205.176C228.648 202.532 233.978 206.877 232.222 211.703L203.498 290.672C201.59 295.918 207.412 300.673 300.999 296.868L300.999 296.868L291.93 0.655848Z" fill="url(#vite_b)" />
+            <defs>
+              <linearGradient id="vite_a" x1="20.7303" y1="24.4746" x2="202.977" y2="404" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#41D1FF" />
+                <stop offset="1" stopColor="#BD34FE" />
+              </linearGradient>
+              <linearGradient id="vite_b" x1="186.208" y1="0.655848" x2="232.222" y2="296.868" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#FFEA83" />
+                <stop offset="0.0833333" stopColor="#FFDD35" />
+                <stop offset="1" stopColor="#FFA800" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span>Vite</span>
+        </div>
       </div>
     </section>
   );
