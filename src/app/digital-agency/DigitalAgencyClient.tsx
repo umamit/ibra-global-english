@@ -342,21 +342,20 @@ Mohon hubungi saya kembali. Terima kasih!`;
 
           <div className={styles.showcase} style={{ marginTop: "40px" }}>
             <div className={styles.showcaseContent}>
-              <span className={styles.showcaseTag}>School Web Portal</span>
-              <h3 className={styles.showcaseTitle}>Website Resmi SD Negeri Bobong</h3>
+              <span className={styles.showcaseTag}>School Enterprise System</span>
+              <h3 className={styles.showcaseTitle}>Website Resmi & Portal Layanan Digital SD Negeri Bobong</h3>
               <p className={styles.showcaseDesc}>
-                Website profil sekolah dasar negeri pertama di Bobong, Kabupaten Pulau Taliabu. Menyediakan media informasi 
-                akademik resmi, kegiatan sekolah, galeri aktivitas siswa, data pendidik, serta alur pendaftaran siswa baru secara online.
+                Enterprise School Management System terpadu untuk SD Negeri Bobong. Dilengkapi desain Apple HIG 2.0 Bento Glassmorphism (Dual Theme), integrasi Groq Llama-3 AI Engine (Chatbot 24/7 & AI Draft Generator), Portal PPDB Online dengan cetak A4 & WhatsApp Gateway, Portal Cek Rapor NISN Mandiri, serta Dasbor Admin/Guru 4-kategori terproteksi JWT & Audit Log.
               </p>
               <div className={styles.techTags}>
-                <span className={styles.techTag}>Next.js</span>
-                <span className={styles.techTag}>Cloudflare Pages</span>
-                <span className={styles.techTag}>Tailwind CSS</span>
-                <span className={styles.techTag}>Apple HIG Theme</span>
-                <span className={styles.techTag}>SEO Optimized</span>
+                <span className={styles.techTag}>Next.js 16 (App Router)</span>
+                <span className={styles.techTag}>React 19</span>
+                <span className={styles.techTag}>Supabase PostgreSQL</span>
+                <span className={styles.techTag}>Groq Llama-3 AI</span>
+                <span className={styles.techTag}>Jose JWT Security</span>
               </div>
               <div style={{ marginTop: "32px" }}>
-                <a href="https://www.sdnegeribobong.sch.id" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                <a href="https://sdnegeribobong.sch.id" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
                   Kunjungi Website Sekolah
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -373,18 +372,18 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> LIVE SYSTEM VIEW</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> SCHOOL ENTERPRISE SYSTEM</span>
                 <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Official Academic Profiles</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Interactive Student Activity Gallery</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Online Enrollment Information</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Search Engine Optimized (.id domain)</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Apple HIG 2.0 Bento Glassmorphism</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Chatbot & News Generator Groq Llama-3 AI</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Portal PPDB Online, WA Gateway & Cetak A4</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Cek Rapor NISN Mandiri & Audit Log JWT</li>
               </ul>
               <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
-                  "Hadir sebagai pelopor portal digitalisasi sekolah dasar pertama di Pulau Taliabu."
+                  "Pelopor platform digitalisasi enterprise sekolah dasar berbasis AI pertama di Pulau Taliabu."
                 </span>
               </div>
             </div>
