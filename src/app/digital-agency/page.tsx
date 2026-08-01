@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/assets/logo.png",
+        url: "/assets/ide-logo.png",
         width: 512,
         height: 512,
         alt: "Ibra Digital Logo",
