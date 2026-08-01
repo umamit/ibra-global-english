@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import styles from "./digital-agency.module.css";
 import TechLogoGrid from "./components/TechLogoGrid";
+import WorkingProcess from "./components/WorkingProcess";
+import AboutUs from "./components/AboutUs";
 
 const FluidCanvas = dynamic(() => import("./components/FluidCanvas"), { ssr: false });
 
