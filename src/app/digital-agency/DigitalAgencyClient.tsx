@@ -192,6 +192,9 @@ Mohon hubungi saya kembali. Terima kasih!`;
           </div>
         </section>
 
+        {/* ── About Us Section ── */}
+        <AboutUs />
+
         {/* ── Tech Stack Showcase Section ── */}
         <TechLogoGrid />
 

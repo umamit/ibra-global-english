@@ -1,0 +1,206 @@
+.aboutSection {
+  background-color: var(--color-white);
+  padding: 90px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.aboutContainer {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .aboutContainer {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+.aboutContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.aboutBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background-color: var(--color-primary-light);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.aboutTitle {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  line-height: 1.25;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.aboutDesc {
+  font-size: 1.05rem;
+  color: var(--color-gray-600);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  margin-bottom: 36px;
+}
+
+@media (max-width: 576px) {
+  .servicesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.serviceCheckItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-gray-800);
+}
+
+.checkIconWrapper {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aboutActions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 14px 28px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform var(--transition-fast) cubic-bezier(0.34, 1.56, 0.64, 1), background-color var(--transition-fast);
+}
+
+.btnPrimary:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+.contactBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.phoneIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contactTextLabel {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.contactPhoneNumber {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  text-decoration: none;
+}
+
+.aboutCardVisual {
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 40px;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.visualHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.visualDot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+}
+
+.visualDotRed { background-color: var(--color-red); }
+.visualDotYellow { background-color: var(--color-yellow); }
+.visualDotGreen { background-color: var(--color-green); }
+
+.visualList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.visualItem {
+  background-color: var(--color-white);
+  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.visualItemTitle {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-gray-900);
+}
+
+.visualItemSub {
+  font-size: 0.8rem;
+  color: var(--color-gray-500);
+}
