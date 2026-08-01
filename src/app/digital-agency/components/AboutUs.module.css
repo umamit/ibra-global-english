@@ -1,8 +1,9 @@
 .aboutSection {
-  background-color: #eef2f5;
+  background-color: #f4f6f8;
   padding: 90px 24px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  width: 100%;
 }
 
 .aboutContainer {
@@ -150,7 +151,7 @@
 }
 
 .aboutCardVisual {
-  background-color: #f5f7fa;
+  background-color: #ffffff;
   border-radius: var(--radius-2xl);
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 40px;
@@ -184,7 +185,7 @@
 }
 
 .visualItem {
-  background-color: #f5f7fa;
+  background-color: #f8fafc;
   padding: 18px 20px;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(0, 0, 0, 0.04);

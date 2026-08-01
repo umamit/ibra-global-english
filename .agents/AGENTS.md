@@ -214,6 +214,10 @@ for path, line_no, emojis, content in matches:
     - Setiap komponen pembungkus latar belakang section (seperti `.section`, `.portfolioSectionWrapper`, `.processSection`, `.aboutSection`, dll.) WAJIB membentang penuh 100% dari ujung kiri ke ujung kanan layar browser (Full Bleed / Edge-to-Edge Layout).
     - DILARANG KERAS meletakkan padding horizontal pada elemen pembungkus utama induk (seperti `.pageWrapper`) yang dapat menahan atau memotong latar belakang section. Pembatasan lebar maksimum konten (`max-width: var(--container-max-width)` dan `margin: 0 auto`) HANYA boleh diterapkan pada elemen container internal di dalam section, bukan pada latar belakang section itu sendiri.
 
+21o. **Kunci Batas Presisi Latar Belakang Kartu (Strict Card Background Boundary Rule):**
+    - Setiap elemen latar belakang, gambar, dekorasi SVG, atau lapisan aksen yang ditempatkan di dalam atau sebagai latar belakang kartu (card) DILARANG KERAS melebihi atau keluar dari dimensi kartu tersebut (`overflow: hidden` wajib diterapkan pada pembungkus kartu).
+    - Ukuran latar belakang kartu harus dipastikan pas (*exact fit*) dan ter-kliping secara sempurna sesuai dengan batas dan kelengkungan sudut (`border-radius`) milik kartu itu sendiri, tanpa ada elemen yang offset atau meluber keluar.
+
 28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
     - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
 

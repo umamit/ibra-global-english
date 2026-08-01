@@ -1,21 +1,24 @@
-/* ── IBRA DIGITAL ENGINEERING ── */
+/* ── IBRA DIGITAL ENGINEERING — EDGE-TO-EDGE MODERN APPLE DESIGN ── */
 
+/* Induk utama 100% tanpa padding horizontal agar section di dalamnya bisa Full Bleed (Edge-to-Edge) */
 .pageWrapper {
-  background-color: #ebf0f4;
+  background-color: #f5f5f7;
   color: var(--color-gray-900);
   font-family: var(--font-sans);
   min-height: 100vh;
-  padding-top: 100px;
+  padding-top: 90px;
   overflow-x: hidden;
+  width: 100%;
 }
 
+/* ── Fixed Header Navbar ── */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 100px;
-  background-color: rgba(235, 240, 244, 0.9);
+  height: 90px;
+  background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -48,7 +51,7 @@
 }
 
 .logoImg {
-  height: 80px;
+  height: 70px;
   width: auto;
   display: block;
 }
@@ -87,28 +90,34 @@
   transform: translateY(-1px);
 }
 
-/* Hero Section */
+/* ── 1. Hero Section (Full Width Edge-to-Edge Soft Neutral) ── */
+.heroSectionWrapper {
+  width: 100%;
+  background-color: #f8fafc;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .hero {
   position: relative;
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 100px 24px 80px;
+  padding: 90px 24px 80px;
   text-align: center;
-  background: radial-gradient(circle at 50% 30%, rgba(33, 108, 126, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 30%, rgba(33, 108, 126, 0.07) 0%, transparent 65%);
 }
 
 .heroTagline {
   display: inline-block;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  background-color: rgba(33, 108, 126, 0.1);
+  background-color: rgba(33, 108, 126, 0.08);
   padding: 6px 16px;
   border-radius: var(--radius-full);
   margin-bottom: 24px;
-  border: 1px solid rgba(33, 108, 126, 0.15);
+  border: 1px solid rgba(33, 108, 126, 0.12);
 }
 
 .heroTitle {
@@ -128,11 +137,11 @@
 }
 
 .heroSubtitle {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   color: var(--color-gray-600);
   max-width: 760px;
   margin: 0 auto 40px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .heroActions {
@@ -178,18 +187,17 @@
   transform: translateY(-2px);
 }
 
-/* Features Grid */
+/* ── 2. Features / Keunggulan Section (Full Width Edge-to-Edge White #ffffff) ── */
+.featuresSectionWrapper {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .section {
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 80px 24px;
-}
-
-.portfolioSectionWrapper {
-  background-color: #ebf0f4;
-  width: 100%;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 90px 24px;
 }
 
 .sectionHeader {
@@ -198,17 +206,19 @@
 }
 
 .sectionTitle {
-  font-size: 2.2rem;
+  font-size: 2.25rem;
   font-weight: 800;
   margin-bottom: 16px;
   color: var(--color-gray-900);
+  letter-spacing: -0.02em;
 }
 
 .sectionDesc {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--color-gray-600);
-  max-width: 600px;
+  max-width: 650px;
   margin: 0 auto;
+  line-height: 1.6;
 }
 
 .grid {
@@ -217,59 +227,75 @@
   gap: 32px;
 }
 
+/* Kartu Putih Bersih di atas Latar Belakang Section */
 .card {
-  background-color: #e2e8f0;
-  padding: 40px 32px;
-  border-radius: var(--radius-xl);
+  background-color: #ffffff;
+  padding: 36px 30px;
+  border-radius: 18px;
   border: 1px solid rgba(0, 0, 0, 0.07);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  transition: transform var(--transition-normal) cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow var(--transition-normal);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 30px rgba(33, 108, 126, 0.12);
+  border-color: rgba(33, 108, 126, 0.2);
 }
 
 .iconWrapper {
-  width: 48px;
-  height: 48px;
-  background-color: rgba(33, 108, 126, 0.1);
-  border-radius: var(--radius-md);
+  width: 52px;
+  height: 52px;
+  background-color: rgba(33, 108, 126, 0.07);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-primary);
-  margin-bottom: 24px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(33, 108, 126, 0.12);
 }
 
 .cardTitle {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 800;
   margin-bottom: 12px;
   color: var(--color-gray-900);
 }
 
 .cardText {
   color: var(--color-gray-600);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.92rem;
+  line-height: 1.65;
 }
 
-/* Showcase Section */
+/* ── 3. Portfolio Section (Full Width Edge-to-Edge Soft Neutral #f4f6f8) ── */
+.portfolioSectionWrapper {
+  width: 100%;
+  background-color: #f4f6f8;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Showcase Card di dalam Portfolio (Kartu Putih Bersih) */
 .showcase {
-  background-color: #dbe3eb;
-  border-radius: var(--radius-3xl);
-  padding: 60px;
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 50px;
   display: flex;
   flex-direction: column;
   gap: 40px;
   align-items: center;
-  border: 1px solid rgba(33, 108, 126, 0.12);
-  margin-bottom: 80px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  margin-bottom: 48px;
 }
 
-@media (min-width: 768px) {
+.showcase:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
   .showcase {
     flex-direction: row;
     text-align: left;
@@ -282,33 +308,37 @@
 
 .showcaseTag {
   color: var(--color-accent);
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 800;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
   display: block;
 }
 
 .showcaseTitle {
-  font-size: 2rem;
+  font-size: 1.85rem;
   font-weight: 800;
   margin-bottom: 16px;
   color: var(--color-gray-900);
+  line-height: 1.25;
 }
 
 .showcaseDesc {
   color: var(--color-gray-600);
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.65;
   margin-bottom: 24px;
 }
 
 .showcaseCard {
   flex: 1;
-  background-color: #e5e9f0;
-  padding: 40px;
-  border-radius: var(--radius-2xl);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: #f8fafc;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow: hidden;
 }
 
 .techTags {
@@ -318,48 +348,55 @@
 }
 
 .techTag {
-  background-color: #d6e0ea;
+  background-color: rgba(33, 108, 126, 0.08);
   color: var(--color-primary-dark);
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 700;
   padding: 4px 12px;
   border-radius: var(--radius-full);
 }
 
-/* Pricing Section */
+/* ── 4. Pricing / Paket Harga Section (Full Width Edge-to-Edge White #ffffff) ── */
+.pricingSectionWrapper {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .pricingCard {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #e2e8f0;
+  background-color: #ffffff;
 }
 
 .featuredCard {
   border: 2px solid var(--color-primary);
-  transform: scale(1.02);
-  background-color: #dce4ed;
+  box-shadow: 0 12px 36px rgba(33, 108, 126, 0.18);
+  transform: scale(1.03);
 }
 
 .popularBadge {
   position: absolute;
-  top: -16px;
+  top: -14px;
   right: 24px;
   background-color: var(--color-primary);
   color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 14px;
   border-radius: var(--radius-full);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  box-shadow: 0 4px 10px rgba(33, 108, 126, 0.3);
 }
 
 .price {
   font-size: 2.2rem;
   font-weight: 800;
   color: var(--color-primary);
-  margin: 24px 0 16px;
+  margin: 20px 0 16px;
 }
 
 .featuresList {
@@ -375,7 +412,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--color-gray-600);
 }
 
@@ -383,19 +420,15 @@
   color: var(--color-primary);
 }
 
-/* Footer */
-.footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 40px 24px;
-  text-align: center;
-  background-color: #ebf0f4;
-  color: var(--color-gray-600);
-  font-size: 0.9rem;
+/* ── 5. FAQ Section (Full Width Edge-to-Edge Soft Neutral #f4f6f8) ── */
+.faqSectionWrapper {
+  width: 100%;
+  background-color: #f4f6f8;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* FAQ Accordion */
 .faqSection {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
 }
 
@@ -406,16 +439,17 @@
 }
 
 .faqItem {
-  background-color: #e2e8f0;
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  border-radius: 14px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .faqItemOpen {
   border-color: rgba(33, 108, 126, 0.3);
-  box-shadow: 0 4px 16px rgba(33, 108, 126, 0.08);
+  box-shadow: 0 6px 20px rgba(33, 108, 126, 0.1);
 }
 
 .faqQuestion {
@@ -423,7 +457,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
+  padding: 22px 26px;
   background: none;
   border: none;
   font-size: 1.05rem;
@@ -449,28 +483,34 @@
 }
 
 .faqAnswer {
-  padding: 0 24px 20px 24px;
+  padding: 0 26px 22px 26px;
   font-size: 0.95rem;
   color: var(--color-gray-600);
-  line-height: 1.6;
+  line-height: 1.65;
   border-top: 1px solid rgba(0, 0, 0, 0.04);
   margin-top: -4px;
-  padding-top: 16px;
+  padding-top: 18px;
 }
 
-/* Form Contact / Consult */
+/* ── 6. Contact / Form Section (Full Width Edge-to-Edge White #ffffff) ── */
+.contactSectionWrapper {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .formSection {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
-  background-color: #e2e8f0;
-  padding: 40px;
-  border-radius: var(--radius-2xl);
+  background-color: #ffffff;
+  padding: 44px 36px;
+  border-radius: 24px;
   border: 1px solid rgba(0, 0, 0, 0.07);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
 }
 
 .formGroup {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .formLabel {
@@ -485,14 +525,14 @@
 .formSelect,
 .formTextarea {
   width: 100%;
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: #f1f5f9;
+  background-color: #f8fafc;
   color: var(--color-gray-900);
   font-family: inherit;
   font-size: 0.95rem;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .formInput:focus,
@@ -507,17 +547,19 @@
   width: 100%;
   background-color: var(--color-primary);
   color: #ffffff;
-  padding: 14px;
-  border-radius: var(--radius-md);
-  font-size: 1rem;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1.05rem;
   font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  box-shadow: 0 4px 14px rgba(33, 108, 126, 0.25);
 }
 
 .btnSubmit:hover {
   background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
 }
 
 /* macOS Window Mockup */
@@ -537,7 +579,17 @@
 .macOSDotYellow { background-color: var(--color-yellow); }
 .macOSDotGreen { background-color: var(--color-green); }
 
-/* Responsive adjustments */
+/* ── 7. Footer (Full Width Edge-to-Edge Dark #164d57) ── */
+.footer {
+  width: 100%;
+  background-color: var(--color-primary-dark);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 50px 24px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   .heroTitle {
     font-size: 2.3rem;
@@ -546,9 +598,12 @@
     display: none;
   }
   .showcase {
-    padding: 30px 20px;
+    padding: 32px 20px;
   }
   .showcaseCard {
     padding: 24px;
+  }
+  .formSection {
+    padding: 30px 20px;
   }
 }
