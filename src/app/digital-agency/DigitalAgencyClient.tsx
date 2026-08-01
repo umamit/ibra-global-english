@@ -395,13 +395,12 @@ Mohon hubungi saya kembali. Terima kasih!`;
               <span className={styles.showcaseTag}>Attendance System App</span>
               <h3 className={styles.showcaseTitle}>Sistem Presensi Digital SD Negeri Bobong</h3>
               <p className={styles.showcaseDesc}>
-                Aplikasi sistem presensi dan absensi digital terintegrasi untuk SD Negeri Bobong. Dilengkapi pencatatan kehadiran pendidik 
-                dan siswa secara akurat, laporan rekapitulasi kehadiran otomatis, proteksi keunikan data harian, serta akses portal multi-level.
+                Aplikasi sistem presensi dan absensi digital terintegrasi khusus untuk Guru dan Tenaga Pendidik SD Negeri Bobong. Dilengkapi pencatatan kehadiran harian secara akurat, laporan rekapitulasi bulanan otomatis, proteksi keunikan data harian, serta akses portal admin terverifikasi.
               </p>
               <div className={styles.techTags}>
                 <span className={styles.techTag}>Next.js</span>
                 <span className={styles.techTag}>Supabase Storage & DB</span>
-                <span className={styles.techTag}>Realtime Attendance</span>
+                <span className={styles.techTag}>Teacher Attendance</span>
                 <span className={styles.techTag}>Apple HIG UI</span>
                 <span className={styles.techTag}>SSL Secured</span>
               </div>
@@ -423,11 +422,11 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> DIGITAL ATTENDANCE SYSTEM</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> TEACHER ATTENDANCE SYSTEM</span>
                 <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>Online System</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Presensi Harian Siswa & Guru</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Presensi Harian Guru & Tenaga Pendidik</li>
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Rekapitulasi Kehadiran Otomatis</li>
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Validasi Data Server-side Ketat</li>
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Tampilan Ringan & Kompatibel HP</li>
