@@ -1,4 +1,4 @@
-/* ── Section Wrapper ── */
+/* ── Section ── */
 .processSection {
   background-color: #f8fafb;
   border-top: 1px solid rgba(0, 0, 0, 0.04);
@@ -11,7 +11,7 @@
   margin: 0 auto;
 }
 
-/* ── Section Header ── */
+/* ── Header ── */
 .sectionHeader {
   text-align: center;
   margin-bottom: 70px;
@@ -48,73 +48,114 @@
   line-height: 1.6;
 }
 
-/* ── Grid 4 Kolom ── */
+/* ── Grid ── */
 .processGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: 24px;
-  row-gap: 36px;
+  row-gap: 60px;
 }
 
 @media (max-width: 1024px) {
-  .processGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .processGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 600px) {
-  .processGrid {
-    grid-template-columns: 1fr;
-    row-gap: 28px;
-  }
+  .processGrid { grid-template-columns: 1fr; row-gap: 48px; }
 }
 
-/* ── Card Wrapper: satu unit visual utuh ── */
-/*
-  Kunci utama:
-  - overflow: hidden → clipping SVG shape & card jadi satu potongan rapi
-  - border-radius: 16px → seluruh sudut terluar dikontrol di sini
-  - color: #dce7eb → diteruskan ke SVG via fill="currentColor"
-  - box-shadow di wrapper (bukan di card) → seluruh unit punya satu bayangan
-*/
+/* ─────────────────────────────────────────────
+   CARD WRAPPER
+   position: relative = titik acuan SVG absolut
+   padding-bottom / padding-top = ruang yang
+   memperlihatkan ujung SVG di bawah/atas kartu
+────────────────────────────────────────────── */
 .processCardWrapper {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border-radius: 16px;
-  color: #dce7eb;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
-  transition:
-    color var(--transition-normal),
-    transform var(--transition-normal) cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow var(--transition-normal);
+  position: relative;
+  transition: transform var(--transition-normal) cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .processCardWrapper:hover {
-  color: var(--color-primary);
-  transform: translateY(-8px);
-  box-shadow: 0 16px 36px rgba(33, 108, 126, 0.22);
+  transform: translateY(-6px);
 }
 
-/* ── Kartu Konten Putih ── */
-/*
-  Tidak ada box-shadow di sini — shadow sudah dihandle wrapper.
-  Tidak ada border-radius — overflow:hidden wrapper yang mengkliping sudut.
-*/
+/* typeDown: ujung SVG muncul di BAWAH kartu */
+.typeDown {
+  padding-bottom: 36px;
+}
+
+/* typeUp: ujung SVG muncul di ATAS kartu */
+.typeUp {
+  padding-top: 36px;
+}
+
+/* ─────────────────────────────────────────────
+   SVG SHAPE — Lapisan Bawah (z-index: 1)
+   Absolutely positioned sehingga tidak
+   mempengaruhi tinggi wrapper (sudah ditangani
+   padding-bottom / padding-top).
+   Kartu putih (z-index: 2) menutupi sebagian
+   besar SVG, hanya ujungnya yang terlihat.
+────────────────────────────────────────────── */
+.shapeWrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  line-height: 0;
+  font-size: 0;
+  color: #dce7eb;
+  transition: color var(--transition-normal);
+}
+
+/* typeDown: SVG dikaitkan di bagian BAWAH wrapper */
+.typeDown .shapeWrapper {
+  bottom: 0;
+}
+
+/* typeUp: SVG dikaitkan di bagian ATAS wrapper */
+.typeUp .shapeWrapper {
+  top: 0;
+}
+
+.processCardWrapper:hover .shapeWrapper {
+  color: var(--color-primary);
+}
+
+.cardShape {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────
+   KARTU PUTIH — Lapisan Atas (z-index: 2)
+   position: relative wajib agar z-index aktif.
+   Border-radius penuh karena tidak perlu
+   menyambung ke SVG (SVG sudah di belakang).
+────────────────────────────────────────────── */
 .processCard {
+  position: relative;
+  z-index: 2;
   background-color: var(--color-white);
-  padding: 30px 22px 24px;
+  padding: 30px 22px 26px;
+  border-radius: 16px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  flex: 1;
+  transition: box-shadow var(--transition-normal);
 }
 
-/* ── Icon Badge (di dalam card) ── */
+.processCardWrapper:hover .processCard {
+  box-shadow: 0 10px 30px rgba(33, 108, 126, 0.15);
+}
+
+/* ── Icon Badge (di dalam kartu) ── */
 .iconBadge {
-  width: 56px;
-  height: 56px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   background-color: rgba(33, 108, 126, 0.07);
   border: 2.5px solid var(--color-primary);
@@ -123,19 +164,17 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* Icon di ATAS → margin bawah sebelum nomor */
+/* Icon atas: margin bawah sebelum konten */
 .iconBadge:first-child {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
-/* Icon di BAWAH → margin atas setelah teks */
+/* Icon bawah: margin atas setelah konten */
 .iconBadge:last-child {
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .processCardWrapper:hover .iconBadge {
@@ -143,7 +182,7 @@
   color: var(--color-white);
 }
 
-/* ── Nomor Langkah ── */
+/* ── Step Number ── */
 .stepNumber {
   display: inline-block;
   font-size: 0.7rem;
@@ -157,7 +196,7 @@
   text-transform: uppercase;
 }
 
-/* ── Judul & Teks ── */
+/* ── Card Title & Text ── */
 .cardTitle {
   font-size: 1.05rem;
   font-weight: 800;
@@ -171,21 +210,4 @@
   color: var(--color-gray-600);
   line-height: 1.65;
   margin: 0;
-}
-
-/* ── SVG Shape — menyambung langsung tanpa celah ── */
-/*
-  line-height: 0 + font-size: 0 → hapus gap sub-pixel bawaan inline element
-  color diwarisi dari .processCardWrapper → SVG fill="currentColor" ikut berubah
-*/
-.shapeWrapper {
-  width: 100%;
-  line-height: 0;
-  font-size: 0;
-}
-
-.cardShape {
-  width: 100%;
-  height: auto;
-  display: block;  /* penting: hapus gap baseline inline SVG */
 }
