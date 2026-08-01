@@ -194,6 +194,66 @@
   transform: translateY(-2px);
 }
 
+/* ── Hero Statistics / Metrics Bar Card ── */
+.statsContainer {
+  margin-top: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 24px 40px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-gray-600);
+  margin-top: 4px;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 640px) {
+  .statsContainer {
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px 20px;
+  }
+  .statDivider {
+    width: 60%;
+    height: 1px;
+  }
+}
+
 /* ── 2. Features / Keunggulan Section (Full Bleed Edge-to-Edge White #ffffff) ── */
 .featuresSectionWrapper {
   width: 100%;
