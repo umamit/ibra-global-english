@@ -211,6 +211,15 @@ for path, line_no, emojis, content in matches:
     - AI DILARANG KERAS bertindak ceroboh, membuat kesalahan konyol, atau bertindak bodoh/tolol/goblok dengan melanggar aturan yang sudah ditetapkan sebelumnya (seperti menyelipkan emoji padahal ada Rule 21k, merusak layout, atau mengabaikan instruksi pengguna).
     - AI wajib selalu memeriksa ulang (*double-check*) setiap potongan kode, string teks, dan konfigurasi secara presisi sebelum melakukan modifikasi atau menjawab pengguna. Tingkat ketelitian dan profesionalisme wajib berada di standar tertinggi tanpa kompromi.
 
+28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
+    - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
+
+29. **Aturan Isolasi CSS Modules & Strik Bounded Layout (CSS Modules Isolation):**
+    - Setiap komponen UI baru wajib menggunakan CSS Module terisolasi (`[Nama].module.css`) maksimal 300 baris. Dilarang menulis CSS inline panjang di dalam JSX agar komponen tetap bersih.
+
+30. **Aturan Pengecekan Pre-Commit Ketat (Pre-Commit Verification Audit):**
+    - AI DILARANG KERAS melakukan `git commit` atau `git push` sebelum menjalankan verifikasi otomatis (seperti skrip scan emoji `python3` atau verifikasi lint/build) untuk memastikan tidak ada cacat yang lolos ke repository.
+
 ## Hallucination Prevention & Strict Constraints
 22. **Hallucination Prevention:** If you do not know the answer or lack sufficient context, state "I don't have enough information" and stop. Never guess or fabricate answers.
 23. **No Code/Dependency Invention:** Never invent API endpoints, library methods, library versions, or dependencies that do not exist in the codebase.
