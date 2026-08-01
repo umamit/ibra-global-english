@@ -130,6 +130,91 @@ const TECH_ITEMS = [
       </svg>
     ),
   },
+  {
+    name: "Groq AI",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="128" height="128" rx="28" fill="#F55036" />
+        <path d="M40 40h48v48H40z" fill="white" />
+        <circle cx="64" cy="64" r="14" fill="#F55036" />
+      </svg>
+    ),
+  },
+  {
+    name: "Tailwind CSS",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 68c4-8 12-14 22-14 14 0 18 10 26 10 8 0 14-6 18-14-4 8-12 14-22 14-14 0-18-10-26-10-8 0-14 6-18 14zm-16-24c4-8 12-14 22-14 14 0 18 10 26 10 8 0 14-6 18-14-4 8-12 14-22 14-14 0-18-10-26-10-8 0-14 6-18 14z" fill="#38BDF8" />
+      </svg>
+    ),
+  },
+  {
+    name: "Capacitor",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="128" height="128" rx="24" fill="#119EFF" />
+        <path d="M40 38l48 26-48 26V38z" fill="white" />
+      </svg>
+    ),
+  },
+  {
+    name: "Leaflet GPS",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M64 16C44.1 16 28 32.1 28 52c0 27 36 60 36 60s36-33 36-60c0-19.9-16.1-36-36-36zm0 48c-6.6 0-12-5.4-12-12s5.4-12 12-12 12 5.4 12 12-5.4 12-12 12z" fill="#199900" />
+      </svg>
+    ),
+  },
+  {
+    name: "Docker",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M120 60c-2.4 0-5.8 1.4-8 3-2.6-6-8.4-10-15-10-2.8 0-5.4.7-7.6 1.8C86.6 46.8 77 42 66 42c-2.4 0-4.8.2-7.1.7V34H48v8.7c-2.6.9-5.1 2-7.4 3.4V34H30v15c-3.1 2.5-5.8 5.6-7.8 9.2-2.7-1.4-5.8-2.2-9.2-2.2-8 0-14.8 4.7-17.8 11.5C-1 74.8 3.5 86 16 86c32 0 62.7 1.2 92.5-12.8 9.3-4.4 14.8-11.8 14.8-19.2 0-2.2-1.5-4-3.3-4zm-86 4h10v10H34V64zm14 0h10v10H48V64zm14 0h10v10H62V64zm14 0h10v10H76V64z" fill="#2496ED" />
+      </svg>
+    ),
+  },
+  {
+    name: "GraphQL",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M64 16l41.6 24v48L64 112 22.4 88V40L64 16zm0 14L34.5 47v34L64 98l29.5-17V47L64 30z" fill="#E535AB" />
+      </svg>
+    ),
+  },
+  {
+    name: "Node.js",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M64 16L20 41.4v50.8L64 112l44-24.8V41.4L64 16zm0 14.4l31.5 17.7v35.4L64 98.9 32.5 83.5V48.1L64 30.4z" fill="#5FA04E" />
+      </svg>
+    ),
+  },
+  {
+    name: "Redis",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 48l48-24 48 24-48 24-48-24zm0 24l48 24 48-24v16l-48 24-48-24V72zm0 24l48 24 48-24v16l-48 24-48-24V96z" fill="#DC382D" />
+      </svg>
+    ),
+  },
+  {
+    name: "PWA Native",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="128" height="128" rx="24" fill="#5A0FC8" />
+        <path d="M36 44h28c11 0 18 6 18 15s-7 15-18 15H48v20H36V44zm12 20h14c5 0 8-2 8-6s-3-6-8-6H48v12z" fill="white" />
+      </svg>
+    ),
+  },
+  {
+    name: "GSAP 3D",
+    svg: (
+      <svg className={styles.techLogoSvg} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="128" height="128" rx="24" fill="#88CE02" />
+        <path d="M40 64l24-24 24 24-24 24-24-24z" fill="black" />
+      </svg>
+    ),
+  },
 ];
 
 // Duplicate items twice to ensure seamless continuous 3D loop scrolling (Swiper style)
