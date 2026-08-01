@@ -1,5 +1,5 @@
 .aboutSection {
-  background-color: var(--color-white);
+  background-color: #eef2f5;
   padding: 90px 24px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -150,7 +150,7 @@
 }
 
 .aboutCardVisual {
-  background-color: var(--color-gray-50);
+  background-color: #f5f7fa;
   border-radius: var(--radius-2xl);
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 40px;

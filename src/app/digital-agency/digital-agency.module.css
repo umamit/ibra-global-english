@@ -1,7 +1,7 @@
 /* ── IBRA DIGITAL ENGINEERING ── */
 
 .pageWrapper {
-  background-color: var(--color-gray-50);
+  background-color: #eef2f5;
   color: var(--color-gray-900);
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -15,7 +15,7 @@
   left: 0;
   right: 0;
   height: 100px;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(238, 242, 245, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -217,7 +217,7 @@
 }
 
 .card {
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
   padding: 40px 32px;
   border-radius: var(--radius-xl);
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -301,7 +301,7 @@
 
 .showcaseCard {
   flex: 1;
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
   padding: 40px;
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
@@ -382,7 +382,7 @@
 .formSection {
   max-width: 600px;
   margin: 0 auto;
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
   padding: 40px;
   border-radius: var(--radius-2xl);
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -450,7 +450,7 @@
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   padding: 40px 24px;
   text-align: center;
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
   color: var(--color-gray-500);
   font-size: 0.9rem;
 }
@@ -476,7 +476,7 @@
 }
 
 .faqItem {
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 14px;
   overflow: hidden;
@@ -636,7 +636,7 @@
 }
 
 .techShowcaseSection {
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
   border-top: 1px solid rgba(0, 0, 0, 0.04);
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   padding: 50px 24px;
