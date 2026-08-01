@@ -69,13 +69,14 @@ export async function generateMetadata(): Promise<Metadata> {
       title: defaultTitle,
       description,
       url: "https://www.ibraglobalenglish.uk/",
+      siteName: "PT. IBRA Global English",
       type: "website",
       images: [
         {
           url: heroImage,
           width: 512,
           height: 512,
-          alt: "Ibra Global English Logo",
+          alt: "PT. IBRA Global English Logo",
         }
       ],
     },
@@ -89,10 +90,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "PT. IBRA Global English",
+  "alternateName": ["PT IBRA Global English", "Ibra Global English Bobong", "Ibra Global English"],
+  "url": "https://www.ibraglobalenglish.uk/"
+};
+
 const educationalOrgSchema = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "name": "Ibra Global English Bobong",
+  "name": "PT. IBRA Global English",
+  "alternateName": "Ibra Global English Bobong",
   "image": "https://www.ibraglobalenglish.uk/assets/logo.png",
   "url": "https://www.ibraglobalenglish.uk/",
   "telephone": "+6281357001357",
@@ -262,6 +272,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
 
         {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+          nonce={nonce}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(educationalOrgSchema) }}
