@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Tes Penempatan Bahasa Inggris Online | Ibra Global English Bobong",
   description: "Uji kemampuan bahasa Inggris Anda secara gratis dalam 10 menit. Dapatkan skor instan, analisis tingkat kemampuan (Beginner/Intermediate/Advanced), dan sertifikat digital resmi.",
   alternates: {
-    canonical: "/placement-test",
+    canonical: "https://www.ibraglobalenglish.uk/placement-test",
   },
   openGraph: {
     title: "Tes Penempatan Bahasa Inggris Online | Ibra Global English",

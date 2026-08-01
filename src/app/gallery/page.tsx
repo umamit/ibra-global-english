@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Galeri Kegiatan Siswa | Ibra Global English Bobong",
   description: "Lihat galeri foto dokumentasi keseruan belajar, latihan percakapan, dan kelas interaktif di Ibra Global English Bobong, Pulau Taliabu.",
   alternates: {
-    canonical: "/gallery",
+    canonical: "https://www.ibraglobalenglish.uk/gallery",
   },
   openGraph: {
     title: "Galeri Kegiatan Siswa | Ibra Global English Bobong",

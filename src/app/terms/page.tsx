@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Syarat & Ketentuan - Ibra Global English Bobong",
   description: "Syarat dan ketentuan layanan resmi bimbingan belajar dan kursus bahasa Inggris PT Ibra Global English Bobong.",
   alternates: {
-    canonical: "/terms",
+    canonical: "https://www.ibraglobalenglish.uk/terms",
   },
 };
 

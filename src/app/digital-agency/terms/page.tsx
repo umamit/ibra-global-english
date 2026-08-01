@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Syarat & Ketentuan - Ibra Digital Engineering",
   description: "Syarat dan ketentuan layanan resmi pengerjaan proyek website dan aplikasi digital oleh Ibra Digital Engineering.",
   alternates: {
-    canonical: "/digital-agency/terms",
+    canonical: "https://digital.ibraglobalenglish.uk/terms",
   },
 };
 

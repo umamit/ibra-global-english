@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Kebijakan Privasi - Ibra Digital Engineering",
   description: "Kebijakan privasi resmi pengumpulan dan pengelolaan data klien oleh Ibra Digital Engineering.",
   alternates: {
-    canonical: "/digital-agency/privacy",
+    canonical: "https://digital.ibraglobalenglish.uk/privacy",
   },
 };
 

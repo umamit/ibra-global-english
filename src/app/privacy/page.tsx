@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Kebijakan Privasi - Ibra Global English Bobong",
   description: "Kebijakan privasi resmi PT Ibra Global English mengenai pengumpulan, penggunaan, dan perlindungan data siswa serta orang tua.",
   alternates: {
-    canonical: "/privacy",
+    canonical: "https://www.ibraglobalenglish.uk/privacy",
   },
 };
 

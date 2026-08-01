@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Cetak Formulir Pendaftaran Offline | Ibra Global English Bobong",
   description: "Unduh, cetak, dan isi formulir pendaftaran fisik resmi untuk bergabung dengan program kursus Bahasa Inggris atau bimbingan Calistung Ibra Global English Bobong.",
   alternates: {
-    canonical: "/formulir-offline",
+    canonical: "https://www.ibraglobalenglish.uk/formulir-offline",
   },
   openGraph: {
     title: "Cetak Formulir Pendaftaran Offline | Ibra Global English Bobong",

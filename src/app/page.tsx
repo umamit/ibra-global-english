@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "belajar bahasa inggris taliabu"
     ],
     alternates: {
-      canonical: "/",
+      canonical: "https://www.ibraglobalenglish.uk",
     },
     openGraph: {
       title,

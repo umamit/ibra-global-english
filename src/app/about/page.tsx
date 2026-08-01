@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Tentang Kami | Ibra Global English Bobong",
   description: "Profil lengkap, visi, misi, legalitas SK Kemenkumham, badan hukum PT Ibra Global English, serta daftar tim pengajar/tutor profesional kami di Pulau Taliabu.",
   alternates: {
-    canonical: "/about",
+    canonical: "https://www.ibraglobalenglish.uk/about",
   },
   openGraph: {
     title: "Tentang Kami | Ibra Global English Bobong",

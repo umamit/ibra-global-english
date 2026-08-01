@@ -59,7 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     metadataBase: new URL("https://www.ibraglobalenglish.uk"),
     alternates: {
-      canonical: "/",
+      canonical: "https://www.ibraglobalenglish.uk",
     },
     robots: {
       index: true,
