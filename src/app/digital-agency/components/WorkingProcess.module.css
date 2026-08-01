@@ -50,7 +50,8 @@
 .processGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 28px;
+  column-gap: 28px;
+  row-gap: 60px; /* Jarak vertikal diperlonggar agar ikon melayang tidak bertabrakan */
 }
 
 @media (max-width: 1024px) {
