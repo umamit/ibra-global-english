@@ -291,19 +291,17 @@ Mohon hubungi saya kembali. Terima kasih!`;
           
           <div className={styles.showcase}>
             <div className={styles.showcaseContent}>
-              <span className={styles.showcaseTag}>Peak Performance Case Study</span>
+              <span className={styles.showcaseTag}>LMS & Educational Management System</span>
               <h3 className={styles.showcaseTitle}>Portal Belajar & LMS Ibra Global English</h3>
               <p className={styles.showcaseDesc}>
-                Sistem portal bimbingan belajar bahasa Inggris terintegrasi. Memiliki dasbor multi-peran (Admin, Tutor, Wali Murid, Siswa), 
-                sistem absensi terproteksi, pencatatan SPP online terverifikasi, ujian penempatan (Placement Test) digital dengan timer aktif, 
-                dan real-time WebSocket database syncing.
+                Modern Educational Management System hulu-ke-hilir untuk bimbingan belajar. Menampilkan CMS Landing Page dinamis, Placement Test CEFR online dengan Smart Timer, SPP & Keuangan Digital terverifikasi (WA Push & Financial Analytics), Portal Orang Tua/Siswa (Rapor & Kartu SPP Digital), Jadwal Bebas Bentrok (Conflict Prevention), serta AI Engine & RAG Integration (RPP Generator, AI Executive Summary, & E-Sertifikat).
               </p>
               <div className={styles.techTags}>
-                <span className={styles.techTag}>Next.js 16</span>
-                <span className={styles.techTag}>Supabase Database</span>
+                <span className={styles.techTag}>Next.js 16 (App Router)</span>
+                <span className={styles.techTag}>Supabase Realtime & SSR Auth</span>
                 <span className={styles.techTag}>Prisma ORM</span>
-                <span className={styles.techTag}>Tailwind CSS</span>
-                <span className={styles.techTag}>Apple HIG Theme</span>
+                <span className={styles.techTag}>AI Engine & RAG</span>
+                <span className={styles.techTag}>Apple HIG System</span>
               </div>
               <div style={{ marginTop: "32px" }}>
                 <a href="https://www.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
@@ -323,18 +321,18 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> LIVE SYSTEM VIEW</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> LMS ENTERPRISE PLATFORM</span>
                 <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Realtime Attendance Logs</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Interactive Placement Quiz & Timer</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Secured Role-Based Access Control</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> WhatsApp Push Notifications</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Dynamic CMS, Placement Test CEFR & Smart Timer</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> SPP Digital, WA Automation & Financial Analytics</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Conflict Prevention Schedule & Attendance Control</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Smart AI RAG (RPP & Executive Summary Generator)</li>
               </ul>
               <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
-                  "Platform ini dirancang khusus untuk memotong waktu administrasi harian kursus hingga 80%."
+                  "Platform sistem manajemen pendidikan modern terintegrasi dari hulu ke hilir."
                 </span>
               </div>
             </div>
