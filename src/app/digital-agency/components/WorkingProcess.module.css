@@ -1,9 +1,11 @@
-/* ── Section ── */
+/* ── Section Wrapper ── */
 .processSection {
-  background-color: #f8fafb;
-  border-top: 1px solid rgba(0, 0, 0, 0.04);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  padding: 90px 24px;
+  background-color: #f8fafc;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 100px 24px;
+  position: relative;
+  overflow: hidden;
 }
 
 .processContainer {
@@ -11,7 +13,7 @@
   margin: 0 auto;
 }
 
-/* ── Header ── */
+/* ── Section Header ── */
 .sectionHeader {
   text-align: center;
   margin-bottom: 70px;
@@ -20,20 +22,21 @@
 .sectionBadge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
+  gap: 8px;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--color-primary);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  background-color: var(--color-primary-light);
-  padding: 6px 14px;
+  letter-spacing: 0.12em;
+  background-color: rgba(33, 108, 126, 0.08);
+  padding: 6px 16px;
   border-radius: var(--radius-full);
   margin-bottom: 16px;
+  border: 1px solid rgba(33, 108, 126, 0.12);
 }
 
 .sectionTitle {
-  font-size: 2.2rem;
+  font-size: 2.25rem;
   font-weight: 800;
   color: var(--color-gray-900);
   margin-bottom: 16px;
@@ -43,174 +46,192 @@
 .sectionDesc {
   font-size: 1.05rem;
   color: var(--color-gray-600);
-  max-width: 720px;
+  max-width: 700px;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-/* ── Grid ── */
+/* ── Grid Layout ── */
 .processGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  column-gap: 24px;
-  row-gap: 56px;
+  column-gap: 28px;
+  row-gap: 48px;
+  position: relative;
 }
 
-@media (max-width: 1024px) {
-  .processGrid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 1100px) {
+  .processGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-@media (max-width: 600px) {
-  .processGrid { grid-template-columns: 1fr; row-gap: 44px; }
+@media (max-width: 640px) {
+  .processGrid {
+    grid-template-columns: 1fr;
+    row-gap: 40px;
+  }
 }
 
-/* ─────────────────────────────────────────────────────
-   CARD WRAPPER
-   - position: relative = titik acuan SVG strip
-   - typeDown: padding-bottom = lebar ujung SVG yang terlihat di bawah
-   - typeUp:   padding-top   = lebar ujung SVG yang terlihat di atas
-────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   PROCESS CARD WRAPPER
+   Menyediakan konteks positioning untuk
+   Lapisan Belakang (Back Layer Aksen) & Depan
+────────────────────────────────────────────── */
 .processCardWrapper {
   position: relative;
-  transition: transform var(--transition-normal) cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .processCardWrapper:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
+}
+
+/* ─────────────────────────────────────────────
+   LAPISAN BELAKANG AKSEN (BACK ACCENT LAYER)
+   Mengintip rapi di bagian Atas atau Bawah Kartu
+────────────────────────────────────────────── */
+.backAccentLayer {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  z-index: 1;
+  box-shadow: 0 8px 20px rgba(33, 108, 126, 0.25);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.accentBadgeText {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--color-white);
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+}
+
+/* Tipe Down: Lapisan Aksen Mengintip di BAWAH */
+.typeDown .backAccentLayer {
+  bottom: 0;
+  align-items: flex-end;
+  padding-bottom: 8px;
 }
 
 .typeDown {
-  padding-bottom: 44px; /* ujung SVG terlihat 44px di bawah kartu */
+  padding-bottom: 24px;
+}
+
+/* Tipe Up: Lapisan Aksen Mengintip di ATAS */
+.typeUp .backAccentLayer {
+  top: 0;
+  align-items: flex-start;
+  padding-top: 8px;
 }
 
 .typeUp {
-  padding-top: 44px; /* ujung SVG terlihat 44px di atas kartu */
+  padding-top: 24px;
 }
 
-/* ─────────────────────────────────────────────────────
-   KARTU PUTIH — Lapisan Atas (z-index: 2)
-   Harus position:relative agar z-index bekerja.
-   Box-shadow full karena tidak perlu menyambung ke SVG.
-────────────────────────────────────────────────────── */
-.processCard {
+/* Hover Accent Color Shift ke Warna Emas Paten (#A68849) */
+.processCardWrapper:hover .backAccentLayer {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #8c7138 100%);
+  box-shadow: 0 10px 24px rgba(166, 136, 73, 0.35);
+}
+
+/* ─────────────────────────────────────────────
+   KARTU DEPAN UTAMA (MAIN CARD)
+   Apple HIG Style: White Card, High Contrast
+────────────────────────────────────────────── */
+.mainCard {
   position: relative;
   z-index: 2;
-  background-color: var(--color-white);
-  padding: 30px 22px 26px;
-  border-radius: 16px;
-  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-radius: 18px;
+  padding: 28px 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: box-shadow var(--transition-normal);
+  height: 100%;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.processCardWrapper:hover .processCard {
-  box-shadow: 0 10px 30px rgba(33, 108, 126, 0.16);
+.processCardWrapper:hover .mainCard {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.09);
+  border-color: rgba(33, 108, 126, 0.2);
 }
 
-/* ── Icon Badge ── */
-.iconBadge {
+/* ── Icon Container ── */
+.iconContainer {
   width: 54px;
   height: 54px;
-  border-radius: 50%;
-  background-color: rgba(33, 108, 126, 0.07);
-  border: 2.5px solid var(--color-primary);
+  border-radius: 16px;
+  background-color: rgba(33, 108, 126, 0.06);
   color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  border: 1px solid rgba(33, 108, 126, 0.15);
+  transition: all 0.3s ease;
 }
 
-.iconBadge:first-child { margin-bottom: 16px; }
-.iconBadge:last-child  { margin-top: 18px; }
+.iconContainer:first-child {
+  margin-bottom: 18px;
+}
 
-.processCardWrapper:hover .iconBadge {
+.iconContainer:last-child {
+  margin-top: 20px;
+}
+
+.processCardWrapper:hover .iconContainer {
   background-color: var(--color-primary);
-  color: var(--color-white);
+  color: #ffffff;
+  border-color: var(--color-primary);
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(33, 108, 126, 0.3);
 }
 
-/* ── Step Number ── */
-.stepNumber {
-  display: inline-block;
-  font-size: 0.7rem;
+/* ── Card Header Info ── */
+.cardHeaderInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stepTag {
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.14em;
   color: var(--color-primary);
   background-color: rgba(33, 108, 126, 0.08);
-  padding: 3px 10px;
+  padding: 3px 12px;
   border-radius: var(--radius-full);
-  margin-bottom: 10px;
-  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .cardTitle {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  color: var(--color-primary-dark);
-  margin-bottom: 10px;
-  line-height: 1.3;
-}
-
-.cardText {
-  font-size: 0.85rem;
-  color: var(--color-gray-600);
-  line-height: 1.65;
+  color: var(--color-gray-900);
+  line-height: 1.35;
   margin: 0;
 }
 
-/* ─────────────────────────────────────────────────────
-   SVG SHAPE STRIP — Lapisan Bawah (z-index: 1)
-
-   Kunci desain:
-   - position: absolute → tidak mempengaruhi layout
-   - height: 44px + overflow: hidden → HANYA ujung SVG terlihat
-   - display: flex → kontrol bagian SVG yang muncul ke layar
-
-   shapeDown (typeDown):
-     bottom: 0, align-items: flex-end
-     → SVG sejajar bawah wrapper → bagian BAWAH SVG tampil
-     → terlihat = notch kiri-bawah ShapeDown ✓
-
-   shapeUp (typeUp):
-     top: 0, align-items: flex-start
-     → SVG sejajar atas wrapper → bagian ATAS SVG tampil
-     → terlihat = notch kiri-atas ShapeUp ✓
-────────────────────────────────────────────────────── */
-.shapeWrapper {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 44px;          /* hanya 44px yang terlihat */
-  overflow: hidden;      /* potong sisa SVG */
-  z-index: 1;
-  display: flex;
-  color: #dce7eb;
-  transition: color var(--transition-normal);
-}
-
-.processCardWrapper:hover .shapeWrapper {
-  color: var(--color-primary);
-}
-
-/* SVG strip di BAWAH kartu — tampilkan bagian bawah SVG */
-.shapeDown {
-  bottom: 0;
-  align-items: flex-end; /* dorong SVG ke bawah wrapper → bottom SVG visible */
-}
-
-/* SVG strip di ATAS kartu — tampilkan bagian atas SVG */
-.shapeUp {
-  top: 0;
-  align-items: flex-start; /* dorong SVG ke atas wrapper → top SVG visible */
-}
-
-.cardShape {
-  width: 100%;
-  height: auto;
-  flex-shrink: 0;
-  display: block;
+/* ── Card Text ── */
+.cardText {
+  font-size: 0.875rem;
+  color: #59616e; /* WCAG AA Contrast Compliance */
+  line-height: 1.65;
+  margin: 0;
 }
