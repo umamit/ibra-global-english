@@ -659,7 +659,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
       </div>
       </main>
 
-      {/* ── Footer (Full Bleed Edge-to-Edge Dark #164d57) ── */}
+      {/* ── Footer (Full Bleed Edge-to-Edge Soft Light Teal #eef6f8) ── */}
       <footer className={styles.footer}>
         <div style={{ marginBottom: "16px", display: "flex", justifyContent: "center" }}>
           <img 
@@ -668,17 +668,16 @@ Mohon hubungi saya kembali. Terima kasih!`;
             width={156} 
             height={85} 
             loading="lazy"
-            style={{ filter: "brightness(0) invert(1)", opacity: 0.9 }}
           />
         </div>
-        <p style={{ color: "#ffffff", fontWeight: 500 }}>&copy; {new Date().getFullYear()} Ibra Digital Engineering. All rights reserved.</p>
+        <p style={{ color: "var(--color-gray-700)", fontWeight: 600 }}>&copy; {new Date().getFullYear()} Ibra Digital Engineering. All rights reserved.</p>
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "10px", fontSize: "0.88rem" }}>
-          <a href="/digital-agency/terms" style={{ color: "rgba(255, 255, 255, 0.85)", textDecoration: "none", fontWeight: "600" }}>Syarat & Ketentuan</a>
-          <span style={{ color: "rgba(255, 255, 255, 0.4)" }}>|</span>
-          <a href="/digital-agency/privacy" style={{ color: "rgba(255, 255, 255, 0.85)", textDecoration: "none", fontWeight: "600" }}>Kebijakan Privasi</a>
+          <a href="/digital-agency/terms" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "600" }}>Syarat & Ketentuan</a>
+          <span style={{ color: "rgba(33, 108, 126, 0.3)" }}>|</span>
+          <a href="/digital-agency/privacy" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "600" }}>Kebijakan Privasi</a>
         </div>
-        <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.75)", marginTop: "10px" }}>
-          Mitra resmi pengembangan teknologi <a href="https://www.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-accent)", textDecoration: "none", fontWeight: "bold" }}>Ibra Global English Bobong</a>.
+        <p style={{ fontSize: "0.85rem", color: "var(--color-gray-600)", marginTop: "10px" }}>
+          Mitra resmi pengembangan teknologi <a href="https://www.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary-dark)", textDecoration: "none", fontWeight: "800" }}>Ibra Global English Bobong</a>.
         </p>
       </footer>
 

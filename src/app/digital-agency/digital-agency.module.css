@@ -579,11 +579,12 @@
 .macOSDotYellow { background-color: var(--color-yellow); }
 .macOSDotGreen { background-color: var(--color-green); }
 
-/* ── 7. Footer (Full Width Edge-to-Edge Dark #164d57) ── */
+/* ── 7. Footer (Full Width Edge-to-Edge Soft Light Teal #eef6f8) ── */
 .footer {
   width: 100%;
-  background-color: var(--color-primary-dark);
-  color: rgba(255, 255, 255, 0.85);
+  background-color: #eef6f8;
+  color: var(--color-gray-600);
+  border-top: 1px solid rgba(33, 108, 126, 0.15);
   padding: 50px 24px;
   text-align: center;
   font-size: 0.9rem;
