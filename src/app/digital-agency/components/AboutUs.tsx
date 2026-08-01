@@ -56,8 +56,8 @@ export default function AboutUs() {
               </div>
               <div>
                 <div className={styles.contactTextLabel}>Hubungi Tim Rekayasa</div>
-                <a href="https://wa.me/6282297839396" target="_blank" rel="noopener noreferrer" className={styles.contactPhoneNumber}>
-                  +62 822-9783-9396
+                <a href="https://wa.me/6281357001357" target="_blank" rel="noopener noreferrer" className={styles.contactPhoneNumber}>
+                  +62 813-5700-1357
                 </a>
               </div>
             </div>
