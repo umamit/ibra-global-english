@@ -392,17 +392,17 @@ Mohon hubungi saya kembali. Terima kasih!`;
 
           <div className={styles.showcase} style={{ marginTop: "40px" }}>
             <div className={styles.showcaseContent}>
-              <span className={styles.showcaseTag}>Attendance System App</span>
-              <h3 className={styles.showcaseTitle}>Sistem Presensi Digital SD Negeri Bobong</h3>
+              <span className={styles.showcaseTag}>PWA & Native Android App</span>
+              <h3 className={styles.showcaseTitle}>Sistem Presensi Digital & Absensi Geofence GPS (SD Negeri Bobong)</h3>
               <p className={styles.showcaseDesc}>
-                Aplikasi sistem presensi dan absensi digital terintegrasi khusus untuk Guru dan Tenaga Pendidik SD Negeri Bobong. Dilengkapi pencatatan kehadiran harian secara akurat, laporan rekapitulasi bulanan otomatis, proteksi keunikan data harian, serta akses portal admin terverifikasi.
+                Aplikasi PWA & Native Android APK (5.6MB) khusus Guru dan Tenaga Pendidik SD Negeri Bobong. Dilengkapi fitur Geofence GPS (radius 10m anti-fake GPS), Live Selfie Verification dengan Eye-Blink Liveness Detection, penguncian shift otomatis (Time Gate), pengajuan izin paperless, serta ekspor rekapitulasi NIP bulanan 1-klik.
               </p>
               <div className={styles.techTags}>
-                <span className={styles.techTag}>Next.js</span>
-                <span className={styles.techTag}>Supabase Storage & DB</span>
-                <span className={styles.techTag}>Teacher Attendance</span>
-                <span className={styles.techTag}>Apple HIG UI</span>
-                <span className={styles.techTag}>SSL Secured</span>
+                <span className={styles.techTag}>React & TypeScript</span>
+                <span className={styles.techTag}>Supabase Backend</span>
+                <span className={styles.techTag}>Capacitor Engine</span>
+                <span className={styles.techTag}>Leaflet GPS API</span>
+                <span className={styles.techTag}>Apple HIG Dark Mode</span>
               </div>
               <div style={{ marginTop: "32px" }}>
                 <a href="https://presensi.sdnegeribobong.sch.id" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
@@ -422,18 +422,18 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
               </div>
               <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> TEACHER ATTENDANCE SYSTEM</span>
-                <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>Online System</span>
+                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-computer"></i> GEOFENCE GPS & PWA APP</span>
+                <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>APK 5.6 MB</span>
               </div>
               <ul className={styles.featuresList}>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Presensi Harian Guru & Tenaga Pendidik</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Rekapitulasi Kehadiran Otomatis</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Validasi Data Server-side Ketat</li>
-                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Tampilan Ringan & Kompatibel HP</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> GPS Geofence 10m & Polygon Map</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Live Selfie & Eye-Blink Liveness</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Auto Shift Time Gate (Pagi & Siang)</li>
+                <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Paperless Izin/Sakit & Rekap NIP</li>
               </ul>
               <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
-                  "Memodernisasi kedisiplinan dan pencatatan absensi sekolah secara digital dan akurat."
+                  "Sistem absensi geofence ultra-akurat berstandar PWA & Android Native App."
                 </span>
               </div>
             </div>
