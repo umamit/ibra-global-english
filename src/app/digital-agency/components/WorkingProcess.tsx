@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./WorkingProcess.module.css";
 
-/* ── SVG Shape Dekoratif ── */
+/* ── SVG Shape (hanya ujungnya yang akan terlihat) ── */
 const ShapeDown = () => (
   <svg
     className={styles.cardShape}
@@ -34,7 +34,6 @@ const ShapeUp = () => (
   </svg>
 );
 
-/* ── Data Langkah Proses ── */
 const PROCESS_STEPS = [
   {
     step: "01",
@@ -141,36 +140,39 @@ export default function WorkingProcess() {
         </div>
 
         <div className={styles.processGrid}>
-          {PROCESS_STEPS.map((item) => (
-            <div
-              key={item.step}
-              className={`${styles.processCardWrapper} ${
-                item.iconPosition === "bottom" ? styles.typeDown : styles.typeUp
-              }`}
-            >
-              {/*
-               * SVG shape = lapisan BAWAH (z-index: 1), absolutely positioned.
-               * Untuk typeDown → anker di bottom → ujung bawah muncul di bawah kartu.
-               * Untuk typeUp  → anker di top    → ujung atas muncul di atas kartu.
-               */}
-              <div className={styles.shapeWrapper}>
-                {item.iconPosition === "bottom" ? <ShapeDown /> : <ShapeUp />}
-              </div>
+          {PROCESS_STEPS.map((item) => {
+            const isDown = item.iconPosition === "bottom";
+            return (
+              <div
+                key={item.step}
+                className={`${styles.processCardWrapper} ${isDown ? styles.typeDown : styles.typeUp}`}
+              >
+                {/* Kartu putih — LAPISAN ATAS (z-index: 2) */}
+                <article className={styles.processCard}>
+                  {item.iconPosition === "top" && (
+                    <div className={styles.iconBadge}>{item.icon}</div>
+                  )}
+                  <span className={styles.stepNumber}>{item.step}</span>
+                  <h3 className={styles.cardTitle}>{item.title}</h3>
+                  <p className={styles.cardText}>{item.desc}</p>
+                  {item.iconPosition === "bottom" && (
+                    <div className={styles.iconBadge}>{item.icon}</div>
+                  )}
+                </article>
 
-              {/* Kartu putih = lapisan ATAS (z-index: 2) */}
-              <article className={styles.processCard}>
-                {item.iconPosition === "top" && (
-                  <div className={styles.iconBadge}>{item.icon}</div>
-                )}
-                <span className={styles.stepNumber}>{item.step}</span>
-                <h3 className={styles.cardTitle}>{item.title}</h3>
-                <p className={styles.cardText}>{item.desc}</p>
-                {item.iconPosition === "bottom" && (
-                  <div className={styles.iconBadge}>{item.icon}</div>
-                )}
-              </article>
-            </div>
-          ))}
+                {/*
+                 * SVG strip — LAPISAN BAWAH (z-index: 1)
+                 * Wrapper berukuran fixed (44px), overflow:hidden
+                 * sehingga hanya UJUNG SVG yang terlihat.
+                 * align-items: flex-end → tampilkan bagian BAWAH SVG (typeDown)
+                 * align-items: flex-start → tampilkan bagian ATAS SVG (typeUp)
+                 */}
+                <div className={`${styles.shapeWrapper} ${isDown ? styles.shapeDown : styles.shapeUp}`}>
+                  {isDown ? <ShapeDown /> : <ShapeUp />}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
       </div>
