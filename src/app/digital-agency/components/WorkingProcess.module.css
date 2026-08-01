@@ -1,3 +1,4 @@
+/* ── Section Wrapper ── */
 .processSection {
   background-color: #f8fafb;
   border-top: 1px solid rgba(0, 0, 0, 0.04);
@@ -10,9 +11,10 @@
   margin: 0 auto;
 }
 
+/* ── Section Header ── */
 .sectionHeader {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 70px;
 }
 
 .sectionBadge {
@@ -46,12 +48,12 @@
   line-height: 1.6;
 }
 
-/* ── Grid 4 Kolom Identik ── */
+/* ── Grid 4 Kolom ── */
 .processGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  column-gap: 28px;
-  row-gap: 60px; /* Jarak vertikal diperlonggar agar ikon melayang tidak bertabrakan */
+  column-gap: 24px;
+  row-gap: 80px;
 }
 
 @media (max-width: 1024px) {
@@ -63,56 +65,100 @@
 @media (max-width: 600px) {
   .processGrid {
     grid-template-columns: 1fr;
+    row-gap: 64px;
   }
 }
 
-/* ── Container Kartu Utama dengan Efek Arch Head ── */
+/* ── Card Wrapper ── */
 .processCardWrapper {
   position: relative;
-  background-color: #dce7eb; /* Teal muda transparan default */
-  border-radius: 28px 28px 20px 20px;
-  padding-top: 14px;
-  transition: transform var(--transition-normal) cubic-bezier(0.34, 1.56, 0.64, 1), background-color var(--transition-normal), box-shadow var(--transition-normal);
+  /* Ruang ekstra: atas untuk iconBadgeTop, bawah untuk SVG shape + iconBadgeBottom */
 }
 
-.processCardWrapper:hover {
-  transform: translateY(-8px);
-  background-color: var(--color-primary); /* Berubah menjadi warna Teal Utama terang saat hover */
-  box-shadow: 0 14px 30px rgba(33, 108, 126, 0.25);
+/* Tipe BAWAH (ganjil): icon melayang di bawah → tambah padding bawah */
+.typeDown {
+  padding-bottom: 48px;
 }
 
-/* Kartu Putih Utama */
+/* Tipe ATAS (genap): icon melayang di atas → tambah padding atas */
+.typeUp {
+  padding-top: 48px;
+}
+
+/* ── Kartu Konten Putih ── */
 .processCard {
   background-color: var(--color-white);
-  padding: 40px 24px 50px 24px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  padding: 32px 24px 28px 24px;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   position: relative;
-  min-height: 280px;
+  z-index: 1;
+  min-height: 260px;
+  transition: box-shadow var(--transition-normal);
 }
 
+.processCardWrapper:hover .processCard {
+  box-shadow: 0 8px 32px rgba(33, 108, 126, 0.14);
+}
+
+/* ── Nomor Langkah ── */
+.stepNumber {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+  background-color: rgba(33, 108, 126, 0.08);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+
+/* ── Judul & Teks Kartu ── */
 .cardTitle {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--color-primary-dark);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
+  line-height: 1.3;
 }
 
 .cardText {
-  font-size: 0.92rem;
+  font-size: 0.875rem;
   color: var(--color-gray-600);
   line-height: 1.65;
   margin: 0;
 }
 
-/* ── Ikon Melayang di Atas atau di Bawah (Zig-Zag Layout) ── */
+/* ── SVG Shape Dekoratif (diadaptasi dari awwaltech.com) ── */
+.shapeWrapper {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  color: #dce7eb; /* Warna default shape: teal muda */
+  transition: color var(--transition-normal);
+}
+
+.cardShape {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Saat hover: shape berubah ke warna teal utama */
+.processCardWrapper:hover .shapeWrapper {
+  color: var(--color-primary);
+}
+
+/* ── Ikon Melayang di ATAS (kartu genap) ── */
 .iconBadgeTop {
   position: absolute;
-  top: -24px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 52px;
@@ -126,15 +172,23 @@
   justify-content: center;
   box-shadow: 0 6px 16px rgba(33, 108, 126, 0.18);
   z-index: 2;
+  transition: background-color var(--transition-normal), color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
+.processCardWrapper:hover .iconBadgeTop {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 10px 24px rgba(33, 108, 126, 0.35);
+}
+
+/* ── Ikon Melayang di BAWAH (kartu ganjil) ── */
 .iconBadgeBottom {
   position: absolute;
-  bottom: -26px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background-color: var(--color-white);
   border: 3px solid var(--color-primary);
@@ -144,4 +198,11 @@
   justify-content: center;
   box-shadow: 0 6px 16px rgba(33, 108, 126, 0.18);
   z-index: 2;
+  transition: background-color var(--transition-normal), color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.processCardWrapper:hover .iconBadgeBottom {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 10px 24px rgba(33, 108, 126, 0.35);
 }
