@@ -192,6 +192,13 @@
   padding: 80px 24px;
 }
 
+.portfolioSectionWrapper {
+  background-color: #eef2f5;
+  width: 100%;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .sectionHeader {
   text-align: center;
   margin-bottom: 60px;

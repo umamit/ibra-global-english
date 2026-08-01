@@ -257,8 +257,9 @@ Mohon hubungi saya kembali. Terima kasih!`;
         <WorkingProcess />
 
         {/* ── Portfolio Section ── */}
-        <section id="portfolio" className={styles.section}>
-          <div className={styles.sectionHeader}>
+        <div className={styles.portfolioSectionWrapper}>
+          <section id="portfolio" className={styles.section}>
+            <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Portofolio Unggulan</h2>
             <p className={styles.sectionDesc}>Lihat implementasi nyata dari standar teknologi dan desain yang kami janjikan.</p>
           </div>
@@ -304,7 +305,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Conflict Prevention Schedule & Attendance Control</li>
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Smart AI RAG (RPP & Executive Summary Generator)</li>
               </ul>
-              <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "#ebf0f4", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
                   "Platform sistem manajemen pendidikan modern terintegrasi dari hulu ke hilir."
                 </span>
@@ -353,7 +354,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Portal PPDB Online, WA Gateway & Cetak A4</li>
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Cek Rapor NISN Mandiri & Audit Log JWT</li>
               </ul>
-              <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "#ebf0f4", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
                   "Pelopor platform digitalisasi enterprise sekolah dasar berbasis AI pertama di Pulau Taliabu."
                 </span>
@@ -402,7 +403,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Auto Shift Time Gate (Pagi & Siang)</li>
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Paperless Izin/Sakit & Rekap NIP</li>
               </ul>
-              <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "#ebf0f4", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
                   "Sistem absensi geofence ultra-akurat berstandar PWA & Android Native App."
                 </span>
@@ -451,7 +452,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Peta Lokasi SVG Kustom & FAQ Accordion</li>
                 <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Sticky Blur Nav & WA Floating Button</li>
               </ul>
-              <div style={{ background: "var(--color-gray-50)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "#ebf0f4", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
                   "Landing page sewa kos dengan kalkulasi instan dan performa memukau."
                 </span>
@@ -459,6 +460,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
             </div>
           </div>
         </section>
+      </div>
 
         {/* ── Paket Harga Section ── */}
         <section id="pricing" className={styles.section}>
