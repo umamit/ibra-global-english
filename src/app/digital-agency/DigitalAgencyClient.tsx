@@ -177,7 +177,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
             </div>
 
             {/* ── Statistics / Metrics Bar ── */}
-            <div className={styles.statsContainer}>
+            <div className={styles.statsContainer} style={{ position: "relative", zIndex: 2 }}>
               <div className={styles.statCard}>
                 <div className={styles.statNumber}>100%</div>
                 <div className={styles.statLabel}>Kepuasan Klien</div>

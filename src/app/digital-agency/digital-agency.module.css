@@ -117,6 +117,8 @@
   border-radius: var(--radius-full);
   margin-bottom: 24px;
   border: 1px solid rgba(33, 108, 126, 0.12);
+  position: relative;
+  z-index: 2;
 }
 
 .heroTitle {
@@ -126,6 +128,8 @@
   margin-bottom: 24px;
   letter-spacing: -0.03em;
   color: var(--color-gray-900);
+  position: relative;
+  z-index: 2;
 }
 
 .gradientText {
@@ -141,6 +145,8 @@
   max-width: 760px;
   margin: 0 auto 40px;
   line-height: 1.65;
+  position: relative;
+  z-index: 2;
 }
 
 .heroActions {
@@ -148,6 +154,8 @@
   gap: 16px;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 .btnPrimary {
