@@ -131,7 +131,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
         <div className={styles.navContainer}>
           <a href="#" className={styles.logo}>
             <img 
-              src="/assets/ide-logo.png" 
+              src="/assets/ibra-digital-logo-v2.png" 
               alt="Ibra Digital Engineering Logo" 
               width={147} 
               height={80} 
@@ -663,7 +663,7 @@ Mohon hubungi saya kembali. Terima kasih!`;
       <footer className={styles.footer}>
         <div style={{ marginBottom: "16px", display: "flex", justifyContent: "center" }}>
           <img 
-            src="/assets/ide-logo.png" 
+            src="/assets/ibra-digital-logo-v2.png" 
             alt="Ibra Digital Engineering Logo" 
             width={156} 
             height={85} 
