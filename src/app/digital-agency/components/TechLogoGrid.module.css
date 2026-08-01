@@ -71,7 +71,7 @@
   transform: translateY(-4px) scale(1.04);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   border-color: rgba(33, 108, 126, 0.25);
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
 }
 
 .techLogoSvg {

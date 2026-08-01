@@ -184,7 +184,7 @@
 }
 
 .visualItem {
-  background-color: var(--color-white);
+  background-color: #f5f7fa;
   padding: 18px 20px;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(0, 0, 0, 0.04);
