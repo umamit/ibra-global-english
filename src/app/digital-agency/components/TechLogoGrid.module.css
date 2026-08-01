@@ -33,7 +33,7 @@
   gap: 32px;
   width: max-content;
   padding: 8px 0;
-  animation: infiniteScroll 30s linear infinite;
+  animation: infiniteScroll 75s linear infinite;
   will-change: transform;
 }
 
