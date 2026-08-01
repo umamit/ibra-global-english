@@ -263,7 +263,7 @@
 
 /* Showcase Section */
 .showcase {
-  background-color: var(--color-primary-light);
+  background-color: #ebf0f4;
   border-radius: var(--radius-3xl);
   padding: 60px;
   display: flex;
@@ -558,7 +558,7 @@
   margin: 48px auto 0;
   max-width: 800px;
   padding: 24px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(238, 242, 245, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.5);

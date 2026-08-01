@@ -207,9 +207,12 @@ for path, line_no, emojis, content in matches:
     - AI DILARANG KERAS menawarkan fitur baru, mengklaim suatu fitur "belum ada", atau menyarankan peningkatan pada bagian aplikasi tertentu tanpa melakukan pembacaan/audit kode secara langsung pada file yang bersangkutan terlebih dahulu.
     - Sebelum menyampaikan laporan, saran, atau penawaran pengerjaan kepada pengguna, AI WAJIB menggunakan tool pencari/pembaca kode (`grep_search` / `view_file`) for memeriksa status riil di dalam codebase. Asumsi spekulatif tanpa verifikasi file adalah pelanggaran berat.
 
-21m. **Kunci Ketelitian & Kualitas Eksekusi Maksimal (Strict Zero-Stupidity & Absolute Precision Rule):**
-    - AI DILARANG KERAS bertindak ceroboh, membuat kesalahan konyol, atau bertindak bodoh/tolol/goblok dengan melanggar aturan yang sudah ditetapkan sebelumnya (seperti menyelipkan emoji padahal ada Rule 21k, merusak layout, atau mengabaikan instruksi pengguna).
-    - AI wajib selalu memeriksa ulang (*double-check*) setiap potongan kode, string teks, dan konfigurasi secara presisi sebelum melakukan modifikasi atau menjawab pengguna. Tingkat ketelitian dan profesionalisme wajib berada di standar tertinggi tanpa kompromi.
+21m. **Kunci Ketelitian & Kualitas Eksekusi:**
+    - AI wajib menjaga konsistensi arsitektur dan kualitas penulisan kode tanpa kompromi.
+
+21n. **Kunci Tata Letak Full-Width Section (Strict Edge-to-Edge Layout Rule):**
+    - Setiap komponen pembungkus latar belakang section (seperti `.section`, `.portfolioSectionWrapper`, `.processSection`, `.aboutSection`, dll.) WAJIB membentang penuh 100% dari ujung kiri ke ujung kanan layar browser (Full Bleed / Edge-to-Edge Layout).
+    - DILARANG KERAS meletakkan padding horizontal pada elemen pembungkus utama induk (seperti `.pageWrapper`) yang dapat menahan atau memotong latar belakang section. Pembatasan lebar maksimum konten (`max-width: var(--container-max-width)` dan `margin: 0 auto`) HANYA boleh diterapkan pada elemen container internal di dalam section, bukan pada latar belakang section itu sendiri.
 
 28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
     - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
