@@ -248,6 +248,9 @@ Mohon hubungi saya kembali. Terima kasih!`;
           </div>
         </section>
 
+        {/* ── Working Process Section ── */}
+        <WorkingProcess />
+
         {/* ── Portfolio Section ── */}
         <section id="portfolio" className={styles.section}>
           <div className={styles.sectionHeader}>
