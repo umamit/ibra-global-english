@@ -141,32 +141,28 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-/* Neumorphic Glowing Backplate (Kartu Pendaran Belakang) */
+/* Pure Neumorphic Ambient Glow Layer (Cahaya Halo Belakang Presisi 1:1) */
 .glow-stack-backplate {
   position: absolute;
   inset: 0;
   border-radius: var(--radius-2xl, 20px);
-  background: linear-gradient(135deg, rgba(33, 108, 126, 0.15) 0%, rgba(166, 136, 73, 0.22) 100%);
-  border: 1px solid rgba(33, 108, 126, 0.15);
-  box-shadow: 0 4px 20px rgba(33, 108, 126, 0.08);
-  transform: scale(0.98) translateY(4px);
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-              opacity 0.5s ease,
-              background 0.5s ease;
-  opacity: 0.6;
+  background: transparent;
+  box-shadow: 0 4px 20px rgba(33, 108, 126, 0.06);
+  transition: box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.5s ease;
+  opacity: 0;
   pointer-events: none;
   z-index: 0;
 }
 
 .program-card-wrapper:hover .glow-stack-backplate {
-  transform: scale(1.02) translateY(6px);
   opacity: 1;
-  box-shadow: 0 0 45px rgba(33, 108, 126, 0.32), 0 15px 40px rgba(166, 136, 73, 0.25);
-  background: linear-gradient(135deg, rgba(33, 108, 126, 0.3) 0%, rgba(166, 136, 73, 0.38) 100%);
-  border-color: rgba(166, 136, 73, 0.4);
+  transform: scale(1.01);
+  box-shadow: 0 0 35px rgba(33, 108, 126, 0.3), 0 10px 30px rgba(166, 136, 73, 0.22);
 }
 
 /* ── Program Card ────────────────────────────────────────────────────── */
