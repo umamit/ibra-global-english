@@ -85,34 +85,45 @@ export default function Programs({ initialSettings }: any) {
           {programs.map((prog: any, idx: number) => (
             <div
               key={idx}
-              id={prog.title.toLowerCase().replace(/\s+/g, "-")}
-              className={`program-card glowing-card bento-card-${idx}`}
+              className={`program-card-wrapper bento-card-${idx}`}
             >
-              <div className="bento-content-wrapper">
-                <div className="bento-main-info">
-                  <div className="program-icon-box">
-                    {ICON_MAP[prog.iconKey as keyof typeof ICON_MAP] || ICON_MAP.book}
+              {/* Peeking Card Layer (Kartu Mengintip & Menyala di Belakang) */}
+              <div className="peeking-backplate">
+                <span className="peeking-badge">
+                  {idx === 0 ? "⭐ Paling Favorit" : idx === 1 ? "🚀 Intensif" : "💡 Usia Dini"}
+                </span>
+              </div>
+
+              <div
+                id={prog.title.toLowerCase().replace(/\s+/g, "-")}
+                className="program-card glowing-card"
+              >
+                <div className="bento-content-wrapper">
+                  <div className="bento-main-info">
+                    <div className="program-icon-box">
+                      {ICON_MAP[prog.iconKey as keyof typeof ICON_MAP] || ICON_MAP.book}
+                    </div>
+                    <h3>{prog.title}</h3>
+                    <p className="program-age">{prog.age}</p>
+                    <p className="program-desc">{prog.desc}</p>
                   </div>
-                  <h3>{prog.title}</h3>
-                  <p className="program-age">{prog.age}</p>
-                  <p className="program-desc">{prog.desc}</p>
-                </div>
-                <div className="bento-features-info">
-                  <ul className="program-features">
-                    {(prog.features || []).map((feature: any, fIdx: number) => (
-                      <li key={fIdx}>
-                        <i
-                          className="fi fi-rr-check-circle"
-                          style={{
-                            color: "var(--color-green)",
-                            fontSize: "1.25rem",
-                            flexShrink: 0,
-                          }}
-                        ></i>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="bento-features-info">
+                    <ul className="program-features">
+                      {(prog.features || []).map((feature: any, fIdx: number) => (
+                        <li key={fIdx}>
+                          <i
+                            className="fi fi-rr-check-circle"
+                            style={{
+                              color: "var(--color-green)",
+                              fontSize: "1.25rem",
+                              flexShrink: 0,
+                            }}
+                          ></i>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

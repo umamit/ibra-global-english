@@ -187,35 +187,45 @@ export default function Testimonials() {
         {!supabaseLoading && (
           <div className={`testimonials-grid ${testimonials.length < 3 ? 'justify-center-flex' : ''}`}>
             {testimonials.map((t, idx) => (
-              <div key={idx} className="testimonial-card">
-                <div className="testimonial-rating">
-                  {[...Array(t.rating)].map((_, i) => (
-                    <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                    </svg>
-                  ))}
+              <div key={idx} className="testimonial-card-wrapper">
+                {/* Peeking Card Layer (Kartu Mengintip Testimoni) */}
+                <div className="testimonial-peeking-backplate">
+                  <span className="testimonial-peeking-stamp">
+                    <i className="fi fi-rr-verified" style={{ fontSize: "0.85rem", color: "var(--color-primary)" }}></i>
+                    Terverifikasi
+                  </span>
                 </div>
-                <p className="testimonial-text">{t.text ? `“${t.text}”` : ""}</p>
-                <div className="testimonial-author">
-                  <div className="author-avatar-wrapper">
-                    {t.avatar ? (
-                      <img 
-                        src={t.avatar} 
-                        alt={t.author} 
-                        className="author-avatar-img" 
-                        width="44"
-                        height="44"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="author-avatar-placeholder">
-                        {t.author?.substring(0, 2).toUpperCase()}
-                      </div>
-                    )}
+
+                <div className="testimonial-card">
+                  <div className="testimonial-rating">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                      </svg>
+                    ))}
                   </div>
-                  <div className="author-info">
-                    <p className="author-name">{t.author}</p>
-                    <p className="author-role">{t.role}</p>
+                  <p className="testimonial-text">{t.text ? `“${t.text}”` : ""}</p>
+                  <div className="testimonial-author">
+                    <div className="author-avatar-wrapper">
+                      {t.avatar ? (
+                        <img 
+                          src={t.avatar} 
+                          alt={t.author} 
+                          className="author-avatar-img" 
+                          width="44"
+                          height="44"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="author-avatar-placeholder">
+                          {t.author?.substring(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <div className="author-info">
+                      <p className="author-name">{t.author}</p>
+                      <p className="author-role">{t.role}</p>
+                    </div>
                   </div>
                 </div>
               </div>
