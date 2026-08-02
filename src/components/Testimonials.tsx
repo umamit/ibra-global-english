@@ -6,30 +6,6 @@ import { useTestimonialForm } from "@/hooks/useTestimonialForm";
 import SkeletonCard from "@/components/ui/SkeletonCard";
 import "./Testimonials.css";
 
-const TESTIMONIALS_FALLBACK = [
-  {
-    rating: 5,
-    text: "Sangat senang menyekolahkan anak saya di Ibra Global English Bobong. Metodenya seru dan interaktif, anak saya sekarang jadi rajin belajar dan berani berbicara bahasa Inggris sehari-hari!",
-    author: "Bapak Andi",
-    role: "Orang Tua Siswa (Kids Program)",
-    delay: 0,
-  },
-  {
-    rating: 5,
-    text: "Tutor di sini asyik dan sabar banget. Dulu saya selalu minder kalau disuruh bicara bahasa Inggris, tapi setelah bergabung di Teens Program, sekarang saya jadi jauh lebih percaya diri berbicara di depan kelas.",
-    author: "Rania",
-    role: "Siswa SMP (Teens Program)",
-    delay: 100,
-  },
-  {
-    rating: 5,
-    text: "Program Fun Calistung-nya sangat direkomendasikan untuk anak usia dini. Metode belajarnya santai, penuh gambar warna-warni, sehingga anak saya cepat paham membaca dan menulis tanpa merasa tertekan.",
-    author: "Ibu Fitri",
-    role: "Orang Tua Siswa (Fun Calistung)",
-    delay: 200,
-  }
-];
-
 interface Testimonial {
   rating: number;
   text?: string;
@@ -83,29 +59,16 @@ export default function Testimonials() {
   }, []);
 
   const testimonials: Testimonial[] = useMemo(() => {
-    const combined: Testimonial[] = [];
+    if (!supabaseData || supabaseData.length === 0) return [];
 
-    if (supabaseData && supabaseData.length > 0) {
-      supabaseData.forEach((item) => {
-        combined.push({
-          rating: item.rating || 5,
-          text: item.text,
-          author: item.author,
-          role: item.role || "Siswa/Orang Tua",
-          avatar: item.avatar || null,
-          delay: 0,
-        });
-      });
-    }
-
-    if (combined.length > 0) {
-      return combined.map((item, index) => ({
-        ...item,
-        delay: (index % 3) * 100,
-      }));
-    }
-
-    return TESTIMONIALS_FALLBACK;
+    return supabaseData.map((item, index) => ({
+      rating: item.rating || 5,
+      text: item.text,
+      author: item.author,
+      role: item.role || "Siswa/Orang Tua",
+      avatar: item.avatar || null,
+      delay: (index % 3) * 100,
+    }));
   }, [supabaseData]);
 
   useEffect(() => {
