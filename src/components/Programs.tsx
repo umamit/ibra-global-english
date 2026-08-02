@@ -43,7 +43,7 @@ export default function Programs({ initialSettings }: any) {
         if (!sectionRef.current) return;
 
         ctx = gsap.context(() => {
-          const cards = sectionRef.current?.querySelectorAll(".program-card");
+          const cards = sectionRef.current?.querySelectorAll(".program-card-wrapper");
           cards?.forEach((card, idx) => {
             const yOffset = idx === 1 ? -30 : -12; // Kartu tengah melayang lebih tinggi
             gsap.fromTo(
