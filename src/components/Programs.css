@@ -147,41 +147,43 @@
 .peeking-backplate {
   position: absolute;
   top: -12px;
-  right: 12px;
-  left: 12px;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(33, 108, 126, 0.12) 0%, rgba(166, 136, 73, 0.18) 100%);
-  border: 1px solid rgba(166, 136, 73, 0.25);
+  right: -10px;
+  left: 10px;
+  bottom: 12px;
+  background: linear-gradient(135deg, rgba(33, 108, 126, 0.12) 0%, rgba(166, 136, 73, 0.22) 100%);
+  border: 1px solid rgba(166, 136, 73, 0.3);
   border-radius: var(--radius-2xl, 20px);
-  transform: rotate(1.2deg) translateY(0);
+  transform: rotate(1.5deg) translateY(0);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
               box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
               background 0.5s ease;
   display: flex;
   justify-content: flex-end;
-  padding: 6px 18px;
+  align-items: flex-start;
+  padding: 8px 20px;
   pointer-events: none;
   z-index: 0;
 }
 
 .peeking-badge {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--color-accent, #A68849);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background-color: var(--color-white);
-  padding: 2px 10px;
+  padding: 4px 12px;
   border-radius: 9999px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(166, 136, 73, 0.2);
-  align-self: flex-start;
+  box-shadow: 0 4px 12px rgba(166, 136, 73, 0.2);
+  border: 1px solid rgba(166, 136, 73, 0.3);
+  margin-top: -14px;
+  margin-right: -4px;
 }
 
 .program-card-wrapper:hover .peeking-backplate {
-  transform: rotate(2.4deg) translateY(-6px) scale(1.015);
-  box-shadow: 0 0 30px rgba(166, 136, 73, 0.35), 0 10px 25px rgba(33, 108, 126, 0.2);
-  background: linear-gradient(135deg, rgba(33, 108, 126, 0.22) 0%, rgba(166, 136, 73, 0.32) 100%);
+  transform: rotate(2.8deg) translateY(-4px) translateX(4px);
+  box-shadow: 0 0 35px rgba(166, 136, 73, 0.38), 0 10px 25px rgba(33, 108, 126, 0.22);
+  background: linear-gradient(135deg, rgba(33, 108, 126, 0.22) 0%, rgba(166, 136, 73, 0.35) 100%);
 }
 
 /* ── Program Card ────────────────────────────────────────────────────── */
