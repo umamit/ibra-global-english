@@ -188,13 +188,8 @@ export default function Testimonials() {
           <div className={`testimonials-grid ${testimonials.length < 3 ? 'justify-center-flex' : ''}`}>
             {testimonials.map((t, idx) => (
               <div key={idx} className="testimonial-card-wrapper">
-                {/* Peeking Card Layer (Kartu Mengintip Testimoni) */}
-                <div className="testimonial-peeking-backplate">
-                  <span className="testimonial-peeking-stamp">
-                    <i className="fi fi-rr-verified" style={{ fontSize: "0.85rem", color: "var(--color-primary)" }}></i>
-                    Terverifikasi
-                  </span>
-                </div>
+                {/* Glow Stack / Neumorphic Backlight Layer */}
+                <div className="testimonial-glow-stack-backplate"></div>
 
                 <div className="testimonial-card">
                   <div className="testimonial-rating">

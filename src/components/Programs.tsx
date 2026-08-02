@@ -87,12 +87,8 @@ export default function Programs({ initialSettings }: any) {
               key={idx}
               className={`program-card-wrapper bento-card-${idx}`}
             >
-              {/* Peeking Card Layer (Kartu Mengintip & Menyala di Belakang) */}
-              <div className="peeking-backplate">
-                <span className="peeking-badge">
-                  {idx === 0 ? "⭐ Paling Favorit" : idx === 1 ? "🚀 Intensif" : "💡 Usia Dini"}
-                </span>
-              </div>
+              {/* Glow Stack / Neumorphic Backlight Layer */}
+              <div className="glow-stack-backplate"></div>
 
               <div
                 id={prog.title.toLowerCase().replace(/\s+/g, "-")}
