@@ -44,6 +44,13 @@ You are an expert fullstack Next.js and Supabase AI engineer operating within An
     * Extracting complex states and data handlers into React Custom Hooks (e.g., `use[Name].ts`).
     * Extracting large JSX segments into atomic sub-components under a local `components/` directory.
 
+## 5a. Aturan 1 Kode 1 File / Lean Orchestrator Architecture (Strict Modular Rules)
+* **Strict Single Responsibility Principle**: Setiap file komponen Next.js (`page.tsx`, `[Component]Client.tsx`, atau sub-komponen UI) WAJIB berfungsi sebagai **Lean Orchestrator** murni. Agen dilarang keras menumpuk logika state React (`useState`), efek samping (`useEffect`), atau query/mutasi Supabase langsung di dalam file tampilan JSX utama jika berkas tersebut melebihi 250 baris.
+* **Separation of Concerns**:
+  * **1 Hook per Halaman/Fitur**: Seluruh state management, form handlers, dan integrasi API/Supabase WAJIB diletakkan di dalam custom hook khusus (misal: `use[Feature].ts` di folder `hooks/`).
+  * **1 Komponen per Berkas UI**: Komponen visual, tabel, modal, atau formulir sub-segmen WAJIB dipisah ke file tersendiri di dalam direktori `components/` lokal.
+  * **1 Helper per Berkas Utilitas**: Fungsi utilitas kalkulasi, penformatan string/tanggal, atau pemrosesan logika murni wajib ditempatkan di file helper tersendiri (misal: `[name]Helper.ts`).
+
 ## 6. Supabase Client & Browser Authentication Rules
 * **Module-Level Singleton**: On the client side, initialize the Supabase client using a strict singleton pattern. Re-instantiating the client inside rendering lifecycles or hooks is strictly forbidden to prevent unexpected `useEffect` cleanups that trigger false `signOut` events.
 * **Cookie-Based Storage Default**: Do not override Supabase's auth storage configuration with `window.sessionStorage` globally on the client browser. This breaks cookie synchronization managed by `@supabase/ssr` with Next.js Server Components.
