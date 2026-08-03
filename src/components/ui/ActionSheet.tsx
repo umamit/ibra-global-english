@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import "./apple-ui.css";
 
@@ -12,6 +12,8 @@ interface ActionSheetProps {
   children: React.ReactNode;
 }
 
+const subscribe = () => () => {};
+
 export default function ActionSheet({
   isOpen,
   onClose,
@@ -19,11 +21,7 @@ export default function ActionSheet({
   subtitle,
   children,
 }: ActionSheetProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const isMounted = useSyncExternalStore(subscribe, () => true, () => false);
 
   useEffect(() => {
     if (isOpen) {
@@ -36,37 +34,31 @@ export default function ActionSheet({
     };
   }, [isOpen]);
 
-  if (!mounted) return null;
+  if (!isMounted || !isOpen) return null;
 
   return createPortal(
-    <div
-      className={`apple-actionsheet-overlay ${isOpen ? "open" : ""}`}
-      onClick={onClose}
-      aria-hidden={!isOpen}
-      role="dialog"
-    >
+    <div className="apple-actionsheet-overlay" onClick={onClose}>
       <div
-        className="apple-actionsheet-content"
+        className="apple-actionsheet-container"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="apple-actionsheet-handle" />
-        
         {(title || subtitle) && (
-          <div style={{ marginBottom: "1.25rem", textAlign: "center" }}>
-            {title && (
-              <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: "var(--color-gray-900)", marginBottom: "0.25rem" }}>
-                {title}
-              </h3>
-            )}
+          <div className="apple-actionsheet-header">
+            {title && <h3 className="apple-actionsheet-title">{title}</h3>}
             {subtitle && (
-              <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", margin: 0 }}>
-                {subtitle}
-              </p>
+              <p className="apple-actionsheet-subtitle">{subtitle}</p>
             )}
           </div>
         )}
-
-        {children}
+        <div className="apple-actionsheet-content">{children}</div>
+        <button
+          type="button"
+          className="apple-actionsheet-cancel-btn"
+          onClick={onClose}
+        >
+          Batal
+        </button>
       </div>
     </div>,
     document.body

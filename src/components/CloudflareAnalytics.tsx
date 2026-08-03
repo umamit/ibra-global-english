@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Script from "next/script";
 
 interface CloudflareAnalyticsProps {
@@ -8,18 +8,14 @@ interface CloudflareAnalyticsProps {
 }
 
 export default function CloudflareAnalytics({ nonce }: CloudflareAnalyticsProps) {
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
+  const [token] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
-      const host = window.location.hostname;
-      if (host.startsWith("digital.")) {
-        setToken("4033539977cf471e9b25f5fb69d8868b"); // Ibra Digital
-      } else {
-        setToken("30b277bf69f4494d94550e9771fe8aa0"); // Ibra Global English
-      }
+      return window.location.hostname.startsWith("digital.")
+        ? "4033539977cf471e9b25f5fb69d8868b"
+        : "30b277bf69f4494d94550e9771fe8aa0";
     }
-  }, []);
+    return "30b277bf69f4494d94550e9771fe8aa0";
+  });
 
   if (!token) return null;
 
