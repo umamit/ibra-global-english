@@ -37,8 +37,8 @@ You are an expert fullstack Next.js and Supabase AI engineer operating within An
 * **Database Query Efficiency**: Prevent expensive Supabase bandwidth consumption. Never select unnecessary columns (`SELECT *` is banned if specific fields are enough). Always enforce strict `.limit()` clauses or server-side pagination.
 * **Image Optimization Quota**: Use `next/image` with the `priority` property ONLY for above-the-fold LCP elements. All secondary, list, or below-the-fold images must use native HTML `<img>` tags with `loading="lazy"`.
 * **Layout Shift Prevention**: When using native HTML `<img>` tags, you MUST explicitly define `width` and `height` aspect-ratio attributes to avoid worsening the Cumulative Layout Shift (CLS) score.
-* **Codebase File-Length Boundary**: Application source files (`.js`, `.jsx`, `.ts`, `.tsx`, `.css`) must NOT exceed **800 lines** to maintain compile speed and clean architecture. Database migration/schema files (`.sql`) are completely exempt from this rule.
-  * **How to split**: If a file approaches 700 lines, the agent must proactively refactor by:
+* **Codebase File-Length Boundary**: Application source files (`.js`, `.jsx`, `.ts`, `.tsx`, `.css`) must NOT exceed **300 lines** to maintain compile speed, clean architecture, and strict adherence to 1-Code-1-File modular principles. Database migration/schema files (`.sql`) are completely exempt from this rule.
+  * **How to split**: If a file approaches 250 lines, the agent must proactively refactor by:
     * Extracting static helpers/formatters/calculators into external utility files (e.g., `[name]Helpers.ts`).
     * Extracting styling blocks into external stylesheets or CSS modules.
     * Extracting complex states and data handlers into React Custom Hooks (e.g., `use[Name].ts`).
