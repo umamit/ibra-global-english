@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
+import React from "react";
+import { useScheduleModalForm } from "../hooks/useScheduleModalForm";
+
+const PRESET_REASONS = [
+  "Pemadaman Listrik / Listrik Padam", "Gangguan Jaringan / Internet",
+  "Cuaca Buruk / Hujan Deras", "Tutor Sakit / Halangan Darurat",
+  "Ujian Sekolah / Kegiatan Sekolah Siswa", "Hari Libur Nasional / Tanggal Merah",
+];
 
 interface AcademicSchedule {
-  id: string;
-  title: string;
-  description?: string | null;
-  type: string;
-  program: string;
-  start_time: string;
-  end_time: string;
-  instructor?: string | null;
-  recurrence_id?: string | null;
-  created_at?: string;
+  id: string; title: string; description?: string | null; type: string; program: string;
+  start_time: string; end_time: string; instructor?: string | null; recurrence_id?: string | null;
 }
 
 interface AddEditScheduleModalProps {
@@ -22,379 +20,50 @@ interface AddEditScheduleModalProps {
   initialDateStr: string;
 }
 
-function getLocalDateString(dateObj: Date): string {
-  const y = dateObj.getFullYear();
-  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
-  const d = String(dateObj.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-export default function AddEditScheduleModal({
-  isOpen,
-  onClose,
-  onSuccess,
-  selectedSchedule,
-  initialDateStr
-}: AddEditScheduleModalProps) {
-  const supabase = createClient();
-
-  // Form fields states
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [type, setType] = useState<string>("class"); // 'class', 'event', 'holiday'
-  const [program, setProgram] = useState<string>("All"); // 'Kids Program', 'Teens Program', 'Fun Calistung', 'All'
-  const [startDate, setStartDate] = useState<string>("");
-  const [startTime, setStartTime] = useState<string>("09:00");
-  const [endDate, setEndDate] = useState<string>("");
-  const [endTime, setEndTime] = useState<string>("10:30");
-  const [instructor, setInstructor] = useState<string>("");
-  const [status, setStatus] = useState<string>("active"); // 'active', 'pending', 'rescheduled'
-  const [pendingReason, setPendingReason] = useState<string>("");
-  const [rescheduledDate, setRescheduledDate] = useState<string>("");
-  const [rescheduledTime, setRescheduledTime] = useState<string>("09:00");
-
-  // Recurrence states
-  const [isRecurring, setIsRecurring] = useState<boolean>(false);
-  const [recurrenceType, setRecurrenceType] = useState<string>("weekly"); // 'weekly', 'daily'
-  const [recurrenceCount, setRecurrenceCount] = useState<number>(4);
-  const [recurrenceId, setRecurrenceId] = useState<string | null>(null);
-  const [editSeriesMode, setEditSeriesMode] = useState<"single" | "series">("single");
-
-  useEffect(() => {
-    if (isOpen) {
-      if (selectedSchedule) {
-        // Edit Mode
-        setTitle(selectedSchedule.title);
-        setDescription(selectedSchedule.description || "");
-        setType(selectedSchedule.type);
-        setProgram(selectedSchedule.program || "All");
-        setStatus((selectedSchedule as any).status || "active");
-        setPendingReason((selectedSchedule as any).pending_reason || "");
-        
-        const resTo = (selectedSchedule as any).rescheduled_to;
-        if (resTo) {
-          const resObj = new Date(resTo);
-          setRescheduledDate(getLocalDateString(resObj));
-          setRescheduledTime(resObj.toTimeString().slice(0, 5));
-        } else {
-          setRescheduledDate("");
-          setRescheduledTime("09:00");
-        }
-
-        const startObj = new Date(selectedSchedule.start_time);
-        const endObj = new Date(selectedSchedule.end_time);
-
-        setStartDate(getLocalDateString(startObj));
-        setStartTime(startObj.toTimeString().slice(0, 5));
-        setEndDate(getLocalDateString(endObj));
-        setEndTime(endObj.toTimeString().slice(0, 5));
-        setInstructor(selectedSchedule.instructor || "");
-        setIsRecurring(false);
-        setRecurrenceType("weekly");
-        setRecurrenceCount(4);
-        setRecurrenceId(selectedSchedule.recurrence_id || null);
-        setEditSeriesMode("single");
-      } else {
-        // Add Mode
-        setTitle("");
-        setDescription("");
-        setType("class");
-        setProgram("All");
-        setStatus("active");
-        setPendingReason("");
-        setRescheduledDate("");
-        setRescheduledTime("09:00");
-        const defaultDate = initialDateStr || getLocalDateString(new Date());
-        setStartDate(defaultDate);
-        setStartTime("09:00");
-        setEndDate(defaultDate);
-        setEndTime("10:30");
-        setInstructor("");
-        setIsRecurring(false);
-        setRecurrenceType("weekly");
-        setRecurrenceCount(4);
-        setRecurrenceId(null);
-        setEditSeriesMode("single");
-      }
-    }
-  }, [isOpen, selectedSchedule, initialDateStr]);
+export default function AddEditScheduleModal({ isOpen, onClose, onSuccess, selectedSchedule, initialDateStr }: AddEditScheduleModalProps) {
+  const form = useScheduleModalForm(isOpen, selectedSchedule, initialDateStr, onSuccess, onClose);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
-    if (!title.trim() || !startDate || !startTime || !endDate || !endTime) {
-      alert("Harap lengkapi semua isian wajib.");
-      return;
-    }
-
-    const startISO = new Date(`${startDate}T${startTime}:00`).toISOString();
-    const endISO = new Date(`${endDate}T${endTime}:00`).toISOString();
-
-    const rescheduledISO = (status === "rescheduled" && rescheduledDate) 
-      ? new Date(`${rescheduledDate}T${rescheduledTime}:00`).toISOString() 
-      : null;
-
-    const payload = {
-      title: title.trim(),
-      description: description.trim() || null,
-      type,
-      program,
-      start_time: startISO,
-      end_time: endISO,
-      instructor: instructor.trim() || null,
-      status,
-      pending_reason: status !== "active" ? (pendingReason.trim() || null) : null,
-      rescheduled_to: rescheduledISO
-    };
-
-    try {
-      if (selectedSchedule) {
-        // Edit Mode
-        if (selectedSchedule.recurrence_id && editSeriesMode === "series") {
-          // 1. Update the selected schedule (all fields)
-          const { error: currentError } = await supabase
-            .from("academic_schedules")
-            .update({
-              ...payload,
-              recurrence_id: selectedSchedule.recurrence_id
-            })
-            .eq("id", selectedSchedule.id);
-
-          if (currentError) throw currentError;
-
-          // 2. Update other items in the same series (info fields only)
-          const infoPayload = {
-            title: title.trim(),
-            description: description.trim() || null,
-            type,
-            program,
-            instructor: instructor.trim() || null
-          };
-          const { error: seriesError } = await supabase
-            .from("academic_schedules")
-            .update(infoPayload)
-            .eq("recurrence_id", selectedSchedule.recurrence_id)
-            .neq("id", selectedSchedule.id);
-
-          if (seriesError) throw seriesError;
-          onSuccess("Seluruh seri jadwal berhasil diperbarui!");
-        } else {
-          // Edit single
-          let finalRecurrenceId = selectedSchedule.recurrence_id || null;
-          let recurrInsertPayloads: any[] = [];
-
-          // Guard: Saat mode edit, JANGAN buat jadwal baru dari recurrence
-          if (!selectedSchedule.recurrence_id && isRecurring) {
-            finalRecurrenceId = "rec_" + Date.now() + "_" + Math.random().toString(36).substring(2, 11);
-            
-            const baseStart = new Date(`${startDate}T${startTime}:00`);
-            const baseEnd = new Date(`${endDate}T${endTime}:00`);
-
-            for (let i = 1; i < recurrenceCount; i++) {
-              const currentStart = new Date(baseStart);
-              const currentEnd = new Date(baseEnd);
-
-              if (recurrenceType === "weekly") {
-                currentStart.setDate(baseStart.getDate() + (i * 7));
-                currentEnd.setDate(baseEnd.getDate() + (i * 7));
-              } else if (recurrenceType === "daily") {
-                currentStart.setDate(baseStart.getDate() + i);
-                currentEnd.setDate(baseEnd.getDate() + i);
-              }
-
-              recurrInsertPayloads.push({
-                title: title.trim(),
-                description: description.trim() || null,
-                type,
-                program,
-                start_time: currentStart.toISOString(),
-                end_time: currentEnd.toISOString(),
-                instructor: instructor.trim() || null,
-                recurrence_id: finalRecurrenceId
-              });
-            }
-          }
-
-          const { error } = await supabase
-            .from("academic_schedules")
-            .update({
-              ...payload,
-              recurrence_id: finalRecurrenceId
-            })
-            .eq("id", selectedSchedule.id);
-
-          if (error) throw error;
-
-          if (recurrInsertPayloads.length > 0) {
-            const { error: insertError } = await supabase
-              .from("academic_schedules")
-              .insert(recurrInsertPayloads);
-            if (insertError) throw insertError;
-            onSuccess(`Jadwal diperbarui dan ${recurrInsertPayloads.length} perulangan baru dibuat!`);
-          } else {
-            onSuccess("Jadwal belajar berhasil diperbarui!");
-          }
-        }
-      } else {
-        // Insert Mode
-        if (isRecurring) {
-          const payloads = [];
-          const newRecurrenceId = "rec_" + Date.now() + "_" + Math.random().toString(36).substring(2, 11);
-          const baseStart = new Date(`${startDate}T${startTime}:00`);
-          const baseEnd = new Date(`${endDate}T${endTime}:00`);
-
-          for (let i = 0; i < recurrenceCount; i++) {
-            const currentStart = new Date(baseStart);
-            const currentEnd = new Date(baseEnd);
-
-            if (recurrenceType === "weekly") {
-              currentStart.setDate(baseStart.getDate() + (i * 7));
-              currentEnd.setDate(baseEnd.getDate() + (i * 7));
-            } else if (recurrenceType === "daily") {
-              currentStart.setDate(baseStart.getDate() + i);
-              currentEnd.setDate(baseEnd.getDate() + i);
-            }
-
-            payloads.push({
-              title: title.trim(),
-              description: description.trim() || null,
-              type,
-              program,
-              start_time: currentStart.toISOString(),
-              end_time: currentEnd.toISOString(),
-              instructor: instructor.trim() || null,
-              recurrence_id: newRecurrenceId
-            });
-          }
-
-          const { error } = await supabase
-            .from("academic_schedules")
-            .insert(payloads);
-
-          if (error) throw error;
-          onSuccess(`${recurrenceCount} jadwal baru berhasil dibuat secara berkala!`);
-        } else {
-          const { error } = await supabase
-            .from("academic_schedules")
-            .insert(payload);
-
-          if (error) throw error;
-          onSuccess("Jadwal baru berhasil dibuat!");
-        }
-      }
-    } catch (err: any) {
-      console.error("Gagal menyimpan jadwal:", err);
-      alert("Gagal menyimpan jadwal: " + (err.message || String(err)));
-    }
-  };
-
-  const handleDeleteSchedule = async (): Promise<void> => {
-    if (!selectedSchedule) return;
-
-    let deleteMode: "single" | "series" | "cancel" = "single";
-
-    if (selectedSchedule.recurrence_id) {
-      const confirmResult = confirm(
-        `Agenda "${selectedSchedule.title}" adalah bagian dari seri berulang.\n\n` +
-        `Apakah Anda ingin MENGHAPUS SELURUH SERI agenda berulang ini?\n\n` +
-        `• Klik OK / Yes untuk menghapus seluruh seri.\n` +
-        `• Klik Batal / Cancel untuk menghapus agenda hari ini saja.`
-      );
-      
-      if (confirmResult) {
-        deleteMode = "series";
-      } else {
-        const confirmSingle = confirm(`Apakah Anda yakin ingin menghapus agenda "${selectedSchedule.title}" HANYA untuk hari ini saja?`);
-        if (confirmSingle) {
-          deleteMode = "single";
-        } else {
-          deleteMode = "cancel";
-        }
-      }
-    } else {
-      const confirmNormal = confirm(`Apakah Anda yakin ingin menghapus agenda "${selectedSchedule.title}"?`);
-      if (!confirmNormal) deleteMode = "cancel";
-    }
-
-    if (deleteMode === "cancel") return;
-
-    try {
-      let query = supabase.from("academic_schedules").delete();
-      
-      if (deleteMode === "series" && selectedSchedule.recurrence_id) {
-        query = query.eq("recurrence_id", selectedSchedule.recurrence_id);
-      } else {
-        query = query.eq("id", selectedSchedule.id);
-      }
-
-      const { error } = await query;
-      if (error) throw error;
-
-      onSuccess(deleteMode === "series" ? "Seluruh seri jadwal berhasil dihapus." : "Jadwal berhasil dihapus.");
-    } catch (err: any) {
-      console.error("Gagal menghapus jadwal:", err);
-      alert("Gagal menghapus jadwal: " + (err.message || String(err)));
-    }
-  };
+  const isPresetReason = PRESET_REASONS.includes(form.pendingReason);
 
   return (
     <div className="portal-modal-overlay" onClick={onClose}>
       <div className="portal-modal" style={{ animation: "slideIn 0.2s ease" }} onClick={(e) => e.stopPropagation()}>
-        
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", padding: "1.5rem 2rem 0" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0, display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span>{selectedSchedule ? "️" : ""}</span>
-              <span>{selectedSchedule ? "Edit Jadwal Belajar" : "Tambah Jadwal Belajar"}</span>
-            </h2>
-          <button 
-            type="button" 
-            onClick={onClose} 
-            style={{ background: "transparent", border: "none", fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-400)", cursor: "pointer" }}
-          >
-            &times;
-          </button>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
+            {selectedSchedule ? "Edit Jadwal Belajar" : "Tambah Jadwal Belajar"}
+          </h2>
+          <button type="button" onClick={onClose} style={{ background: "transparent", border: "none", fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-400)", cursor: "pointer" }}>&times;</button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={form.handleSubmit}>
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1.5rem" }}>
-            
+            {/* Title */}
             <div className="form-group">
               <label className="form-label" style={{ fontWeight: "800" }}>Judul Kegiatan / Nama Kelas *</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                placeholder="Misal: Teens Pre-Intermediate Class" 
-                value={title} 
-                onChange={(e) => setTitle(e.target.value)} 
-                required 
-              />
+              <input type="text" className="form-input" placeholder="Misal: Teens Pre-Intermediate Class" value={form.title} onChange={(e) => form.setTitle(e.target.value)} required />
             </div>
 
+            {/* Description */}
             <div className="form-group">
-              <label className="form-label" style={{ fontWeight: "800" }}>Deskripsi *</label>
-              <textarea 
-                className="form-input" 
-                style={{ minHeight: "80px", fontFamily: "inherit", padding: "0.5rem" }}
-                placeholder="Misal: Modul 4 - Speaking and Presentation practice" 
-                value={description} 
-                onChange={(e) => setDescription(e.target.value)}
-              />
+              <label className="form-label" style={{ fontWeight: "800" }}>Deskripsi</label>
+              <textarea className="form-input" style={{ minHeight: "80px", fontFamily: "inherit", padding: "0.5rem" }} placeholder="Misal: Modul 4 - Speaking and Presentation practice" value={form.description} onChange={(e) => form.setDescription(e.target.value)} />
             </div>
 
+            {/* Type & Program */}
             <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div className="form-group">
                 <label className="form-label" style={{ fontWeight: "800" }}>Jenis Agenda</label>
-                <select className="form-input" value={type} onChange={(e) => setType(e.target.value)}>
-                  <option value="class"> Kelas Regular</option>
-                  <option value="event"> Kegiatan Khusus / Event</option>
-                  <option value="holiday"> Hari Libur</option>
+                <select className="form-input" value={form.type} onChange={(e) => form.setType(e.target.value)}>
+                  <option value="class">Kelas Regular</option>
+                  <option value="event">Kegiatan Khusus / Event</option>
+                  <option value="holiday">Hari Libur</option>
                 </select>
               </div>
-
               <div className="form-group">
                 <label className="form-label" style={{ fontWeight: "800" }}>Rekomendasi Program</label>
-                <select className="form-input" value={program} onChange={(e) => setProgram(e.target.value)}>
+                <select className="form-input" value={form.program} onChange={(e) => form.setProgram(e.target.value)}>
                   <option value="All">Semua Program</option>
                   <option value="Kids Program">Kids Program</option>
                   <option value="Teens Program">Teens Program</option>
@@ -403,236 +72,125 @@ export default function AddEditScheduleModal({
               </div>
             </div>
 
-            {/* Status Sesi & Pengaturan Penundaan (Pending) */}
-            <div style={{ backgroundColor: "rgba(0, 0, 0, 0.02)", padding: "1rem", borderRadius: "10px", border: "1px solid rgba(0, 0, 0, 0.06)", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            {/* Status & Pending Reason */}
+            <div style={{ backgroundColor: "rgba(0,0,0,0.02)", padding: "1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label" style={{ fontWeight: "800" }}>Status Sesi Belajar</label>
-                <select className="form-input" value={status} onChange={(e) => setStatus(e.target.value)}>
+                <select className="form-input" value={form.status} onChange={(e) => form.setStatus(e.target.value)}>
                   <option value="active">Berjalan Normal (Aktif)</option>
                   <option value="pending">Pending (Ditunda Minggu Ini)</option>
                   <option value="rescheduled">Rescheduled (Dijadwalkan Ulang)</option>
                 </select>
               </div>
 
-              {status !== "active" && (
+              {form.status !== "active" && (
                 <div className="form-group" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <label className="form-label" style={{ fontWeight: "800", color: "#b45309" }}>Alasan Penundaan Kelas</label>
-                  <select 
-                    className="form-input" 
-                    value={
-                      ["Pemadaman Listrik / Listrik Padam", "Gangguan Jaringan / Internet", "Cuaca Buruk / Hujan Deras", "Tutor Sakit / Halangan Darurat", "Ujian Sekolah / Kegiatan Sekolah Siswa", "Hari Libur Nasional / Tanggal Merah"].includes(pendingReason)
-                        ? pendingReason
-                        : pendingReason ? "custom" : "Pemadaman Listrik / Listrik Padam"
-                    }
-                    onChange={(e) => {
-                      if (e.target.value === "custom") {
-                        setPendingReason("");
-                      } else {
-                        setPendingReason(e.target.value);
-                      }
-                    }}
-                  >
-                    <option value="Pemadaman Listrik / Listrik Padam">Pemadaman Listrik / Listrik Padam</option>
-                    <option value="Gangguan Jaringan / Internet">Gangguan Jaringan / Internet</option>
-                    <option value="Cuaca Buruk / Hujan Deras">Cuaca Buruk / Hujan Deras</option>
-                    <option value="Tutor Sakit / Halangan Darurat">Tutor Sakit / Halangan Darurat</option>
-                    <option value="Ujian Sekolah / Kegiatan Sekolah Siswa">Ujian Sekolah / Kegiatan Sekolah Siswa</option>
-                    <option value="Hari Libur Nasional / Tanggal Merah">Hari Libur Nasional / Tanggal Merah</option>
+                  <select className="form-input" value={isPresetReason ? form.pendingReason : form.pendingReason ? "custom" : PRESET_REASONS[0]} onChange={(e) => { form.setPendingReason(e.target.value === "custom" ? "" : e.target.value); }}>
+                    {PRESET_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
                     <option value="custom">Alasan Lainnya (Ketik Manual...)</option>
                   </select>
-
-                  {!["Pemadaman Listrik / Listrik Padam", "Gangguan Jaringan / Internet", "Cuaca Buruk / Hujan Deras", "Tutor Sakit / Halangan Darurat", "Ujian Sekolah / Kegiatan Sekolah Siswa", "Hari Libur Nasional / Tanggal Merah"].includes(pendingReason) && (
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      placeholder="Ketikkan alasan spesifik penundaan..." 
-                      value={pendingReason} 
-                      onChange={(e) => setPendingReason(e.target.value)} 
-                    />
-                  )}
+                  {!isPresetReason && <input type="text" className="form-input" placeholder="Ketikkan alasan spesifik penundaan..." value={form.pendingReason} onChange={(e) => form.setPendingReason(e.target.value)} />}
                 </div>
               )}
 
-              {status === "rescheduled" && (
+              {form.status === "rescheduled" && (
                 <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "0.75rem", margin: 0 }}>
                   <div className="form-group" style={{ margin: 0 }}>
                     <label className="form-label" style={{ fontWeight: "800", color: "#1d4ed8" }}>Tanggal Pengganti</label>
-                    <input 
-                      type="date" 
-                      className="form-input" 
-                      value={rescheduledDate} 
-                      onChange={(e) => setRescheduledDate(e.target.value)} 
-                    />
+                    <input type="date" className="form-input" value={form.rescheduledDate} onChange={(e) => form.setRescheduledDate(e.target.value)} />
                   </div>
                   <div className="form-group" style={{ margin: 0 }}>
                     <label className="form-label" style={{ fontWeight: "800", color: "#1d4ed8" }}>Jam Pengganti</label>
-                    <input 
-                      type="time" 
-                      className="form-input" 
-                      value={rescheduledTime} 
-                      onChange={(e) => setRescheduledTime(e.target.value)} 
-                    />
+                    <input type="time" className="form-input" value={form.rescheduledTime} onChange={(e) => form.setRescheduledTime(e.target.value)} />
                   </div>
                 </div>
               )}
             </div>
 
+            {/* Start & End Date/Time */}
             <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div className="form-group">
                 <label className="form-label" style={{ fontWeight: "800" }}>Tanggal Mulai *</label>
-                <input 
-                  type="date" 
-                  className="form-input" 
-                  value={startDate} 
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
-                    if (!endDate || endDate < e.target.value) {
-                      setEndDate(e.target.value);
-                    }
-                  }} 
-                  required 
-                />
+                <input type="date" className="form-input" value={form.startDate} onChange={(e) => { form.setStartDate(e.target.value); if (!form.endDate || form.endDate < e.target.value) form.setEndDate(e.target.value); }} required />
               </div>
-
               <div className="form-group">
                 <label className="form-label" style={{ fontWeight: "800" }}>Jam Mulai *</label>
-                <input 
-                  type="time" 
-                  className="form-input" 
-                  value={startTime} 
-                  onChange={(e) => setStartTime(e.target.value)} 
-                  required 
-                />
+                <input type="time" className="form-input" value={form.startTime} onChange={(e) => form.setStartTime(e.target.value)} required />
               </div>
             </div>
 
             <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div className="form-group">
                 <label className="form-label" style={{ fontWeight: "800" }}>Tanggal Selesai *</label>
-                <input 
-                  type="date" 
-                  className="form-input" 
-                  value={endDate} 
-                  onChange={(e) => setEndDate(e.target.value)} 
-                  required 
-                />
+                <input type="date" className="form-input" value={form.endDate} onChange={(e) => form.setEndDate(e.target.value)} required />
               </div>
-
               <div className="form-group">
                 <label className="form-label" style={{ fontWeight: "800" }}>Jam Selesai *</label>
-                <input 
-                  type="time" 
-                  className="form-input" 
-                  value={endTime} 
-                  onChange={(e) => setEndTime(e.target.value)} 
-                  required 
-                />
+                <input type="time" className="form-input" value={form.endTime} onChange={(e) => form.setEndTime(e.target.value)} required />
               </div>
             </div>
 
+            {/* Instructor */}
             <div className="form-group">
               <label className="form-label" style={{ fontWeight: "800" }}>Tutor / Pengajar (Opsional)</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                placeholder="Misal: Coach Husni Usman" 
-                value={instructor} 
-                onChange={(e) => setInstructor(e.target.value)} 
-              />
+              <input type="text" className="form-input" placeholder="Misal: Coach Husni Usman" value={form.instructor} onChange={(e) => form.setInstructor(e.target.value)} />
             </div>
 
-            {/* Recurrence fields (only editable on Add or Single edits) */}
+            {/* Recurrence (Add Mode) */}
             {!selectedSchedule && (
               <div style={{ border: "1px solid var(--color-gray-200)", padding: "1rem", borderRadius: "8px", backgroundColor: "var(--color-gray-50)" }}>
                 <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: "800", fontSize: "0.9rem" }}>
-                  <input 
-                    type="checkbox" 
-                    checked={isRecurring} 
-                    onChange={(e) => setIsRecurring(e.target.checked)} 
-                    style={{ width: "16px", height: "16px" }} 
-                  />
-                  <span> Buat Jadwal Berulang (Recurrent Event)</span>
+                  <input type="checkbox" checked={form.isRecurring} onChange={(e) => form.setIsRecurring(e.target.checked)} style={{ width: "16px", height: "16px" }} />
+                  <span>Buat Jadwal Berulang (Recurrent Event)</span>
                 </label>
-
-                {isRecurring && (
+                {form.isRecurring && (
                   <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
                     <div className="form-group">
                       <label className="form-label" style={{ fontSize: "0.8rem", fontWeight: "800" }}>Pola Perulangan</label>
-                      <select className="form-input" style={{ padding: "0.35rem" }} value={recurrenceType} onChange={(e) => setRecurrenceType(e.target.value)}>
+                      <select className="form-input" style={{ padding: "0.35rem" }} value={form.recurrenceType} onChange={(e) => form.setRecurrenceType(e.target.value)}>
                         <option value="weekly">Setiap Minggu (Weekly)</option>
                         <option value="daily">Setiap Hari (Daily)</option>
                       </select>
                     </div>
-
                     <div className="form-group">
                       <label className="form-label" style={{ fontSize: "0.8rem", fontWeight: "800" }}>Jumlah Perulangan (Kali)</label>
-                      <input 
-                        type="number" 
-                        className="form-input" 
-                        style={{ padding: "0.35rem" }}
-                        min="2" 
-                        max="24" 
-                        value={recurrenceCount} 
-                        onChange={(e) => setRecurrenceCount(parseInt(e.target.value) || 2)} 
-                      />
+                      <input type="number" className="form-input" style={{ padding: "0.35rem" }} min="2" max="24" value={form.recurrenceCount} onChange={(e) => form.setRecurrenceCount(parseInt(e.target.value) || 2)} />
                     </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Series Edit Mode Selector */}
+            {/* Series Edit Mode (Edit Mode only) */}
             {selectedSchedule && selectedSchedule.recurrence_id && (
               <div style={{ border: "1px solid var(--color-accent)", padding: "1rem", borderRadius: "8px", backgroundColor: "var(--color-bg-teal-50)" }}>
-                <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.85rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>
-                  ️ Agenda ini berulang. Pilih cakupan perubahan:
-                </p>
+                <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.85rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>Agenda ini berulang. Pilih cakupan perubahan:</p>
                 <div style={{ display: "flex", gap: "1.5rem" }}>
-                  <label style={{ display: "flex", alignItems: "center", gap: "0.4rem", cursor: "pointer", fontSize: "0.85rem" }}>
-                    <input 
-                      type="radio" 
-                      name="editSeriesMode" 
-                      value="single" 
-                      checked={editSeriesMode === "single"} 
-                      onChange={() => setEditSeriesMode("single")} 
-                    />
-                    <span>Hanya Hari Ini Saja</span>
-                  </label>
-                  <label style={{ display: "flex", alignItems: "center", gap: "0.4rem", cursor: "pointer", fontSize: "0.85rem" }}>
-                    <input 
-                      type="radio" 
-                      name="editSeriesMode" 
-                      value="series" 
-                      checked={editSeriesMode === "series"} 
-                      onChange={() => setEditSeriesMode("series")} 
-                    />
-                    <span>Semua Seri Jadwal Ini</span>
-                  </label>
+                  {(["single", "series"] as const).map((mode) => (
+                    <label key={mode} style={{ display: "flex", alignItems: "center", gap: "0.4rem", cursor: "pointer", fontSize: "0.85rem" }}>
+                      <input type="radio" name="editSeriesMode" value={mode} checked={form.editSeriesMode === mode} onChange={() => form.setEditSeriesMode(mode)} />
+                      <span>{mode === "single" ? "Hanya Hari Ini Saja" : "Semua Seri Jadwal Ini"}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             )}
           </div>
 
+          {/* Action Buttons */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               {selectedSchedule && (
-                <button 
-                  type="button" 
-                  className="btn-portal-outline" 
-                  style={{ color: "var(--color-danger)", borderColor: "var(--color-danger)", padding: "0.45rem 1rem" }}
-                  onClick={handleDeleteSchedule}
-                >
+                <button type="button" className="btn-portal-outline" style={{ color: "var(--color-danger)", borderColor: "var(--color-danger)", padding: "0.45rem 1rem" }} onClick={form.handleDeleteSchedule}>
                   Hapus Agenda
                 </button>
               )}
             </div>
-
             <div style={{ display: "flex", gap: "0.5rem" }}>
-              <button type="button" className="btn-portal-outline" onClick={onClose}>
-                Batal
-              </button>
+              <button type="button" className="btn-portal-outline" onClick={onClose}>Batal</button>
               <button type="submit" className="btn-portal-primary">
-                <span>{selectedSchedule ? "Simpan Perubahan" : "Terbitkan Jadwal"}</span>
+                {selectedSchedule ? "Simpan Perubahan" : "Terbitkan Jadwal"}
               </button>
             </div>
           </div>

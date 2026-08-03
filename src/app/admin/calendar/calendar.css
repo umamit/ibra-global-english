@@ -1,0 +1,111 @@
+/* ── Admin Calendar Page Styles ──────────────────────────────────────── */
+
+.calendar-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .calendar-layout-grid {
+    grid-template-columns: 7.2fr 2.8fr;
+  }
+}
+
+/* Calendar Cell Hover */
+.calendar-cell-hover {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.calendar-cell-hover:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: var(--color-primary) !important;
+  z-index: 2;
+}
+
+/* Timeline Item Hover */
+.timeline-item-hover {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.timeline-item-hover:hover {
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+/* Button Text Hover */
+.btn-text-hover:hover {
+  background-color: rgba(33, 108, 126, 0.08) !important;
+}
+
+/* Month List Item */
+.month-list-item {
+  transition: all 0.15s ease !important;
+}
+.month-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+  transform: translateX(2px);
+}
+
+/* Schedule Pill Hover */
+.schedule-pill {
+  transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.schedule-pill:hover {
+  transform: translateX(2px) scale(1.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  filter: brightness(0.97);
+}
+
+/* Calendar Animations */
+@keyframes calendarGridFade {
+  from { opacity: 0.6; transform: translateY(6px); }
+  to   { opacity: 1;   transform: translateY(0);   }
+}
+.calendar-animate-change {
+  animation: calendarGridFade 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tooltipFade {
+  from { opacity: 0; transform: translate(-50%, -95%) scale(0.96); }
+  to   { opacity: 1; transform: translate(-50%, -100%) scale(1);   }
+}
+
+/* Print Styles */
+@media print {
+  .no-print,
+  .dashboard-sidebar,
+  .dashboard-topbar,
+  .sidebar-footer,
+  .btn-portal-outline,
+  .btn-portal-primary,
+  .portal-modal-overlay,
+  .portal-modal {
+    display: none !important;
+  }
+  body,
+  .dashboard-container,
+  .dashboard-main,
+  .calendar-layout-grid {
+    background-color: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .calendar-layout-grid > div:last-child {
+    display: none !important;
+  }
+  .calendar-layout-grid > div:first-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .printable-calendar-header {
+    display: block !important;
+    margin-bottom: 2rem !important;
+  }
+}

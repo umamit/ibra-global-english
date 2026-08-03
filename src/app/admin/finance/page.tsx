@@ -1,10 +1,8 @@
 "use client";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-import React from 'react';
-import { useEffect, useState, useMemo } from "react";
-import { createClient } from "@/utils/supabase/client";
+import React, { useMemo, useEffect } from "react";
 import FinanceStatsCards from "./components/FinanceStatsCards";
 import FinanceTable from "./components/FinanceTable";
 import FinanceModal from "./components/FinanceModal";
@@ -15,170 +13,26 @@ import { getMonthName, terbilang, formatRupiah } from "../utils";
 import ToastNotification from "../components/ToastNotification";
 import { getStudentPayment, exportPaymentsCSV, printReceiptHTML, getStudentSPPDueInfo } from "./financeHelpers";
 import { useFinanceModal } from "./hooks/useFinanceModal";
-
-import { Student, Payment } from "@/types";
-
-interface ToastState {
-  show: boolean;
-  message: string;
-  type: "success" | "error";
-}
+import { useAdminFinance } from "./hooks/useAdminFinance";
+import { Student } from "@/types";
 
 export default function AdminFinance() {
-  const supabase = createClient();
-
-  const [students, setStudents] = useState<Student[]>([]);
-  const [payments, setPayments] = useState<Payment[]>([]);
-  const [allPayments, setAllPayments] = useState<Payment[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("list"); // "list" or "analytics"
-  const [loading, setLoading] = useState<boolean>(false);
-  const now = new Date();
-  const defaultMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  const [selectedMonth, setSelectedMonth] = useState<string>(defaultMonth);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [programFilter, setProgramFilter] = useState<string>("All");
-  const [toast, setToast] = useState<ToastState>({ show: false, message: "", type: "success" });
-  const [printDateStr, setPrintDateStr] = useState<string>("");
-
-  // WhatsApp Billing States
-  const [waModalOpen, setWaModalOpen] = useState<boolean>(false);
-  const [waStudent, setWaStudent] = useState<Student | null>(null);
-  const [waPayment, setWaPayment] = useState<any | null>(null);
-
-  // Annual Card Modal States
-  const [annualModalOpen, setAnnualModalOpen] = useState<boolean>(false);
-  const [annualStudent, setAnnualStudent] = useState<Student | null>(null);
-
-  const handleOpenAnnualCardModal = (student: Student) => {
-    setAnnualStudent(student);
-    setAnnualModalOpen(true);
-  };
-  const [sppPrices, setSppPrices] = useState<Record<string, number>>({
-    "Kids Program": 300000,
-    "Teens Program": 300000,
-    "Fun Calistung": 350000
-  });
-
-  // Pagination States
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
-
-  const showToast = (message: string, type: "success" | "error" = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: "", type }), 3000);
-  };
-
-  const fetchData = async (): Promise<void> => {
-    if (!selectedMonth) return;
-    setLoading(true);
-    try {
-      // 1. Fetch Students
-      const { data: studentsData, error: studentsError } = await supabase
-        .from("students")
-        .select(`
-          id,
-          name,
-          program,
-          parent_id,
-          created_at,
-          profiles:parent_id (
-            full_name
-          )
-        `)
-        .order("name", { ascending: true });
-
-      if (studentsError) throw studentsError;
-
-      // 2. Fetch Payments for selected month
-      const { data: paymentsData, error: paymentsError } = await supabase
-        .from("tuition_payments")
-        .select("*")
-        .eq("month", selectedMonth);
-
-      if (paymentsError) throw paymentsError;
-
-      // 3. Fetch All Payments for Analytics
-      const { data: allPaymentsData, error: allPaymentsError } = await supabase
-        .from("tuition_payments")
-        .select("*")
-        .order("month", { ascending: true });
-
-      if (allPaymentsError) throw allPaymentsError;
-
-      const formattedStudents = (studentsData || []).map((s: any) => ({
-        id: s.id,
-        name: s.name,
-        program: s.program,
-        parent_id: s.parent_id,
-        created_at: s.created_at,
-        profiles: Array.isArray(s.profiles) ? s.profiles[0] : s.profiles,
-      }));
-
-      setStudents(formattedStudents);
-      setPayments(paymentsData || []);
-      setAllPayments(allPaymentsData || []);
-    } catch (err) {
-      console.error("Gagal mengambil data keuangan:", err);
-      showToast("Gagal memuat beberapa data dari database.", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOpenWaBillingModal = (student: Student, pay: any) => {
-    setWaStudent(student);
-    setWaPayment(pay);
-    setWaModalOpen(true);
-  };
-
-  // Use custom hook for modal logic
   const {
-    isModalOpen,
-    setIsModalOpen,
-    modalStudent,
-    modalAmount,
-    setModalAmount,
-    modalStatus,
-    setModalStatus,
-    modalMethod,
-    setModalMethod,
-    modalReceiptUrl,
-    setModalReceiptUrl,
-    modalPaymentDate,
-    setModalPaymentDate,
-    savingPayment,
-    fileInputRef,
-    handleUploadReceipt,
-    handleOpenEditModal,
-    handleSavePayment,
-    handleQuickConfirmLunas
-  } = useFinanceModal(fetchData, selectedMonth, sppPrices, showToast, students, payments);
-  // Fetch configured SPP fee amounts on mount
-  useEffect(() => {
-    async function fetchSppPrices(): Promise<void> {
-      try {
-        const { data, error } = await supabase
-          .from("landing_settings")
-          .select("*");
-        if (data && data.length > 0) {
-          const settings: Record<string, string> = {};
-          data.forEach((item: { key: string; value: string }) => {
-            settings[item.key] = item.value;
-          });
-          setSppPrices({
-            "Kids Program": parseInt(settings.payment_spp_kids || "300000"),
-            "Teens Program": parseInt(settings.payment_spp_teens || "300000"),
-            "Fun Calistung": parseInt(settings.payment_spp_calistung || "350000")
-          });
-        }
-      } catch (err) {
-        console.error("Gagal memuat nominal SPP program:", err);
-      }
-    }
-    fetchSppPrices();
-  }, []);
+    students, payments, allPayments, activeTab, setActiveTab, loading, selectedMonth,
+    setSelectedMonth, searchQuery, setSearchQuery, programFilter, setProgramFilter,
+    toast, printDateStr, waModalOpen, setWaModalOpen, waStudent, waPayment, annualModalOpen,
+    setAnnualModalOpen, annualStudent, sppPrices, currentPage, setCurrentPage, pageSize,
+    setPageSize, showToast, handleOpenAnnualCardModal, handleOpenWaBillingModal, fetchData,
+    printFinanceReport,
+  } = useAdminFinance();
 
-  // Lock body scroll when modal is open to prevent page scrolling behind it
+  const {
+    isModalOpen, setIsModalOpen, modalStudent, modalAmount, setModalAmount,
+    modalStatus, setModalStatus, modalMethod, setModalMethod, modalReceiptUrl, setModalReceiptUrl,
+    modalPaymentDate, setModalPaymentDate, savingPayment, fileInputRef, handleUploadReceipt,
+    handleOpenEditModal, handleSavePayment, handleQuickConfirmLunas,
+  } = useFinanceModal(fetchData, selectedMonth, sppPrices, showToast, students, payments);
+
   useEffect(() => {
     if (isModalOpen) {
       document.body.style.overflow = "hidden";
@@ -190,62 +44,10 @@ export default function AdminFinance() {
     };
   }, [isModalOpen]);
 
-  // Set print date once on mount (prevents hydration mismatch)
-  useEffect(() => {
-    setTimeout(() => {
-      setPrintDateStr(new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }));
-    }, 0);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchData();
-    }, 0);
-
-    // Subscribe to real-time changes
-    const channel = supabase
-      .channel("realtime-finance")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "tuition_payments" },
-        () => {
-          fetchData();
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "students" },
-        () => {
-          fetchData();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      clearTimeout(timer);
-      supabase.removeChannel(channel);
-    };
-  }, [selectedMonth]);
-
-  // A1: Cetak laporan keuangan ke PDF
-  const printFinanceReport = () => {
-    document.body.classList.add("print-finance");
-    window.print();
-    const cleanup = () => {
-      document.body.classList.remove("print-finance");
-      window.removeEventListener("afterprint", cleanup);
-    };
-    window.addEventListener("afterprint", cleanup);
-  };
-
-  // Filters
-  const filteredStudents = students.filter(student => {
-    // Siswa yang bergabung setelah selectedMonth tidak boleh masuk tagihan bulan ini
+  const filteredStudents = students.filter((student) => {
     if (student.created_at) {
-      const joinMonth = student.created_at.substring(0, 7); // "YYYY-MM"
-      if (joinMonth > selectedMonth) {
-        return false; // Skip siswa yang baru masuk bulan depan/setelah bulan terpilih
-      }
+      const joinMonth = student.created_at.substring(0, 7);
+      if (joinMonth > selectedMonth) return false;
     }
     const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (student.profiles?.full_name || "").toLowerCase().includes(searchQuery.toLowerCase());
@@ -253,10 +55,9 @@ export default function AdminFinance() {
     return matchesSearch && matchesProgram;
   });
 
-  // Reset currentPage to 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, programFilter, selectedMonth]);
+  }, [searchQuery, programFilter, selectedMonth, setCurrentPage]);
 
   const paginatedStudents = useMemo(() => {
     if (pageSize >= 9999) return filteredStudents;
@@ -264,7 +65,6 @@ export default function AdminFinance() {
     return filteredStudents.slice(start, start + pageSize);
   }, [filteredStudents, currentPage, pageSize]);
 
-  // Financial Stats Calculations
   const stats = (() => {
     let expected = 0;
     let collected = 0;
@@ -272,8 +72,7 @@ export default function AdminFinance() {
     let unpaidCount = 0;
     let paidCount = 0;
 
-    students.forEach(student => {
-      // Skip siswa yang belum bergabung di bulan ini dari hitungan ekspektasi tagihan
+    students.forEach((student) => {
       if (student.created_at) {
         const joinMonth = student.created_at.substring(0, 7);
         if (joinMonth > selectedMonth) return;
@@ -294,13 +93,12 @@ export default function AdminFinance() {
     return { expected, collected, pendingCount, unpaidCount, paidCount };
   })();
 
-  // Due Date Alert Calculations
   const dueAlertStats = (() => {
     let dueSoonCount = 0;
     let dueTodayCount = 0;
     let overdueCount = 0;
 
-    students.forEach(student => {
+    students.forEach((student) => {
       const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
       const dueInfo = getStudentSPPDueInfo(student, pay.status, selectedMonth);
       if (dueInfo.dueStatus === "due_today") dueTodayCount++;
@@ -319,7 +117,7 @@ export default function AdminFinance() {
     <div style={{ padding: "1.5rem 1rem", maxWidth: "1200px", margin: "0 auto" }}>
       {toast.show && <ToastNotification toast={toast} />}
 
-      {/* A1: Print Header — hanya tampil saat @media print */}
+      {/* Print Header */}
       <div className="finance-print-header">
         <h2>Ibra Global English — Laporan SPP Bulanan</h2>
         <p>Bulan Tagihan: <strong>{selectedMonth || "-"}</strong> &nbsp;|&nbsp; Dicetak: {printDateStr}</p>
@@ -345,11 +143,11 @@ export default function AdminFinance() {
           />
           {activeTab === "list" && students.length > 0 && (
             <>
-               <button
-                 className="btn-portal-primary"
-                 onClick={() => exportPaymentsCSV(students, payments, selectedMonth, sppPrices, formatRupiah)}
-                 style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
-               >
+              <button
+                className="btn-portal-primary"
+                onClick={() => exportPaymentsCSV(students, payments, selectedMonth, sppPrices, formatRupiah)}
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span>Export CSV</span>
               </button>
@@ -366,19 +164,9 @@ export default function AdminFinance() {
         </div>
       </div>
 
-      {/*  Notification Banner for SPP Due Dates */}
+      {/* Notification Banner for SPP Due Dates */}
       {dueAlertStats.totalAlerts > 0 && (
-        <div style={{
-          backgroundColor: "#fffbe6",
-          border: "1px solid #ffe58f",
-          borderRadius: "10px",
-          padding: "0.85rem 1.25rem",
-          marginBottom: "1.5rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.85rem",
-          boxShadow: "0 2px 6px rgba(250, 173, 20, 0.08)"
-        }}>
+        <div style={{ backgroundColor: "#fffbe6", border: "1px solid #ffe58f", borderRadius: "10px", padding: "0.85rem 1.25rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.85rem", boxShadow: "0 2px 6px rgba(250, 173, 20, 0.08)" }}>
           <div style={{ display: "flex", alignItems: "center", color: "#873800" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -401,54 +189,17 @@ export default function AdminFinance() {
       <div style={{ display: "flex", gap: "1rem", borderBottom: "2px solid var(--color-gray-100)", marginBottom: "2rem", paddingBottom: "0.5rem" }}>
         <button
           onClick={() => setActiveTab("list")}
-          style={{
-            padding: "0.6rem 1.5rem",
-            fontSize: "0.95rem",
-            fontWeight: "800",
-            border: "none",
-            background: "none",
-            color: activeTab === "list" ? "var(--color-primary-dark)" : "var(--color-gray-400)",
-            borderBottom: activeTab === "list" ? "3px solid var(--color-primary)" : "3px solid transparent",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            marginBottom: "-0.65rem",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.4rem"
-          }}
+          style={{ padding: "0.6rem 1.5rem", fontSize: "0.95rem", fontWeight: "800", border: "none", background: "none", color: activeTab === "list" ? "var(--color-primary-dark)" : "var(--color-gray-400)", borderBottom: activeTab === "list" ? "3px solid var(--color-primary)" : "3px solid transparent", cursor: "pointer", transition: "all 0.2s ease", marginBottom: "-0.65rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           Daftar Tagihan SPP
         </button>
         <button
           onClick={() => setActiveTab("analytics")}
-          style={{
-            padding: "0.6rem 1.5rem",
-            fontSize: "0.95rem",
-            fontWeight: "800",
-            border: "none",
-            background: "none",
-            color: activeTab === "analytics" ? "var(--color-primary-dark)" : "var(--color-gray-400)",
-            borderBottom: activeTab === "analytics" ? "3px solid var(--color-primary)" : "3px solid transparent",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            marginBottom: "-0.65rem",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.4rem"
-          }}
+          style={{ padding: "0.6rem 1.5rem", fontSize: "0.95rem", fontWeight: "800", border: "none", background: "none", color: activeTab === "analytics" ? "var(--color-primary-dark)" : "var(--color-gray-400)", borderBottom: activeTab === "analytics" ? "3px solid var(--color-primary)" : "3px solid transparent", cursor: "pointer", transition: "all 0.2s ease", marginBottom: "-0.65rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"/>
-            <line x1="12" y1="20" x2="12" y2="4"/>
-            <line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
-          Analitik & Grafik Eksekutif
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Analitik &amp; Grafik Eksekutif
         </button>
       </div>
 
@@ -456,10 +207,8 @@ export default function AdminFinance() {
         <>
           <FinanceStatsCards stats={stats} formatRupiah={formatRupiah} />
 
-          {/* Control Filters */}
           <div className="portal-card" style={{ padding: "1.25rem", marginBottom: "1.5rem", display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", flex: 1, maxWidth: "600px" }}>
-              {/* Pencarian */}
               <div style={{ position: "relative", flex: 1, minWidth: "200px" }}>
                 <input
                   type="text"
@@ -472,13 +221,7 @@ export default function AdminFinance() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-gray-400)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
 
-              {/* Filter Program */}
-              <select
-                className="form-input"
-                style={{ width: "180px", padding: "0.6rem" }}
-                value={programFilter}
-                onChange={(e) => setProgramFilter(e.target.value)}
-              >
+              <select className="form-input" style={{ width: "180px", padding: "0.6rem" }} value={programFilter} onChange={(e) => setProgramFilter(e.target.value)}>
                 <option value="All">Semua Program</option>
                 <option value="Kids Program">Kids Program</option>
                 <option value="Teens Program">Teens Program</option>
@@ -513,70 +256,66 @@ export default function AdminFinance() {
             onPageSizeChange={setPageSize}
           />
         </>
-    )}
+      )}
 
-    {activeTab === "analytics" && (
-      <FinanceAnalytics
-        students={students}
+      {activeTab === "analytics" && (
+        <FinanceAnalytics
+          students={students}
+          allPayments={allPayments}
+          sppPrices={sppPrices}
+          formatRupiah={formatRupiah}
+          selectedMonth={selectedMonth}
+          loading={loading}
+        />
+      )}
+
+      <FinanceModal
+        isModalOpen={isModalOpen}
+        modalStudent={modalStudent}
+        selectedMonth={selectedMonth}
+        modalAmount={modalAmount}
+        setModalAmount={setModalAmount}
+        modalStatus={modalStatus}
+        setModalStatus={setModalStatus}
+        modalMethod={modalMethod}
+        setModalMethod={setModalMethod}
+        modalReceiptUrl={modalReceiptUrl}
+        setModalReceiptUrl={setModalReceiptUrl}
+        modalPaymentDate={modalPaymentDate}
+        setModalPaymentDate={setModalPaymentDate}
+        savingPayment={savingPayment}
+        getMonthName={getMonthName}
+        getStudentPayment={getStudentPayment}
+        fileInputRef={fileInputRef}
+        handleUploadReceipt={handleUploadReceipt}
+        handleSavePayment={handleSavePayment}
+        handlePrintReceipt={handlePrintReceipt}
+        onClose={() => setIsModalOpen(false)}
+      />
+
+      <FinanceWaModal
+        isOpen={waModalOpen}
+        onClose={() => setWaModalOpen(false)}
+        student={waStudent}
+        payment={waPayment}
+        selectedMonth={selectedMonth}
+        getMonthName={getMonthName}
+        formatRupiah={formatRupiah}
+        onSuccess={(msg) => {
+          setWaModalOpen(false);
+          showToast(msg);
+        }}
+      />
+
+      <AnnualSPPCardModal
+        isOpen={annualModalOpen}
+        onClose={() => setAnnualModalOpen(false)}
+        student={annualStudent}
         allPayments={allPayments}
         sppPrices={sppPrices}
         formatRupiah={formatRupiah}
-        selectedMonth={selectedMonth}
-        loading={loading}
+        selectedYear={selectedMonth ? selectedMonth.substring(0, 4) : "2026"}
       />
-    )}
-
-    {/* EDIT/MANAGE PAYMENT MODAL */}
-    <FinanceModal
-      isModalOpen={isModalOpen}
-      modalStudent={modalStudent}
-      selectedMonth={selectedMonth}
-      modalAmount={modalAmount}
-      setModalAmount={setModalAmount}
-      modalStatus={modalStatus}
-      setModalStatus={setModalStatus}
-      modalMethod={modalMethod}
-      setModalMethod={setModalMethod}
-      modalReceiptUrl={modalReceiptUrl}
-      setModalReceiptUrl={setModalReceiptUrl}
-      modalPaymentDate={modalPaymentDate}
-      setModalPaymentDate={setModalPaymentDate}
-      savingPayment={savingPayment}
-      getMonthName={getMonthName}
-      getStudentPayment={getStudentPayment}
-      fileInputRef={fileInputRef}
-      handleUploadReceipt={handleUploadReceipt}
-      handleSavePayment={handleSavePayment}
-      handlePrintReceipt={handlePrintReceipt}
-      onClose={() => setIsModalOpen(false)}
-    />
-
-    {/* WHATSAPP BILLING MODAL */}
-    <FinanceWaModal
-      isOpen={waModalOpen}
-      onClose={() => setWaModalOpen(false)}
-      student={waStudent}
-      payment={waPayment}
-      selectedMonth={selectedMonth}
-      getMonthName={getMonthName}
-      formatRupiah={formatRupiah}
-      onSuccess={(msg) => {
-        setWaModalOpen(false);
-        showToast(msg);
-      }}
-    />
-
-    {/* ANNUAL SPP CARD 12-MONTH MATRIX MODAL */}
-    <AnnualSPPCardModal
-      isOpen={annualModalOpen}
-      onClose={() => setAnnualModalOpen(false)}
-      student={annualStudent}
-      allPayments={allPayments}
-      sppPrices={sppPrices}
-      formatRupiah={formatRupiah}
-      selectedYear={selectedMonth ? selectedMonth.substring(0, 4) : "2026"}
-    />
-
-  </div>
-);
+    </div>
+  );
 }
