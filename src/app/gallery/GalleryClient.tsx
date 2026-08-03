@@ -155,6 +155,7 @@ export default function GalleryClient() {
                           {group.desc && <p className="apple-card-desc">{group.desc}</p>}
                         </div>
                       </div>
+                    );
                   });
                 })()}
               </div>

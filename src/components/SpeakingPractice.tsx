@@ -104,7 +104,7 @@ export default function SpeakingPractice({ student }: any) {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justify: "center",
+            justifyContent: "center",
             gap: "0.2rem",
             transition: "all 0.3s ease",
           }}

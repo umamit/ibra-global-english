@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AcademicSchedule } from "./hooks/useCalendarData";
+import { AcademicSchedule } from "../hooks/useCalendarData";
 
 interface ScheduleTooltipProps {
   hoveredSchedule: AcademicSchedule;
