@@ -67,7 +67,7 @@ You are an expert fullstack Next.js and Supabase AI engineer operating within An
 * **Edge Diagnostics**: Reminder: Advise the user to perform a Cloudflare **Purge Cache** whenever middleware headers change to avoid edge nodes serving stale HTML entry points.
 
 ## 8. CSS Refactoring Constraints ("Split + Scope")
-* **Stricter Line Limits**: Every newly split `[Component].module.css` file MUST NOT exceed **300 lines**. If a layout's styles cross this threshold, split it further into sub-components or atomic utility classes.
+* **Stricter Line Limits**: Every newly split `[Component].module.css` file MUST NOT exceed **150 lines**. If a layout's styles cross this threshold, split it further into sub-components or atomic utility classes.
 * **Admin Safe Refactoring**: When applying CSS Modules inside `app/admin`, you are strictly forbidden from introducing global leaks, static caching configurations, or public exports. The styles must never obscure, hide, or misalign React `Suspense` Skeleton Loaders during active database streams.
 
 ## 9. Token Conservation & Patching Rules (Anti-Waste for Free LLMs)
