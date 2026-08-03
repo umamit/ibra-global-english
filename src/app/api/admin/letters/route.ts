@@ -1,160 +1,32 @@
 import { NextResponse, NextRequest } from "next/server";
-import { getAdminSupabase, withAdminAuth } from "@/app/api/_middleware";
+import { withAdminAuth } from "@/app/api/_middleware";
+import { fetchAllOfficialLetters, createOfficialLetter, updateOfficialLetter, deleteOfficialLetter } from "./lettersHelpers";
 
 export const dynamic = "force-dynamic";
-const adminSupabase = getAdminSupabase();
 
-// Fungsi self-migration mandiri untuk memastikan tabel official_letters ada di database
-async function ensureLettersTableExists() {
-  const sqlCreate = `
-    CREATE TABLE IF NOT EXISTS public.official_letters (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        title TEXT NOT NULL,
-        letter_number TEXT NOT NULL,
-        recipient TEXT NOT NULL,
-        subject TEXT NOT NULL,
-        content TEXT NOT NULL,
-        sender_name TEXT NOT NULL DEFAULT 'Husnita Usman',
-        sender_role TEXT NOT NULL DEFAULT 'Direktur Utama',
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-    );
-  `;
-  const sqlAlter = `
-    ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS lampiran TEXT NOT NULL DEFAULT '-';
-    ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS attachment TEXT NOT NULL DEFAULT '';
-    ALTER TABLE public.official_letters ADD COLUMN IF NOT EXISTS letter_date TEXT NOT NULL DEFAULT '';
-    NOTIFY pgrst, 'reload schema';
-  `;
-  try {
-    await adminSupabase.rpc("exec_sql", { sql: sqlCreate });
-    await adminSupabase.rpc("exec_sql", { sql: sqlAlter });
-  } catch (err: any) {
-    console.warn("Self-migration warning (non-blocking):", err.message);
-  }
-}
+export const GET = withAdminAuth(async () => {
+  const { data, error } = await fetchAllOfficialLetters();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ data });
+});
 
-// GET: Mengambil semua surat terdaftar
-const getLettersHandler = async () => {
-  await ensureLettersTableExists();
-  try {
-    const { data, error } = await adminSupabase
-      .from("official_letters")
-      .select("*")
-      .order("created_at", { ascending: false });
+export const POST = withAdminAuth(async (request: NextRequest) => {
+  const res = await createOfficialLetter(await request.json());
+  if (!res.success) return NextResponse.json({ error: res.error }, { status: res.status });
+  return NextResponse.json({ success: true, data: res.data });
+});
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ data });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-};
+export const PATCH = withAdminAuth(async (request: NextRequest) => {
+  const res = await updateOfficialLetter(await request.json());
+  if (!res.success) return NextResponse.json({ error: res.error }, { status: res.status });
+  return NextResponse.json({ success: true, data: res.data });
+});
 
-// POST: Membuat surat baru
-const createLetterHandler = async (request: NextRequest) => {
-  await ensureLettersTableExists();
-  try {
-    const body = await request.json();
-    const { title, letter_number, recipient, subject, content, sender_name, sender_role, lampiran, attachment, letter_date } = body;
+export const DELETE = withAdminAuth(async (request: NextRequest) => {
+  const id = new URL(request.url).searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "ID surat tidak disediakan." }, { status: 400 });
 
-    if (!title || !letter_number || !recipient || !subject || !content) {
-      return NextResponse.json({ error: "Mohon isi semua bidang wajib." }, { status: 400 });
-    }
-
-    const { data, error } = await adminSupabase
-      .from("official_letters")
-      .insert({
-        title,
-        letter_number,
-        recipient,
-        subject,
-        content,
-        sender_name: sender_name || "Husnita Usman",
-        sender_role: sender_role || "Direktur Utama",
-        lampiran: lampiran || "-",
-        attachment: attachment || "",
-        letter_date: letter_date || "",
-        updated_at: new Date().toISOString()
-      })
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ success: true, data });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-};
-
-// PATCH: Memperbarui surat yang ada
-const updateLetterHandler = async (request: NextRequest) => {
-  await ensureLettersTableExists();
-  try {
-    const body = await request.json();
-    const { id, title, letter_number, recipient, subject, content, sender_name, sender_role, lampiran, attachment, letter_date } = body;
-
-    if (!id || !title || !letter_number || !recipient || !subject || !content) {
-      return NextResponse.json({ error: "Mohon lengkapi data yang akan diupdate." }, { status: 400 });
-    }
-
-    const { data, error } = await adminSupabase
-      .from("official_letters")
-      .update({
-        title,
-        letter_number,
-        recipient,
-        subject,
-        content,
-        sender_name: sender_name || "Husnita Usman",
-        sender_role: sender_role || "Direktur Utama",
-        lampiran: lampiran || "-",
-        attachment: attachment || "",
-        letter_date: letter_date || "",
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", id)
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ success: true, data });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-};
-
-// DELETE: Menghapus surat
-const deleteLetterHandler = async (request: NextRequest) => {
-  await ensureLettersTableExists();
-  try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json({ error: "ID surat tidak disediakan." }, { status: 400 });
-    }
-
-    const { error } = await adminSupabase
-      .from("official_letters")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ success: true, message: "Surat berhasil dihapus." });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-};
-
-export const GET = withAdminAuth(getLettersHandler);
-export const POST = withAdminAuth(createLetterHandler);
-export const PATCH = withAdminAuth(updateLetterHandler);
-export const DELETE = withAdminAuth(deleteLetterHandler);
+  const res = await deleteOfficialLetter(id);
+  if (!res.success) return NextResponse.json({ error: res.error }, { status: res.status });
+  return NextResponse.json({ success: true, message: res.message });
+});

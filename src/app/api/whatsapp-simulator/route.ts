@@ -1,287 +1,30 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import os from "os";
-import { withAdminAuth, getAdminSupabase } from "@/app/api/_middleware";
+import { withAdminAuth } from "@/app/api/_middleware";
+import { sendBulkWhatsappMessages, fetchWhatsappLogs } from "./whatsappHelpers";
 
-// Tentukan path log di temp directory agar aman di read-only file system (Vercel)
-const logPath = path.join(os.tmpdir(), "whatsapp_logs.txt");
+const HEADERS = { "Cache-Control": "private, no-cache, no-store, must-revalidate" };
 
-// Helper untuk respons JSON dengan Cache-Control private (sesuai aturan keamanan admin)
-type JsonResponseInit = { status?: number; headers?: Record<string, string> };
-function jsonResponse(data: unknown, init: JsonResponseInit = {}) {
-  const headers: Record<string, string> = {
-    "Cache-Control": "private, no-cache, no-store, must-revalidate",
-    ...(init.headers || {}),
-  };
-  return NextResponse.json(data, { ...init, headers });
-}
-
-// POST: Kirim pesan WhatsApp via Fonnte (Mendukung pengiriman ke banyak nomor sekaligus)
 export const POST = withAdminAuth(async (request: Request) => {
   try {
-    const { phone, message, type } = (await request.json()) as {
-      phone: string;
-      message: string;
-      type?: string;
-    };
-
+    const { phone, message, type } = (await request.json()) as { phone: string; message: string; type?: string };
     if (!phone || !message) {
-      return jsonResponse(
-        { error: "Nomor telepon dan pesan wajib diisi." },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Nomor telepon dan pesan wajib diisi." }, { status: 400, headers: HEADERS });
     }
 
-    // Pisahkan nomor telepon berdasarkan koma untuk pengiriman massal
-    const numbers = phone
-      .split(",")
-      .map((n) => n.trim().replace(/[^0-9]/g, ""))
-      .filter((n) => n.length >= 9);
+    const res = await sendBulkWhatsappMessages(phone, message, type);
+    if (!res.success) return NextResponse.json({ error: res.error }, { status: res.status, headers: HEADERS });
 
-    if (numbers.length === 0) {
-      return jsonResponse(
-        { error: "Tidak ada nomor telepon yang valid." },
-        { status: 400 },
-      );
-    }
-
-    const fonnteToken = process.env.FONNTE_API_TOKEN;
-
-    // Kirim pesan ke semua nomor secara paralel
-    const results = await Promise.all(
-      numbers.map(async (cleanPhone) => {
-        let sentReal = false;
-        let fonnteResult = null;
-
-        if (fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA") {
-          try {
-            const formData = new FormData();
-            formData.append("target", cleanPhone);
-            formData.append("message", message);
-            formData.append("countryCode", "62");
-
-            const waRes = await fetch("https://api.fonnte.com/send", {
-              method: "POST",
-              headers: {
-                Authorization: fonnteToken,
-              },
-              body: formData,
-            });
-
-            fonnteResult = await waRes.json();
-            sentReal = fonnteResult.status === true;
-          } catch (waErr) {
-            console.error(`Gagal mengirim ke ${cleanPhone}:`, waErr);
-          }
-        }
-
-        // Tulis log untuk masing-masing nomor
-        const status = sentReal
-          ? "SENT"
-          : fonnteToken && fonnteToken !== "GANTI_DENGAN_TOKEN_FONNTE_ANDA"
-            ? "FAILED"
-            : "SIMULATED";
-        const logEntry = `[${new Date().toISOString()}] TYPE: ${type || "manual"} | TO: ${cleanPhone} | STATUS: ${status} | MSG: ${message}\n`;
-        fs.appendFileSync(logPath, logEntry, "utf8");
-
-        return { phone: cleanPhone, sentReal, status, fonnteResult };
-      }),
-    );
-
-    const sentCount = results.filter((r) => r.sentReal).length;
-    const simulatedCount = results.filter(
-      (r) => r.status === "SIMULATED",
-    ).length;
-    const failedCount = results.filter((r) => r.status === "FAILED").length;
-
-    return jsonResponse({
-      success: true,
-      logged: true,
-      results,
-      stats: {
-        total: numbers.length,
-        sent: sentCount,
-        simulated: simulatedCount,
-        failed: failedCount,
-      },
-    });
-  } catch (error) {
-    console.error("WA Gateway error:", error);
-    return jsonResponse(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 },
-    );
+    return NextResponse.json(res, { status: 200, headers: HEADERS });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || "Gagal memproses pengiriman." }, { status: 500, headers: HEADERS });
   }
 });
 
-// GET: Ambil log pengiriman, status perangkat Fonnte, atau daftar kontak
-export const GET = withAdminAuth(async (request: Request) => {
+export const GET = withAdminAuth(async () => {
   try {
-    const { searchParams } = new URL(request.url);
-    const action = searchParams.get("action");
-
-    // 1. Cek status perangkat Fonnte
-    if (action === "device") {
-      const fonnteToken = process.env.FONNTE_API_TOKEN;
-
-      if (!fonnteToken || fonnteToken === "GANTI_DENGAN_TOKEN_FONNTE_ANDA") {
-        return jsonResponse({
-          connected: false,
-          reason: "Token Fonnte belum dikonfigurasi di environment variable.",
-        });
-      }
-
-      try {
-        const res = await fetch("https://api.fonnte.com/device", {
-          method: "POST",
-          headers: { Authorization: fonnteToken },
-        });
-        const data = await res.json();
-        const isConnected =
-          data.status === true && data.device_status === "connect";
-        return jsonResponse({
-          connected: isConnected,
-          device: data,
-          reason:
-            data.status === true && data.device_status !== "connect"
-              ? `Status perangkat: ${data.device_status || "disconnect"}. Pastikan WhatsApp di HP Anda tetap aktif.`
-              : undefined,
-        });
-      } catch (err) {
-        return jsonResponse({
-          connected: false,
-          reason:
-            "Gagal terhubung ke Fonnte: " +
-            (err instanceof Error ? err.message : String(err)),
-        });
-      }
-    }
-
-    // 2. Ambil seluruh kontak dari Registrasi dan Placement Test (otomatis)
-    if (action === "contacts") {
-      try {
-        const supabaseAdmin = getAdminSupabase();
-
-        // Ambil data pendaftaran
-        const { data: regData } = await supabaseAdmin
-          .from("registrations")
-          .select("student_name, parent_name, whatsapp")
-          .order("created_at", { ascending: false });
-
-        // Ambil data tes penempatan
-        const { data: testData } = await supabaseAdmin
-          .from("placement_test_submissions")
-          .select("full_name, whatsapp_number")
-          .order("created_at", { ascending: false });
-
-        type Contact = { name: string; phone: string; source: string };
-        const contacts: Contact[] = [];
-        const seen = new Set();
-
-        if (regData) {
-          regData.forEach((r) => {
-            const clean = r.whatsapp.replace(/[^0-9]/g, "");
-            if (clean && !seen.has(clean)) {
-              seen.add(clean);
-              contacts.push({
-                name: r.parent_name
-                  ? `${r.parent_name} (Ortu ${r.student_name})`
-                  : r.student_name,
-                phone: clean,
-                source: "Pendaftaran",
-              });
-            }
-          });
-        }
-
-        if (testData) {
-          testData.forEach((t) => {
-            const clean = t.whatsapp_number.replace(/[^0-9]/g, "");
-            if (clean && !seen.has(clean)) {
-              seen.add(clean);
-              contacts.push({
-                name: `${t.full_name}`,
-                phone: clean,
-                source: "Tes Penempatan",
-              });
-            }
-          });
-        }
-
-        return jsonResponse({ contacts });
-      } catch (dbErr) {
-        console.error("Gagal memuat kontak dari DB:", dbErr);
-        return jsonResponse({
-          contacts: [],
-          error: dbErr instanceof Error ? dbErr.message : "DB error",
-        });
-      }
-    }
-
-    // Default: ambil log pengiriman
-    if (!fs.existsSync(logPath)) {
-      return jsonResponse({
-        logs: [],
-        stats: { total: 0, today: 0, sent: 0, simulated: 0, failed: 0 },
-      });
-    }
-
-    const content = fs.readFileSync(logPath, "utf8");
-    const rawLines = content.trim().split("\n").filter(Boolean);
-
-    const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-
-    const logs = rawLines
-      .map((line) => {
-        const match = line.match(
-          /^\[(.*?)\] TYPE: (.*?) \| TO: (.*?) \| STATUS: (.*?) \| MSG: (.*?)$/,
-        );
-        // Support format lama (tanpa STATUS field)
-        const legacyMatch = line.match(
-          /^\[(.*?)\] TYPE: (.*?) \| TO: (.*?) \| MSG: (.*?)$/,
-        );
-        if (match) {
-          return {
-            timestamp: match[1],
-            type: match[2],
-            phone: match[3],
-            status: match[4],
-            message: match[5],
-          };
-        }
-        if (legacyMatch) {
-          return {
-            timestamp: legacyMatch[1],
-            type: legacyMatch[2],
-            phone: legacyMatch[3],
-            status: "SIMULATED",
-            message: legacyMatch[4],
-          };
-        }
-        return { raw: line, timestamp: "", status: "UNKNOWN" };
-      })
-      .reverse(); // Terbaru di atas
-
-    const stats = {
-      total: logs.length,
-      today: logs.filter((l) => l.timestamp?.startsWith(todayStr)).length,
-      sent: logs.filter((l) => l.status === "SENT").length,
-      simulated: logs.filter((l) => l.status === "SIMULATED").length,
-      failed: logs.filter((l) => l.status === "FAILED").length,
-    };
-
-    return jsonResponse({ logs, stats });
-  } catch (error) {
-    return jsonResponse(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 },
-    );
+    const logs = await fetchWhatsappLogs();
+    return NextResponse.json({ logs }, { status: 200, headers: HEADERS });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || "Gagal memuat log." }, { status: 500, headers: HEADERS });
   }
 });
