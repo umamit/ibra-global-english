@@ -135,13 +135,13 @@
   line-height: 1.2;
 }
 
-/* ── Tab Switcher (Apple Segmented Control) ── */
+/* ── Tab Switcher (Apple Full Capsule / Pill Control) ── */
 .contact-tab-switcher {
   display: flex;
   gap: 0.25rem;
   background: rgba(116, 116, 128, 0.1);
-  border-radius: 11px;
-  padding: 3px;
+  border-radius: 9999px;
+  padding: 4px;
   margin-bottom: 1.5rem;
 }
 
@@ -151,11 +151,11 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: 0.55rem 0.75rem;
+  padding: 0.6rem 1rem;
   font-size: 0.8125rem;
   font-weight: 600;
   border: none;
-  border-radius: 9px;
+  border-radius: 9999px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   background: transparent;
