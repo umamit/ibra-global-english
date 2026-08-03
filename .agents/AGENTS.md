@@ -50,6 +50,8 @@ You are an expert fullstack Next.js and Supabase AI engineer operating within An
   * **1 Hook per Halaman/Fitur**: Seluruh state management, form handlers, dan integrasi API/Supabase WAJIB diletakkan di dalam custom hook khusus (misal: `use[Feature].ts` di folder `hooks/`).
   * **1 Komponen per Berkas UI**: Komponen visual, tabel, modal, atau formulir sub-segmen WAJIB dipisah ke file tersendiri di dalam direktori `components/` lokal.
   * **1 Helper per Berkas Utilitas**: Fungsi utilitas kalkulasi, penformatan string/tanggal, atau pemrosesan logika murni wajib ditempatkan di file helper tersendiri (misal: `[name]Helper.ts`).
+  * **Maksimal 15 Baris Kode per Fungsi Backend**: Setiap fungsi di dalam Server Actions atau API Routes (`route.ts`) TIDAK BOLEH melebihi 15 baris kode. Jika logika kompleks, wajib dipecah ke dalam helper/sub-fungsi modular.
+  * **Validasi Wajib Zod Schema**: Semua input dari formulir wajib divalidasi menggunakan skema Zod (`zod`) sebelum diproses oleh database (Prisma / Supabase).
 
 ## 6. Supabase Client & Browser Authentication Rules
 * **Module-Level Singleton**: On the client side, initialize the Supabase client using a strict singleton pattern. Re-instantiating the client inside rendering lifecycles or hooks is strictly forbidden to prevent unexpected `useEffect` cleanups that trigger false `signOut` events.
