@@ -25,7 +25,19 @@ export function ContactInfoPanel({ address, phone, rawPhone, email, leftPanelRef
 }
 
 export function ContactFormPanel(props: any) {
-  const { rightPanelRef, activeTab, setActiveTab, waForm, setWaForm, handleWaSubmit, regSuccess, setRegSuccess, handleRegSubmit, regError, regForm, setRegForm, regSubmitting } = props;
+  const { rightPanelRef, activeTab, setActiveTab, regSuccess, setRegSuccess, handleRegSubmit, regError, regForm, setRegForm, regSubmitting } = props;
+
+  const [localWaForm, setLocalWaForm] = React.useState({ name: "", message: "" });
+  const waForm = props.waForm || localWaForm;
+  const setWaForm = props.setWaForm || setLocalWaForm;
+
+  const handleWaSubmit = props.handleWaSubmit || ((e: React.FormEvent) => {
+    e.preventDefault();
+    if (!waForm.name || !waForm.message) return;
+    const text = encodeURIComponent(`Halo Ibra Global English, pesan dari *${waForm.name}*:\n\n${waForm.message}`);
+    const rawP = props.rawPhone || "6281357001357";
+    window.open(`https://wa.me/${rawP}?text=${text}`, "_blank");
+  });
 
   return (
     <div className="contact-form-panel" ref={rightPanelRef}>
@@ -36,8 +48,8 @@ export function ContactFormPanel(props: any) {
 
       {activeTab === "whatsapp" && (
         <form onSubmit={handleWaSubmit} className="space-y-4">
-          <div className="form-group"><label className="form-label">Nama Anda</label><input type="text" className="form-input" required value={waForm.name} onChange={(e) => setWaForm({ ...waForm, name: e.target.value })} /></div>
-          <div className="form-group"><label className="form-label">Pesan</label><textarea className="form-input" rows={3} required value={waForm.message} onChange={(e) => setWaForm({ ...waForm, message: e.target.value })} /></div>
+          <div className="form-group"><label className="form-label">Nama Anda</label><input type="text" className="form-input" required value={waForm.name || ""} onChange={(e) => setWaForm({ ...waForm, name: e.target.value })} /></div>
+          <div className="form-group"><label className="form-label">Pesan</label><textarea className="form-input" rows={3} required value={waForm.message || ""} onChange={(e) => setWaForm({ ...waForm, message: e.target.value })} /></div>
           <Button type="submit" variant="form-btn"><span>Kirim via WhatsApp</span></Button>
         </form>
       )}
