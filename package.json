@@ -11,15 +11,10 @@
     "start": "next start",
     "lint": "eslint",
     "check-limits": "node scripts/check-code-limits.js",
-    "prisma:generate": "prisma generate",
-    "prisma:studio": "prisma studio",
-    "prisma:migrate": "prisma migrate dev",
-    "postbuild": "prisma generate && node scripts/generate-sitemap.js"
+    "postbuild": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.110.0",
     "@tanstack/react-query": "^5.101.2",
@@ -36,7 +31,6 @@
   },
   "devDependencies": {
     "@fontsource/montserrat": "^5.2.8",
-    "@tailwindcss/postcss": "^4.3.2",
     "@types/node": "^26.1.0",
     "@types/pg": "^8.20.0",
     "@types/react": "^19.2.17",
@@ -45,8 +39,6 @@
     "cross-env": "^10.1.0",
     "eslint": "^9.21.0",
     "eslint-config-next": "^16.2.10",
-    "prisma": "^7.8.0",
-    "tailwindcss": "^4.3.2",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3"
   },

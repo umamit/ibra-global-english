@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { createClient } from "@/utils/supabase/server";
 import { generateEmbedding } from "./hfEmbeddingHelper";
 
 export { generateEmbedding };
@@ -8,68 +8,55 @@ export function embeddingToPgVector(embedding: number[]): string {
 }
 
 export async function upsertRagDocument({ id, title, content, source = "manual", metadata = {} }: { id?: string; title: string; content: string; source?: string; metadata?: any }) {
+  const supabase = await createClient();
   let embeddingVector: number[] = [];
   try { embeddingVector = await generateEmbedding(`${title}\n${content}`); } catch (_) {}
-  
+
+  const payload: any = { title, content, source, metadata, updated_at: new Date().toISOString() };
+  if (embeddingVector.length > 0) payload.embedding = embeddingToPgVector(embeddingVector);
+
   if (id) {
-    return prisma.ragDocument.update({
-      where: { id },
-      data: { title, content, source, metadata }
-    });
+    const { data, error } = await supabase.from("rag_documents").update(payload).eq("id", id).select().single();
+    if (error) throw error;
+    return data;
   }
-  return prisma.ragDocument.create({
-    data: { title, content, source, metadata }
-  });
+
+  const { data, error } = await supabase.from("rag_documents").insert(payload).select().single();
+  if (error) throw error;
+  return data;
 }
 
 export async function searchSimilarDocuments(query: string, topK = 3, threshold = 0.5) {
   try {
+    const supabase = await createClient();
     let pgResults: any[] = [];
     let vectorSearchSuccess = false;
+
     try {
       const embedding = await generateEmbedding(query);
-      const vectorStr = embeddingToPgVector(embedding);
-      const results: any = await prisma.$queryRawUnsafe(`SELECT * FROM search_rag_documents($1::vector, $2, $3)`, vectorStr, threshold, topK);
-      if (results && Array.isArray(results)) {
-        pgResults = results.map(r => ({ id: r.id, title: r.title, content: r.content, source: r.source, metadata: typeof r.metadata === "string" ? JSON.parse(r.metadata) : (r.metadata || {}), similarity: r.similarity }));
+      const { data, error } = await supabase.rpc("search_rag_documents", {
+        query_embedding: embeddingToPgVector(embedding),
+        match_threshold: threshold,
+        match_count: topK
+      });
+
+      if (!error && data && Array.isArray(data)) {
+        pgResults = data.map((r: any) => ({ id: r.id, title: r.title, content: r.content, source: r.source, metadata: typeof r.metadata === "string" ? JSON.parse(r.metadata) : (r.metadata || {}), similarity: r.similarity }));
         vectorSearchSuccess = pgResults.length > 0;
       }
     } catch (_) {}
 
     if (!vectorSearchSuccess) {
-      const searchPattern = `%${query.trim()}%`;
-      const keywords = query.trim().split(/\s+/).map(w => w.replace(/[^a-zA-Z0-9]/g, "")).filter(w => w.length > 1);
-      let textResults: any[] = [];
-      try {
-        if (keywords.length > 0) {
-          const conditions = keywords.map((_, idx) => `(title ILIKE $${idx * 2 + 1} OR content ILIKE $${idx * 2 + 2})`).join(" OR ");
-          const params: any[] = keywords.flatMap(w => [`%${w}%`, `%${w}%`]);
-          const sql = `SELECT id, title, content, source, metadata, ((CASE WHEN title ILIKE $${params.length + 1} THEN 1.0 ELSE 0.0 END) + (CASE WHEN content ILIKE $${params.length + 1} THEN 0.5 ELSE 0.0 END)) as similarity FROM rag_documents WHERE ${conditions} ORDER BY similarity DESC LIMIT $${params.length + 2}`;
-          textResults = await prisma.$queryRawUnsafe(sql, ...params, searchPattern, topK);
-        } else {
-          textResults = await prisma.$queryRawUnsafe(`SELECT id, title, content, source, metadata, 0.5 as similarity FROM rag_documents ORDER BY updated_at DESC LIMIT $1`, topK);
-        }
-        if (textResults && Array.isArray(textResults)) {
-          pgResults = textResults.map(r => ({ id: r.id, title: r.title, content: r.content, source: r.source, metadata: typeof r.metadata === "string" ? JSON.parse(r.metadata) : (r.metadata || {}), similarity: r.similarity }));
-        }
-      } catch (_) {}
+      const { data } = await supabase.from("rag_documents").select("id, title, content, source, metadata").ilike("title", `%${query}%`).limit(topK);
+      if (data) pgResults = data.map((r: any) => ({ ...r, similarity: 0.8 }));
     }
 
-    return pgResults.sort((a, b) => b.similarity - a.similarity).slice(0, topK);
-  } catch (error: any) { return []; }
+    return pgResults;
+  } catch { return []; }
 }
 
 export async function getRagContext(query: string, topK = 3) {
-  const docs = await searchSimilarDocuments(query, topK, 0.5);
+  const docs = await searchSimilarDocuments(query, topK);
   if (!docs || docs.length === 0) return "";
-  const contextParts = docs.map((doc) => `### ${doc.title}\n${doc.content}`);
-  return `\n\n[KONTEKS BASIS PENGETAHUAN RAG]\n${contextParts.join("\n\n")}\n[AKHIR KONTEKS RAG]\n\nGunakan konteks di atas sebagai referensi tambahan.`;
-}
-
-export async function listRagDocuments() {
-  return prisma.ragDocument.findMany({ select: { id: true, title: true, content: true, source: true, metadata: true, createdAt: true, updatedAt: true }, orderBy: { createdAt: "desc" } });
-}
-
-export async function deleteRagDocument(id: string) {
-  await prisma.ragDocument.delete({ where: { id } });
+  return docs.map((d: any) => `[Dokumen: ${d.title}]\n${d.content}`).join("\n\n");
 }
