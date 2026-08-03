@@ -29,6 +29,14 @@ export function ContactInfoPanel({ address, phone, rawPhone, email, leftPanelRef
           <div className="contact-details"><h4>Email</h4><p><a href={`mailto:${email}`} className="contact-email-link">{email}</a></p></div>
         </div>
       </div>
+
+      <div className="contact-qr-card" style={{ marginTop: "1.75rem", display: "flex", alignItems: "center", gap: "1rem", backgroundColor: "var(--color-bg-teal-50)", padding: "1rem", borderRadius: "14px", border: "1px solid rgba(33, 108, 126, 0.12)" }}>
+        <img src="/assets/qr-whatsapp.png" alt="Scan QR Code WhatsApp Ibra Global English" style={{ width: "76px", height: "76px", borderRadius: "10px", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(0,0,0,0.05)" }} />
+        <div>
+          <h4 style={{ margin: "0 0 4px", fontSize: "0.95rem", fontWeight: "700", color: "var(--color-gray-900)" }}>Scan QR WhatsApp</h4>
+          <p style={{ margin: "0", fontSize: "0.825rem", color: "var(--color-gray-500)", lineHeight: "1.4" }}>Pindai kode QR ini untuk langsung terhubung dengan Admin kami.</p>
+        </div>
+      </div>
     </div>
   );
 }
