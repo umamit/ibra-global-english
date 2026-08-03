@@ -1,41 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { validateProxyDomain } from "./proxyImageHelpers";
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const imageUrl = searchParams.get("url");
+  const imageUrl = new URL(request.url).searchParams.get("url");
+  if (!imageUrl) return new NextResponse("Missing url parameter", { status: 400 });
 
-  if (!imageUrl) {
-    return new NextResponse("Missing url parameter", { status: 400 });
-  }
+  const { isValid } = validateProxyDomain(imageUrl);
+  if (!isValid) return new NextResponse("Forbidden domain", { status: 403 });
 
   try {
-    const urlObj = new URL(imageUrl);
-    // Secure it to only allow Supabase and QR server domains using strict suffix/exact checks
-    const hostname = urlObj.hostname;
-    const isSupabase = hostname.endsWith(".supabase.co") || hostname === "supabase.co";
-    const isQrServer = hostname === "api.qrserver.com" || hostname === "qrserver.com";
-
-    if (!isSupabase && !isQrServer) {
-      return new NextResponse("Forbidden domain", { status: 403 });
-    }
-
     const res = await fetch(imageUrl);
-    if (!res.ok) {
-      return new NextResponse("Failed to fetch image", { status: res.status });
-    }
+    if (!res.ok) return new NextResponse("Failed to fetch image", { status: res.status });
 
     const blob = await res.blob();
-    const headers = new Headers();
-    headers.set("Content-Type", blob.type || "image/png");
-    headers.set("Access-Control-Allow-Origin", "*");
-    headers.set("Cache-Control", "public, max-age=86400");
-
     return new NextResponse(blob, {
       status: 200,
-      headers,
+      headers: { "Content-Type": blob.type || "image/png", "Access-Control-Allow-Origin": "*", "Cache-Control": "public, max-age=86400" },
     });
-  } catch (error) {
-    console.error("Proxy image error:", error);
+  } catch {
     return new NextResponse("Internal server error", { status: 500 });
   }
 }
