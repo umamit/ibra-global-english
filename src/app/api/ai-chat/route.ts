@@ -1,205 +1,55 @@
 import { NextResponse } from "next/server";
-import { getAdminSupabase } from "@/app/api/_middleware";
 import { detectPromptInjection } from "@/utils/security";
-import { getRagContext } from "@/utils/rag";
 import { chatRequestSchema } from "@/lib/schemas";
 import { getPostHogClient } from "@/lib/posthog-server";
+import { logAiUsage, fetchGroqChatResponse } from "./aiChatHelpers";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
-const adminSupabase = getAdminSupabase();
-
-// Logger penggunaan AI ke dalam database (untuk publik)
-async function logAiUsage(tokensUsed: any, status: any, errorMessage: any = null) {
-  try {
-    const { error } = await adminSupabase.from("ai_usage_logs").insert({
-      user_id: null,
-      email: null,
-      role: "public",
-      mode: "public-chat",
-      tokens_used: tokensUsed || null,
-      status: status,
-      error_message: errorMessage || null
-    });
-    if (error) {
-      console.warn("Failed to write to ai_usage_logs table (make sure migrations are run):", error.message);
-    }
-  } catch (e: any) {
-    console.warn("Error inserting public AI log:", e.message);
-  }
-}
-
-const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ibra Global English Bobong**, sebuah lembaga kursus bahasa Inggris terkemuka yang berlokasi di Bobong, Pulau Taliabu, Maluku Utara, Indonesia.
-
-## IDENTITAS KAMU
-- Nama: **Ibra AI Assistant**
-- Kepribadian: Ramah, sabar, supportif, antusias dalam pendidikan
-- Bahasa: Merespons dalam bahasa yang digunakan pengguna (Bahasa Indonesia atau English). Jika dicampur, pilih yang lebih dominan.
-
-## INFORMASI TENTANG IBRA GLOBAL ENGLISH
-
-### Program Kursus
-1. **Kids Program (Usia 5-12 tahun)**
-   - Pembelajaran interaktif dengan menyanyi, bermain peran, dan mewarnai
-   - Fokus: Kosakata dasar, percakapan sederhana, pronunciation
-   - Metode: Fun-learning, game-based
-
-2. **Teens Program (Usia 13-17 tahun)**
-   - Fokus: Speaking, diskusi kelompok, presentasi, grammar tingkat lanjut
-   - Membantu persiapan ujian sekolah dan masa depan karir
-   - Metode: Komunikatif, berbasis proyek
-
-3. **Fun Calistung (Usia 5-7 tahun)**
-   - Bimbingan membaca (Calis), menulis (Tung), dan berhitung secara seru
-   - Dikemas dengan aktivitas yang menyenangkan dan ramah anak
-   - Cocok untuk persiapan masuk SD
-
-### Kontak & Lokasi
-- **Alamat**: Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794
-- **WhatsApp**: +62 813-5700-1357
-- **Email**: admin@ibraglobalenglish.uk
-- **Website**: https://www.ibraglobalenglish.uk
-
-### Cara Mendaftar
-- Hubungi via WhatsApp: +62 813-5700-1357
-- Atau isi formulir pendaftaran di website
-- Bisa datang langsung ke lokasi kursus
-
-## KEMAMPUAN KAMU
-1. **Asisten Kursus**: Jawab pertanyaan tentang program, jadwal, cara daftar, biaya, dan lokasi
-2. **Tutor Bahasa Inggris**: Latih percakapan, ajarkan kosakata baru, jelaskan grammar
-3. **Pemeriksa Grammar**: Koreksi kalimat bahasa Inggris dengan penjelasan ramah
-4. **Rekomendasi Program**: Sarankan program yang cocok berdasarkan usia dan kebutuhan
-
-## PANDUAN RESPONS
-- Selalu positif, supportif, dan memotivasi
-- Gunakan bahasa yang sopan dan ramah
-- Jika ada pertanyaan biaya, arahkan ke WhatsApp
-- Format koreksi grammar: Kalimat Benar: [kalimat] | Penjelasan: [penjelasan]
-- Jaga respons ringkas (max 3-4 paragraf) kecuali diminta lebih detail`;
 
 export async function POST(request: Request) {
   try {
     if (!GROQ_API_KEY) {
-      return NextResponse.json(
-        { error: "API Key Groq belum dikonfigurasi." },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "API Key Groq belum dikonfigurasi." }, { status: 500 });
     }
 
     const body = await request.json();
     const validation = chatRequestSchema.safeParse(body);
-
     if (!validation.success) {
-      const errorMessages = validation.error.issues
-        .map((issue) => issue.message)
-        .join(", ");
-      return NextResponse.json(
-        { error: `Format pesan tidak valid: ${errorMessages}` },
-        { status: 400 }
-      );
+      const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ");
+      return NextResponse.json({ error: `Format pesan tidak valid: ${errorMessages}` }, { status: 400 });
     }
 
     const { messages } = validation.data;
-
-    // 1. Validasi Keamanan: Cek Prompt Injection pada pesan terakhir user
     const lastUserMessage = messages[messages.length - 1]?.content;
     if (detectPromptInjection(lastUserMessage)) {
       await logAiUsage(0, "failed", "Prompt Injection Blocked");
-      return NextResponse.json(
-        { error: "Aktivitas mencurigakan terdeteksi. Silakan kirim pesan yang wajar." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Aktivitas mencurigakan terdeteksi. Silakan kirim pesan yang wajar." }, { status: 400 });
     }
 
-    // 2. RAG: Retrieve relevant knowledge base context
-    let ragContext = "";
-    try {
-      ragContext = await getRagContext(lastUserMessage, 3);
-    } catch (ragErr: any) {
-      console.warn("RAG lookup failed (non-blocking):", ragErr.message);
-    }
-
-    // 3. Build system prompt with RAG context injected
-    const systemPromptWithRag = ragContext
-      ? SYSTEM_PROMPT + "\n\n" + ragContext
-      : SYSTEM_PROMPT;
-
-    // Format messages for OpenAI / Groq compatibility
-    const formattedMessages = [
-      { role: "system", content: systemPromptWithRag },
-      ...messages.map((msg) => ({
-        role: msg.role === "assistant" ? "assistant" : "user",
-        content: msg.content,
-      }))
-    ];
-
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${GROQ_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: formattedMessages,
-        temperature: 0.7,
-        max_tokens: 1024,
-      }),
-    });
-
+    const response = await fetchGroqChatResponse(GROQ_API_KEY, messages, lastUserMessage);
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Groq API error response:", data);
       const errMsg = data?.error?.message || "Gagal mendapat respons dari server Groq.";
       await logAiUsage(0, "failed", errMsg);
-
-      if (response.status === 401 || response.status === 403) {
-        return NextResponse.json(
-          { error: "API Key Groq tidak valid. Periksa konfigurasi API Anda." },
-          { status: 401 }
-        );
-      }
-      if (response.status === 429) {
-        return NextResponse.json(
-          { error: "Batas penggunaan (kuota) API Groq telah habis. Silakan coba beberapa saat lagi." },
-          { status: 429 }
-        );
-      }
-      return NextResponse.json(
-        { error: `Kesalahan Groq: ${errMsg}` },
-        { status: response.status }
-      );
+      return NextResponse.json({ error: `Kesalahan Groq: ${errMsg}` }, { status: response.status });
     }
 
     const aiText = data?.choices?.[0]?.message?.content;
     const tokensUsed = data?.usage?.total_tokens || 0;
-
     if (!aiText) {
       await logAiUsage(0, "failed", "AI text response was empty");
-      return NextResponse.json(
-        { error: "AI tidak dapat menghasilkan respons saat ini." },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "AI tidak dapat menghasilkan respons saat ini." }, { status: 500 });
     }
 
-    // Log sukses pemakaian AI
     await logAiUsage(tokensUsed, "success");
-
     const posthog = getPostHogClient();
-    posthog.capture({
-      distinctId: "anonymous",
-      event: "ai_chat_message_sent",
-      properties: { tokens_used: tokensUsed, message_count: messages.length },
-    });
+    posthog.capture({ distinctId: "anonymous", event: "ai_chat_message_sent", properties: { tokens_used: tokensUsed, message_count: messages.length } });
 
     return NextResponse.json({ reply: aiText });
   } catch (err: any) {
     console.error("AI Chat error:", err);
     await logAiUsage(0, "failed", err.message);
-    return NextResponse.json(
-      { error: "Terjadi kesalahan pada server AI Groq. Silakan coba lagi." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Terjadi kesalahan pada server AI Groq. Silakan coba lagi." }, { status: 500 });
   }
 }
