@@ -165,8 +165,8 @@ export default function FluidCanvas() {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0, zIndex: 0, overflow: "hidden", opacity: 0.35, pointerEvents: "none" }}>
-      <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
+    <div ref={containerRef} style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0, zIndex: 0, overflow: "hidden", opacity: 0.35, pointerEvents: "none", background: "transparent" }}>
+      <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block", background: "transparent" }} />
     </div>
   );
 }

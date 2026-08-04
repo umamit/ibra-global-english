@@ -7,8 +7,8 @@ import FluidCanvas from "./FluidCanvas";
 export default function AgencyHero() {
   return (
     <div className={styles.heroSectionWrapper}>
+      <FluidCanvas />
       <section className={styles.hero}>
-        <FluidCanvas />
         <span className={styles.heroTagline}>Your Growth Partner — digital.ibraglobalenglish.uk</span>
         <h1 className={styles.heroTitle}>
           Helping Businesses Scale with <span className={styles.gradientText}>Digital Excellence</span>
