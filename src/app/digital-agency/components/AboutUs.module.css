@@ -30,3 +30,101 @@
   .experienceBadge { bottom: 10px; left: 10px; padding: 14px 18px; }
 }
 @media (max-width: 576px) { .servicesGrid { grid-template-columns: 1fr; } }
+
+/* ── Enterprise Stack Showcase Card & Contact Box ── */
+.aboutCardVisual {
+  background: #ffffff;
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.visualHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding-bottom: 16px;
+}
+
+.visualDot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+}
+
+.visualDotRed { background-color: #ff5f56; }
+.visualDotYellow { background-color: #ffbd2e; }
+.visualDotGreen { background-color: #27c93f; }
+
+.visualList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visualItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.visualItemTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: 4px;
+}
+
+.visualItemSub {
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+  line-height: 1.4;
+}
+
+.visualItem .checkIconWrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contactBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.phoneIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: rgba(33, 108, 126, 0.1);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contactTextLabel {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.contactPhoneNumber {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  text-decoration: none;
+}
+
