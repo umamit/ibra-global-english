@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "../digital-agency.module.css";
+import styles from "./AgencyFaq.module.css";
 
 const FAQ_ITEMS = [
   {

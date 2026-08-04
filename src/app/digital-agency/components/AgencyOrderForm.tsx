@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "../digital-agency.module.css";
+import styles from "./AgencyOrderForm.module.css";
 
 export default function AgencyOrderForm() {
   const [formData, setFormData] = useState({

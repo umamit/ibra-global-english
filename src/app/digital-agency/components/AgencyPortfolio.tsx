@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import styles from "../digital-agency.module.css";
+import styles from "./AgencyPortfolio.module.css";
 
 export default function AgencyPortfolio() {
   return (
