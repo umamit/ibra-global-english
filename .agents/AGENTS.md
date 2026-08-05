@@ -209,6 +209,10 @@ npm run check-limits
     - Setiap elemen latar belakang, gambar, dekorasi SVG, atau lapisan aksen yang ditempatkan di dalam atau sebagai latar belakang kartu (card) DILARANG KERAS melebihi atau keluar dari dimensi kartu tersebut (`overflow: hidden` wajib diterapkan pada pembungkus kartu).
     - Ukuran latar belakang kartu harus dipastikan pas (*exact fit*) dan ter-kliping secara sempurna sesuai dengan batas dan kelengkungan sudut (`border-radius`) milik kartu itu sendiri, tanpa ada elemen yang offset atau meluber keluar.
 
+21p. **Kunci Paten Logo & Identitas Brand (Strict Brand Logo & Identity Locking):**
+    - AI DILARANG KERAS memodifikasi, menimpa, mengganti nama, atau menghapus berkas-berkas aset logo dan ikon resmi brand (`public/assets/logo.png`, `public/assets/apple-touch-icon.png`, dan `public/assets/favicon.png`) di proyek Ibra Global English.
+    - AI wajib memisahkan penggunaan aset logo untuk platform sekolah bahasa Inggris (IGE) menggunakan berkas `logo.png` dan platform agensi digital (IDE) menggunakan berkas `ibra-digital-logo-v3.png` secara eksklusif agar tidak saling menimpa atau memicu salah penempatan logo.
+
 28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
     - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
 
