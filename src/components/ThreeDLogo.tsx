@@ -42,12 +42,12 @@ export default function ThreeDLogo() {
       }
     };
 
-    const texture = textureLoader.load("/assets/logo.png", () => {
+    const texture = textureLoader.load("/assets/logo.png?v=2", () => {
       textureLoaded = true;
       checkLoaded();
     });
 
-    const backTexture = textureLoader.load("/assets/logo.png", () => {
+    const backTexture = textureLoader.load("/assets/logo.png?v=2", () => {
       backTextureLoaded = true;
       checkLoaded();
     });
