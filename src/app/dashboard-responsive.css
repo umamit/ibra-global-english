@@ -5,6 +5,12 @@
 
 /* ── Sidebar: collapse to overlay drawer on tablet/mobile ────────────── */
 @media (max-width: 1024px) {
+  .dashboard-container {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
   .dashboard-sidebar {
     position: fixed;
     top: 0;
@@ -25,6 +31,8 @@
   }
 
   .dashboard-main {
+    height: auto;
+    overflow-y: visible;
     padding: 1.5rem;
   }
 }

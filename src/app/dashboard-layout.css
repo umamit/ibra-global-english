@@ -5,13 +5,15 @@
 /* ── Main Container ── */
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: var(--color-gray-50);
 }
 
 /* ── Main Content Area ── */
 .dashboard-main {
   flex-grow: 1;
+  height: 100vh;
   padding: 2.5rem;
   overflow-y: auto;
   max-width: 100%;
