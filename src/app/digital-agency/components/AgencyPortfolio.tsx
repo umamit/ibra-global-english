@@ -163,6 +163,55 @@ export default function AgencyPortfolio() {
 
         <div className={styles.showcase} style={{ marginTop: "40px" }}>
           <div className={styles.showcaseContent}>
+            <span className={styles.showcaseTag}>Educational Learning Platform</span>
+            <h3 className={styles.showcaseTitle}>Platform Ruang Ajar & Learning Hub SD Negeri Bobong</h3>
+            <p className={styles.showcaseDesc}>
+              Platform pembelajaran digital dan ruang ajar interaktif untuk pendidik dan peserta didik SD Negeri Bobong. Menampilkan sistem distribusi modul materi digital, repositori penugasan siswa, bank soal terstruktur, serta portal akses KBM modern yang responsif dan aman.
+            </p>
+            <div className={styles.techTags}>
+              <span className={styles.techTag}>Next.js & TypeScript</span>
+              <span className={styles.techTag}>Supabase Cloud DB</span>
+              <span className={styles.techTag}>Tailwind & Apple HIG</span>
+              <span className={styles.techTag}>Cloudflare DNS</span>
+              <span className={styles.techTag}>Interactive E-Learning</span>
+            </div>
+            <div style={{ marginTop: "32px" }}>
+              <a href="https://ajar.sdnegeribobong.sch.id" target="_blank" rel="noopener noreferrer" className={styles.btnSecondary} style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                Kunjungi Portal Ajar
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div className={styles.showcaseCard}>
+            <div className={styles.macOSHeader}>
+              <span className={`${styles.macOSDot} ${styles.macOSDotRed}`}></span>
+              <span className={`${styles.macOSDot} ${styles.macOSDotYellow}`}></span>
+              <span className={`${styles.macOSDot} ${styles.macOSDotGreen}`}></span>
+            </div>
+            <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-book-alt"></i> E-LEARNING HUB</span>
+              <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-green-light)", color: "var(--color-green)", padding: "2px 8px", borderRadius: "12px", fontWeight: "bold" }}>99.9% Uptime</span>
+            </div>
+            <ul className={styles.featuresList}>
+              <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Manajemen Modul & Ruang Ajar Digital</li>
+              <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Bank Soal & Penugasan Interaktif</li>
+              <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Portal Akses KBM Guru & Siswa</li>
+              <li className={styles.featureItem}><i className={`fi fi-rr-check ${styles.checkIcon}`}></i> Proteksi Cloudflare & Performa Tinggi</li>
+            </ul>
+            <div style={{ background: "#ebf0f4", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+              <span style={{ fontSize: "0.8rem", color: "var(--color-gray-500)", fontStyle: "italic" }}>
+                "Platform ruang ajar digital interaktif penyokong kegiatan KBM modern SD Negeri Bobong."
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.showcase} style={{ marginTop: "40px" }}>
+          <div className={styles.showcaseContent}>
             <span className={styles.showcaseTag}>Property & Business Landing Page</span>
             <h3 className={styles.showcaseTitle}>Website Kos Fitrah — kosfitrah.uk</h3>
             <p className={styles.showcaseDesc}>
