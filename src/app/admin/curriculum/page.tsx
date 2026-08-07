@@ -3,170 +3,35 @@
 export const dynamic = 'force-dynamic';
 
 import React from 'react';
-import { useState, useEffect } from "react";
 import ToastNotification from "../components/ToastNotification";
-
-interface Curriculum {
-  id: string;
-  program: string;
-  level_name: string;
-  duration?: string;
-  topics?: string[];
-  syllabus_pdf_url?: string;
-  is_active: boolean;
-}
+import { useCurriculumData, Curriculum } from "./hooks/useCurriculumData";
 
 const PROGRAMS = ["Kids Program", "Teens Program", "Fun Calistung"];
 
 export default function AdminCurriculumPage() {
-  const [curriculums, setCurriculums] = useState<Curriculum[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [saving, setSaving] = useState<boolean>(false);
-  const [toast, setToast] = useState<{ show: boolean; type: "success" | "error"; message: string }>({ show: false, type: "success", message: "" });
-
-  // Form states
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [program, setProgram] = useState<string>("Kids Program");
-  const [levelName, setLevelName] = useState<string>("");
-  const [duration, setDuration] = useState<string>("");
-  const [topicsInput, setTopicsInput] = useState<string>(""); // Comma-separated string in UI
-  const [syllabusPdfUrl, setSyllabusPdfUrl] = useState<string>("");
-  const [isActive, setIsActive] = useState<boolean>(true);
-
-  const showToast = (message: string, type: "success" | "error" = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: "", type }), 3500);
-  };
-
-  const fetchCurriculums = async (): Promise<void> => {
-    try {
-      const res = await fetch("/api/admin/curriculums?all=true");
-      const result = await res.json();
-      if (res.ok) {
-        setCurriculums(result.data || []);
-      } else {
-        showToast(`Gagal memuat: ${result.error}`, "error");
-      }
-    } catch (err) {
-      showToast("Gagal mengambil data silabus.", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/admin/curriculums?all=true");
-        const result = await res.json();
-        if (res.ok) {
-          setCurriculums(result.data || []);
-        } else {
-          showToast(`Gagal memuat: ${result.error}`, "error");
-        }
-      } catch {
-        showToast("Gagal mengambil data silabus.", "error");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    if (!levelName.trim()) {
-      showToast("Nama Level wajib diisi.", "error");
-      return;
-    }
-
-    setSaving(true);
-    try {
-      // Parse comma-separated topics into array
-      const topicsArray = topicsInput
-        .split("\n")
-        .map(t => t.trim())
-        .filter(t => t.length > 0);
-
-      const payload = {
-        program,
-        level_name: levelName.trim(),
-        duration: duration.trim(),
-        topics: topicsArray,
-        syllabus_pdf_url: syllabusPdfUrl.trim(),
-        is_active: isActive,
-      };
-
-      let res: Response;
-      if (editingId) {
-        res = await fetch("/api/admin/curriculums", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: editingId, ...payload }),
-        });
-      } else {
-        res = await fetch("/api/admin/curriculums", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      }
-
-      const result = await res.json();
-      if (res.ok) {
-        showToast(editingId ? "Silabus berhasil disunting! " : "Silabus baru berhasil ditambahkan! ", "success");
-        setEditingId(null);
-        setLevelName("");
-        setDuration("");
-        setTopicsInput("");
-        setSyllabusPdfUrl("");
-        setIsActive(true);
-        fetchCurriculums();
-      } else {
-        showToast(`Error: ${result.error}`, "error");
-      }
-    } catch (err) {
-      showToast("Gagal menyimpan data silabus.", "error");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleEditClick = (c: Curriculum) => {
-    setEditingId(c.id);
-    setProgram(c.program);
-    setLevelName(c.level_name);
-    setDuration(c.duration || "");
-    setTopicsInput(Array.isArray(c.topics) ? c.topics.join("\n") : "");
-    setSyllabusPdfUrl(c.syllabus_pdf_url || "");
-    setIsActive(c.is_active !== false);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setProgram("Kids Program");
-    setLevelName("");
-    setDuration("");
-    setTopicsInput("");
-    setSyllabusPdfUrl("");
-    setIsActive(true);
-  };
-
-  const handleDelete = async (id: string): Promise<void> => {
-    if (!confirm("Apakah Anda yakin ingin menghapus silabus ini?")) return;
-    try {
-      const res = await fetch(`/api/admin/curriculums?id=${id}`, { method: "DELETE" });
-      const result = await res.json();
-      if (res.ok) {
-        showToast("Silabus berhasil dihapus.", "success");
-        fetchCurriculums();
-        if (editingId === id) handleCancelEdit();
-      } else {
-        showToast(`Error: ${result.error}`, "error");
-      }
-    } catch (err) {
-      showToast("Gagal menghapus silabus.", "error");
-    }
-  };
+  const {
+    curriculums,
+    loading,
+    saving,
+    toast,
+    editingId,
+    program,
+    setProgram,
+    levelName,
+    setLevelName,
+    duration,
+    setDuration,
+    topicsInput,
+    setTopicsInput,
+    syllabusPdfUrl,
+    setSyllabusPdfUrl,
+    isActive,
+    setIsActive,
+    handleSubmit,
+    handleEditClick,
+    handleCancelEdit,
+    handleDelete,
+  } = useCurriculumData();
 
   return (
     <div className="dashboard-main" style={{ padding: "2rem" }}>
@@ -174,7 +39,7 @@ export default function AdminCurriculumPage() {
 
       <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}> Kelola Kurikulum & Silabus</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>Kelola Kurikulum & Silabus</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Kelola detail silabus, tingkatan level, dan materi pembelajaran program Ibra Global English.
           </p>
@@ -186,7 +51,7 @@ export default function AdminCurriculumPage() {
         {/* Form Panel */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            {editingId ? " Sunting Detail Silabus" : " Tambah Silabus Baru"}
+            {editingId ? "Sunting Detail Silabus" : "Tambah Silabus Baru"}
           </h3>
           <form onSubmit={handleSubmit}>
             <div className="form-group" style={{ marginBottom: "1rem" }}>
@@ -259,7 +124,7 @@ export default function AdminCurriculumPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {curriculums.map((c) => (
+                  {curriculums.map((c: Curriculum) => (
                     <tr key={c.id} style={{ borderBottom: "1px solid var(--color-gray-100)" }}>
                       <td style={{ padding: "10px" }}>
                         <div style={{ fontWeight: "700", color: "var(--color-gray-900)" }}>{c.level_name}</div>

@@ -3,19 +3,8 @@
 export const dynamic = 'force-dynamic';
 
 import React from 'react';
-import { useState, useEffect } from "react";
 import ToastNotification from "../components/ToastNotification";
-
-interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  program: string;
-  priority: string;
-  is_active: boolean;
-  published_at: string;
-  expires_at: string | null;
-}
+import { useAnnouncementsData, Announcement } from "./hooks/useAnnouncementsData";
 
 interface Priority {
   value: string;
@@ -26,125 +15,32 @@ interface Priority {
 const PROGRAMS = ["Semua Program", "Kids Program", "Teens Program", "Fun Calistung"];
 const PRIORITIES: Priority[] = [
   { value: "normal", label: "ℹ️ Normal", color: "var(--color-primary)" },
-  { value: "penting", label: "️ Penting", color: "#f59e0b" },
-  { value: "urgent", label: " Urgent", color: "#ef4444" },
+  { value: "penting", label: "Penting", color: "#f59e0b" },
+  { value: "urgent", label: "Urgent", color: "#ef4444" },
 ];
 
 export default function AdminAnnouncementsPage() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [saving, setSaving] = useState<boolean>(false);
-  const [toast, setToast] = useState<{ show: boolean; type: "success" | "error"; message: string }>({ show: false, type: "success", message: "" });
-
-  // Form state
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
-  const [program, setProgram] = useState<string>("Semua Program");
-  const [priority, setPriority] = useState<string>("normal");
-  const [expiresAt, setExpiresAt] = useState<string>("");
-
-  const showToast = (message: string, type: "success" | "error" = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: "", type }), 3000);
-  };
-
-  const [aiLoading, setAiLoading] = useState<boolean>(false);
-
-  const handleAiPolish = async (): Promise<void> => {
-    if (!title.trim() && !content.trim()) {
-      showToast("Harap isi judul atau isi pengumuman kasar terlebih dahulu.", "error");
-      return;
-    }
-    setAiLoading(true);
-    try {
-      const res = await fetch("/api/admin/ai-assist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode: "announcement-polish",
-          payload: { title, content }
-        })
-      });
-      const data = await res.json();
-      if (res.ok && data.reply) {
-        const reply: string = data.reply;
-        const parts = reply.split("---");
-        if (parts.length >= 2) {
-          const polishedTitle = parts[0].replace("JUDUL:", "").trim();
-          const polishedContent = parts.slice(1).join("---").trim();
-          setTitle(polishedTitle);
-          setContent(polishedContent);
-          showToast("Pengumuman berhasil dipoles dengan AI! ", "success");
-        } else {
-          setContent(reply);
-          showToast("Pengumuman dipoles dengan AI! ", "success");
-        }
-      } else {
-        showToast(`Gagal memoles: ${data.error || "Error tidak diketahui"}`, "error");
-      }
-    } catch {
-      showToast("Gagal menghubungi server AI.", "error");
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
-  const fetchAnnouncements = async (): Promise<void> => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/announcements?all=true");
-      const { data } = await res.json();
-      setAnnouncements(data || []);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      if (cancelled) return;
-      await fetchAnnouncements();
-    };
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
-    setSaving(true);
-    const res = await fetch("/api/announcements", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content, program, priority, expires_at: expiresAt || null }),
-    });
-    if (res.ok) {
-      setTitle(""); setContent(""); setProgram("Semua Program"); setPriority("normal"); setExpiresAt("");
-      fetchAnnouncements();
-      showToast("Pengumuman berhasil diterbitkan! ", "success");
-    }
-    setSaving(false);
-  };
-
-  const handleToggle = async (id: string, isActive: boolean): Promise<void> => {
-    await fetch("/api/announcements", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, is_active: !isActive }),
-    });
-    fetchAnnouncements();
-    showToast(isActive ? "Pengumuman dinonaktifkan." : "Pengumuman diaktifkan kembali.", "success");
-  };
-
-  const handleDelete = async (id: string): Promise<void> => {
-    if (!confirm("Hapus pengumuman ini secara permanen?")) return;
-    await fetch(`/api/announcements?id=${id}`, { method: "DELETE" });
-    fetchAnnouncements();
-    showToast("Pengumuman dihapus.", "success");
-  };
+  const {
+    announcements,
+    loading,
+    saving,
+    toast,
+    aiLoading,
+    title,
+    setTitle,
+    content,
+    setContent,
+    program,
+    setProgram,
+    priority,
+    setPriority,
+    expiresAt,
+    setExpiresAt,
+    handleAiPolish,
+    handleSubmit,
+    handleToggle,
+    handleDelete,
+  } = useAnnouncementsData();
 
   const priorityInfo = (p: string): Priority => PRIORITIES.find(x => x.value === p) || PRIORITIES[0];
 
@@ -155,7 +51,7 @@ export default function AdminAnnouncementsPage() {
       {/* Header */}
       <div className="dashboard-topbar" style={{ marginBottom: "2rem" }}>
         <div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}> Kelola Pengumuman</h1>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)" }}>Kelola Pengumuman</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
             Kirim pengumuman ke semua siswa dan orang tua berdasarkan program.
           </p>
@@ -167,7 +63,7 @@ export default function AdminAnnouncementsPage() {
         {/* Form Buat Pengumuman */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-            ️ Buat Pengumuman Baru
+            Buat Pengumuman Baru
           </h3>
           <form onSubmit={handleSubmit}>
             <div className="form-group" style={{ marginBottom: "1rem" }}>
@@ -184,7 +80,7 @@ export default function AdminAnnouncementsPage() {
                   style={{ fontSize: "0.75rem", padding: "2px 8px", borderRadius: "4px", backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", border: "1px solid var(--color-primary-light)", cursor: "pointer", fontWeight: "bold" }}
                   disabled={aiLoading}
                 >
-                  {aiLoading ? " Memoles..." : " Poles Pengumuman dengan AI"}
+                  {aiLoading ? "Memoles..." : "Poles Pengumuman dengan AI"}
                 </button>
               </div>
               <textarea
@@ -219,7 +115,7 @@ export default function AdminAnnouncementsPage() {
             </div>
 
             <button type="submit" className="btn-portal-primary" style={{ width: "100%", padding: "0.85rem" }} disabled={saving}>
-              {saving ? "Menerbitkan..." : " Terbitkan Pengumuman"}
+              {saving ? "Menerbitkan..." : "Terbitkan Pengumuman"}
             </button>
           </form>
         </div>
@@ -227,7 +123,7 @@ export default function AdminAnnouncementsPage() {
         {/* Daftar Pengumuman */}
         <div className="portal-card" style={{ padding: "2rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "1.5rem", color: "var(--color-gray-900)" }}>
-             Semua Pengumuman ({announcements.length})
+            Semua Pengumuman ({announcements.length})
           </h3>
 
           {loading ? (
@@ -240,7 +136,7 @@ export default function AdminAnnouncementsPage() {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "600px", overflowY: "auto" }}>
-              {announcements.map(ann => {
+              {announcements.map((ann: Announcement) => {
                 const pri = priorityInfo(ann.priority);
                 return (
                   <div key={ann.id} style={{

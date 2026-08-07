@@ -3,6 +3,8 @@
 import React from "react";
 import SkeletonCard from "@/components/ui/SkeletonCard";
 import { useCalendarView, Schedule, getLocalDateString } from "../hooks/useCalendarView";
+import CalendarSyncModal from "./CalendarSyncModal";
+import CalendarDetailModal from "./CalendarDetailModal";
 
 interface SelectedChild {
   program?: string;
@@ -139,157 +141,18 @@ export default function CalendarView({ parentSchedules, detailsLoading, selected
       </div>
 
       {/* READ-ONLY DETAIL MODAL */}
-      {modalOpen && selectedSchedule && (
-        <div className="portal-modal-overlay" onClick={() => setModalOpen(false)}>
-          <div className="portal-modal" style={{ maxWidth: "500px", padding: "2rem", animation: "slideIn 0.2s ease" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
-              <div>
-                <span style={{ fontSize: "0.7rem", fontWeight: "800", color: "white", backgroundColor: selectedSchedule.type === "holiday" ? "#ef4444" : selectedSchedule.type === "event" ? "var(--color-accent)" : "var(--color-primary)", padding: "0.25rem 0.65rem", borderRadius: "6px", textTransform: "uppercase", letterSpacing: "0.5px", display: "inline-block", marginBottom: "0.5rem" }}>
-                  {selectedSchedule.type === "holiday" ? "Hari Libur" : selectedSchedule.type === "event" ? "Kegiatan Khusus" : "Kelas Rutin"}
-                </span>
-                <h4 style={{ fontSize: "1.25rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0 }}>
-                  {selectedSchedule.title}
-                </h4>
-              </div>
-              <button type="button" style={{ background: "transparent", border: "none", fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-400)", cursor: "pointer", padding: "0.25rem" }} onClick={() => setModalOpen(false)} aria-label="Tutup detail modal">
-                &times;
-              </button>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", borderTop: "1px solid var(--color-gray-150)", paddingTop: "1.25rem", marginBottom: "1.5rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", fontSize: "0.9rem" }}>
-                <span style={{ color: "var(--color-gray-500)", fontWeight: "700" }}>Status Sesi:</span>
-                <span style={{ fontWeight: "800", color: selectedSchedule.status === "pending" ? "#d97706" : selectedSchedule.status === "rescheduled" ? "#2563eb" : "#166534" }}>
-                  {selectedSchedule.status === "pending" ? "Pending (Ditunda Minggu Ini)" : selectedSchedule.status === "rescheduled" ? "Rescheduled (Dijadwalkan Ulang)" : "Aktif (Berjalan Normal)"}
-                </span>
-
-                {selectedSchedule.pending_reason && (
-                  <>
-                    <span style={{ color: "#b45309", fontWeight: "700" }}>Alasan Penundaan:</span>
-                    <span style={{ color: "#b45309", fontWeight: "700" }}>{selectedSchedule.pending_reason}</span>
-                  </>
-                )}
-
-                {selectedSchedule.rescheduled_to && (
-                  <>
-                    <span style={{ color: "#1d4ed8", fontWeight: "700" }}>Jadwal Pengganti:</span>
-                    <span style={{ color: "#1d4ed8", fontWeight: "800" }}>
-                      {new Date(selectedSchedule.rescheduled_to).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })} WIB
-                    </span>
-                  </>
-                )}
-
-                <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-calendar"></i> Hari &amp; Tanggal:</span>
-                <span style={{ color: "var(--color-gray-800)", fontWeight: "800" }}>
-                  {new Date(selectedSchedule.start_time).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                </span>
-
-                <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-clock"></i> Jam Pelajaran:</span>
-                <span style={{ color: "var(--color-primary-dark)", fontWeight: "900" }}>
-                  {new Date(selectedSchedule.start_time).toTimeString().slice(0, 5)} - {new Date(selectedSchedule.end_time).toTimeString().slice(0, 5)} WIB
-                </span>
-
-                <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-graduation-cap"></i> Program Sasaran:</span>
-                <span style={{ color: "var(--color-gray-800)", fontWeight: "700" }}>{selectedSchedule.program}</span>
-
-                {selectedSchedule.instructor && (
-                  <>
-                    <span style={{ color: "var(--color-gray-500)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><i className="fi fi-rr-user"></i> Tutor Pendamping:</span>
-                    <span style={{ color: "var(--color-gray-800)", fontWeight: "800" }}>{selectedSchedule.instructor}</span>
-                  </>
-                )}
-              </div>
-
-              {selectedSchedule.description && (
-                <div style={{ backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-200)" }}>
-                  <p style={{ fontSize: "0.75rem", fontWeight: "800", color: "var(--color-gray-500)", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 4px 0" }}>Deskripsi Agenda</p>
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-gray-700)", margin: 0, lineHeight: "1.6" }}>{selectedSchedule.description}</p>
-                </div>
-              )}
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button type="button" className="btn-portal-primary" style={{ padding: "0.5rem 1.5rem" }} onClick={() => setModalOpen(false)}>
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CalendarDetailModal
+        isOpen={modalOpen}
+        schedule={selectedSchedule}
+        onClose={() => setModalOpen(false)}
+      />
 
       {/* SINKRONISASI KALENDER HP MODAL */}
-      {syncModalOpen && (
-        <div className="portal-modal-overlay" onClick={() => setSyncModalOpen(false)}>
-          <div className="portal-modal" style={{ maxWidth: "500px", padding: "2rem", animation: "slideIn 0.2s ease" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-              <h4 style={{ fontSize: "1.2rem", fontWeight: "900", color: "var(--color-gray-900)", margin: 0, display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                <i className="fi fi-rr-link"></i>
-                <span>Hubungkan ke Kalender HP</span>
-              </h4>
-              <button type="button" onClick={() => setSyncModalOpen(false)} style={{ background: "transparent", border: "none", fontSize: "1.5rem", fontWeight: "800", color: "var(--color-gray-400)", cursor: "pointer" }}>
-                &times;
-              </button>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", fontSize: "0.9rem", color: "var(--color-gray-700)", lineHeight: "1.6" }}>
-              <p style={{ margin: 0 }}>
-                Sinkronkan jadwal belajar anak Anda (<strong>{selectedChild?.name}</strong>) untuk program <strong>{selectedChild?.program}</strong> ke aplikasi kalender di HP Anda (Google Calendar / Apple Calendar).
-              </p>
-
-              <div>
-                <label className="form-label" style={{ fontWeight: "800", marginBottom: "0.5rem", display: "block" }}>Tautan Sinkronisasi (iCal Link)</label>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <input
-                    type="text"
-                    className="form-input"
-                    readOnly
-                    value={typeof window !== "undefined" ? `${window.location.origin}/api/calendar/export?program=${encodeURIComponent(selectedChild?.program || "All")}` : ""}
-                    style={{ fontSize: "0.8rem", backgroundColor: "var(--color-gray-50)", cursor: "text" }}
-                    onClick={(e) => (e.target as HTMLInputElement).select()}
-                    id="parent-ical-link-input"
-                  />
-                  <button
-                    type="button"
-                    className="btn-portal-primary"
-                    style={{ padding: "0.5rem 1rem", whiteSpace: "nowrap" }}
-                    onClick={() => {
-                      const input = document.getElementById("parent-ical-link-input") as HTMLInputElement;
-                      if (input) {
-                        input.select();
-                        navigator.clipboard.writeText(input.value);
-                        alert("Tautan kalender berhasil disalin!");
-                      }
-                    }}
-                  >
-                    Salin Link
-                  </button>
-                </div>
-              </div>
-
-              <div style={{ backgroundColor: "var(--color-primary-light)", padding: "1rem", borderRadius: "var(--radius-md)", border: "1px solid var(--color-primary-dark)", color: "var(--color-primary-dark)" }}>
-                <h5 style={{ margin: "0 0 0.5rem 0", fontWeight: "800", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                  <i className="fi fi-rr-mobile"></i>
-                  <span>Cara Menghubungkan ke HP:</span>
-                </h5>
-                <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <li>
-                    <strong>iPhone (Apple Calendar):</strong> Buka <em>Pengaturan</em> &gt; <em>Kalender</em> &gt; <em>Akun</em> &gt; <em>Tambah Akun</em> &gt; <em>Lainnya</em> &gt; <em>Tambah Kalender Berlangganan</em>, lalu tempel (*paste*) tautan di atas.
-                  </li>
-                  <li>
-                    <strong>Android &amp; Google Calendar:</strong> Buka <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", fontWeight: "800", textDecoration: "underline" }}>Google Calendar Web</a> di komputer. Klik tanda <strong>`+`</strong> di samping <em>&quot;Kalender lainnya&quot;</em> &gt; pilih <strong>Dari URL</strong>, lalu tempel tautan di atas.
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2rem" }}>
-              <button type="button" className="btn-portal-outline" style={{ padding: "0.5rem 1.5rem" }} onClick={() => setSyncModalOpen(false)}>
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CalendarSyncModal
+        isOpen={syncModalOpen}
+        onClose={() => setSyncModalOpen(false)}
+        selectedChildProgram={selectedChild?.program}
+      />
     </div>
   );
 }

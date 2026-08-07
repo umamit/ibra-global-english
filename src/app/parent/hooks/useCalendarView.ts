@@ -9,6 +9,8 @@ export interface Schedule {
   title: string;
   description?: string;
   instructor?: string;
+  tutor_name?: string;
+  room_name?: string;
   status?: string;
   pending_reason?: string;
   rescheduled_to?: string;
