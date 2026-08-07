@@ -29,6 +29,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(new URL(`/digital-agency${pathname}`, request.url));
   }
 
+  if (hostname.startsWith("admin.") && !isStaticAsset && !isApiOrNext && !pathname.startsWith("/admin")) {
+    return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
+  }
+
   const addSecurityHeaders = (res: NextResponse) => {
     res.headers.set("Content-Security-Policy", cspHeader);
     res.headers.set("X-Frame-Options", "DENY");
