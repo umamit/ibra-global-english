@@ -34,7 +34,7 @@ export async function proxy(request: NextRequest) {
       const cleanPath = pathname.replace(/^\/admin/, "") || "/";
       return NextResponse.redirect(new URL(cleanPath, request.url));
     }
-    if (!isStaticAsset && !isApiOrNext) {
+    if (!isStaticAsset && !isApiOrNext && !pathname.startsWith("/login") && !pathname.startsWith("/auth")) {
       return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
     }
   } else if (pathname.startsWith("/admin") && !isStaticAsset && !isApiOrNext && !isDev) {
