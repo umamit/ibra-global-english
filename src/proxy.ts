@@ -29,8 +29,17 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(new URL(`/digital-agency${pathname}`, request.url));
   }
 
-  if (hostname.startsWith("admin.") && !isStaticAsset && !isApiOrNext && !pathname.startsWith("/admin")) {
-    return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
+  if (hostname.startsWith("admin.")) {
+    if (pathname.startsWith("/admin")) {
+      const cleanPath = pathname.replace(/^\/admin/, "") || "/";
+      return NextResponse.redirect(new URL(cleanPath, request.url));
+    }
+    if (!isStaticAsset && !isApiOrNext) {
+      return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
+    }
+  } else if (pathname.startsWith("/admin") && !isStaticAsset && !isApiOrNext && !isDev) {
+    const subPath = pathname.replace(/^\/admin/, "") || "/";
+    return NextResponse.redirect(new URL(`https://admin.ibraglobalenglish.uk${subPath}`, request.url));
   }
 
   const addSecurityHeaders = (res: NextResponse) => {
