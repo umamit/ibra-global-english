@@ -706,6 +706,54 @@ for path in matches:
 28. **Schema Verification:** Always verify schema requirements before invoking any external APIs or database tools.
 29. **No Placeholders:** Do not populate parameters with placeholder data. If a mandatory parameter is missing, ask the user for clarification first.
 
+## 31. Structure Website & Subdomain Mapping (Struktur Rute & Arsitektur Website)
+
+Seluruh AI Agent WAJIB mematuhi pemetaan rute, domain, dan fungsi halaman website Ibra Global English berikut:
+
+### A. Subdomain & Top-Level Domain Routing
+1. **Domain Utama** (`ibraglobalenglish.uk` / `www.ibraglobalenglish.uk`):
+   - **Fungsi**: Landing Page Resmi Sekolah Bimbel Ibra Global English Bobong.
+   - **Main Entrypoint**: `src/app/page.tsx` (`HomeClient.tsx`).
+   - **Rute Publik**:
+     - `/` ➔ Beranda Utama (Hero, Kuis Placement Test CEFR, Program, Testimoni, Maps, FAQ).
+     - `/gallery` ➔ Galeri Kegiatan & Dokumentasi Belajar.
+     - `/calendar` ➔ Kalender Akademik & Jadwal Kegiatan Bimbel.
+     - `/kemitraan` ➔ Form & Informasi Program Kemitraan.
+     - `/placement-test` ➔ Halaman Kuis Penempatan Level CEFR Standalone.
+     - `/login` ➔ Portal Login Terpadu (Siswa, Orang Tua, Tutor, Admin).
+     - `/verify/[id]` ➔ Halaman Verifikasi E-Sertifikat Digital.
+     - `/privacy` & `/terms` ➔ Kebijakan Privasi & Ketentuan Layanan.
+     - `/maintenance` ➔ Halaman Mode Pemeliharaan Sistem.
+
+2. **Subdomain Admin** (`admin.ibraglobalenglish.uk`):
+   - **Fungsi**: Portal Khusus Dasbor Pengelolaan & Administrasi Bimbel.
+   - **Proxy Rewrite**: Otomatis dialihkan oleh `src/proxy.ts` (mengarahkan domain `admin.` langsung ke `app/admin`).
+   - **Rute Terproteksi**:
+     - `/` (`app/admin/page.tsx`) ➔ Ringkasan Eksekutif & Analytics.
+     - `/students` ➔ Pengelolaan Data Siswa & Pendaftaran.
+     - `/attendance` ➔ Pengelolaan Absensi & Cetak Rekap Kehadiran PDF.
+     - `/finance` ➔ Verifikasi SPP & Laporan Keuangan.
+     - `/curriculum` ➔ Pengelolaan Kurikulum, RPP AI Generator & Silabus.
+     - `/announcements` ➔ Pengelolaan Pengumuman & Berita AI Polish.
+     - `/reports` ➔ Pengelolaan & Cetak Rapor Digital A4 Siswa.
+
+3. **Subdomain Agensi Digital** (`digital.ibraglobalenglish.uk`):
+   - **Fungsi**: Landing Page Agensi Layanan Teknologi & Software House (Ibra Digital Engineering).
+   - **Proxy Rewrite**: Otomatis dialihkan oleh `src/proxy.ts` (mengarahkan domain `digital.` langsung ke `app/digital-agency`).
+   - **Rute Publik**:
+     - `/` (`app/digital-agency/page.tsx`) ➔ Beranda Agensi, Layanan, Portofolio Enterprise & Form Pemesanan.
+     - `/privacy` & `/terms` ➔ Syarat & Ketentuan Layanan Agensi.
+
+4. **Portal Siswa, Orang Tua & Tutor**:
+   - `/parent` ➔ Dasbor Orang Tua (Rapor Anak, SPP Digital, Absensi & Kalender).
+   - `/student` ➔ Dasbor Siswa (Modul Materi, Jadwal Kelas, Quiz Quest).
+   - `/tutor` ➔ Dasbor Tutor (Absensi Kelas, Upload Nilai, RPP AI Generator).
+
+### B. Aturan Pemisahan Logo & Identitas Brand Rute
+* **Logo IGE (Ibra Global English)**: `public/assets/logo.png` (Digunakan di Domain Utama, Admin, Parent, Student, Tutor).
+* **Logo IDE (Ibra Digital Engineering)**: `public/assets/ibra-digital-logo-v3.png` (Digunakan secara EKSKLUSIF di Subdomain `digital.ibraglobalenglish.uk`).
+
 ## Compliance & Strict Rule Enforcement
 30. **Strict Enforcement:** If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
+
 
