@@ -97,3 +97,32 @@ export async function fetchWhatsappLogs() {
 
   return [...fileLogs, ...dbLogs].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 }
+
+export async function checkFonnteDeviceStatus() {
+  const fonnteToken = process.env.FONNTE_API_TOKEN;
+  if (!fonnteToken || fonnteToken === "GANTI_DENGAN_TOKEN_FONNTE_ANDA") {
+    return {
+      connected: false,
+      reason: "FONNTE_API_TOKEN belum diisi di Environment Variables server (Vercel / .env.local).",
+    };
+  }
+
+  try {
+    const res = await fetch("https://api.fonnte.com/device", {
+      method: "POST",
+      headers: { Authorization: fonnteToken },
+    });
+    const data = await res.json();
+    const isConnected = data.status === true || data.device_status === "connect" || data.device_status === "connected";
+    return {
+      connected: isConnected,
+      device: { device: data.device || data.phone || "", name: data.name || "" },
+      reason: isConnected ? undefined : data.reason || data.message || "Perangkat Fonnte terputus atau QR code belum discan.",
+    };
+  } catch (err: any) {
+    return {
+      connected: false,
+      reason: "Gagal menghubungi Fonnte API: " + (err.message || String(err)),
+    };
+  }
+}
