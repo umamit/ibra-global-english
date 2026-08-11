@@ -147,20 +147,28 @@ export default function WaSendForm({
           )}
         </div>
 
-        {sendResult && (
-          <div style={{
-            padding: "0.75rem 1rem", borderRadius: "8px", marginBottom: "1rem", fontSize: "0.83rem", fontWeight: "600",
-            backgroundColor: sendResult.stats?.sent > 0 || sendResult.sentReal ? "#f0fdf4" : sendResult.stats?.simulated > 0 || sendResult.status === "SIMULATED" ? "#fffbeb" : "#fef2f2",
-            color: sendResult.stats?.sent > 0 || sendResult.sentReal ? "#166534" : sendResult.stats?.simulated > 0 || sendResult.status === "SIMULATED" ? "#92400e" : "#991b1b",
-            border: `1px solid ${sendResult.stats?.sent > 0 || sendResult.sentReal ? "#bbf7d0" : sendResult.stats?.simulated > 0 || sendResult.status === "SIMULATED" ? "#fde68a" : "#fecaca"}`,
-          }}>
-            {sendResult.stats
-              ? `Berhasil memproses ${sendResult.stats.total} nomor: ${sendResult.stats.sent} Terkirim, ${sendResult.stats.simulated} Simulasi, ${sendResult.stats.failed} Gagal`
-              : sendResult.sentReal ? "Pesan berhasil terkirim via Fonnte!"
-              : sendResult.status === "SIMULATED" ? "Pesan disimulasikan (token Fonnte belum aktif). Log sudah disimpan."
-              : `Gagal mengirim: ${sendResult.error || "Periksa konfigurasi."}`}
-          </div>
-        )}
+        {sendResult && (() => {
+          const sent = sendResult.sentCount ?? sendResult.stats?.sent ?? (sendResult.sentReal ? 1 : 0);
+          const simulated = sendResult.simulatedCount ?? sendResult.stats?.simulated ?? (sendResult.status === "SIMULATED" ? 1 : 0);
+          const isSuccess = sendResult.success && (sent > 0 || simulated > 0);
+
+          let bg = "#fef2f2"; let color = "#991b1b"; let border = "#fecaca";
+          if (sent > 0) {
+            bg = "#f0fdf4"; color = "#166534"; border = "#bbf7d0";
+          } else if (simulated > 0) {
+            bg = "#fffbeb"; color = "#92400e"; border = "#fde68a";
+          }
+
+          return (
+            <div style={{ padding: "0.75rem 1rem", borderRadius: "8px", marginBottom: "1rem", fontSize: "0.83rem", fontWeight: "600", backgroundColor: bg, color, border: `1px solid ${border}` }}>
+              {isSuccess
+                ? sent > 0
+                  ? `Pesan berhasil terkirim ke ${sent} nomor via WhatsApp Fonnte!`
+                  : `Pesan disimulasikan untuk ${simulated} nomor (token Fonnte belum aktif). Log disimpan.`
+                : `Gagal mengirim: ${sendResult.error || "Periksa nomor telepon."}`}
+            </div>
+          );
+        })()}
 
         <button type="submit" className="btn-portal-primary" style={{ width: "100%", justifyContent: "center" }} disabled={sending || aiLoading}>
           {sending ? (
