@@ -113,11 +113,12 @@ export async function checkFonnteDeviceStatus() {
       headers: { Authorization: fonnteToken },
     });
     const data = await res.json();
-    const isConnected = data.status === true || data.device_status === "connect" || data.device_status === "connected";
+    const statusStr = String(data.status || data.device_status || "").toLowerCase();
+    const isConnected = statusStr === "connect" || statusStr === "connected" || statusStr === "true" || data.status === true;
     return {
       connected: isConnected,
       device: { device: data.device || data.phone || "", name: data.name || "" },
-      reason: isConnected ? undefined : data.reason || data.message || "Perangkat Fonnte terputus atau QR code belum discan.",
+      reason: isConnected ? undefined : data.reason || data.message || (statusStr === "disconnect" ? "QR Code Fonnte belum discan atau perangkat terputus." : `Fonnte: ${data.detail || JSON.stringify(data)}`),
     };
   } catch (err: any) {
     return {
