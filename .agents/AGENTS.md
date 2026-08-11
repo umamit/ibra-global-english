@@ -708,6 +708,8 @@ for path in matches:
 
 ## 31. Structure Website & Subdomain Mapping (Struktur Rute & Arsitektur Website)
 
+* **Mandatory Sync Rule**: Setiap kali Agen AI menambah rute baru, mengubah rute, mengubah subdomain, atau memodifikasi fungsi halaman di dalam codebase, Agen AI WAJIB secara otomatis memperbarui dokumen seksi ini di `.agents/AGENTS.md` sebelum melakukan commit lokal!
+
 Seluruh AI Agent WAJIB mematuhi pemetaan rute, domain, dan fungsi halaman website Ibra Global English berikut:
 
 ### A. Subdomain & Top-Level Domain Routing
