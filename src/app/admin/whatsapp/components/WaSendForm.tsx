@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 interface WaSendFormProps {
   phone: string;
@@ -20,6 +20,34 @@ export default function WaSendForm({
   phone, setPhone, message, setMessage, sending, sendResult,
   contacts, recentContacts, onSelectContact, onOpenPicker, onSubmit,
 }: WaSendFormProps) {
+  const [aiLoading, setAiLoading] = useState<boolean>(false);
+  const [aiError, setAiError] = useState<string>("");
+
+  const handleAiPolish = async (topic?: string) => {
+    if (!topic && !message.trim()) return;
+    setAiLoading(true);
+    setAiError("");
+    try {
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "wa-manual-polish",
+          payload: { message, topic },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal memproses AI.");
+      if (data.reply) {
+        setMessage(data.reply);
+      }
+    } catch (err: any) {
+      setAiError(err.message || "Gagal menghubungi Groq AI Copilot.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   return (
     <div className="portal-card" style={{ padding: "1.75rem" }}>
       <h3 style={{ fontWeight: "800", fontSize: "1rem", marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -34,7 +62,7 @@ export default function WaSendForm({
               Nomor WhatsApp Penerima
             </label>
             <button type="button" onClick={onOpenPicker} className="btn-portal-outline" style={{ height: "auto", padding: "0.25rem 0.5rem", fontSize: "0.75rem", display: "flex", alignItems: "center", gap: "0.25rem" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1 0 7.75"/></svg>
               <span>Pilih Kontak ({contacts.length})</span>
             </button>
           </div>
@@ -63,8 +91,60 @@ export default function WaSendForm({
         </div>
 
         <div style={{ marginBottom: "1.25rem" }}>
-          <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-700)", marginBottom: "0.4rem" }}>Pesan</label>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-700)", margin: 0 }}>Pesan</label>
+            <button
+              type="button"
+              onClick={() => handleAiPolish()}
+              disabled={aiLoading || !message.trim()}
+              className="btn-portal-outline"
+              style={{
+                height: "auto", padding: "0.2rem 0.55rem", fontSize: "0.75rem",
+                display: "flex", alignItems: "center", gap: "0.35rem",
+                borderColor: "var(--color-primary)", color: "var(--color-primary-dark)", fontWeight: "700",
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span>{aiLoading ? "Memoles AI..." : "Poles Pesan (Groq AI)"}</span>
+            </button>
+          </div>
+
           <textarea className="form-input" rows={4} placeholder="Tulis pesan WhatsApp di sini..." value={message} onChange={(e) => setMessage(e.target.value)} required style={{ resize: "vertical", marginBottom: 0 }} />
+
+          {/* AI Quick Templates */}
+          <div style={{ marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "0.72rem", color: "var(--color-gray-500)", fontWeight: "600" }}>AI Draf Cepat:</span>
+            <button
+              type="button"
+              onClick={() => handleAiPolish("Pengumuman Resmi Sekolah & Kegiatan Bimbel")}
+              disabled={aiLoading}
+              style={{ fontSize: "0.7rem", padding: "0.18rem 0.5rem", borderRadius: "12px", border: "1px solid rgba(33, 108, 126, 0.25)", backgroundColor: "var(--color-bg-teal-50)", color: "var(--color-primary-dark)", cursor: "pointer", fontWeight: "600" }}
+            >
+              Info Pengumuman
+            </button>
+            <button
+              type="button"
+              onClick={() => handleAiPolish("Pemberitahuan Hari Libur & Perubahan Jadwal Belajar")}
+              disabled={aiLoading}
+              style={{ fontSize: "0.7rem", padding: "0.18rem 0.5rem", borderRadius: "12px", border: "1px solid rgba(33, 108, 126, 0.25)", backgroundColor: "var(--color-bg-teal-50)", color: "var(--color-primary-dark)", cursor: "pointer", fontWeight: "600" }}
+            >
+              Info Libur
+            </button>
+            <button
+              type="button"
+              onClick={() => handleAiPolish("Undangan Pertemuan Wali Murid & Evaluasi Belajar")}
+              disabled={aiLoading}
+              style={{ fontSize: "0.7rem", padding: "0.18rem 0.5rem", borderRadius: "12px", border: "1px solid rgba(33, 108, 126, 0.25)", backgroundColor: "var(--color-bg-teal-50)", color: "var(--color-primary-dark)", cursor: "pointer", fontWeight: "600" }}
+            >
+              Undangan Wali Murid
+            </button>
+          </div>
+
+          {aiError && (
+            <p style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "0.35rem", fontWeight: "600" }}>
+              {aiError}
+            </p>
+          )}
         </div>
 
         {sendResult && (
@@ -82,7 +162,7 @@ export default function WaSendForm({
           </div>
         )}
 
-        <button type="submit" className="btn-portal-primary" style={{ width: "100%", justifyContent: "center" }} disabled={sending}>
+        <button type="submit" className="btn-portal-primary" style={{ width: "100%", justifyContent: "center" }} disabled={sending || aiLoading}>
           {sending ? (
             <>
               <svg style={{ animation: "spin 1s linear infinite", width: "16px", height: "16px", marginRight: "0.4rem", display: "inline-block" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

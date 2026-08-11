@@ -45,6 +45,12 @@ export function constructPromptForMode(mode: string, payload: any, authUserRole:
     const { prompt: promptText } = payload || {};
     systemPrompt = `Kamu adalah AI Calendar Scheduler untuk Ibra Global English Bobong. Format array JSON.`;
     userPrompt = promptText || "";
+  } else if (mode === "wa-manual-polish") {
+    const { message: rawMessage, topic } = payload || {};
+    systemPrompt = `Kamu adalah Asisten AI Penulis Pesan WhatsApp Resmi Ibra Global English Bobong. Tugasmu adalah menyusun atau memoles pesan WhatsApp agar sangat profesional, ramah, dan santun. Gunakan format WhatsApp yang rapi (penggunaan bold *kata*, bullet points jika ada poin-poin, dan bahasa Indonesia baku yang hangat).`;
+    userPrompt = topic
+      ? `Buat draf pesan WhatsApp resmi profesional dengan topik: "${topic}". Berikan HANYA teks pesan WhatsApp hasil perbaikan tanpa kalimat pembuka/penutup tambahan.`
+      : `Poles dan sempurnakan pesan WhatsApp berikut agar sangat profesional dan rapi:\n${rawMessage}\n\nBerikan HANYA teks pesan WhatsApp hasil perbaikan tanpa kalimat pembuka/penutup tambahan.`;
   }
 
   return { systemPrompt, userPrompt };
