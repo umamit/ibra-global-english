@@ -83,7 +83,7 @@ export default function AttendanceRecapTable({ filteredRecap, recapLoading, sear
           <p>Memuat rekapitulasi absensi...</p>
         </div>
       ) : (
-        <div className="table-wrapper">
+        <div className="table-wrapper attendance-print-wrapper">
           {/* Print header */}
           <div className="print-only-header" style={{ display: "none", marginBottom: "1.5rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", borderBottom: "3px double #000000", paddingBottom: "1rem" }}>
