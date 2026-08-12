@@ -25,6 +25,7 @@ export default function QrAttendanceScannerModal({
   const [scanMessage, setScanMessage] = useState<{ type: "success" | "warning" | "error"; text: string } | null>(null);
   const [lastScannedId, setLastScannedId] = useState<string>("");
   const [needPermission, setNeedPermission] = useState<boolean>(false);
+  const [rotation, setRotation] = useState<number>(0);
   const scannerRef = useRef<Html5Qrcode | null>(null);
 
   // Safe Audio Beep
@@ -87,7 +88,6 @@ export default function QrAttendanceScannerModal({
       const html5QrCode = new Html5Qrcode("qr-reader-container", { verbose: false });
       scannerRef.current = html5QrCode;
 
-      // Select camera ID dynamically for Samsung & multi-lens smartphones
       let cameraConfig: any = { facingMode: "environment" };
       try {
         const cameras = await Html5Qrcode.getCameras();
@@ -190,6 +190,14 @@ export default function QrAttendanceScannerModal({
       backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)",
       display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem",
     }}>
+      <style>{`
+        #qr-reader-container video {
+          transform: rotate(${rotation}deg) !important;
+          object-fit: cover !important;
+          transition: transform 0.3s ease;
+        }
+      `}</style>
+
       <div style={{
         backgroundColor: "#ffffff", borderRadius: "18px", width: "100%", maxWidth: "420px",
         overflow: "hidden", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)", border: "1px solid rgba(0, 0, 0, 0.08)",
@@ -236,9 +244,20 @@ export default function QrAttendanceScannerModal({
             </button>
           )}
 
-          <p style={{ margin: "0.75rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)", fontWeight: "500" }}>
-            Arahkan kamera ke QR Code pada kartu ID Card siswa. Kamera dioptimalkan untuk Samsung & HP flagship multi-lensa!
-          </p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.75rem" }}>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-gray-500)", fontWeight: "500", textAlign: "left" }}>
+              Arahkan kamera ke QR Code ID Card siswa.
+            </p>
+            <button
+              type="button"
+              onClick={() => setRotation((r) => (r === 0 ? 180 : 0))}
+              className="btn-portal-outline"
+              style={{ padding: "0.2rem 0.5rem", fontSize: "0.75rem", display: "flex", alignItems: "center", gap: "0.25rem", flexShrink: 0 }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <span>Putar 180°</span>
+            </button>
+          </div>
         </div>
 
         {/* Footer */}
