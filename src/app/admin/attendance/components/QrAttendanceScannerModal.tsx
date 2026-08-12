@@ -24,6 +24,7 @@ export default function QrAttendanceScannerModal({
 }: QrAttendanceScannerModalProps) {
   const [scanMessage, setScanMessage] = useState<{ type: "success" | "warning" | "error"; text: string } | null>(null);
   const [lastScannedId, setLastScannedId] = useState<string>("");
+  const [needPermission, setNeedPermission] = useState<boolean>(false);
   const scannerRef = useRef<Html5Qrcode | null>(null);
 
   // Safe Audio Beep
@@ -58,72 +59,91 @@ export default function QrAttendanceScannerModal({
     onClose();
   };
 
+  const requestCameraAccess = async () => {
+    setNeedPermission(false);
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        // Stop stream after getting permission so Html5Qrcode can bind to camera
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      startScanner();
+    } catch (err: any) {
+      setNeedPermission(true);
+      setScanMessage({
+        type: "error",
+        text: "Izin kamera diperlukan: Klik tombol di bawah untuk mengizinkan akses kamera HP.",
+      });
+    }
+  };
+
+  const startScanner = () => {
+    const container = document.getElementById("qr-reader-container");
+    if (!container) return;
+
+    try {
+      if (scannerRef.current) {
+        try { scannerRef.current.clear(); } catch {}
+      }
+      const html5QrCode = new Html5Qrcode("qr-reader-container");
+      scannerRef.current = html5QrCode;
+
+      html5QrCode
+        .start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: { width: 220, height: 220 } },
+          async (decodedText) => {
+            const cleanId = decodedText.trim();
+            if (!cleanId) return;
+
+            if (cleanId === lastScannedId) return;
+            setLastScannedId(cleanId);
+            setTimeout(() => setLastScannedId(""), 3000);
+
+            playBeep();
+
+            const student = students.find((s) => s.id === cleanId || cleanId.includes(s.id));
+            if (!student) {
+              setScanMessage({
+                type: "warning",
+                text: `Kode QR (${cleanId.substring(0, 8)}...) tidak cocok dengan ID siswa.`,
+              });
+              return;
+            }
+
+            const res = await onScanSuccess(student.id);
+            if (res.success) {
+              setScanMessage({
+                type: "success",
+                text: `✅ ${student.name} (${student.program}) - HADIR!`,
+              });
+            } else {
+              setScanMessage({
+                type: "warning",
+                text: res.message || `${student.name} sudah tercatat.`,
+              });
+            }
+
+            setTimeout(() => setScanMessage(null), 2500);
+          },
+          () => {}
+        )
+        .catch(() => {
+          setNeedPermission(true);
+          setScanMessage({
+            type: "error",
+            text: "Kamera HP belum diizinkan. Klik 'Izinkan Akses Kamera HP' di bawah.",
+          });
+        });
+    } catch {}
+  };
+
   useEffect(() => {
     if (!isOpen) return;
-
     let isMounted = true;
 
     const timer = setTimeout(() => {
-      if (!isMounted) return;
-      const container = document.getElementById("qr-reader-container");
-      if (!container) return;
-
-      try {
-        const html5QrCode = new Html5Qrcode("qr-reader-container");
-        scannerRef.current = html5QrCode;
-
-        html5QrCode
-          .start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 220, height: 220 } },
-            async (decodedText) => {
-              if (!isMounted) return;
-              const cleanId = decodedText.trim();
-              if (!cleanId) return;
-
-              if (cleanId === lastScannedId) return;
-              setLastScannedId(cleanId);
-              setTimeout(() => setLastScannedId(""), 3000);
-
-              playBeep();
-
-              const student = students.find((s) => s.id === cleanId || cleanId.includes(s.id));
-              if (!student) {
-                setScanMessage({
-                  type: "warning",
-                  text: `Kode QR (${cleanId.substring(0, 8)}...) tidak cocok dengan ID siswa.`,
-                });
-                return;
-              }
-
-              const res = await onScanSuccess(student.id);
-              if (res.success) {
-                setScanMessage({
-                  type: "success",
-                  text: `✅ ${student.name} (${student.program}) - HADIR!`,
-                });
-              } else {
-                setScanMessage({
-                  type: "warning",
-                  text: res.message || `${student.name} sudah tercatat.`,
-                });
-              }
-
-              setTimeout(() => {
-                if (isMounted) setScanMessage(null);
-              }, 2500);
-            },
-            () => {}
-          )
-          .catch((err) => {
-            if (isMounted) {
-              setScanMessage({
-                type: "error",
-                text: "Kamera tidak aktif: " + (err?.message || "Izin kamera diperlukan."),
-              });
-            }
-          });
-      } catch {}
+      if (isMounted) requestCameraAccess();
     }, 150);
 
     return () => {
@@ -180,6 +200,19 @@ export default function QrAttendanceScannerModal({
         {/* Camera Container */}
         <div style={{ padding: "1.25rem", textAlign: "center" }}>
           <div id="qr-reader-container" style={{ width: "100%", minHeight: "260px", borderRadius: "12px", overflow: "hidden", backgroundColor: "#000" }} />
+
+          {needPermission && (
+            <button
+              type="button"
+              onClick={requestCameraAccess}
+              className="btn-portal-primary"
+              style={{ marginTop: "1rem", width: "100%", justifyContent: "center" }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.4rem" }}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+              <span>Izinkan Akses Kamera HP</span>
+            </button>
+          )}
+
           <p style={{ margin: "0.75rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)", fontWeight: "500" }}>
             Arahkan kamera ke QR Code pada kartu ID Card siswa. Presensi tercatat otomatis hands-free!
           </p>

@@ -45,6 +45,7 @@ export async function proxy(request: NextRequest) {
   const addSecurityHeaders = (res: NextResponse) => {
     res.headers.set("Content-Security-Policy", cspHeader);
     res.headers.set("X-Frame-Options", "DENY");
+    res.headers.set("Permissions-Policy", "camera=(self), microphone=()");
     if (pathname.startsWith("/admin") || pathname.startsWith("/parent") || pathname.startsWith("/tutor") || pathname.startsWith("/student") || pathname.startsWith("/api")) {
       res.headers.set("X-Robots-Tag", "noindex, nofollow");
     }
