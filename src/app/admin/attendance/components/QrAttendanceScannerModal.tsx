@@ -18,8 +18,8 @@ interface QrAttendanceScannerModalProps {
 }
 
 const KNOWN_STAFF = [
-  { id: "bbf5bbd7-17bf-4f14-9007-87068a0725f7", name: "Husnita Usman", role: "Tutor / Pengajar" },
-  { id: "f14fc6e3-644f-4df6-913e-d353597c6e5e", name: "Anhar Ekho Sulasmin Umamit", role: "Direktur LKP" },
+  { id: "bbf5bbd7-17bf-4f14-9007-87068a0725f7", name: "Husnita Usman", role: "Direktur & Tutor Utama" },
+  { id: "f14fc6e3-644f-4df6-913e-d353597c6e5e", name: "Anhar Ekho Sulasmin Umamit", role: "Admin Finance" },
   { id: "38481803-b572-475f-bbf1-b40ed4d2dcd1", name: "Anhar", role: "Staff Admin" },
 ];
 
