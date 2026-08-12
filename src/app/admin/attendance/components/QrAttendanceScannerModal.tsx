@@ -22,12 +22,11 @@ export default function QrAttendanceScannerModal({
   students,
   onScanSuccess,
 }: QrAttendanceScannerModalProps) {
-  const [activeCamera, setActiveCamera] = useState<boolean>(false);
   const [scanMessage, setScanMessage] = useState<{ type: "success" | "warning" | "error"; text: string } | null>(null);
   const [lastScannedId, setLastScannedId] = useState<string>("");
   const scannerRef = useRef<Html5Qrcode | null>(null);
 
-  // Synthesize audio beep without external file
+  // Safe Audio Beep
   const playBeep = () => {
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -36,7 +35,7 @@ export default function QrAttendanceScannerModal({
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(880, ctx.currentTime); // 880Hz pitch (A5)
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
       gain.gain.setValueAtTime(0.1, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
       osc.connect(gain);
@@ -46,74 +45,96 @@ export default function QrAttendanceScannerModal({
     } catch {}
   };
 
-  useEffect(() => {
-    if (!isOpen) {
-      if (scannerRef.current && scannerRef.current.isScanning) {
-        scannerRef.current.stop().catch(() => {});
-      }
-      setActiveCamera(false);
-      return;
+  const handleSafeClose = async () => {
+    if (scannerRef.current) {
+      try {
+        if (scannerRef.current.isScanning) {
+          await scannerRef.current.stop();
+        }
+        scannerRef.current.clear();
+      } catch {}
+      scannerRef.current = null;
     }
+    onClose();
+  };
 
-    const html5QrCode = new Html5Qrcode("qr-reader-container");
-    scannerRef.current = html5QrCode;
+  useEffect(() => {
+    if (!isOpen) return;
 
-    html5QrCode
-      .start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
-        async (decodedText) => {
-          const cleanId = decodedText.trim();
-          if (!cleanId) return;
+    let isMounted = true;
 
-          // Prevent rapid duplicate scan loops
-          if (cleanId === lastScannedId) return;
-          setLastScannedId(cleanId);
-          setTimeout(() => setLastScannedId(""), 3000);
+    const timer = setTimeout(() => {
+      if (!isMounted) return;
+      const container = document.getElementById("qr-reader-container");
+      if (!container) return;
 
-          playBeep();
+      try {
+        const html5QrCode = new Html5Qrcode("qr-reader-container");
+        scannerRef.current = html5QrCode;
 
-          // Find student in local array
-          const student = students.find((s) => s.id === cleanId || cleanId.includes(s.id));
-          if (!student) {
-            setScanMessage({
-              type: "warning",
-              text: `Kode QR terdeteksi (${cleanId.substring(0, 8)}...), tetapi tidak cocok dengan ID siswa mana pun.`,
-            });
-            return;
-          }
+        html5QrCode
+          .start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            async (decodedText) => {
+              if (!isMounted) return;
+              const cleanId = decodedText.trim();
+              if (!cleanId) return;
 
-          const res = await onScanSuccess(student.id);
-          if (res.success) {
-            setScanMessage({
-              type: "success",
-              text: `✅ ${student.name} (${student.program}) - HADIR!`,
-            });
-          } else {
-            setScanMessage({
-              type: "warning",
-              text: res.message || `${student.name} sudah tercatat absensinya.`,
-            });
-          }
+              if (cleanId === lastScannedId) return;
+              setLastScannedId(cleanId);
+              setTimeout(() => setLastScannedId(""), 3000);
 
-          // Auto-clear message banner after 2.5s
-          setTimeout(() => {
-            setScanMessage((prev) => (prev?.text.includes(student.name) ? null : prev));
-          }, 2500);
-        },
-        () => {}
-      )
-      .then(() => setActiveCamera(true))
-      .catch((err) => {
-        setScanMessage({
-          type: "error",
-          text: "Gagal mengaktifkan kamera: " + (err?.message || "Pastikan izin kamera diizinkan."),
-        });
-      });
+              playBeep();
+
+              const student = students.find((s) => s.id === cleanId || cleanId.includes(s.id));
+              if (!student) {
+                setScanMessage({
+                  type: "warning",
+                  text: `Kode QR (${cleanId.substring(0, 8)}...) tidak cocok dengan ID siswa.`,
+                });
+                return;
+              }
+
+              const res = await onScanSuccess(student.id);
+              if (res.success) {
+                setScanMessage({
+                  type: "success",
+                  text: `✅ ${student.name} (${student.program}) - HADIR!`,
+                });
+              } else {
+                setScanMessage({
+                  type: "warning",
+                  text: res.message || `${student.name} sudah tercatat.`,
+                });
+              }
+
+              setTimeout(() => {
+                if (isMounted) setScanMessage(null);
+              }, 2500);
+            },
+            () => {}
+          )
+          .catch((err) => {
+            if (isMounted) {
+              setScanMessage({
+                type: "error",
+                text: "Kamera tidak aktif: " + (err?.message || "Izin kamera diperlukan."),
+              });
+            }
+          });
+      } catch {}
+    }, 150);
 
     return () => {
-      if (scannerRef.current && scannerRef.current.isScanning) {
-        scannerRef.current.stop().catch(() => {});
+      isMounted = false;
+      clearTimeout(timer);
+      if (scannerRef.current) {
+        try {
+          if (scannerRef.current.isScanning) {
+            scannerRef.current.stop().catch(() => {});
+          }
+        } catch {}
       }
     };
   }, [isOpen]);
@@ -139,7 +160,7 @@ export default function QrAttendanceScannerModal({
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
             <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "700" }}>Scan QR Absensi Siswa</h3>
           </div>
-          <button type="button" onClick={onClose} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "0.25rem", borderRadius: "50%", display: "flex" }}>
+          <button type="button" onClick={handleSafeClose} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "0.25rem", borderRadius: "50%", display: "flex" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
@@ -166,7 +187,7 @@ export default function QrAttendanceScannerModal({
 
         {/* Footer */}
         <div style={{ padding: "0.75rem 1.25rem 1.25rem", display: "flex", justifyContent: "flex-end" }}>
-          <button type="button" onClick={onClose} className="btn-portal-outline" style={{ padding: "0.4rem 1rem", fontSize: "0.85rem" }}>
+          <button type="button" onClick={handleSafeClose} className="btn-portal-outline" style={{ padding: "0.4rem 1rem", fontSize: "0.85rem" }}>
             Selesai Scan
           </button>
         </div>
