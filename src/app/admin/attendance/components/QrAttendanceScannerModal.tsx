@@ -63,8 +63,13 @@ export default function QrAttendanceScannerModal({
     setNeedPermission(false);
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        // Stop stream after getting permission so Html5Qrcode can bind to camera
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "environment",
+            width: { min: 1280, ideal: 1920 },
+            height: { min: 720, ideal: 1080 },
+          },
+        });
         stream.getTracks().forEach((track) => track.stop());
       }
       startScanner();
@@ -85,13 +90,27 @@ export default function QrAttendanceScannerModal({
       if (scannerRef.current) {
         try { scannerRef.current.clear(); } catch {}
       }
-      const html5QrCode = new Html5Qrcode("qr-reader-container");
+      const html5QrCode = new Html5Qrcode("qr-reader-container", {
+        verbose: false,
+        experimentalFeatures: { useBarCodeDetectorIfSupported: true },
+      });
       scannerRef.current = html5QrCode;
 
       html5QrCode
         .start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 220, height: 220 } },
+          {
+            facingMode: "environment",
+            width: { min: 1280, ideal: 1920 },
+            height: { min: 720, ideal: 1080 },
+          },
+          {
+            fps: 20, // 2x faster frame rate for small QRs
+            qrbox: (viewfinderWidth, viewfinderHeight) => {
+              const minSize = Math.min(viewfinderWidth, viewfinderHeight);
+              const qrSize = Math.floor(minSize * 0.85);
+              return { width: qrSize, height: qrSize };
+            },
+          },
           async (decodedText) => {
             const cleanId = decodedText.trim();
             if (!cleanId) return;
@@ -214,7 +233,7 @@ export default function QrAttendanceScannerModal({
           )}
 
           <p style={{ margin: "0.75rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)", fontWeight: "500" }}>
-            Arahkan kamera ke QR Code pada kartu ID Card siswa. Presensi tercatat otomatis hands-free!
+            Arahkan kamera ke QR Code pada kartu ID Card siswa. Kamera dioptimalkan untuk membaca QR berukuran kecil secara tajam!
           </p>
         </div>
 
