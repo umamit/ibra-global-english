@@ -63,98 +63,102 @@ export default function QrAttendanceScannerModal({
     setNeedPermission(false);
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "environment",
-            width: { min: 1280, ideal: 1920 },
-            height: { min: 720, ideal: 1080 },
-          },
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         stream.getTracks().forEach((track) => track.stop());
       }
-      startScanner();
-    } catch (err: any) {
-      setNeedPermission(true);
-      setScanMessage({
-        type: "error",
-        text: "Izin kamera diperlukan: Klik tombol di bawah untuk mengizinkan akses kamera HP.",
-      });
-    }
+    } catch {}
+    await startScanner();
   };
 
-  const startScanner = () => {
+  const startScanner = async () => {
     const container = document.getElementById("qr-reader-container");
     if (!container) return;
 
     try {
       if (scannerRef.current) {
-        try { scannerRef.current.clear(); } catch {}
+        try {
+          if (scannerRef.current.isScanning) {
+            await scannerRef.current.stop();
+          }
+          scannerRef.current.clear();
+        } catch {}
       }
-      const html5QrCode = new Html5Qrcode("qr-reader-container", {
-        verbose: false,
-        experimentalFeatures: { useBarCodeDetectorIfSupported: true },
-      });
+
+      const html5QrCode = new Html5Qrcode("qr-reader-container", { verbose: false });
       scannerRef.current = html5QrCode;
 
-      html5QrCode
-        .start(
-          {
-            facingMode: "environment",
-            width: { min: 1280, ideal: 1920 },
-            height: { min: 720, ideal: 1080 },
+      // Select camera ID dynamically for Samsung & multi-lens smartphones
+      let cameraConfig: any = { facingMode: "environment" };
+      try {
+        const cameras = await Html5Qrcode.getCameras();
+        if (cameras && cameras.length > 0) {
+          const backCam = cameras.find((c) =>
+            c.label.toLowerCase().includes("back") ||
+            c.label.toLowerCase().includes("rear") ||
+            c.label.toLowerCase().includes("environment") ||
+            c.label.toLowerCase().includes("0")
+          ) || cameras[cameras.length - 1];
+          if (backCam) {
+            cameraConfig = backCam.id;
+          }
+        }
+      } catch {}
+
+      await html5QrCode.start(
+        cameraConfig,
+        {
+          fps: 15,
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const minSize = Math.min(viewfinderWidth, viewfinderHeight);
+            const qrSize = Math.floor(minSize * 0.8);
+            return { width: qrSize, height: qrSize };
           },
-          {
-            fps: 20, // 2x faster frame rate for small QRs
-            qrbox: (viewfinderWidth, viewfinderHeight) => {
-              const minSize = Math.min(viewfinderWidth, viewfinderHeight);
-              const qrSize = Math.floor(minSize * 0.85);
-              return { width: qrSize, height: qrSize };
-            },
-          },
-          async (decodedText) => {
-            const cleanId = decodedText.trim();
-            if (!cleanId) return;
+        },
+        async (decodedText) => {
+          const cleanId = decodedText.trim();
+          if (!cleanId) return;
 
-            if (cleanId === lastScannedId) return;
-            setLastScannedId(cleanId);
-            setTimeout(() => setLastScannedId(""), 3000);
+          if (cleanId === lastScannedId) return;
+          setLastScannedId(cleanId);
+          setTimeout(() => setLastScannedId(""), 3000);
 
-            playBeep();
+          playBeep();
 
-            const student = students.find((s) => s.id === cleanId || cleanId.includes(s.id));
-            if (!student) {
-              setScanMessage({
-                type: "warning",
-                text: `Kode QR (${cleanId.substring(0, 8)}...) tidak cocok dengan ID siswa.`,
-              });
-              return;
-            }
+          const student = students.find((s) => s.id === cleanId || cleanId.includes(s.id));
+          if (!student) {
+            setScanMessage({
+              type: "warning",
+              text: `Kode QR (${cleanId.substring(0, 8)}...) tidak cocok dengan ID siswa.`,
+            });
+            return;
+          }
 
-            const res = await onScanSuccess(student.id);
-            if (res.success) {
-              setScanMessage({
-                type: "success",
-                text: `✅ ${student.name} (${student.program}) - HADIR!`,
-              });
-            } else {
-              setScanMessage({
-                type: "warning",
-                text: res.message || `${student.name} sudah tercatat.`,
-              });
-            }
+          const res = await onScanSuccess(student.id);
+          if (res.success) {
+            setScanMessage({
+              type: "success",
+              text: `✅ ${student.name} (${student.program}) - HADIR!`,
+            });
+          } else {
+            setScanMessage({
+              type: "warning",
+              text: res.message || `${student.name} sudah tercatat.`,
+            });
+          }
 
-            setTimeout(() => setScanMessage(null), 2500);
-          },
-          () => {}
-        )
-        .catch(() => {
-          setNeedPermission(true);
-          setScanMessage({
-            type: "error",
-            text: "Kamera HP belum diizinkan. Klik 'Izinkan Akses Kamera HP' di bawah.",
-          });
-        });
-    } catch {}
+          setTimeout(() => setScanMessage(null), 2500);
+        },
+        () => {}
+      );
+      setNeedPermission(false);
+      setScanMessage(null);
+    } catch (err: any) {
+      setNeedPermission(true);
+      setScanMessage({
+        type: "error",
+        text: "Kamera HP belum aktif: Klik tombol 'Izinkan Akses Kamera HP' di bawah.",
+      });
+    }
   };
 
   useEffect(() => {
@@ -233,7 +237,7 @@ export default function QrAttendanceScannerModal({
           )}
 
           <p style={{ margin: "0.75rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)", fontWeight: "500" }}>
-            Arahkan kamera ke QR Code pada kartu ID Card siswa. Kamera dioptimalkan untuk membaca QR berukuran kecil secara tajam!
+            Arahkan kamera ke QR Code pada kartu ID Card siswa. Kamera dioptimalkan untuk Samsung & HP flagship multi-lensa!
           </p>
         </div>
 
