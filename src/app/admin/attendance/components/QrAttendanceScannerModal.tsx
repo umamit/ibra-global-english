@@ -17,6 +17,12 @@ interface QrAttendanceScannerModalProps {
   onScanSuccess: (studentId: string) => Promise<{ success: boolean; message: string; studentName?: string }>;
 }
 
+const KNOWN_STAFF = [
+  { id: "bbf5bbd7-17bf-4f14-9007-87068a0725f7", name: "Husnita Usman", role: "Tutor / Pengajar" },
+  { id: "f14fc6e3-644f-4df6-913e-d353597c6e5e", name: "Anhar Ekho Sulasmin Umamit", role: "Direktur LKP" },
+  { id: "38481803-b572-475f-bbf1-b40ed4d2dcd1", name: "Anhar", role: "Staff Admin" },
+];
+
 export default function QrAttendanceScannerModal({
   isOpen,
   onClose,
@@ -124,28 +130,40 @@ export default function QrAttendanceScannerModal({
 
           playBeep();
 
+          // 1. Check Student List
           const student = students.find((s) => s.id === cleanId || cleanId.includes(s.id));
-          if (!student) {
-            setScanMessage({
-              type: "warning",
-              text: `Kode QR (${cleanId.substring(0, 8)}...) tidak terdaftar di sistem.`,
-            });
+          if (student) {
+            const res = await onScanSuccess(student.id);
+            if (res.success) {
+              setScanMessage({
+                type: "success",
+                text: `✅ ${student.name} (${student.program}) - HADIR!`,
+              });
+            } else {
+              setScanMessage({
+                type: "warning",
+                text: res.message || `${student.name} sudah tercatat.`,
+              });
+            }
+            setTimeout(() => setScanMessage(null), 2500);
             return;
           }
 
-          const res = await onScanSuccess(student.id);
-          if (res.success) {
+          // 2. Check Tutor / Staff List
+          const staff = KNOWN_STAFF.find((st) => st.id === cleanId || cleanId.includes(st.id));
+          if (staff) {
             setScanMessage({
               type: "success",
-              text: `✅ ${student.name} (${student.program}) - HADIR!`,
+              text: `👋 Halo ${staff.name}! Terdaftar sebagai ${staff.role}.`,
             });
-          } else {
-            setScanMessage({
-              type: "warning",
-              text: res.message || `${student.name} sudah tercatat.`,
-            });
+            setTimeout(() => setScanMessage(null), 3000);
+            return;
           }
 
+          setScanMessage({
+            type: "warning",
+            text: `Kode QR (${cleanId.substring(0, 8)}...) tidak terdaftar di sistem.`,
+          });
           setTimeout(() => setScanMessage(null), 2500);
         },
         () => {}
@@ -203,7 +221,7 @@ export default function QrAttendanceScannerModal({
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "#fff" }}>Scan QR Absensi Siswa</h3>
+              <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "#fff" }}>Scan QR Absensi Siswa & Tutor</h3>
               <p style={{ margin: 0, fontSize: "0.72rem", color: "rgba(255, 255, 255, 0.75)", fontWeight: "500" }}>Ibra Global English AI Scanner</p>
             </div>
           </div>
@@ -242,7 +260,7 @@ export default function QrAttendanceScannerModal({
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem", gap: "0.5rem" }}>
             <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(255, 255, 255, 0.65)", fontWeight: "500", textAlign: "left", lineHeight: "1.3" }}>
-              Pasang QR Code ID Card di dalam kotak. Kamera dioptimalkan tajam & hands-free.
+              Arahkan kamera ke QR Code ID Card Siswa atau Tutor.
             </p>
             <button
               type="button"
