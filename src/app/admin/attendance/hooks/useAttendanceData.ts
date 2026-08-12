@@ -144,6 +144,36 @@ export function useAttendanceData() {
     setAttendanceMap((prev) => ({ ...prev, [studentId]: { ...prev[studentId], notes } }));
   };
 
+  const handleSingleStudentQrScan = async (studentId: string) => {
+    try {
+      const student = students.find((s) => s.id === studentId);
+      if (!student) return { success: false, message: "Siswa tidak ditemukan." };
+
+      if (attendanceMap[studentId]?.status === "hadir") {
+        return { success: false, message: `${student.name} sudah tercatat HADIR hari ini.` };
+      }
+
+      const payload = {
+        student_id: studentId,
+        date: selectedDate,
+        status: "hadir",
+        notes: "Presensi Otomatis via QR Code",
+      };
+
+      const { error } = await supabase.from("attendance").upsert(payload, { onConflict: "student_id, date" });
+      if (error) throw error;
+
+      setAttendanceMap((prev) => ({
+        ...prev,
+        [studentId]: { status: "hadir", notes: "Presensi Otomatis via QR Code", isExisting: true },
+      }));
+
+      return { success: true, message: `Absensi ${student.name} berhasil dicatat!`, studentName: student.name };
+    } catch (err: any) {
+      return { success: false, message: err?.message || "Gagal mencatat absensi." };
+    }
+  };
+
   const handleSaveAttendance = async (): Promise<void> => {
     setSubmitting(true);
     setStatusMsg({ type: "", text: "" });
@@ -205,7 +235,7 @@ export function useAttendanceData() {
   return {
     students, selectedDate, setSelectedDate,
     loading, submitting, statusMsg,
-    attendanceMap, handleStatusChange, handleNotesChange, handleSaveAttendance,
+    attendanceMap, handleStatusChange, handleNotesChange, handleSaveAttendance, handleSingleStudentQrScan,
     activeTab, setActiveTab,
     recapData, recapLoading, filteredRecap,
     searchTerm, setSearchTerm,

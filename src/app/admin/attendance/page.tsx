@@ -2,17 +2,18 @@
 
 export const dynamic = "force-dynamic";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAttendanceData, getIndonesianDay, getIndonesianDate } from "./hooks/useAttendanceData";
 import AttendanceBanner from "./components/AttendanceBanner";
 import AttendanceInputTable from "./components/AttendanceInputTable";
 import AttendanceRecapTable from "./components/AttendanceRecapTable";
+import QrAttendanceScannerModal from "./components/QrAttendanceScannerModal";
 
 export default function DailyAttendance() {
   const {
     students, selectedDate, setSelectedDate,
     loading, submitting, statusMsg,
-    attendanceMap, handleStatusChange, handleNotesChange, handleSaveAttendance,
+    attendanceMap, handleStatusChange, handleNotesChange, handleSaveAttendance, handleSingleStudentQrScan,
     activeTab, setActiveTab,
     recapLoading, filteredRecap,
     searchTerm, setSearchTerm,
@@ -20,6 +21,8 @@ export default function DailyAttendance() {
     selectedMonth, setSelectedMonth,
     exportRecapCSV,
   } = useAttendanceData();
+
+  const [isQrScannerOpen, setIsQrScannerOpen] = useState<boolean>(false);
 
   return (
     <div>
@@ -47,33 +50,45 @@ export default function DailyAttendance() {
         </div>
 
         {activeTab === "input" && (
-          <div className="topbar-user" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <label htmlFor="attendance-date" style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--color-gray-700)" }}>
-              Pilih Tanggal:
-            </label>
-            <input
-              type="date"
-              id="attendance-date"
-              className="form-input"
-              style={{ width: "180px", padding: "0.45rem 1rem", fontSize: "0.85rem" }}
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              disabled={submitting}
-            />
+          <div className="topbar-user" style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              onClick={() => setIsQrScannerOpen(true)}
+              className="btn-portal-primary"
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.45rem 1rem", fontSize: "0.85rem", height: "auto" }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+              <span>Scan QR Absensi</span>
+            </button>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <label htmlFor="attendance-date" style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--color-gray-700)", margin: 0 }}>
+                Tanggal:
+              </label>
+              <input
+                type="date"
+                id="attendance-date"
+                className="form-input"
+                style={{ width: "160px", padding: "0.45rem 0.75rem", fontSize: "0.85rem", marginBottom: 0 }}
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                disabled={submitting}
+              />
+            </div>
           </div>
         )}
 
         {activeTab === "rekap" && (
           <div className="topbar-user" style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }} className="no-print">
-              <label htmlFor="recap-month" style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--color-gray-700)" }}>
+              <label htmlFor="recap-month" style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--color-gray-700)", margin: 0 }}>
                 Bulan:
               </label>
               <input
                 type="month"
                 id="recap-month"
                 className="form-input"
-                style={{ width: "160px", padding: "0.45rem 1rem", fontSize: "0.85rem" }}
+                style={{ width: "160px", padding: "0.45rem 1rem", fontSize: "0.85rem", marginBottom: 0 }}
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
                 disabled={recapLoading}
@@ -155,6 +170,14 @@ export default function DailyAttendance() {
           onExportCSV={() => exportRecapCSV(filteredRecap)}
         />
       )}
+
+      {/* Modal QR Code Scanner */}
+      <QrAttendanceScannerModal
+        isOpen={isQrScannerOpen}
+        onClose={() => setIsQrScannerOpen(false)}
+        students={students}
+        onScanSuccess={handleSingleStudentQrScan}
+      />
     </div>
   );
 }

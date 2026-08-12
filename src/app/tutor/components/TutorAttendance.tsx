@@ -1,5 +1,7 @@
 "use client";
 
+import React, { useState } from "react";
+import QrAttendanceScannerModal from "@/app/admin/attendance/components/QrAttendanceScannerModal";
 
 interface Student {
   id: string;
@@ -33,6 +35,20 @@ export default function TutorAttendance({
   handleNotesChange,
   handleSaveAttendance
 }: TutorAttendanceProps) {
+  const [isQrOpen, setIsQrOpen] = useState<boolean>(false);
+
+  const handleQrScanSuccess = async (studentId: string) => {
+    const student = students.find((s) => s.id === studentId);
+    if (!student) return { success: false, message: "Siswa tidak ditemukan." };
+
+    if (attendanceData[studentId]?.status === "hadir") {
+      return { success: false, message: `${student.name} sudah tercatat HADIR.` };
+    }
+
+    handleStatusChange(studentId, "hadir");
+    return { success: true, message: `Absensi ${student.name} berhasil dicatat!`, studentName: student.name };
+  };
+
   if (attendanceLoading) {
     return (
       <div className="portal-card" style={{ padding: "2rem" }}>
@@ -57,15 +73,28 @@ export default function TutorAttendance({
         <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>
           Lembar Presensi Harian Siswa
         </h3>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <label style={{ fontWeight: "700", fontSize: "0.85rem" }}>Pilih Tanggal:</label>
-          <input
-            type="date"
-            className="form-input"
-            style={{ width: "170px", padding: "0.45rem", fontSize: "0.85rem" }}
-            value={attendanceDate}
-            onChange={(e) => setAttendanceDate(e.target.value)}
-          />
+
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+          <button
+            type="button"
+            onClick={() => setIsQrOpen(true)}
+            className="btn-portal-primary"
+            style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.45rem 1rem", fontSize: "0.85rem", height: "auto" }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+            <span>Scan QR Absensi</span>
+          </button>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <label style={{ fontWeight: "700", fontSize: "0.85rem" }}>Tanggal:</label>
+            <input
+              type="date"
+              className="form-input"
+              style={{ width: "160px", padding: "0.45rem 0.75rem", fontSize: "0.85rem", marginBottom: 0 }}
+              value={attendanceDate}
+              onChange={(e) => setAttendanceDate(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
@@ -145,6 +174,14 @@ export default function TutorAttendance({
           Simpan Presensi Hari Ini
         </button>
       </div>
+
+      {/* Modal QR Code Scanner */}
+      <QrAttendanceScannerModal
+        isOpen={isQrOpen}
+        onClose={() => setIsQrOpen(false)}
+        students={students}
+        onScanSuccess={handleQrScanSuccess}
+      />
     </div>
   );
 }
