@@ -1,0 +1,96 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(10, 15, 26, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modalCard {
+  background-color: rgba(23, 32, 48, 0.95);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.header {
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, rgba(33, 108, 126, 0.9) 0%, rgba(22, 77, 87, 0.9) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toastSuccess {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.toastWarning {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.toastError {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.laserLine {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #A68849 50%, transparent 100%);
+  box-shadow: 0 0 12px #A68849, 0 0 20px #A68849;
+  animation: laserSweep 2.2s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes laserSweep {
+  0% { top: 10%; opacity: 0.3; }
+  50% { top: 85%; opacity: 1; }
+  100% { top: 10%; opacity: 0.3; }
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #34d399;
+  animation: pulseDot 1.5s infinite ease-in-out;
+}

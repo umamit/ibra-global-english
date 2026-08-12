@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import styles from "./qrScannerModal.module.css";
 
 interface Student {
   id: string;
@@ -28,7 +29,6 @@ export default function QrAttendanceScannerModal({
   const [rotation, setRotation] = useState<number>(0);
   const scannerRef = useRef<Html5Qrcode | null>(null);
 
-  // Safe Audio Beep
   const playBeep = () => {
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -110,7 +110,7 @@ export default function QrAttendanceScannerModal({
           fps: 15,
           qrbox: (viewfinderWidth, viewfinderHeight) => {
             const minSize = Math.min(viewfinderWidth, viewfinderHeight);
-            const qrSize = Math.floor(minSize * 0.8);
+            const qrSize = Math.floor(minSize * 0.82);
             return { width: qrSize, height: qrSize };
           },
         },
@@ -128,7 +128,7 @@ export default function QrAttendanceScannerModal({
           if (!student) {
             setScanMessage({
               type: "warning",
-              text: `Kode QR (${cleanId.substring(0, 8)}...) tidak cocok dengan ID siswa.`,
+              text: `Kode QR (${cleanId.substring(0, 8)}...) tidak terdaftar di sistem.`,
             });
             return;
           }
@@ -185,84 +185,83 @@ export default function QrAttendanceScannerModal({
   if (!isOpen) return null;
 
   return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 9999,
-      backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)",
-      display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem",
-    }}>
+    <div className={styles.overlay}>
       <style>{`
         #qr-reader-container video {
           transform: rotate(${rotation}deg) !important;
           object-fit: cover !important;
-          transition: transform 0.3s ease;
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+        #qr-reader-container, #qr-reader-container__scan_region { border: none !important; }
       `}</style>
 
-      <div style={{
-        backgroundColor: "#ffffff", borderRadius: "18px", width: "100%", maxWidth: "420px",
-        overflow: "hidden", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)", border: "1px solid rgba(0, 0, 0, 0.08)",
-      }}>
-        {/* Modal Header */}
-        <div style={{
-          padding: "1rem 1.25rem", backgroundColor: "var(--color-primary)", color: "#fff",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-            <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "700" }}>Scan QR Absensi Siswa</h3>
+      <div className={styles.modalCard}>
+        {/* Header */}
+        <div className={styles.header}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <div style={{ width: "32px", height: "32px", borderRadius: "10px", backgroundColor: "rgba(255, 255, 255, 0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+            </div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "#fff" }}>Scan QR Absensi Siswa</h3>
+              <p style={{ margin: 0, fontSize: "0.72rem", color: "rgba(255, 255, 255, 0.75)", fontWeight: "500" }}>Ibra Global English AI Scanner</p>
+            </div>
           </div>
-          <button type="button" onClick={handleSafeClose} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "0.25rem", borderRadius: "50%", display: "flex" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontSize: "0.68rem", fontWeight: "800", padding: "0.2rem 0.5rem", borderRadius: "9999px", backgroundColor: "rgba(16, 185, 129, 0.2)", color: "#34d399", border: "1px solid rgba(52, 211, 153, 0.3)", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+              <span className={styles.liveDot} />
+              LIVE
+            </span>
+            <button type="button" onClick={handleSafeClose} style={{ background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", cursor: "pointer", padding: "0.35rem", borderRadius: "50%", display: "flex" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
         </div>
 
-        {/* Status Toast Notification */}
+        {/* Status Toast Banner */}
         {scanMessage && (
-          <div style={{
-            padding: "0.75rem 1rem", fontSize: "0.85rem", fontWeight: "700", textAlign: "center",
-            backgroundColor: scanMessage.type === "success" ? "#f0fdf4" : scanMessage.type === "warning" ? "#fffbeb" : "#fef2f2",
-            color: scanMessage.type === "success" ? "#166534" : scanMessage.type === "warning" ? "#92400e" : "#991b1b",
-            borderBottom: `1px solid ${scanMessage.type === "success" ? "#bbf7d0" : scanMessage.type === "warning" ? "#fde68a" : "#fecaca"}`,
-          }}>
+          <div className={scanMessage.type === "success" ? styles.toastSuccess : scanMessage.type === "warning" ? styles.toastWarning : styles.toastError}>
             {scanMessage.text}
           </div>
         )}
 
-        {/* Camera Container */}
-        <div style={{ padding: "1.25rem", textAlign: "center" }}>
-          <div id="qr-reader-container" style={{ width: "100%", minHeight: "260px", borderRadius: "12px", overflow: "hidden", backgroundColor: "#000" }} />
+        {/* Camera Viewfinder */}
+        <div style={{ padding: "1.25rem", textAlign: "center", position: "relative" }}>
+          <div style={{ position: "relative", borderRadius: "16px", overflow: "hidden", backgroundColor: "#090d16", border: "1px solid rgba(255, 255, 255, 0.12)" }}>
+            <div id="qr-reader-container" style={{ width: "100%", minHeight: "280px" }} />
+            <div className={styles.laserLine} />
+          </div>
 
           {needPermission && (
-            <button
-              type="button"
-              onClick={requestCameraAccess}
-              className="btn-portal-primary"
-              style={{ marginTop: "1rem", width: "100%", justifyContent: "center" }}
-            >
+            <button type="button" onClick={requestCameraAccess} className="btn-portal-primary" style={{ marginTop: "1rem", width: "100%", justifyContent: "center", borderRadius: "12px", padding: "0.75rem" }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.4rem" }}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
               <span>Izinkan Akses Kamera HP</span>
             </button>
           )}
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.75rem" }}>
-            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-gray-500)", fontWeight: "500", textAlign: "left" }}>
-              Arahkan kamera ke QR Code ID Card siswa.
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem", gap: "0.5rem" }}>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(255, 255, 255, 0.65)", fontWeight: "500", textAlign: "left", lineHeight: "1.3" }}>
+              Pasang QR Code ID Card di dalam kotak. Kamera dioptimalkan tajam & hands-free.
             </p>
             <button
               type="button"
               onClick={() => setRotation((r) => (r === 0 ? 180 : 0))}
-              className="btn-portal-outline"
-              style={{ padding: "0.2rem 0.5rem", fontSize: "0.75rem", display: "flex", alignItems: "center", gap: "0.25rem", flexShrink: 0 }}
+              style={{
+                padding: "0.35rem 0.75rem", fontSize: "0.75rem", display: "flex", alignItems: "center", gap: "0.3rem", flexShrink: 0,
+                backgroundColor: "rgba(255, 255, 255, 0.1)", color: "#fff", border: "1px solid rgba(255, 255, 255, 0.2)",
+                borderRadius: "10px", cursor: "pointer", fontWeight: "700", transition: "all 0.2s ease",
+              }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
               <span>Putar 180°</span>
             </button>
           </div>
         </div>
 
         {/* Footer */}
-        <div style={{ padding: "0.75rem 1.25rem 1.25rem", display: "flex", justifyContent: "flex-end" }}>
-          <button type="button" onClick={handleSafeClose} className="btn-portal-outline" style={{ padding: "0.4rem 1rem", fontSize: "0.85rem" }}>
+        <div style={{ padding: "0.75rem 1.25rem 1.25rem", display: "flex", justifyContent: "flex-end", backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
+          <button type="button" onClick={handleSafeClose} style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem", fontWeight: "700", borderRadius: "12px", backgroundColor: "rgba(255, 255, 255, 0.12)", color: "#fff", border: "1px solid rgba(255, 255, 255, 0.2)", cursor: "pointer" }}>
             Selesai Scan
           </button>
         </div>
