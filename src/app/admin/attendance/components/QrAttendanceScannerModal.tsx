@@ -68,12 +68,6 @@ export default function QrAttendanceScannerModal({
 
   const requestCameraAccess = async () => {
     setNeedPermission(false);
-    try {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    } catch {}
     await startScanner();
   };
 
@@ -184,7 +178,7 @@ export default function QrAttendanceScannerModal({
     let isMounted = true;
 
     const timer = setTimeout(() => {
-      if (isMounted) requestCameraAccess();
+      if (isMounted) startScanner();
     }, 150);
 
     return () => {
