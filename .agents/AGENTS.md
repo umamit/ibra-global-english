@@ -213,6 +213,12 @@ npm run check-limits
     - AI DILARANG KERAS memodifikasi, menimpa, mengganti nama, atau menghapus berkas-berkas aset logo dan ikon resmi brand (`public/assets/logo.png`, `public/assets/apple-touch-icon.png`, dan `public/assets/favicon.png`) di proyek Ibra Global English.
     - AI wajib memisahkan penggunaan aset logo untuk platform sekolah bahasa Inggris (IGE) menggunakan berkas `logo.png` dan platform agensi digital (IDE) menggunakan berkas `ibra-digital-logo-v3.png` secara eksklusif agar tidak saling menimpa atau memicu salah penempatan logo.
 
+21q. **Kunci Spesifikasi Integrasi Web NFC API Masa Depan (Strict Web NFC Integration Spec Rule):**
+    - AI wajib mempertahankan keselarasan spesifikasi integrasi teknologi Web NFC API (`NDEFReader`) untuk fitur absensi tap kartu masa depan:
+      * **Frekuensi Standar**: **13.56 MHz** (High Frequency / HF - ISO/IEC 14443 / ISO/IEC 18092).
+      * **Tipe Chip Kompatibel**: **NTAG Series (NTAG213, NTAG215, NTAG216)** atau **Mifare Series (Mifare Classic 1K / Ultralight)**.
+      * **Batasan Dilarang**: Dilarang menggunakan atau menyarankan kartu RFID frekuensi rendah 125 kHz (LF) karena tidak didukung oleh browser Web NFC API maupun perangkat HP Android/iOS.
+
 28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
     - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
 
