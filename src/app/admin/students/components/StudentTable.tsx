@@ -10,6 +10,7 @@ interface StudentTableProps {
   onEdit: (student: StudentItem) => void;
   onDelete: (id: string, name: string) => void;
   onUpdateProgram?: (id: string, newProgram: string) => void;
+  onScheduleStudent?: (student: StudentItem) => void;
 }
 
 const CEFR_LEVEL_OPTIONS = [
@@ -43,6 +44,7 @@ export default function StudentTable({
   onEdit,
   onDelete,
   onUpdateProgram,
+  onScheduleStudent,
 }: StudentTableProps) {
   const getCount = (filterId: string) =>
     filterId === "semua" ? students.length : students.filter((s) => (s.status || "aktif") === filterId).length;
@@ -148,11 +150,19 @@ export default function StudentTable({
                     )}
                   </td>
                   <td style={{ textAlign: "right" }}>
-                    <div style={{ display: "inline-flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                      <button className="btn-portal-outline" style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem" }} onClick={() => onEdit(student)}>
+                    <div style={{ display: "inline-flex", gap: "0.4rem", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        className="btn-portal-outline"
+                        style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem", borderColor: "#A68849", color: "#8c6f32" }}
+                        onClick={() => onScheduleStudent && onScheduleStudent(student)}
+                      >
+                        + Jadwal
+                      </button>
+                      <button className="btn-portal-outline" style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem" }} onClick={() => onEdit(student)}>
                         Edit
                       </button>
-                      <button className="btn-portal-danger" style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem" }} onClick={() => onDelete(student.id, student.name)}>
+                      <button className="btn-portal-danger" style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem" }} onClick={() => onDelete(student.id, student.name)}>
                         Hapus
                       </button>
                     </div>

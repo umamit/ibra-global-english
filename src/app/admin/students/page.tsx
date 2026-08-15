@@ -10,6 +10,7 @@ import TabSwitcher from "./components/TabSwitcher";
 import StudentFormModal from "./components/StudentFormModal";
 import RejectModal from "./components/RejectModal";
 import StudentImportModal from "./components/StudentImportModal";
+import ScheduleStudentModal from "./components/ScheduleStudentModal";
 import { useStudentData, StudentItem } from "./hooks/useStudentData";
 import { handleExportStudentsCSV } from "./studentsHelpers";
 
@@ -34,6 +35,10 @@ export default function AdminStudents() {
   const [activeTab, setActiveTab] = useState<string>("students");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [editingStudent, setEditingStudent] = useState<StudentItem | null>(null);
+
+  const [scheduleModalOpen, setScheduleModalOpen] = useState<boolean>(false);
+  const [scheduleTargetStudent, setScheduleTargetStudent] = useState<StudentItem | null>(null);
+  const [scheduleToast, setScheduleToast] = useState<string>("");
 
   const [name, setName] = useState<string>("");
   const [age, setAge] = useState<string>("");
@@ -70,6 +75,11 @@ export default function AdminStudents() {
     setParentId(student.parent_id || "");
     setFormErrorMsg("");
     setModalOpen(true);
+  };
+
+  const handleOpenScheduleModal = (student: StudentItem) => {
+    setScheduleTargetStudent(student);
+    setScheduleModalOpen(true);
   };
 
   const handleSaveStudent = async (e: React.FormEvent) => {
@@ -176,6 +186,12 @@ export default function AdminStudents() {
         </div>
       </div>
 
+      {scheduleToast && (
+        <div className="auth-success-banner" style={{ marginBottom: "1.25rem" }}>
+          <span>{scheduleToast}</span>
+        </div>
+      )}
+
       <TabSwitcher
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -197,6 +213,7 @@ export default function AdminStudents() {
           onEdit={handleOpenEditModal}
           onDelete={handleDeleteStudent}
           onUpdateProgram={handleUpdateStudentProgram}
+          onScheduleStudent={handleOpenScheduleModal}
         />
       ) : activeTab === "parents" ? (
         <ParentTable
@@ -232,6 +249,16 @@ export default function AdminStudents() {
         errorMsg={formErrorMsg}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSaveStudent}
+      />
+
+      <ScheduleStudentModal
+        isOpen={scheduleModalOpen}
+        student={scheduleTargetStudent}
+        onClose={() => setScheduleModalOpen(false)}
+        onSuccess={(msg) => {
+          setScheduleToast(msg);
+          setTimeout(() => setScheduleToast(""), 6000);
+        }}
       />
 
       <RejectModal
