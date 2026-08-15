@@ -147,8 +147,25 @@ export default function DailyTimelinePanel({
             const startTimeWit = formatTimeWIT(item.start_time);
             const endTimeWit = formatTimeWIT(item.end_time);
 
-            // Filter enrolled students for this class
+            // Filter enrolled students for this specific class session
             const enrolled = students.filter((s) => {
+              const desc = (item.description || "").toLowerCase();
+              const studentName = (s.name || "").toLowerCase();
+
+              // If description specifies a student name, match exact student name
+              if (desc && studentName && desc.includes(studentName)) {
+                return true;
+              }
+
+              // Check if description is specifically tailored to another student
+              const isSpecificOtherStudent = students.some(
+                (other) => other.name && desc.includes(other.name.toLowerCase())
+              );
+              if (isSpecificOtherStudent) {
+                return false;
+              }
+
+              // General fallback: match by program
               const sp = (s.program || "").toLowerCase();
               const ip = (item.program || "").toLowerCase();
               const it = (item.title || "").toLowerCase();
