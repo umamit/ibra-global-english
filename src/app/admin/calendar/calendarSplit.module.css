@@ -1,0 +1,23 @@
+/* calendarSplit.module.css — Responsive Split View Grid for Mobile & Desktop */
+
+.splitGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.leftCol {
+  grid-column: span 5;
+}
+
+.rightCol {
+  grid-column: span 7;
+}
+
+@media (max-width: 900px) {
+  .leftCol,
+  .rightCol {
+    grid-column: span 12;
+  }
+}

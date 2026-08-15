@@ -4,6 +4,7 @@ import React from "react";
 import { AcademicSchedule, StudentSimple, getMonthNameIndonesian } from "../hooks/useCalendarData";
 import { CalendarCell, getSchedulesForDay } from "../calendarHelpers";
 import DailyTimelinePanel from "./DailyTimelinePanel";
+import styles from "../calendarSplit.module.css";
 
 interface CalendarSplitViewProps {
   calendarDays: CalendarCell[];
@@ -44,15 +45,9 @@ export default function CalendarSplitView({
   const todayStr = getLocalDateString(new Date());
 
   return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(12, 1fr)",
-      gap: "1.25rem",
-      alignItems: "start",
-    }}>
+    <div className={styles.splitGrid}>
       {/* Left 35% Mini Calendar Card */}
-      <div style={{
-        gridColumn: "span 5",
+      <div className={styles.leftCol} style={{
         backgroundColor: "#ffffff",
         borderRadius: "18px",
         border: "1px solid rgba(0, 0, 0, 0.06)",
@@ -138,7 +133,7 @@ export default function CalendarSplitView({
       </div>
 
       {/* Right 65% Daily Timeline Panel */}
-      <div style={{ gridColumn: "span 7" }}>
+      <div className={styles.rightCol}>
         <DailyTimelinePanel
           selectedDate={selectedDate}
           schedules={schedules}
