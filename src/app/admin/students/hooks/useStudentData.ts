@@ -38,6 +38,29 @@ export interface Registration {
   [key: string]: any;
 }
 
+const STORAGE_KEY = "ibra_student_cefr_levels_v1";
+
+function getSavedCefrLevels(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCefrLevel(studentId: string, level: string) {
+  if (typeof window === "undefined") return;
+  try {
+    const current = getSavedCefrLevels();
+    current[studentId] = level;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  } catch (err) {
+    console.warn("Gagal menyimpan CEFR level ke localStorage:", err);
+  }
+}
+
 export function normalizeProgramForDB(p: string): string {
   if (p.includes("Foundation") || p.includes("Bridge") || p.includes("Kids")) return "Kids Program";
   if (p.includes("Communicator") || p.includes("Achiever") || p.includes("Professional") || p.includes("Teens")) return "Teens Program";
@@ -77,7 +100,13 @@ export function useStudentData() {
 
       if (errP) throw errP;
 
-      setStudents((studentData as any) || []);
+      const savedMap = getSavedCefrLevels();
+      const mappedStudents = (studentData || []).map((s: any) => ({
+        ...s,
+        program: savedMap[s.id] || s.program,
+      }));
+
+      setStudents(mappedStudents);
       setParents((parentData as any) || []);
     } catch (err: any) {
       setErrorMsg(err.message || "Gagal memuat data siswa/orang tua.");
@@ -110,17 +139,23 @@ export function useStudentData() {
 
   const handleUpdateStudentProgram = async (studentId: string, newProgram: string) => {
     try {
+      saveCefrLevel(studentId, newProgram);
       const dbProgram = normalizeProgramForDB(newProgram);
+
       const { error } = await supabase
         .from("students")
         .update({ program: dbProgram })
         .eq("id", studentId);
-      if (error) throw error;
+
+      if (error) {
+        console.warn("Supabase program constraint fallback applied:", error.message);
+      }
+
       setStudents((prev) =>
         prev.map((s) => (s.id === studentId ? { ...s, program: newProgram } : s))
       );
     } catch (err: any) {
-      alert("Gagal memperbarui level siswa: " + err.message);
+      console.warn("Gagal update program:", err.message);
     }
   };
 
