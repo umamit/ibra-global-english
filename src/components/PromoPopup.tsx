@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { usePromoPopup } from "@/hooks/usePromoPopup";
+import "./PromoPopup.css";
 
 const EXCLUDED_PATHS = ["/admin", "/student", "/parent", "/tutor", "/login", "/auth", "/digital-agency"];
 const subscribe = () => () => {};
