@@ -79,6 +79,16 @@ function formatIndonesianDate(dateStr: string): string {
   }
 }
 
+function extractRoomFromSchedule(item: AcademicSchedule): string {
+  if (item.room) return item.room;
+  const desc = item.description || "";
+  if (desc.includes("Ruang")) {
+    const match = desc.match(/Ruang\s+Kelas\s+[A-Z]|Ruang\s+Calistung/i);
+    if (match) return match[0];
+  }
+  return "Ruang Kelas A";
+}
+
 export default function DailyTimelinePanel({
   selectedDate,
   schedules,
@@ -91,7 +101,6 @@ export default function DailyTimelinePanel({
     (a, b) => (a.start_time || "").localeCompare(b.start_time || "")
   );
 
-  // Group schedules by program for consolidated card layout
   const groupedByProgram: Record<string, {
     program: string;
     title: string;
@@ -108,11 +117,13 @@ export default function DailyTimelinePanel({
 
   daySchedules.forEach((item) => {
     const progKey = item.program || "General";
+    const roomName = extractRoomFromSchedule(item);
+
     if (!groupedByProgram[progKey]) {
       groupedByProgram[progKey] = {
         program: item.program,
         title: item.title || item.program,
-        room: item.room || "Ruang Kelas",
+        room: roomName,
         instructor: item.instructor || "Tutor Ibra",
         items: [],
       };
@@ -146,7 +157,6 @@ export default function DailyTimelinePanel({
       boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.04)",
       padding: "1.25rem", height: "100%", display: "flex", flexDirection: "column",
     }}>
-      {/* Panel Header */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         paddingBottom: "1rem", marginBottom: "1.25rem",
@@ -170,7 +180,6 @@ export default function DailyTimelinePanel({
         </button>
       </div>
 
-      {/* Schedule Items List */}
       <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
         {groupKeys.length === 0 ? (
           <div style={{
@@ -209,7 +218,6 @@ export default function DailyTimelinePanel({
                   borderLeft: `5px solid ${colors.text}`,
                 }}
               >
-                {/* Group Header */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <span style={{
@@ -233,7 +241,6 @@ export default function DailyTimelinePanel({
                   <span style={{ display: "inline-flex", alignItems: "center" }}><UserIcon /> {group.instructor}</span>
                 </div>
 
-                {/* Consolidated Student & Time Rows */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginTop: "0.2rem" }}>
                   {group.items.map((sub) => (
                     <div

@@ -30,7 +30,7 @@ export function useScheduleFromStudent() {
     try {
       const { data: existingSchedules, error } = await supabase
         .from("academic_schedules")
-        .select("id, title, program, start_time, end_time, instructor, room")
+        .select("id, title, program, start_time, end_time, instructor, description")
         .limit(200);
 
       if (error || !existingSchedules) return null;
@@ -42,7 +42,8 @@ export function useScheduleFromStudent() {
         if (days.includes(dayOfWeek)) {
           const sTime = s.start_time.includes("T") ? s.start_time.split("T")[1].substring(0, 5) : s.start_time;
           if (sTime === startTime) {
-            if (s.room === room) {
+            const desc = (s.description || "").toLowerCase();
+            if (room && desc.includes(room.toLowerCase())) {
               return `Peringatan Bentrok: ${room} sudah digunakan oleh "${s.title || s.program}" pada jam ${startTime} WIT.`;
             }
             if (instructor && s.instructor === instructor) {
@@ -97,8 +98,7 @@ export function useScheduleFromStudent() {
             start_time: startTimeIso,
             end_time: endTimeIso,
             instructor: input.instructor || "Tutor Ibra",
-            room: input.room || "Ruang Kelas A",
-            description: `Rutin ${input.program} untuk ${input.studentName} (WIT)`,
+            description: `Rutin ${input.program} untuk ${input.studentName} (${input.room || "Ruang Kelas A"}) (WIT)`,
             status: "active",
           });
         }
