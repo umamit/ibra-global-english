@@ -23,9 +23,7 @@ interface CalendarTopbarProps {
 
 const PROGRAM_OPTIONS = [
   { value: "All", label: "Semua Program" },
-  { value: "Kids Program Level 1", label: "Kids Program Level 1" },
   { value: "Kids Program Level 2", label: "Kids Program Level 2" },
-  { value: "Kids Program Level 4", label: "Kids Program Level 4" },
   { value: "Kids Program Level 5", label: "Kids Program Level 5" },
   { value: "Teens Program", label: "Teens Program" },
   { value: "Fun Calistung A", label: "Fun Calistung A" },
