@@ -219,6 +219,12 @@ npm run check-limits
       * **Tipe Chip Kompatibel**: **NTAG Series (NTAG213, NTAG215, NTAG216)** atau **Mifare Series (Mifare Classic 1K / Ultralight)**.
       * **Batasan Dilarang**: Dilarang menggunakan atau menyarankan kartu RFID frekuensi rendah 125 kHz (LF) karena tidak didukung oleh browser Web NFC API maupun perangkat HP Android/iOS.
 
+21r. **Kunci Jaminan Kerapihan & Responsivitas Smartphone (Strict Mobile-First & Smartphone Responsiveness Rule):**
+    - AI WAJIB menjamin seluruh antarmuka web, dasbor admin (`/admin`), dasbor orang tua (`/parent`), portal siswa (`/student`), dan portal tutor (`/tutor`) selalu tampil rapi, proporsional, dan 100% responsif pada layar smartphone (HP).
+    - Seluruh tabel data WAJIB dibungkus dengan wadah scroll mendatar (`.table-wrapper` / `overflow-x: auto`) agar tidak terpotong atau merusak tata letak di layar HP.
+    - Grid tata letak utama (seperti Split View, form 2 kolom, dan kartu dashboard) WAJIB tumpuk otomatis menjadi 1 kolom vertikal (`grid-template-columns: 1fr` / `span 12`) pada layar kecil (< 900px / < 768px).
+    - Seluruh tombol interaktif, elemen menu, dan tombol filter WAJIB memiliki ukuran ramah sentuhan jempol minimal 44px dengan teks yang mudah dibaca tanpa saling tumpang tindih.
+
 28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
     - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
 
