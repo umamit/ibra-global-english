@@ -13,6 +13,35 @@ interface DailyTimelinePanelProps {
   onEditSchedule: (s: AcademicSchedule, e: React.MouseEvent) => void;
 }
 
+const ClockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "-2px", marginRight: "4px" }}>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const MapPinIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "-2px", marginRight: "4px" }}>
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "-2px", marginRight: "4px" }}>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const UsersIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "-2px", marginRight: "4px" }}>
+    <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M9 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+  </svg>
+);
+
 function getProgramColor(programName: string): { bg: string; text: string; border: string } {
   const p = (programName || "").toLowerCase();
   if (p.includes("calistung")) {
@@ -155,8 +184,8 @@ export default function DailyTimelinePanel({
                   }}>
                     {item.program}
                   </span>
-                  <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#216c7e" }}>
-                    ⏰ {startTimeWit} - {endTimeWit} WIT
+                  <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#216c7e", display: "inline-flex", alignItems: "center" }}>
+                    <ClockIcon /> {startTimeWit} - {endTimeWit} WIT
                   </span>
                 </div>
 
@@ -165,19 +194,24 @@ export default function DailyTimelinePanel({
                 </h4>
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.78rem", color: "#64748b" }}>
-                  <span>📍 {item.room || "Ruang Kelas"}</span>
-                  <span>👨‍🏫 {item.instructor || "Tutor Ibra"}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center" }}><MapPinIcon /> {item.room || "Ruang Kelas"}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center" }}><UserIcon /> {item.instructor || "Tutor Ibra"}</span>
                 </div>
 
                 {/* Enrolled Students List */}
                 <div style={{
-                  padding: "0.35rem 0.6rem", borderRadius: "8px", backgroundColor: "#f8fafc",
+                  padding: "0.4rem 0.65rem", borderRadius: "8px", backgroundColor: "#f8fafc",
                   border: "1px solid #e2e8f0", fontSize: "0.75rem", color: "#334155", marginTop: "0.2rem",
+                  display: "flex", alignItems: "center", gap: "0.3rem", flexWrap: "wrap",
                 }}>
-                  <strong style={{ color: "#216c7e" }}>👶 Siswa ({enrolled.length}):</strong>{" "}
-                  {enrolled.length === 0
-                    ? "Belum ada siswa terdaftar"
-                    : enrolled.map((s) => s.name).join(", ")}
+                  <span style={{ display: "inline-flex", alignItems: "center", fontWeight: "800", color: "#216c7e" }}>
+                    <UsersIcon /> Siswa ({enrolled.length}):
+                  </span>
+                  <span>
+                    {enrolled.length === 0
+                      ? "Belum ada siswa terdaftar"
+                      : enrolled.map((s) => s.name).join(", ")}
+                  </span>
                 </div>
               </div>
             );

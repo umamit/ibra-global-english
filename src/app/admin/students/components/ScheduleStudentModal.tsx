@@ -11,6 +11,14 @@ interface ScheduleStudentModalProps {
   onSuccess: (msg: string) => void;
 }
 
+const AlertCircleIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "-2px", marginRight: "4px" }}>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
+
 const DAYS_OPTIONS = [
   { day: 1, label: "Senin" },
   { day: 2, label: "Selasa" },
@@ -28,7 +36,7 @@ export default function ScheduleStudentModal({
 }: ScheduleStudentModalProps) {
   const { submitting, conflictWarning, generateAndSaveSchedules } = useScheduleFromStudent();
 
-  const [selectedDays, setSelectedDays] = useState<number[]>([1, 3, 6]); // Senin, Rabu, Sabtu default
+  const [selectedDays, setSelectedDays] = useState<number[]>([1, 3, 6]);
   const [startTime, setStartTime] = useState<string>("15:30");
   const [endTime, setEndTime] = useState<string>("16:45");
   const [instructor, setInstructor] = useState<string>("Tutor Ibra");
@@ -40,15 +48,15 @@ export default function ScheduleStudentModal({
     if (student) {
       const p = (student.program || "").toLowerCase();
       if (p.includes("teen")) {
-        setSelectedDays([2, 4]); // Selasa & Kamis for Teens
+        setSelectedDays([2, 4]);
         setStartTime("15:30");
         setEndTime("17:00");
       } else if (p.includes("calistung")) {
-        setSelectedDays([1, 3, 5]); // Senin, Rabu, Jumat for Calistung
+        setSelectedDays([1, 3, 5]);
         setStartTime("15:00");
         setEndTime("15:45");
       } else {
-        setSelectedDays([1, 3, 6]); // Senin, Rabu, Sabtu for Kids
+        setSelectedDays([1, 3, 6]);
         setStartTime("15:30");
         setEndTime("16:45");
       }
@@ -113,8 +121,8 @@ export default function ScheduleStudentModal({
         </div>
 
         {conflictWarning && (
-          <div style={{ padding: "0.6rem 0.85rem", backgroundColor: "#fffbeb", border: "1px solid #fef3c7", borderRadius: "10px", color: "#b45309", fontSize: "0.8rem", marginBottom: "1rem", fontWeight: "600" }}>
-            ⚠️ {conflictWarning}
+          <div style={{ padding: "0.6rem 0.85rem", backgroundColor: "#fffbeb", border: "1px solid #fef3c7", borderRadius: "10px", color: "#b45309", fontSize: "0.8rem", marginBottom: "1rem", fontWeight: "600", display: "flex", alignItems: "center" }}>
+            <AlertCircleIcon /> {conflictWarning}
           </div>
         )}
 
@@ -125,7 +133,6 @@ export default function ScheduleStudentModal({
         )}
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          {/* Day selection */}
           <div>
             <label style={{ fontSize: "0.82rem", fontWeight: "800", color: "#334155", display: "block", marginBottom: "0.4rem" }}>
               Pilih Hari Belajar Rutin (WIT):
@@ -152,7 +159,6 @@ export default function ScheduleStudentModal({
             </div>
           </div>
 
-          {/* Time inputs */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
             <div>
               <label style={{ fontSize: "0.8rem", fontWeight: "700", color: "#334155", display: "block", marginBottom: "0.25rem" }}>
@@ -180,7 +186,6 @@ export default function ScheduleStudentModal({
             </div>
           </div>
 
-          {/* Room & Instructor */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
             <div>
               <label style={{ fontSize: "0.8rem", fontWeight: "700", color: "#334155", display: "block", marginBottom: "0.25rem" }}>
@@ -212,7 +217,6 @@ export default function ScheduleStudentModal({
             </div>
           </div>
 
-          {/* Duration */}
           <div>
             <label style={{ fontSize: "0.8rem", fontWeight: "700", color: "#334155", display: "block", marginBottom: "0.25rem" }}>
               Durasi Buat Jadwal Otomatis:
@@ -228,7 +232,6 @@ export default function ScheduleStudentModal({
             </select>
           </div>
 
-          {/* Actions */}
           <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", marginTop: "0.5rem" }}>
             <button type="button" onClick={onClose} className="btn-portal-outline" style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem" }}>
               Batal
