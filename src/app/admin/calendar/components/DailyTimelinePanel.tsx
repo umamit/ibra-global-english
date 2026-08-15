@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { AcademicSchedule } from "../hooks/useCalendarData";
+import { AcademicSchedule, StudentSimple } from "../hooks/useCalendarData";
 import { getSchedulesForDay } from "../calendarHelpers";
 
 interface DailyTimelinePanelProps {
   selectedDate: string;
   schedules: AcademicSchedule[];
+  students?: StudentSimple[];
   filterProgram: string;
   onAddAgenda: (dateStr: string) => void;
   onEditSchedule: (s: AcademicSchedule, e: React.MouseEvent) => void;
@@ -20,6 +21,21 @@ function getProgramColor(programName: string): { bg: string; text: string; borde
     return { bg: "rgba(22, 77, 87, 0.12)", text: "#164d57", border: "rgba(22, 77, 87, 0.3)" };
   }
   return { bg: "rgba(33, 108, 126, 0.12)", text: "#216c7e", border: "rgba(33, 108, 126, 0.3)" };
+}
+
+function formatTimeWIT(timeStr: string): string {
+  if (!timeStr) return "";
+  if (!timeStr.includes("T")) return timeStr;
+  try {
+    const d = new Date(timeStr);
+    if (isNaN(d.getTime())) return timeStr;
+    const hoursInWIT = (d.getUTCHours() + 9) % 24;
+    const h = String(hoursInWIT).padStart(2, "0");
+    const m = String(d.getUTCMinutes()).padStart(2, "0");
+    return `${h}:${m}`;
+  } catch {
+    return timeStr;
+  }
 }
 
 function formatIndonesianDate(dateStr: string): string {
@@ -37,6 +53,7 @@ function formatIndonesianDate(dateStr: string): string {
 export default function DailyTimelinePanel({
   selectedDate,
   schedules,
+  students = [],
   filterProgram,
   onAddAgenda,
   onEditSchedule,
@@ -98,6 +115,20 @@ export default function DailyTimelinePanel({
         ) : (
           daySchedules.map((item) => {
             const colors = getProgramColor(item.program);
+            const startTimeWit = formatTimeWIT(item.start_time);
+            const endTimeWit = formatTimeWIT(item.end_time);
+
+            // Filter enrolled students for this class
+            const enrolled = students.filter((s) => {
+              const sp = (s.program || "").toLowerCase();
+              const ip = (item.program || "").toLowerCase();
+              const it = (item.title || "").toLowerCase();
+              if (ip.includes("calistung")) return sp.includes("calistung");
+              if (ip.includes("teen")) return sp.includes("teen");
+              if (sp === ip || sp === it) return true;
+              return ip.includes("kids") && sp.includes("kids");
+            });
+
             return (
               <div
                 key={item.id}
@@ -109,7 +140,7 @@ export default function DailyTimelinePanel({
                   padding: "0.85rem 1rem",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "0.4rem",
+                  gap: "0.45rem",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
@@ -124,8 +155,8 @@ export default function DailyTimelinePanel({
                   }}>
                     {item.program}
                   </span>
-                  <span style={{ fontSize: "0.82rem", fontWeight: "800", color: "#216c7e" }}>
-                    ⏰ {item.start_time?.includes("T") ? item.start_time.split("T")[1]?.substring(0, 5) : item.start_time} - {item.end_time?.includes("T") ? item.end_time.split("T")[1]?.substring(0, 5) : item.end_time}
+                  <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#216c7e" }}>
+                    ⏰ {startTimeWit} - {endTimeWit} WIT
                   </span>
                 </div>
 
@@ -133,9 +164,20 @@ export default function DailyTimelinePanel({
                   {item.title || item.program}
                 </h4>
 
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.78rem", color: "#64748b", marginTop: "0.2rem" }}>
-                  <span>📍 Ruang Kelas</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.78rem", color: "#64748b" }}>
+                  <span>📍 {item.room || "Ruang Kelas"}</span>
                   <span>👨‍🏫 {item.instructor || "Tutor Ibra"}</span>
+                </div>
+
+                {/* Enrolled Students List */}
+                <div style={{
+                  padding: "0.35rem 0.6rem", borderRadius: "8px", backgroundColor: "#f8fafc",
+                  border: "1px solid #e2e8f0", fontSize: "0.75rem", color: "#334155", marginTop: "0.2rem",
+                }}>
+                  <strong style={{ color: "#216c7e" }}>👶 Siswa ({enrolled.length}):</strong>{" "}
+                  {enrolled.length === 0
+                    ? "Belum ada siswa terdaftar"
+                    : enrolled.map((s) => s.name).join(", ")}
                 </div>
               </div>
             );

@@ -14,6 +14,13 @@ export interface AcademicSchedule {
   instructor?: string | null;
   recurrence_id?: string | null;
   created_at?: string;
+  room?: string | null;
+}
+
+export interface StudentSimple {
+  id: string;
+  name: string;
+  program: string;
 }
 
 export interface StatusMsg {
@@ -39,6 +46,7 @@ export function getMonthNameIndonesian(monthIdx: number): string {
 export function useCalendarData() {
   const supabase = createClient();
   const [schedules, setSchedules] = useState<AcademicSchedule[]>([]);
+  const [students, setStudents] = useState<StudentSimple[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [statusMsg, setStatusMsg] = useState<StatusMsg>({ type: "", text: "" });
   const [mounted, setMounted] = useState<boolean>(false);
@@ -46,13 +54,20 @@ export function useCalendarData() {
   const fetchData = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data: scheduleData, error: errS } = await supabase
         .from("academic_schedules")
         .select("*")
         .order("start_time", { ascending: true });
 
-      if (error) throw error;
-      setSchedules((data as AcademicSchedule[]) || []);
+      if (errS) throw errS;
+
+      const { data: studentData } = await supabase
+        .from("students")
+        .select("id, name, program")
+        .order("name");
+
+      setSchedules((scheduleData as AcademicSchedule[]) || []);
+      setStudents((studentData as StudentSimple[]) || []);
     } catch (err: any) {
       console.error("Gagal memuat jadwal akademik:", err);
       setStatusMsg({ type: "error", text: "Gagal memuat jadwal: " + (err.message || String(err)) });
@@ -61,49 +76,31 @@ export function useCalendarData() {
     }
   }, [supabase]);
 
-  const clearStatus = (delayMs = 3000) => {
-    setTimeout(() => setStatusMsg({ type: "", text: "" }), delayMs);
-  };
+  useEffect(() => {
+    setMounted(true);
+    fetchData();
+  }, [fetchData]);
+
+  const clearStatus = (): void => setStatusMsg({ type: "", text: "" });
 
   const handleDeleteAllSchedules = async (): Promise<void> => {
-    const confirm1 = confirm("Apakah Anda yakin ingin menghapus SELURUH agenda akademik yang ada di database?");
-    if (!confirm1) return;
-    const confirm2 = confirm("PERINGATAN: Tindakan ini akan menghapus semua jadwal kelas, kegiatan, dan hari libur secara permanen. Apakah Anda benar-benar yakin?");
-    if (!confirm2) return;
-
+    if (!confirm("Apakah Anda yakin ingin menghapus SEMUA agenda jadwal di kalender? Tindakan ini tidak dapat dibatalkan.")) return;
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from("academic_schedules")
-        .delete()
-        .neq("id", "00000000-0000-0000-0000-000000000000");
-
+      const { error } = await supabase.from("academic_schedules").delete().neq("id", "00000000-0000-0000-0000-000000000000");
       if (error) throw error;
-      setStatusMsg({ type: "success", text: "Berhasil menghapus seluruh agenda akademik." });
-      clearStatus();
+      setStatusMsg({ type: "success", text: "Semua agenda jadwal berhasil dihapus." });
       fetchData();
     } catch (err: any) {
-      console.error("Gagal menghapus seluruh agenda:", err);
-      setStatusMsg({ type: "error", text: "Gagal menghapus agenda: " + (err.message || String(err)) });
-      clearStatus(4000);
+      setStatusMsg({ type: "error", text: "Gagal menghapus jadwal: " + err.message });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    setTimeout(() => setMounted(true), 0);
-    let cancelled = false;
-    const load = async () => {
-      if (cancelled) return;
-      await fetchData();
-    };
-    load();
-    return () => { cancelled = true; };
-  }, []);
-
   return {
     schedules,
+    students,
     loading,
     mounted,
     statusMsg,

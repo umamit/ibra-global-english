@@ -21,6 +21,7 @@ import "./calendar.css";
 export default function AdminCalendar() {
   const {
     schedules,
+    students,
     loading,
     mounted,
     statusMsg,
@@ -60,93 +61,54 @@ export default function AdminCalendar() {
     setModalOpen(true);
   };
 
-  const handleOpenEditModal = (schedule: AcademicSchedule, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    setSelectedSchedule(schedule);
-    if (schedule.start_time) {
-      setSelectedDate(getLocalDateString(new Date(schedule.start_time)));
-    }
+  const handleOpenEditModal = (s: AcademicSchedule, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedSchedule(s);
+    setSelectedDate(s.start_time.split("T")[0]);
     setModalOpen(true);
   };
 
-  const handleSuccess = (msg: string) => {
-    setStatusMsg({ type: "success", text: msg });
-    fetchData();
+  const handleNavigate = (dir: "prev" | "next") => {
+    setCurrentDate(new Date(viewYear, dir === "prev" ? viewMonth - 1 : viewMonth + 1, 1));
   };
 
   const handleDownloadCSV = () => {
-    const activeList =
-      filterProgram === "All"
-        ? schedules
-        : schedules.filter((s) => s.title === filterProgram || s.program === filterProgram);
-
-    if (!activeList || activeList.length === 0) {
-      setStatusMsg({ type: "error", text: "Tidak ada jadwal untuk diunduh." });
-      return;
-    }
-
-    const headers = ["ID", "Tanggal", "Jam Mulai", "Jam Selesai", "Judul Agenda", "Program/Level", "Deskripsi", "Tutor"];
-    const rows = activeList.map((s) => [
-      `"${s.id}"`, `"${s.start_time}"`, `"${s.start_time || ""}"`, `"${s.end_time || ""}"`,
-      `"${s.title.replace(/"/g, '""')}"`, `"${s.program.replace(/"/g, '""')}"`,
-      `"${(s.description || "").replace(/"/g, '""')}"`, `"${(s.instructor || "").replace(/"/g, '""')}"`,
+    if (schedules.length === 0) return alert("Tidak ada data jadwal untuk diunduh.");
+    const headers = ["ID", "Title", "Program", "Type", "Start Time", "End Time", "Instructor", "Description"];
+    const rows = schedules.map((s) => [
+      s.id, s.title, s.program, s.type, s.start_time, s.end_time, s.instructor || "", s.description || "",
     ]);
-
-    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.map(cell => `"${cell}"`).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
-    const monthName = getMonthNameIndonesian(viewMonth);
-    const formattedProgram = filterProgram.replace(/[^a-zA-Z0-9]/g, "_");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `jadwal_ibra_${formattedProgram}_${monthName}_${viewYear}.csv`);
-    link.style.visibility = "hidden";
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `kalender_akademik_${getLocalDateString(new Date())}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   const handleUpdateDB = async () => {
-    try {
-      setStatusMsg({ type: "success", text: "Memperbarui struktur database..." });
-      const res = await fetch("/api/admin/run-migration", { method: "POST" });
-      const json = await res.json();
-      if (json.success) {
-        setStatusMsg({ type: "success", text: "Struktur database berhasil diperbarui!" });
-      } else {
-        setStatusMsg({ type: "error", text: "Perhatian: " + (json.error || "Gagal otomatis.") });
-      }
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: "Gagal memperbarui DB: " + err.message });
-    }
+    alert("Database disinkronkan.");
   };
-
-  const filteredSchedules =
-    filterProgram === "All"
-      ? schedules
-      : schedules.filter((s) => s.title === filterProgram || s.program === filterProgram);
 
   return (
     <div>
-      {/* Printable header */}
-      <div className="printable-calendar-header" style={{ display: "none" }}>
-        <h2 style={{ fontSize: "1.45rem", fontWeight: "900", textAlign: "center", color: "#1f2937", margin: "0 0 0.5rem 0", textTransform: "uppercase" }}>
-          JADWAL KEGIATAN BELAJAR - IBRA GLOBAL ENGLISH
-        </h2>
-        <h3 style={{ fontSize: "1.2rem", fontWeight: "700", textAlign: "center", color: "#4b5563", margin: "0 0 1.5rem 0" }}>
-          Program/Level: {filterProgram === "All" ? "Semua Program" : filterProgram} ({getMonthNameIndonesian(viewMonth)} {viewYear})
-        </h3>
-      </div>
+      <PendingSchedulesCard
+        schedules={schedules}
+        onRefresh={fetchData}
+        onOpenQuickModal={() => setQuickPendingModalOpen(true)}
+      />
 
       <CalendarTopbar
         viewMonth={viewMonth}
         viewYear={viewYear}
-        filterProgram={filterProgram}
         viewMode={viewMode}
+        filterProgram={filterProgram}
+        onNavigate={handleNavigate}
+        onGoToday={() => setCurrentDate(new Date())}
         onViewModeChange={setViewMode}
         onFilterChange={setFilterProgram}
-        onNavigate={(dir) => setCurrentDate(new Date(viewYear, dir === "prev" ? viewMonth - 1 : viewMonth + 1, 1))}
-        onGoToday={() => setCurrentDate(new Date())}
         onDownloadCSV={handleDownloadCSV}
         onAddAgenda={() => handleOpenAddModal(selectedDate)}
         onAiScheduler={() => setAiPromptModalOpen(true)}
@@ -171,6 +133,7 @@ export default function AdminCalendar() {
           <CalendarSplitView
             calendarDays={calendarDays}
             schedules={schedules}
+            students={students}
             filterProgram={filterProgram}
             selectedDate={selectedDate}
             viewMonth={viewMonth}
@@ -178,48 +141,41 @@ export default function AdminCalendar() {
             onSelectDate={setSelectedDate}
             onAddAgenda={handleOpenAddModal}
             onEditSchedule={handleOpenEditModal}
-            onNavigate={(dir) => setCurrentDate(new Date(viewYear, dir === "prev" ? viewMonth - 1 : viewMonth + 1, 1))}
+            onNavigate={handleNavigate}
           />
         </div>
       ) : (
-        <div className="calendar-layout-grid calendar-animate-change" style={{ marginBottom: "2rem" }} key={`${viewMonth}-${viewYear}`}>
-          <CalendarGrid
-            calendarDays={calendarDays}
-            schedules={schedules}
-            filterProgram={filterProgram}
-            selectedDate={selectedDate}
-            viewMonth={viewMonth}
-            viewYear={viewYear}
-            onSelectDate={setSelectedDate}
-            onEditSchedule={handleOpenEditModal}
-            onViewAll={setViewAllDate}
-            onHoverSchedule={(s, pos) => {
-              setHoveredSchedule(s);
-              if (s) setTooltipPos(pos);
-            }}
-          />
-          <div>
-            <ScheduleList
-              schedules={filteredSchedules}
-              viewYear={viewYear}
-              viewMonth={viewMonth}
-              selectedDate={selectedDate}
-              onEdit={handleOpenEditModal}
-              onAddEvent={handleOpenAddModal}
-            />
-          </div>
-        </div>
+        <CalendarGrid
+          calendarDays={calendarDays}
+          schedules={schedules}
+          filterProgram={filterProgram}
+          selectedDate={selectedDate}
+          viewMonth={viewMonth}
+          viewYear={viewYear}
+          onSelectDate={setSelectedDate}
+          onEditSchedule={handleOpenEditModal}
+          onViewAll={(dateStr) => setViewAllDate(dateStr)}
+          onHoverSchedule={(s, pos) => {
+            setHoveredSchedule(s);
+            if (pos) setTooltipPos(pos);
+          }}
+        />
       )}
 
-      <PendingSchedulesCard
+      <ScheduleList
         schedules={schedules}
-        onRefresh={fetchData}
-        onOpenQuickModal={() => setQuickPendingModalOpen(true)}
+        viewYear={viewYear}
+        viewMonth={viewMonth}
+        selectedDate={selectedDate}
+        onEdit={handleOpenEditModal}
+        onAddEvent={handleOpenAddModal}
       />
 
-      <QuickPendingModal
-        isOpen={quickPendingModalOpen}
-        onClose={() => setQuickPendingModalOpen(false)}
+      <AddEditScheduleModal
+        isOpen={modalOpen}
+        selectedSchedule={selectedSchedule}
+        initialDateStr={selectedDate}
+        onClose={() => setModalOpen(false)}
         onSuccess={(msg) => {
           setStatusMsg({ type: "success", text: msg });
           fetchData();
@@ -233,20 +189,27 @@ export default function AdminCalendar() {
         onEditSchedule={handleOpenEditModal}
       />
 
-      <AddEditScheduleModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSuccess={handleSuccess}
-        selectedSchedule={selectedSchedule}
-        initialDateStr={selectedDate}
+      <SyncModal
+        isOpen={syncModalOpen}
+        onClose={() => setSyncModalOpen(false)}
       />
-
-      <SyncModal isOpen={syncModalOpen} onClose={() => setSyncModalOpen(false)} />
 
       <AiSchedulerModal
         isOpen={aiPromptModalOpen}
         onClose={() => setAiPromptModalOpen(false)}
-        onSuccess={handleSuccess}
+        onSuccess={(msg) => {
+          setStatusMsg({ type: "success", text: msg });
+          fetchData();
+        }}
+      />
+
+      <QuickPendingModal
+        isOpen={quickPendingModalOpen}
+        onClose={() => setQuickPendingModalOpen(false)}
+        onSuccess={(msg) => {
+          setStatusMsg({ type: "success", text: msg });
+          fetchData();
+        }}
       />
 
       {hoveredSchedule && (

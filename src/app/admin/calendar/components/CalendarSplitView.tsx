@@ -1,13 +1,14 @@
 "use client";
 
 import React from "react";
-import { AcademicSchedule, getMonthNameIndonesian } from "../hooks/useCalendarData";
+import { AcademicSchedule, StudentSimple, getMonthNameIndonesian } from "../hooks/useCalendarData";
 import { CalendarCell, getSchedulesForDay } from "../calendarHelpers";
 import DailyTimelinePanel from "./DailyTimelinePanel";
 
 interface CalendarSplitViewProps {
   calendarDays: CalendarCell[];
   schedules: AcademicSchedule[];
+  students?: StudentSimple[];
   filterProgram: string;
   selectedDate: string;
   viewMonth: number;
@@ -30,6 +31,7 @@ const SHORT_WEEKDAYS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 export default function CalendarSplitView({
   calendarDays,
   schedules,
+  students = [],
   filterProgram,
   selectedDate,
   viewMonth,
@@ -140,6 +142,7 @@ export default function CalendarSplitView({
         <DailyTimelinePanel
           selectedDate={selectedDate}
           schedules={schedules}
+          students={students}
           filterProgram={filterProgram}
           onAddAgenda={onAddAgenda}
           onEditSchedule={onEditSchedule}
