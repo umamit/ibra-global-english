@@ -91,6 +91,54 @@ export default function DailyTimelinePanel({
     (a, b) => (a.start_time || "").localeCompare(b.start_time || "")
   );
 
+  // Group schedules by program for consolidated card layout
+  const groupedByProgram: Record<string, {
+    program: string;
+    title: string;
+    room: string;
+    instructor: string;
+    items: {
+      id: string;
+      studentName: string;
+      startTimeWit: string;
+      endTimeWit: string;
+      rawSchedule: AcademicSchedule;
+    }[];
+  }> = {};
+
+  daySchedules.forEach((item) => {
+    const progKey = item.program || "General";
+    if (!groupedByProgram[progKey]) {
+      groupedByProgram[progKey] = {
+        program: item.program,
+        title: item.title || item.program,
+        room: item.room || "Ruang Kelas",
+        instructor: item.instructor || "Tutor Ibra",
+        items: [],
+      };
+    }
+
+    const enrolled = students.filter((s) => {
+      const desc = (item.description || "").toLowerCase();
+      const studentName = (s.name || "").toLowerCase();
+      return desc && studentName && desc.includes(studentName);
+    });
+
+    const studentNameDisplay = enrolled.length > 0 ? enrolled.map((s) => s.name).join(", ") : (item.description || item.title || "Siswa Terdaftar");
+    const startTimeWit = formatTimeWIT(item.start_time);
+    const endTimeWit = formatTimeWIT(item.end_time);
+
+    groupedByProgram[progKey].items.push({
+      id: item.id,
+      studentName: studentNameDisplay,
+      startTimeWit,
+      endTimeWit,
+      rawSchedule: item,
+    });
+  });
+
+  const groupKeys = Object.keys(groupedByProgram);
+
   return (
     <div style={{
       backgroundColor: "#ffffff", borderRadius: "18px",
@@ -123,8 +171,8 @@ export default function DailyTimelinePanel({
       </div>
 
       {/* Schedule Items List */}
-      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {daySchedules.length === 0 ? (
+      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {groupKeys.length === 0 ? (
           <div style={{
             textAlign: "center", padding: "2.5rem 1rem", backgroundColor: "var(--color-bg-teal-50, #eef6f8)",
             borderRadius: "14px", border: "1px dashed rgba(33, 108, 126, 0.2)",
@@ -142,93 +190,69 @@ export default function DailyTimelinePanel({
             </button>
           </div>
         ) : (
-          daySchedules.map((item) => {
-            const colors = getProgramColor(item.program);
-            const startTimeWit = formatTimeWIT(item.start_time);
-            const endTimeWit = formatTimeWIT(item.end_time);
-
-            // Filter enrolled students for this specific class session
-            const enrolled = students.filter((s) => {
-              const desc = (item.description || "").toLowerCase();
-              const studentName = (s.name || "").toLowerCase();
-
-              // If description specifies a student name, match exact student name
-              if (desc && studentName && desc.includes(studentName)) {
-                return true;
-              }
-
-              // Check if description is specifically tailored to another student
-              const isSpecificOtherStudent = students.some(
-                (other) => other.name && desc.includes(other.name.toLowerCase())
-              );
-              if (isSpecificOtherStudent) {
-                return false;
-              }
-
-              // General fallback: match by program
-              const sp = (s.program || "").toLowerCase();
-              const ip = (item.program || "").toLowerCase();
-              const it = (item.title || "").toLowerCase();
-              if (ip.includes("calistung")) return sp.includes("calistung");
-              if (ip.includes("teen")) return sp.includes("teen");
-              if (sp === ip || sp === it) return true;
-              return ip.includes("kids") && sp.includes("kids");
-            });
+          groupKeys.map((key) => {
+            const group = groupedByProgram[key];
+            const colors = getProgramColor(group.program);
 
             return (
               <div
-                key={item.id}
-                onClick={(e) => onEditSchedule(item, e)}
+                key={key}
                 style={{
                   backgroundColor: "#ffffff",
-                  borderRadius: "14px",
+                  borderRadius: "16px",
                   border: `1px solid ${colors.border}`,
-                  padding: "0.85rem 1rem",
+                  padding: "1rem",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "0.45rem",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  borderLeft: `4px solid ${colors.text}`,
+                  gap: "0.6rem",
+                  boxShadow: "0 4px 14px rgba(0,0,0,0.03)",
+                  borderLeft: `5px solid ${colors.text}`,
                 }}
               >
+                {/* Group Header */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{
-                    fontSize: "0.72rem", fontWeight: "800", padding: "0.2rem 0.55rem",
-                    borderRadius: "9999px", backgroundColor: colors.bg, color: colors.text,
-                    border: `1px solid ${colors.border}`,
-                  }}>
-                    {item.program}
-                  </span>
-                  <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#216c7e", display: "inline-flex", alignItems: "center" }}>
-                    <ClockIcon /> {startTimeWit} - {endTimeWit} WIT
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{
+                      fontSize: "0.75rem", fontWeight: "800", padding: "0.25rem 0.6rem",
+                      borderRadius: "9999px", backgroundColor: colors.bg, color: colors.text,
+                      border: `1px solid ${colors.border}`,
+                    }}>
+                      {group.program}
+                    </span>
+                    <h4 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "#0f172a" }}>
+                      {group.title}
+                    </h4>
+                  </div>
+                  <span style={{ fontSize: "0.78rem", color: "#64748b", fontWeight: "700" }}>
+                    {group.items.length} Sesi
                   </span>
                 </div>
 
-                <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#0f172a" }}>
-                  {item.title || item.program}
-                </h4>
-
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.78rem", color: "#64748b" }}>
-                  <span style={{ display: "inline-flex", alignItems: "center" }}><MapPinIcon /> {item.room || "Ruang Kelas"}</span>
-                  <span style={{ display: "inline-flex", alignItems: "center" }}><UserIcon /> {item.instructor || "Tutor Ibra"}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem", fontSize: "0.78rem", color: "#64748b" }}>
+                  <span style={{ display: "inline-flex", alignItems: "center" }}><MapPinIcon /> {group.room}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center" }}><UserIcon /> {group.instructor}</span>
                 </div>
 
-                {/* Enrolled Students List */}
-                <div style={{
-                  padding: "0.4rem 0.65rem", borderRadius: "8px", backgroundColor: "#f8fafc",
-                  border: "1px solid #e2e8f0", fontSize: "0.75rem", color: "#334155", marginTop: "0.2rem",
-                  display: "flex", alignItems: "center", gap: "0.3rem", flexWrap: "wrap",
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", fontWeight: "800", color: "#216c7e" }}>
-                    <UsersIcon /> Siswa ({enrolled.length}):
-                  </span>
-                  <span>
-                    {enrolled.length === 0
-                      ? "Belum ada siswa terdaftar"
-                      : enrolled.map((s) => s.name).join(", ")}
-                  </span>
+                {/* Consolidated Student & Time Rows */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginTop: "0.2rem" }}>
+                  {group.items.map((sub) => (
+                    <div
+                      key={sub.id}
+                      onClick={(e) => onEditSchedule(sub.rawSchedule, e)}
+                      style={{
+                        padding: "0.5rem 0.75rem", borderRadius: "10px", backgroundColor: "#f8fafc",
+                        border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between",
+                        fontSize: "0.82rem", cursor: "pointer", transition: "all 0.15s ease",
+                      }}
+                    >
+                      <span style={{ fontWeight: "700", color: "#1e293b", display: "inline-flex", alignItems: "center" }}>
+                        <UsersIcon /> {sub.studentName}
+                      </span>
+                      <span style={{ fontWeight: "800", color: "#216c7e", fontSize: "0.8rem", display: "inline-flex", alignItems: "center" }}>
+                        <ClockIcon /> {sub.startTimeWit} - {sub.endTimeWit} WIT
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             );
