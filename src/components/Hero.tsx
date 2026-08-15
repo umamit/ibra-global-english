@@ -26,18 +26,21 @@ const fetchStudentCount = async (): Promise<{ count: number }> => {
     throw new Error("Gagal mengambil data jumlah siswa.");
   }
   const data = await res.json();
-  if (typeof data.count !== 'number') {
+  if (typeof data.count !== "number") {
     throw new Error("Format respons jumlah siswa tidak valid.");
   }
   return data;
 };
 
 export default function Hero({ initialSettings }: HeroProps) {
-  const [heroTitle] = useState(initialSettings?.hero_title || "Kursus di Bobong | Ibra Global English");
-  const [heroSubtitle] = useState(initialSettings?.hero_subtitle || "Belajar Seru | Lancar Bicara");
-  const [heroDesc] = useState(initialSettings?.hero_desc || "Kursus di Bobong terbaik di Ibra Global English. Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!");
-  const [heroImage] = useState(initialSettings?.hero_image || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><defs><linearGradient id='tealGold' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%231a5765'/><stop offset='50%' stop-color='%23216c7e'/><stop offset='100%' stop-color='%23A68849'/></linearGradient><linearGradient id='glowGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23ffffff' stop-opacity='0.25'/><stop offset='100%' stop-color='%23ffffff' stop-opacity='0'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23tealGold)'/><circle cx='150' cy='150' r='300' fill='url(%23glowGrad)'/><circle cx='650' cy='450' r='200' fill='url(%23glowGrad)'/><g transform='translate(400, 300)' text-anchor='middle'><path d='M-30 -50 L30 -50 L45 -20 L-45 -20 Z' fill='%23ffffff' opacity='0.9'/><circle cx='0' cy='-15' r='18' fill='%23A68849'/><circle cx='0' cy='-15' r='12' fill='%23ffffff'/><path d='M-10 15 L10 15 L20 40 L-20 40 Z' fill='%23ffffff' opacity='0.95'/><text x='0' y='95' font-family='system-ui, -apple-system, BlinkMacSystemFont, sans-serif' font-size='32' font-weight='900' fill='%23ffffff' letter-spacing='-0.02em'>Ibra Global English</text><text x='0' y='130' font-family='system-ui, -apple-system, BlinkMacSystemFont, sans-serif' font-size='16' font-weight='600' fill='%23eef6f8' opacity='0.85' letter-spacing='0.05em'>BELAJAR SERU • LANCAR BICARA</text></g><path d='M100 100 L115 115 M115 100 L100 115' stroke='%23ffffff' stroke-width='4' opacity='0.3'/><path d='M700 120 L710 130 M710 120 L700 130' stroke='%23ffffff' stroke-width='3' opacity='0.3'/><circle cx='680' cy='220' r='5' fill='%23ffffff' opacity='0.4'/><circle cx='120' cy='480' r='8' fill='%23ffffff' opacity='0.3'/></svg>");
+  const heroTitle = initialSettings?.hero_title || "Kursus di Bobong | Ibra Global English";
+  const heroSubtitle = initialSettings?.hero_subtitle || "Belajar Seru | Lancar Bicara";
+  const heroDesc = initialSettings?.hero_desc || "Kursus di Bobong terbaik di Ibra Global English. Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!";
+  const rawHeroImage = initialSettings?.hero_image || "/assets/logo.png";
   
+  const [imgError, setImgError] = useState(false);
+  const displayImage = imgError ? "/assets/logo.png" : rawHeroImage;
+
   const { data: studentData } = useQuery({
     queryKey: ["studentCount"],
     queryFn: fetchStudentCount,
@@ -55,7 +58,6 @@ export default function Hero({ initialSettings }: HeroProps) {
         gsap.registerPlugin(ScrollTrigger);
 
         ctx = gsap.context(() => {
-          // Hanya aktifkan parallax jika bukan layar sentuh / mobile kecil
           if (window.innerWidth > 768) {
             gsap.to(".hero-card", {
               yPercent: 12,
@@ -87,8 +89,8 @@ export default function Hero({ initialSettings }: HeroProps) {
   }, []);
 
   const renderSubtitle = (text: string) => {
-    if (text.includes('|')) {
-      const [part1, part2] = text.split('|');
+    if (text.includes("|")) {
+      const [part1, part2] = text.split("|");
       return (
         <>
           {part1} <span className="highlight-reveal">{part2}</span>
@@ -99,7 +101,7 @@ export default function Hero({ initialSettings }: HeroProps) {
   };
 
   return (
-    <section id="home" className="hero">
+    <section id="home" className="hero hero-section">
       {/* Decorative Parallax Background Elements */}
       <div className="hero-parallax-bg hero-decor-1"></div>
       <div className="hero-parallax-bg hero-decor-2"></div>
@@ -130,16 +132,17 @@ export default function Hero({ initialSettings }: HeroProps) {
             </div>
           </div>
         </div>
-        
+
         <div className="hero-image-container scroll-fade-left">
           <div className="hero-card">
-            <Image 
-               src={heroImage} 
-               alt="Husnita Usman, M.Pd., Direktur & Pendiri Ibra Global English Bobong" 
-               className="hero-img" 
-               width={600}
-               height={400}
-               priority
+            <Image
+              src={displayImage}
+              alt="Husnita Usman, M.Pd., Direktur & Pendiri Ibra Global English Bobong"
+              className="hero-img"
+              width={600}
+              height={400}
+              priority
+              onError={() => setImgError(true)}
             />
             <div className="hero-director-overlay">
               <span className="hero-director-name">Husnita Usman, M.Pd.</span>
