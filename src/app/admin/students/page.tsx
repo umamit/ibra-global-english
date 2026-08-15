@@ -2,89 +2,112 @@
 
 export const dynamic = "force-dynamic";
 
-import React, { useState, useEffect } from "react";
-import TabSwitcher from "./components/TabSwitcher";
-import RejectModal from "./components/RejectModal";
-import StudentFormModal from "./components/StudentFormModal";
-import StudentImportModal from "./components/StudentImportModal";
+import React, { useState } from "react";
 import StudentTable from "./components/StudentTable";
 import ParentTable from "./components/ParentTable";
 import RegistrationTable from "./components/RegistrationTable";
-import { useStudentData } from "./hooks/useStudentData";
-import { createClient } from "@/utils/supabase/client";
+import TabSwitcher from "./components/TabSwitcher";
+import StudentFormModal from "./components/StudentFormModal";
+import RejectModal from "./components/RejectModal";
+import StudentImportModal from "./components/StudentImportModal";
+import { useStudentData, StudentItem } from "./hooks/useStudentData";
+import { handleExportStudentsCSV } from "./studentsHelpers";
 
-export default function StudentManagement() {
+export default function AdminStudents() {
   const {
-    students, parents, registrations,
-    loading, regLoading, errorMsg,
-    waSendingId, waFeedback,
-    fetchData, fetchRegistrations,
-    handleApprove, handleReject,
-    handleDeleteStudent, handleDeleteParent,
-    handleUpdateRole, handleExportStudentsCSV,
+    students,
+    parents,
+    registrations,
+    loading,
+    regLoading,
+    errorMsg,
+    waSendingId,
+    waFeedback,
+    fetchData,
+    fetchRegistrations,
+    handleApprove,
+    handleReject,
+    handleDeleteStudent,
+    handleUpdateStudentProgram,
   } = useStudentData();
-
-  const supabase = createClient();
 
   const [activeTab, setActiveTab] = useState<string>("students");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
+  const [editingStudent, setEditingStudent] = useState<StudentItem | null>(null);
+
+  const [name, setName] = useState<string>("");
+  const [age, setAge] = useState<string>("");
+  const [program, setProgram] = useState<string>("A1 Foundation 1");
+  const [status, setStatus] = useState<string>("aktif");
+  const [parentId, setParentId] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("semua");
+
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [formErrorMsg, setFormErrorMsg] = useState<string>("");
+
   const [rejectModalId, setRejectModalId] = useState<string | null>(null);
   const [rejectNotes, setRejectNotes] = useState<string>("");
 
-  // Student form state
-  const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
-  const [name, setName] = useState<string>("");
-  const [age, setAge] = useState<string>("");
-  const [program, setProgram] = useState<string>("Kids Program");
-  const [studentStatus, setStudentStatus] = useState<string>("aktif");
-  const [parentId, setParentId] = useState<string>("");
-  const [formErrorMsg, setFormErrorMsg] = useState<string>("");
-  const [submitting, setSubmitting] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (modalOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
-  }, [modalOpen]);
+  const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
 
   const handleOpenAddModal = () => {
-    setEditingStudentId(null);
-    setName(""); setAge(""); setProgram("Kids Program");
-    setStudentStatus("aktif"); setParentId(""); setFormErrorMsg("");
+    setEditingStudent(null);
+    setName("");
+    setAge("");
+    setProgram("A1 Foundation 1");
+    setStatus("aktif");
+    setParentId("");
+    setFormErrorMsg("");
     setModalOpen(true);
   };
 
-  const handleOpenEditModal = (student: any) => {
-    setEditingStudentId(student.id);
-    setName(student.name); setAge(student.age.toString());
-    setProgram(student.program); setStudentStatus(student.status || "aktif");
-    setParentId(student.parent_id || ""); setFormErrorMsg("");
+  const handleOpenEditModal = (student: StudentItem) => {
+    setEditingStudent(student);
+    setName(student.name);
+    setAge(String(student.age));
+    setProgram(student.program || "A1 Foundation 1");
+    setStatus(student.status || "aktif");
+    setParentId(student.parent_id || "");
+    setFormErrorMsg("");
     setModalOpen(true);
   };
 
   const handleSaveStudent = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormErrorMsg(""); setSubmitting(true);
-    if (!name.trim() || !age) { setFormErrorMsg("Nama siswa dan usia harus diisi."); setSubmitting(false); return; }
+    if (!name.trim() || !age.trim()) {
+      setFormErrorMsg("Nama dan Usia wajib diisi.");
+      return;
+    }
+    setSubmitting(true);
+    setFormErrorMsg("");
 
     try {
-      const payload: Record<string, any> = {
-        name: name.trim(), age: parseInt(age), program, status: studentStatus, parent_id: parentId || null,
+      const payload: any = {
+        name: name.trim(),
+        age: parseInt(age, 10),
+        program,
+        status,
+        parent_id: parentId || null,
       };
 
-      const upsertFn = editingStudentId
-        ? () => supabase.from("students").update(payload).eq("id", editingStudentId)
-        : () => supabase.from("students").insert(payload);
+      let res;
+      if (editingStudent) {
+        res = await fetch("/api/admin/students", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingStudent.id, ...payload }),
+        });
+      } else {
+        res = await fetch("/api/admin/students", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
 
-      let { error } = await upsertFn();
-      if (error && error.code === "42703") {
-        delete payload.status;
-        const { error: errRetry } = await upsertFn();
-        if (errRetry) throw errRetry;
-      } else if (error) {
-        throw error;
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.error || "Gagal menyimpan data siswa.");
       }
 
       setModalOpen(false);
@@ -96,29 +119,57 @@ export default function StudentManagement() {
     }
   };
 
+  const handleDeleteParent = async (id: string, name: string) => {
+    if (!confirm(`Hapus wali/siswa "${name}"?`)) return;
+    try {
+      const res = await fetch("/api/admin/delete-user", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: id }),
+      });
+      if (!res.ok) throw new Error("Gagal menghapus user.");
+      fetchData();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const handleUpdateRole = async (id: string, currentRole: string) => {
+    const newRole = currentRole === "student" ? "parent" : "student";
+    if (!confirm(`Ubah role user dari "${currentRole}" menjadi "${newRole}"?`)) return;
+    try {
+      const res = await fetch("/api/admin/update-role", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: id, role: newRole }),
+      });
+      if (!res.ok) throw new Error("Gagal memperbarui role.");
+      fetchData();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   return (
     <div>
       <div className="dashboard-topbar">
         <div className="topbar-title">
-          <h1>Kelola Akademik</h1>
+          <h1>Kelola Akademik Siswa &amp; CEFR Level</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-            Database utama bimbingan belajar Ibra Global English Bobong
+            Database utama siswa dan pemetaan level kurikulum IGE CEFR LKP Ibra Global English Bobong
           </p>
         </div>
         <div className="topbar-user" style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           {activeTab === "students" && (
             <>
-              <button className="btn-portal-outline" onClick={() => handleExportStudentsCSV(students)} style={{ padding: "0.5rem 0.85rem", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <button className="btn-portal-outline" onClick={() => handleExportStudentsCSV(students)} style={{ padding: "0.5rem 0.85rem", fontSize: "0.85rem" }}>
                 <span>Ekspor CSV</span>
               </button>
-              <button className="btn-portal-outline" onClick={() => setImportModalOpen(true)} style={{ padding: "0.5rem 0.85rem", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <button className="btn-portal-outline" onClick={() => setImportModalOpen(true)} style={{ padding: "0.5rem 0.85rem", fontSize: "0.85rem" }}>
                 <span>Impor Massal</span>
               </button>
-              <button className="btn-portal-primary" onClick={handleOpenAddModal} style={{ padding: "0.5rem 1rem", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                <span>Tambah Siswa</span>
+              <button className="btn-portal-primary" onClick={handleOpenAddModal} style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}>
+                <span>+ Tambah Siswa</span>
               </button>
             </>
           )}
@@ -136,11 +187,7 @@ export default function StudentManagement() {
 
       {loading ? (
         <div style={{ textAlign: "center", padding: "5rem 0", color: "var(--color-gray-500)" }}>
-          <svg style={{ animation: "spin 1s linear infinite", width: "32px", height: "32px", marginBottom: "1rem" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <p>Memuat database...</p>
+          <p>Memuat database siswa &amp; level CEFR...</p>
         </div>
       ) : activeTab === "students" ? (
         <StudentTable
@@ -149,6 +196,7 @@ export default function StudentManagement() {
           onStatusFilterChange={setStatusFilter}
           onEdit={handleOpenEditModal}
           onDelete={handleDeleteStudent}
+          onUpdateProgram={handleUpdateStudentProgram}
         />
       ) : activeTab === "parents" ? (
         <ParentTable
@@ -171,42 +219,33 @@ export default function StudentManagement() {
         />
       )}
 
+      <StudentFormModal
+        open={modalOpen}
+        editing={!!editingStudent}
+        name={name} onNameChange={(e) => setName(e.target.value)}
+        age={age} onAgeChange={(e) => setAge(e.target.value)}
+        program={program} onProgramChange={(e) => setProgram(e.target.value)}
+        status={status} onStatusChange={(e) => setStatus(e.target.value)}
+        parentId={parentId} onParentIdChange={(e) => setParentId(e.target.value)}
+        parents={parents}
+        submitting={submitting}
+        errorMsg={formErrorMsg}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleSaveStudent}
+      />
+
       <RejectModal
         rejectModalId={rejectModalId}
         rejectNotes={rejectNotes}
         setRejectNotes={setRejectNotes}
         onClose={() => setRejectModalId(null)}
-        onConfirm={() => {
-          if (rejectModalId) handleReject(rejectModalId, rejectNotes);
-          setRejectModalId(null);
-          setRejectNotes("");
-        }}
-      />
-
-      <StudentFormModal
-        open={modalOpen}
-        editing={!!editingStudentId}
-        name={name}
-        age={age}
-        program={program}
-        status={studentStatus}
-        parentId={parentId}
-        parents={parents as any}
-        errorMsg={formErrorMsg}
-        submitting={submitting}
-        onNameChange={(e) => setName(e.target.value)}
-        onAgeChange={(e) => setAge(e.target.value)}
-        onProgramChange={(e) => setProgram(e.target.value)}
-        onStatusChange={(e) => setStudentStatus(e.target.value)}
-        onParentIdChange={(e) => setParentId(e.target.value)}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleSaveStudent}
+        onConfirm={() => rejectModalId && handleReject(rejectModalId, rejectNotes)}
       />
 
       <StudentImportModal
         isOpen={importModalOpen}
         onClose={() => setImportModalOpen(false)}
-        onSuccess={() => fetchData()}
+        onSuccess={fetchData}
       />
     </div>
   );

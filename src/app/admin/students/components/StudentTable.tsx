@@ -9,25 +9,23 @@ interface StudentTableProps {
   onStatusFilterChange: (filter: string) => void;
   onEdit: (student: StudentItem) => void;
   onDelete: (id: string, name: string) => void;
+  onUpdateProgram?: (id: string, newProgram: string) => void;
 }
 
-const STATUS_BADGE_MAP: Record<string, { label: string; bg: string; color: string; icon: React.ReactNode }> = {
-  aktif: {
-    label: "Aktif", bg: "#d1fae5", color: "#065f46",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
-  },
-  cuti: {
-    label: "Cuti", bg: "#fef3c7", color: "#92400e",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  },
-  alumnus: {
-    label: "Alumnus", bg: "#dbeafe", color: "#1e40af",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>,
-  },
-  non_aktif: {
-    label: "Non-Aktif", bg: "#f1f5f9", color: "#475569",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
-  },
+const CEFR_LEVEL_OPTIONS = [
+  { group: "A1 Foundation (Target CEFR: A1)", options: ["A1 Foundation 1", "A1 Foundation 2", "A1 Foundation 3", "A1 Foundation 4", "A1 Foundation 5"] },
+  { group: "A2 Bridge (Target CEFR: A2)", options: ["A2 Bridge 1", "A2 Bridge 2", "A2 Bridge 3", "A2 Bridge 4", "A2 Bridge 5"] },
+  { group: "B1 Communicator (Target CEFR: B1)", options: ["B1 Communicator 1", "B1 Communicator 2", "B1 Communicator 3", "B1 Communicator 4", "B1 Communicator 5"] },
+  { group: "B2 Achiever (Target CEFR: B2)", options: ["B2 Achiever 1", "B2 Achiever 2", "B2 Achiever 3", "B2 Achiever 4", "B2 Achiever 5"] },
+  { group: "C1 Professional (Target CEFR: C1)", options: ["C1 Professional 1", "C1 Professional 2", "C1 Professional 3", "C1 Professional 4", "C1 Professional 5"] },
+  { group: "Fun Calistung (Usia Dini)", options: ["Fun Calistung A", "Fun Calistung B", "Fun Calistung C"] },
+];
+
+const STATUS_BADGE_MAP: Record<string, { label: string; bg: string; color: string }> = {
+  aktif: { label: "Aktif", bg: "#d1fae5", color: "#065f46" },
+  cuti: { label: "Cuti", bg: "#fef3c7", color: "#92400e" },
+  alumnus: { label: "Alumnus", bg: "#dbeafe", color: "#1e40af" },
+  non_aktif: { label: "Non-Aktif", bg: "#f1f5f9", color: "#475569" },
 };
 
 const STATUS_FILTERS = [
@@ -38,7 +36,14 @@ const STATUS_FILTERS = [
   { id: "non_aktif", label: "Non-Aktif" },
 ];
 
-export default function StudentTable({ students, statusFilter, onStatusFilterChange, onEdit, onDelete }: StudentTableProps) {
+export default function StudentTable({
+  students,
+  statusFilter,
+  onStatusFilterChange,
+  onEdit,
+  onDelete,
+  onUpdateProgram,
+}: StudentTableProps) {
   const getCount = (filterId: string) =>
     filterId === "semua" ? students.length : students.filter((s) => (s.status || "aktif") === filterId).length;
 
@@ -81,7 +86,7 @@ export default function StudentTable({ students, statusFilter, onStatusFilterCha
             <th>No</th>
             <th>Nama Siswa</th>
             <th>Usia</th>
-            <th>Program Kursus</th>
+            <th>Level &amp; Target CEFR</th>
             <th>Status</th>
             <th>Orang Tua Terhubung</th>
             <th style={{ textAlign: "right" }}>Aksi</th>
@@ -91,7 +96,7 @@ export default function StudentTable({ students, statusFilter, onStatusFilterCha
           {filteredStudents.length === 0 ? (
             <tr>
               <td colSpan={7} style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
-                Tidak ada siswa ditemukan untuk filter ini. Klik &ldquo;Tambah Siswa&rdquo; untuk membuat baru!
+                Tidak ada siswa ditemukan untuk filter ini.
               </td>
             </tr>
           ) : (
@@ -102,23 +107,40 @@ export default function StudentTable({ students, statusFilter, onStatusFilterCha
               return (
                 <tr key={student.id}>
                   <td style={{ fontWeight: "700" }}>{idx + 1}</td>
-                  <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{student.name}</td>
+                  <td style={{ fontWeight: "700", color: "var(--color-gray-900)" }}>{student.name}</td>
                   <td>{student.age} Tahun</td>
                   <td>
-                    <span className="user-badge" style={{ backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", padding: "0.25rem 0.65rem", fontWeight: "700" }}>
-                      {student.program}
-                    </span>
+                    <select
+                      value={student.program || "A1 Foundation 1"}
+                      onChange={(e) => onUpdateProgram && onUpdateProgram(student.id, e.target.value)}
+                      style={{
+                        padding: "0.35rem 0.75rem",
+                        borderRadius: "10px",
+                        border: "1px solid rgba(33, 108, 126, 0.3)",
+                        fontSize: "0.82rem",
+                        fontWeight: "700",
+                        color: "var(--color-primary-dark, #164d57)",
+                        backgroundColor: "var(--color-bg-teal-50, #eef6f8)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {CEFR_LEVEL_OPTIONS.map((grp) => (
+                        <optgroup key={grp.group} label={grp.group}>
+                          {grp.options.map((opt) => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
                   </td>
                   <td>
-                    <span style={{ backgroundColor: stInfo.bg, color: stInfo.color, padding: "0.25rem 0.65rem", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "800", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                      {stInfo.icon}
-                      <span>{stInfo.label}</span>
+                    <span style={{ backgroundColor: stInfo.bg, color: stInfo.color, padding: "0.25rem 0.65rem", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "800" }}>
+                      {stInfo.label}
                     </span>
                   </td>
                   <td>
                     {student.profiles ? (
-                      <span style={{ color: "var(--color-green)", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span style={{ color: "var(--color-green)", fontWeight: "700" }}>
                         {student.profiles.full_name}
                       </span>
                     ) : (
@@ -127,13 +149,11 @@ export default function StudentTable({ students, statusFilter, onStatusFilterCha
                   </td>
                   <td style={{ textAlign: "right" }}>
                     <div style={{ display: "inline-flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                      <button className="btn-portal-outline" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }} onClick={() => onEdit(student)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        <span>Edit</span>
+                      <button className="btn-portal-outline" style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem" }} onClick={() => onEdit(student)}>
+                        Edit
                       </button>
-                      <button className="btn-portal-danger" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }} onClick={() => onDelete(student.id, student.name)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                        <span>Hapus</span>
+                      <button className="btn-portal-danger" style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem" }} onClick={() => onDelete(student.id, student.name)}>
+                        Hapus
                       </button>
                     </div>
                   </td>
