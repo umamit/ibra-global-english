@@ -44,6 +44,7 @@ export function useStudentData() {
   const [students, setStudents] = useState<StudentItem[]>([]);
   const [parents, setParents] = useState<Profile[]>([]);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [scheduleCounts, setScheduleCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [regLoading, setRegLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -70,8 +71,24 @@ export function useStudentData() {
 
       if (errP) throw errP;
 
+      const { data: scheduleData } = await supabase
+        .from("academic_schedules")
+        .select("id, description");
+
+      const counts: Record<string, number> = {};
+      (scheduleData || []).forEach((sch: any) => {
+        const desc = (sch.description || "").toLowerCase();
+        (studentData || []).forEach((st: any) => {
+          const sName = (st.name || "").toLowerCase();
+          if (sName && desc.includes(sName)) {
+            counts[st.id] = (counts[st.id] || 0) + 1;
+          }
+        });
+      });
+
       setStudents((studentData as any) || []);
       setParents((parentData as any) || []);
+      setScheduleCounts(counts);
     } catch (err: any) {
       setErrorMsg(err.message || "Gagal memuat data siswa/orang tua.");
     } finally {
@@ -170,6 +187,7 @@ export function useStudentData() {
     students,
     parents,
     registrations,
+    scheduleCounts,
     loading,
     regLoading,
     errorMsg,

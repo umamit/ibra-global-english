@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import StudentTable from "./components/StudentTable";
 import ParentTable from "./components/ParentTable";
 import RegistrationTable from "./components/RegistrationTable";
@@ -19,6 +20,7 @@ export default function AdminStudents() {
     students,
     parents,
     registrations,
+    scheduleCounts,
     loading,
     regLoading,
     errorMsg,
@@ -187,8 +189,11 @@ export default function AdminStudents() {
       </div>
 
       {scheduleToast && (
-        <div className="auth-success-banner" style={{ marginBottom: "1.25rem" }}>
-          <span>{scheduleToast}</span>
+        <div className="auth-success-banner" style={{ marginBottom: "1.25rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span>✓ {scheduleToast}</span>
+          <Link href="/admin/calendar" className="btn-portal-primary" style={{ padding: "0.25rem 0.65rem", fontSize: "0.78rem", backgroundColor: "#065f46" }}>
+            Buka Kalender Akademik &rarr;
+          </Link>
         </div>
       )}
 
@@ -208,6 +213,7 @@ export default function AdminStudents() {
       ) : activeTab === "students" ? (
         <StudentTable
           students={students}
+          scheduleCounts={scheduleCounts}
           statusFilter={statusFilter}
           onStatusFilterChange={setStatusFilter}
           onEdit={handleOpenEditModal}
@@ -257,7 +263,7 @@ export default function AdminStudents() {
         onClose={() => setScheduleModalOpen(false)}
         onSuccess={(msg) => {
           setScheduleToast(msg);
-          setTimeout(() => setScheduleToast(""), 6000);
+          fetchData();
         }}
       />
 

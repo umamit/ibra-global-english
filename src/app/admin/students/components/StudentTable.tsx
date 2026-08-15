@@ -5,6 +5,7 @@ import { StudentItem } from "../hooks/useStudentData";
 
 interface StudentTableProps {
   students: StudentItem[];
+  scheduleCounts?: Record<string, number>;
   statusFilter: string;
   onStatusFilterChange: (filter: string) => void;
   onEdit: (student: StudentItem) => void;
@@ -39,6 +40,7 @@ const STATUS_FILTERS = [
 
 export default function StudentTable({
   students,
+  scheduleCounts = {},
   statusFilter,
   onStatusFilterChange,
   onEdit,
@@ -89,7 +91,8 @@ export default function StudentTable({
             <th>Nama Siswa</th>
             <th>Usia</th>
             <th>Level &amp; Target CEFR</th>
-            <th>Status</th>
+            <th>Status Jadwal</th>
+            <th>Status Siswa</th>
             <th>Orang Tua Terhubung</th>
             <th style={{ textAlign: "right" }}>Aksi</th>
           </tr>
@@ -97,7 +100,7 @@ export default function StudentTable({
         <tbody>
           {filteredStudents.length === 0 ? (
             <tr>
-              <td colSpan={7} style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
+              <td colSpan={8} style={{ textAlign: "center", padding: "3rem 0", color: "var(--color-gray-500)" }}>
                 Tidak ada siswa ditemukan untuk filter ini.
               </td>
             </tr>
@@ -105,6 +108,7 @@ export default function StudentTable({
             filteredStudents.map((student, idx) => {
               const st = student.status || "aktif";
               const stInfo = STATUS_BADGE_MAP[st] || STATUS_BADGE_MAP.aktif;
+              const schedCount = scheduleCounts[student.id] || 0;
 
               return (
                 <tr key={student.id}>
@@ -134,6 +138,17 @@ export default function StudentTable({
                         </optgroup>
                       ))}
                     </select>
+                  </td>
+                  <td>
+                    {schedCount > 0 ? (
+                      <span style={{ backgroundColor: "#d1fae5", color: "#065f46", padding: "0.25rem 0.6rem", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "800" }}>
+                        ✓ Terjadwal ({schedCount} Sesi)
+                      </span>
+                    ) : (
+                      <span style={{ color: "#94a3b8", fontSize: "0.75rem", fontStyle: "italic" }}>
+                        Belum Ada Jadwal
+                      </span>
+                    )}
                   </td>
                   <td>
                     <span style={{ backgroundColor: stInfo.bg, color: stInfo.color, padding: "0.25rem 0.65rem", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "800" }}>
