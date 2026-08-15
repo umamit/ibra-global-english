@@ -38,6 +38,13 @@ export interface Registration {
   [key: string]: any;
 }
 
+export function normalizeProgramForDB(p: string): string {
+  if (p.includes("Foundation") || p.includes("Bridge") || p.includes("Kids")) return "Kids Program";
+  if (p.includes("Communicator") || p.includes("Achiever") || p.includes("Professional") || p.includes("Teens")) return "Teens Program";
+  if (p.includes("Calistung")) return "Fun Calistung";
+  return "Kids Program";
+}
+
 export function useStudentData() {
   const supabase = createClient();
 
@@ -103,9 +110,10 @@ export function useStudentData() {
 
   const handleUpdateStudentProgram = async (studentId: string, newProgram: string) => {
     try {
+      const dbProgram = normalizeProgramForDB(newProgram);
       const { error } = await supabase
         .from("students")
-        .update({ program: newProgram })
+        .update({ program: dbProgram })
         .eq("id", studentId);
       if (error) throw error;
       setStudents((prev) =>
