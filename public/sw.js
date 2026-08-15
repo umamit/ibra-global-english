@@ -1,5 +1,5 @@
 // Service Worker Ibra Global English Bobong (PWA Support)
-const CACHE_NAME = "ibra-cache-v2";
+const CACHE_NAME = "ibra-cache-v3";
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.json",
@@ -33,15 +33,24 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-  const url = new URL(event.request.url);
   
-  // Skip caching for API, chrome extensions, or non-http requests
+  let url: URL;
+  try {
+    url = new URL(event.request.url);
+  } catch (_) {
+    return;
+  }
+  
+  // Strictly handle same-origin requests only.
+  // Never intercept third-party cross-origin requests (Cloudflare, Google Analytics, AdBlock targets, etc.)
+  if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api") || !url.protocol.startsWith("http")) return;
 
   event.respondWith(
     fetch(event.request).catch(async () => {
       const match = await caches.match(event.request);
-      return match || new Response(null, { status: 404, statusText: "Not Found" });
+      if (match) return match;
+      return new Response("", { status: 404, statusText: "Not Found" });
     })
   );
 });
