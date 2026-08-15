@@ -1,0 +1,114 @@
+/* brandedSkeleton.module.css — Branded Skeleton Loader with IGE Pulsing Logo & Shimmer Wave */
+
+.loaderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  width: 100%;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.logoWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  z-index: 10;
+}
+
+.logoImage {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  animation: pulseLogo 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  filter: drop-shadow(0 8px 24px rgba(33, 108, 126, 0.25));
+}
+
+.logoGlow {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(33, 108, 126, 0.2) 0%, rgba(33, 108, 126, 0) 70%);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseLogo {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Skeleton Layout Blocks */
+.skeletonBody {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.shimmerBlock {
+  background: #e2e8f0;
+  background: linear-gradient(
+    90deg,
+    #eef6f8 0%,
+    #ffffff 50%,
+    #eef6f8 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerWave 1.8s ease-in-out infinite;
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid rgba(33, 108, 126, 0.06);
+}
+
+@keyframes shimmerWave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive Grid / Stack Layout (Rule 21r) */
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .skeletonGrid {
+    grid-template-columns: 1fr;
+  }
+  .logoImage {
+    width: 75px;
+    height: 75px;
+  }
+  .logoGlow {
+    width: 95px;
+    height: 95px;
+  }
+}
