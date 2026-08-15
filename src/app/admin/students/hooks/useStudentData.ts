@@ -38,36 +38,6 @@ export interface Registration {
   [key: string]: any;
 }
 
-const STORAGE_KEY = "ibra_student_cefr_levels_v1";
-
-function getSavedCefrLevels(): Record<string, string> {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveCefrLevel(studentId: string, level: string) {
-  if (typeof window === "undefined") return;
-  try {
-    const current = getSavedCefrLevels();
-    current[studentId] = level;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
-  } catch (err) {
-    console.warn("Gagal menyimpan CEFR level ke localStorage:", err);
-  }
-}
-
-export function normalizeProgramForDB(p: string): string {
-  if (p.includes("Foundation") || p.includes("Bridge") || p.includes("Kids")) return "Kids Program";
-  if (p.includes("Communicator") || p.includes("Achiever") || p.includes("Professional") || p.includes("Teens")) return "Teens Program";
-  if (p.includes("Calistung")) return "Fun Calistung";
-  return "Kids Program";
-}
-
 export function useStudentData() {
   const supabase = createClient();
 
@@ -100,13 +70,7 @@ export function useStudentData() {
 
       if (errP) throw errP;
 
-      const savedMap = getSavedCefrLevels();
-      const mappedStudents = (studentData || []).map((s: any) => ({
-        ...s,
-        program: savedMap[s.id] || s.program,
-      }));
-
-      setStudents(mappedStudents);
+      setStudents((studentData as any) || []);
       setParents((parentData as any) || []);
     } catch (err: any) {
       setErrorMsg(err.message || "Gagal memuat data siswa/orang tua.");
@@ -139,23 +103,18 @@ export function useStudentData() {
 
   const handleUpdateStudentProgram = async (studentId: string, newProgram: string) => {
     try {
-      saveCefrLevel(studentId, newProgram);
-      const dbProgram = normalizeProgramForDB(newProgram);
-
       const { error } = await supabase
         .from("students")
-        .update({ program: dbProgram })
+        .update({ program: newProgram })
         .eq("id", studentId);
 
-      if (error) {
-        console.warn("Supabase program constraint fallback applied:", error.message);
-      }
+      if (error) throw error;
 
       setStudents((prev) =>
         prev.map((s) => (s.id === studentId ? { ...s, program: newProgram } : s))
       );
     } catch (err: any) {
-      console.warn("Gagal update program:", err.message);
+      alert("Gagal memperbarui level siswa: " + err.message);
     }
   };
 
