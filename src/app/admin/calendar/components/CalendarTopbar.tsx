@@ -7,6 +7,8 @@ interface CalendarTopbarProps {
   viewMonth: number;
   viewYear: number;
   filterProgram: string;
+  viewMode: "split" | "month";
+  onViewModeChange: (mode: "split" | "month") => void;
   onFilterChange: (program: string) => void;
   onNavigate: (dir: "prev" | "next") => void;
   onGoToday: () => void;
@@ -35,6 +37,8 @@ export default function CalendarTopbar({
   viewMonth,
   viewYear,
   filterProgram,
+  viewMode,
+  onViewModeChange,
   onFilterChange,
   onNavigate,
   onGoToday,
@@ -59,22 +63,22 @@ export default function CalendarTopbar({
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <button type="button" className="btn-portal-outline" onClick={onUpdateDB}
             style={{ borderColor: "var(--color-primary)", color: "var(--color-primary)" }}>
-            <span>Perbarui DB (Auto Fix)</span>
+            <span>Perbarui DB</span>
           </button>
           <button type="button" className="btn-portal-outline" onClick={onAiScheduler}
-            style={{ border: "1px dashed var(--color-accent)", color: "var(--color-accent-dark)" }}>
-            <span> Susun via AI</span>
+            style={{ border: "1px dashed var(--color-accent)", color: "#8c6f32" }}>
+            <span>Susun via AI</span>
           </button>
           <button type="button" className="btn-portal-outline" onClick={onSync}>
-            <span> Sinkronkan ke HP</span>
+            <span>Sinkronkan HP</span>
           </button>
           <button type="button" className="btn-portal-outline" onClick={onDeleteAll}
             style={{ borderColor: "#ef4444", color: "#ef4444" }}>
-            <span>️ Hapus Semua</span>
+            <span>Hapus Semua</span>
           </button>
           <button type="button" className="btn-portal-primary" onClick={onPendingModal}
             style={{ backgroundColor: "#d97706", borderColor: "#d97706" }}>
-            <span>+ Catat Kelas Pending</span>
+            <span>+ Kelas Pending</span>
           </button>
           <button className="btn-portal-primary" onClick={onAddAgenda}>
             <span>+ Tambah Agenda</span>
@@ -82,7 +86,7 @@ export default function CalendarTopbar({
         </div>
       </div>
 
-      {/* Filter & Print Bar */}
+      {/* Filter, View Mode & Action Bar */}
       <div
         style={{
           display: "flex",
@@ -94,30 +98,63 @@ export default function CalendarTopbar({
           borderRadius: "16px",
           border: "1px solid rgba(0, 0, 0, 0.05)",
           boxShadow: "0 2px 8px rgba(0,0,0,0.01)",
+          flexWrap: "wrap",
+          gap: "1rem",
         }}
         className="no-print"
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontWeight: "700", color: "var(--color-gray-700)", fontSize: "0.9rem" }}>Pilih Level / Kelas:</span>
-          <select
-            value={filterProgram}
-            onChange={(e) => onFilterChange(e.target.value)}
-            style={{
-              padding: "0.5rem 2rem 0.5rem 1rem",
-              borderRadius: "8px",
-              border: "1px solid var(--color-gray-200)",
-              fontSize: "0.9rem",
-              fontWeight: "600",
-              color: "var(--color-gray-800)",
-              backgroundColor: "#f9fafb",
-              cursor: "pointer",
-            }}
-          >
-            {PROGRAM_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+          {/* View Mode Toggle Buttons */}
+          <div style={{ display: "flex", backgroundColor: "#f1f5f9", padding: "3px", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.05)" }}>
+            <button
+              type="button"
+              onClick={() => onViewModeChange("split")}
+              style={{
+                padding: "0.4rem 0.85rem", fontSize: "0.82rem", fontWeight: "800", borderRadius: "8px", border: "none", cursor: "pointer",
+                backgroundColor: viewMode === "split" ? "var(--color-primary, #216c7e)" : "transparent",
+                color: viewMode === "split" ? "#ffffff" : "#64748b",
+                transition: "all 0.2s ease",
+              }}
+            >
+              Split View
+            </button>
+            <button
+              type="button"
+              onClick={() => onViewModeChange("month")}
+              style={{
+                padding: "0.4rem 0.85rem", fontSize: "0.82rem", fontWeight: "800", borderRadius: "8px", border: "none", cursor: "pointer",
+                backgroundColor: viewMode === "month" ? "var(--color-primary, #216c7e)" : "transparent",
+                color: viewMode === "month" ? "#ffffff" : "#64748b",
+                transition: "all 0.2s ease",
+              }}
+            >
+              Grid Month
+            </button>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontWeight: "700", color: "var(--color-gray-700)", fontSize: "0.85rem" }}>Filter:</span>
+            <select
+              value={filterProgram}
+              onChange={(e) => onFilterChange(e.target.value)}
+              style={{
+                padding: "0.4rem 1.5rem 0.4rem 0.75rem",
+                borderRadius: "8px",
+                border: "1px solid var(--color-gray-200)",
+                fontSize: "0.85rem",
+                fontWeight: "600",
+                color: "var(--color-gray-800)",
+                backgroundColor: "#f8fafc",
+                cursor: "pointer",
+              }}
+            >
+              {PROGRAM_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
+
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button
             type="button"
@@ -125,62 +162,23 @@ export default function CalendarTopbar({
             className="btn-portal-outline"
             style={{
               borderColor: "var(--color-accent)",
-              color: "var(--color-accent-dark, #a68849)",
+              color: "#8c6f32",
               display: "inline-flex",
               alignItems: "center",
               gap: "0.5rem",
-              padding: "0.5rem 1rem",
+              padding: "0.4rem 0.85rem",
+              fontSize: "0.82rem",
             }}
           >
-            <span> Unduh Excel (CSV)</span>
+            <span>CSV (Excel)</span>
           </button>
           <button
             type="button"
             onClick={() => window.print()}
             className="btn-portal-outline"
-            style={{
-              borderColor: "var(--color-primary)",
-              color: "var(--color-primary)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.5rem 1rem",
-            }}
+            style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem" }}
           >
-            <span>️ Cetak Jadwal ({filterProgram === "All" ? "Semua" : filterProgram})</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Month Navigation */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "1.5rem",
-          backgroundColor: "white",
-          padding: "1rem 1.5rem",
-          borderRadius: "16px",
-          border: "1px solid rgba(0, 0, 0, 0.05)",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.01)",
-        }}
-      >
-        <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "var(--color-gray-900)" }}>
-          {getMonthNameIndonesian(viewMonth)} {viewYear}
-        </h2>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button className="btn-portal-outline" style={{ padding: "0.45rem 1rem", borderRadius: "8px" }}
-            onClick={() => onNavigate("prev")} aria-label="Tampilkan bulan sebelumnya">
-            ◀ Bulan Lalu
-          </button>
-          <button className="btn-portal-outline" style={{ padding: "0.45rem 1rem", borderRadius: "8px" }}
-            onClick={onGoToday} aria-label="Kembali ke hari ini">
-            Hari Ini
-          </button>
-          <button className="btn-portal-outline" style={{ padding: "0.45rem 1rem", borderRadius: "8px" }}
-            onClick={() => onNavigate("next")} aria-label="Tampilkan bulan berikutnya">
-            Bulan Depan ▶
+            <span>Cetak PDF</span>
           </button>
         </div>
       </div>
