@@ -1,0 +1,25 @@
+/* lettersPrint.css — Print Layout Stylesheet for Letters (Rule 8) */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .letter-preview-sheet,
+  .letter-preview-sheet * {
+    visibility: visible;
+  }
+  .letter-preview-sheet {
+    position: absolute; left: 0; top: 0;
+    width: 100% !important; border: none !important;
+    box-shadow: none !important; padding: 0 !important;
+    margin: 0 !important; background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .letter-attachment-page {
+    border-top: none !important;
+    padding-top: 0 !important;
+  }
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+}
