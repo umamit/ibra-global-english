@@ -17,7 +17,7 @@ export default function ThreeDLogo() {
     let height = container.clientHeight || 50;
 
     const scene = new THREE.Scene();
-    
+
     // Position camera with low field of view for high flat detail
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 10);
     camera.position.z = 3.2;
@@ -118,7 +118,7 @@ export default function ThreeDLogo() {
     for (let i = 0; i < layersCount; i++) {
       const z = startZ + i * step;
       let mesh;
-      
+
       if (i < 6) {
         // Sisi Belakang (Back block: i = 0..5, z = -0.055 s.d. -0.005)
         if (i === 0) {
@@ -135,7 +135,7 @@ export default function ThreeDLogo() {
           mesh = new THREE.Mesh(geometry, innerFrontMaterial);
         }
       }
-      
+
       mesh.position.z = z;
       group.add(mesh);
     }
@@ -156,25 +156,12 @@ export default function ThreeDLogo() {
     scene.add(dirLight2);
 
     let animationFrameId: number;
-    let targetRotY = 0;
-    let targetRotX = 0;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      targetRotY = x * 0.5;
-      targetRotX = -y * 0.5;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      // Continuous 360deg Y-axis rotation
+      // Smooth continuous 360deg automatic Y-axis rotation (No mouse tilt)
       group.rotation.y += 0.012;
-      group.rotation.x += (targetRotX - group.rotation.x) * 0.05;
 
       renderer.render(scene, camera);
     };
@@ -193,7 +180,6 @@ export default function ThreeDLogo() {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
       geometry.dispose();
