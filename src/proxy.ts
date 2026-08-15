@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCspHeader, handleRoleAccessControl } from "./proxyHelpers";
+import { getCspHeader } from "./proxyHelpers";
 
 let maintenanceCache: { value: boolean | null; expires: number } = { value: null, expires: 0 };
-
-async function getMaintenanceMode(supabase: any) {
-  const now = Date.now();
-  if (maintenanceCache.expires > now) return maintenanceCache.value;
-  try {
-    const { data } = await supabase.from("landing_settings").select("value").eq("key", "maintenance_mode").single();
-    const value = data?.value === "true";
-    maintenanceCache = { value, expires: now + 30000 };
-    return value;
-  } catch (_) { return maintenanceCache.value; }
-}
 
 export async function proxy(request: NextRequest) {
   const isDev = process.env.NODE_ENV === "development";
@@ -46,8 +35,19 @@ export async function proxy(request: NextRequest) {
     res.headers.set("Content-Security-Policy", cspHeader);
     res.headers.set("X-Frame-Options", "DENY");
     res.headers.set("Permissions-Policy", "camera=(self), microphone=()");
-    if (pathname.startsWith("/admin") || pathname.startsWith("/parent") || pathname.startsWith("/tutor") || pathname.startsWith("/student") || pathname.startsWith("/api")) {
+
+    // Strict No-Cache & Privacy Headers for Admin, Parent, Tutor, Student, & API Routes
+    if (
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/parent") ||
+      pathname.startsWith("/tutor") ||
+      pathname.startsWith("/student") ||
+      pathname.startsWith("/api")
+    ) {
       res.headers.set("X-Robots-Tag", "noindex, nofollow");
+      res.headers.set("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
+      res.headers.set("Pragma", "no-cache");
+      res.headers.set("Expires", "0");
     }
   };
 
@@ -60,7 +60,14 @@ export async function proxy(request: NextRequest) {
   if (pathname === "/" || pathname === "/index.html") {
     if (acceptHeader.includes("text/markdown")) {
       const fallbackMd = `# Ibra Global English Bobong\nBelajar Seru Lancar Bicara. Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu.`;
-      return new Response(fallbackMd, { status: 200, headers: { "Content-Type": "text/markdown; charset=utf-8", "x-markdown-tokens": "100" } });
+      return new Response(fallbackMd, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/markdown; charset=utf-8",
+          "x-markdown-tokens": "100",
+          "Cache-Control": "private, no-cache, no-store, must-revalidate",
+        },
+      });
     }
   }
 
