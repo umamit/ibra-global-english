@@ -15,14 +15,6 @@ export interface ScheduleFormInput {
   monthsAhead: number; // 1, 3, 6
 }
 
-export function normalizeProgramForDB(p: string): string {
-  if (!p) return "Kids Program";
-  if (p.includes("Foundation") || p.includes("Bridge") || p.includes("Kids")) return "Kids Program";
-  if (p.includes("Communicator") || p.includes("Achiever") || p.includes("Professional") || p.includes("Teens")) return "Teens Program";
-  if (p.includes("Calistung")) return "Fun Calistung";
-  return "Kids Program";
-}
-
 export function useScheduleFromStudent() {
   const supabase = createClient();
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -86,8 +78,6 @@ export function useScheduleFromStudent() {
       const newEntries: any[] = [];
       const endDate = new Date(today.getFullYear(), today.getMonth() + input.monthsAhead, today.getDate());
 
-      const dbProgram = normalizeProgramForDB(input.program);
-
       const curr = new Date(today);
       while (curr <= endDate) {
         const dayNum = curr.getDay();
@@ -102,7 +92,7 @@ export function useScheduleFromStudent() {
 
           newEntries.push({
             title: input.program,
-            program: dbProgram,
+            program: input.program,
             type: "class",
             start_time: startTimeIso,
             end_time: endTimeIso,
