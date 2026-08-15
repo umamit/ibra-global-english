@@ -57,7 +57,11 @@ export function getSchedulesForDay(
     const sDateStr = getLocalDateString(new Date(s.start_time));
     if (sDateStr !== dateStr) return false;
     if (filterProgram !== "All") {
-      return s.title === filterProgram || s.program === filterProgram;
+      const f = filterProgram.toLowerCase();
+      const p = (s.program || "").toLowerCase();
+      const t = (s.title || "").toLowerCase();
+      const d = (s.description || "").toLowerCase();
+      return p.includes(f) || t.includes(f) || d.includes(f);
     }
     return true;
   });

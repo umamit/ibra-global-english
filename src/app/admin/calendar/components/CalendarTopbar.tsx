@@ -22,13 +22,15 @@ interface CalendarTopbarProps {
 }
 
 const PROGRAM_OPTIONS = [
-  { value: "All", label: "Semua Program" },
-  { value: "Kids Program Level 2", label: "Kids Program Level 2" },
-  { value: "Kids Program Level 5", label: "Kids Program Level 5" },
-  { value: "Teens Program", label: "Teens Program" },
-  { value: "Fun Calistung A", label: "Fun Calistung A" },
-  { value: "Fun Calistung B", label: "Fun Calistung B" },
-  { value: "Fun Calistung C", label: "Fun Calistung C" },
+  { value: "All", label: "Semua Program & Level" },
+  { value: "Foundation", label: "A1 Foundation" },
+  { value: "Bridge", label: "A2 Bridge" },
+  { value: "Communicator", label: "B1 Communicator" },
+  { value: "Achiever", label: "B2 Achiever" },
+  { value: "Professional", label: "C1 Professional" },
+  { value: "Kids", label: "Kids Program" },
+  { value: "Teens", label: "Teens Program" },
+  { value: "Calistung", label: "Fun Calistung" },
 ];
 
 export default function CalendarTopbar({
@@ -58,60 +60,77 @@ export default function CalendarTopbar({
             Buat jadwal kelas rutin, liburan sekolah, serta kegiatan bimbingan belajar Ibra Global English Bobong
           </p>
         </div>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          <button type="button" className="btn-portal-outline" onClick={onUpdateDB}
-            style={{ borderColor: "var(--color-primary)", color: "var(--color-primary)" }}>
-            <span>Perbarui DB</span>
+        <div className="topbar-user" style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <button className="btn-portal-outline" onClick={onDownloadCSV} style={{ padding: "0.45rem 0.75rem", fontSize: "0.82rem" }}>
+            Ekspor CSV
           </button>
-          <button type="button" className="btn-portal-outline" onClick={onAiScheduler}
-            style={{ border: "1px dashed var(--color-accent)", color: "#8c6f32" }}>
-            <span>Susun via AI</span>
+          <button className="btn-portal-outline" onClick={onSync} style={{ padding: "0.45rem 0.75rem", fontSize: "0.82rem" }}>
+            Sinkron iCal
           </button>
-          <button type="button" className="btn-portal-outline" onClick={onSync}>
-            <span>Sinkronkan HP</span>
+          <button className="btn-portal-danger" onClick={onDeleteAll} style={{ padding: "0.45rem 0.75rem", fontSize: "0.82rem" }}>
+            Kosongkan Jadwal
           </button>
-          <button type="button" className="btn-portal-outline" onClick={onDeleteAll}
-            style={{ borderColor: "#ef4444", color: "#ef4444" }}>
-            <span>Hapus Semua</span>
-          </button>
-          <button type="button" className="btn-portal-primary" onClick={onPendingModal}
-            style={{ backgroundColor: "#d97706", borderColor: "#d97706" }}>
-            <span>+ Kelas Pending</span>
-          </button>
-          <button className="btn-portal-primary" onClick={onAddAgenda}>
-            <span>+ Tambah Agenda</span>
+          <button className="btn-portal-primary" onClick={onAddAgenda} style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}>
+            + Buat Agenda
           </button>
         </div>
       </div>
 
-      {/* Filter, View Mode & Action Bar */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "1.5rem",
-          backgroundColor: "white",
-          padding: "1rem 1.5rem",
-          borderRadius: "16px",
-          border: "1px solid rgba(0, 0, 0, 0.05)",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.01)",
-          flexWrap: "wrap",
-          gap: "1rem",
-        }}
-        className="no-print"
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-          {/* View Mode Toggle Buttons */}
-          <div style={{ display: "flex", backgroundColor: "#f1f5f9", padding: "3px", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.05)" }}>
+      {/* Control Bar: View Switcher, Date Navigation, & Program Filter */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem",
+        backgroundColor: "#ffffff", padding: "0.85rem 1.25rem", borderRadius: "16px",
+        border: "1px solid rgba(0, 0, 0, 0.06)", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.02)",
+        marginBottom: "1.25rem",
+      }}>
+        {/* Month Navigation */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <div style={{ display: "flex", gap: "0.25rem" }}>
+            <button
+              type="button"
+              onClick={() => onNavigate("prev")}
+              className="btn-portal-outline"
+              style={{ padding: "0.35rem 0.65rem", fontSize: "0.85rem" }}
+              title="Bulan Sebelumnya"
+            >
+              &larr;
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("next")}
+              className="btn-portal-outline"
+              style={{ padding: "0.35rem 0.65rem", fontSize: "0.85rem" }}
+              title="Bulan Berikutnya"
+            >
+              &rarr;
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={onGoToday}
+            className="btn-portal-outline"
+            style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: "700" }}
+          >
+            Hari Ini
+          </button>
+          <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "#0f172a" }}>
+            {getMonthNameIndonesian(viewMonth)} {viewYear}
+          </h2>
+        </div>
+
+        {/* View Mode & Filter Options */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+          {/* View Mode Toggle */}
+          <div style={{ display: "flex", backgroundColor: "#f1f5f9", padding: "0.25rem", borderRadius: "10px" }}>
             <button
               type="button"
               onClick={() => onViewModeChange("split")}
               style={{
-                padding: "0.4rem 0.85rem", fontSize: "0.82rem", fontWeight: "800", borderRadius: "8px", border: "none", cursor: "pointer",
-                backgroundColor: viewMode === "split" ? "var(--color-primary, #216c7e)" : "transparent",
-                color: viewMode === "split" ? "#ffffff" : "#64748b",
-                transition: "all 0.2s ease",
+                padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: "800", borderRadius: "8px", border: "none",
+                backgroundColor: viewMode === "split" ? "#ffffff" : "transparent",
+                color: viewMode === "split" ? "#216c7e" : "#64748b",
+                boxShadow: viewMode === "split" ? "0 2px 4px rgba(0,0,0,0.06)" : "none",
+                cursor: "pointer", transition: "all 0.15s ease",
               }}
             >
               Split View
@@ -120,64 +139,33 @@ export default function CalendarTopbar({
               type="button"
               onClick={() => onViewModeChange("month")}
               style={{
-                padding: "0.4rem 0.85rem", fontSize: "0.82rem", fontWeight: "800", borderRadius: "8px", border: "none", cursor: "pointer",
-                backgroundColor: viewMode === "month" ? "var(--color-primary, #216c7e)" : "transparent",
-                color: viewMode === "month" ? "#ffffff" : "#64748b",
-                transition: "all 0.2s ease",
+                padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: "800", borderRadius: "8px", border: "none",
+                backgroundColor: viewMode === "month" ? "#ffffff" : "transparent",
+                color: viewMode === "month" ? "#216c7e" : "#64748b",
+                boxShadow: viewMode === "month" ? "0 2px 4px rgba(0,0,0,0.06)" : "none",
+                cursor: "pointer", transition: "all 0.15s ease",
               }}
             >
-              Grid Month
+              Bulan Penuh
             </button>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <span style={{ fontWeight: "700", color: "var(--color-gray-700)", fontSize: "0.85rem" }}>Filter:</span>
-            <select
-              value={filterProgram}
-              onChange={(e) => onFilterChange(e.target.value)}
-              style={{
-                padding: "0.4rem 1.5rem 0.4rem 0.75rem",
-                borderRadius: "8px",
-                border: "1px solid var(--color-gray-200)",
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                color: "var(--color-gray-800)",
-                backgroundColor: "#f8fafc",
-                cursor: "pointer",
-              }}
-            >
-              {PROGRAM_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button
-            type="button"
-            onClick={onDownloadCSV}
-            className="btn-portal-outline"
+          {/* Program / Level Filter Select */}
+          <select
+            value={filterProgram}
+            onChange={(e) => onFilterChange(e.target.value)}
             style={{
-              borderColor: "var(--color-accent)",
-              color: "#8c6f32",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.4rem 0.85rem",
-              fontSize: "0.82rem",
+              padding: "0.4rem 0.85rem", borderRadius: "10px", border: "1px solid rgba(33, 108, 126, 0.3)",
+              fontSize: "0.82rem", fontWeight: "700", color: "#164d57", backgroundColor: "#eef6f8",
+              cursor: "pointer",
             }}
           >
-            <span>CSV (Excel)</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="btn-portal-outline"
-            style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem" }}
-          >
-            <span>Cetak PDF</span>
-          </button>
+            {PROGRAM_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </>
