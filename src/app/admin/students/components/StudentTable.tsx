@@ -18,7 +18,7 @@ const CEFR_LEVEL_OPTIONS = [
   { group: "B1 Communicator (Target CEFR: B1)", options: ["B1 Communicator 1", "B1 Communicator 2", "B1 Communicator 3", "B1 Communicator 4", "B1 Communicator 5"] },
   { group: "B2 Achiever (Target CEFR: B2)", options: ["B2 Achiever 1", "B2 Achiever 2", "B2 Achiever 3", "B2 Achiever 4", "B2 Achiever 5"] },
   { group: "C1 Professional (Target CEFR: C1)", options: ["C1 Professional 1", "C1 Professional 2", "C1 Professional 3", "C1 Professional 4", "C1 Professional 5"] },
-  { group: "Fun Calistung (Usia Dini)", options: ["Fun Calistung A", "Fun Calistung B", "Fun Calistung C"] },
+  { group: "Usia Dini", options: ["Fun Calistung"] },
 ];
 
 const STATUS_BADGE_MAP: Record<string, { label: string; bg: string; color: string }> = {
@@ -111,7 +111,7 @@ export default function StudentTable({
                   <td>{student.age} Tahun</td>
                   <td>
                     <select
-                      value={student.program || "A1 Foundation 1"}
+                      value={student.program || "Fun Calistung"}
                       onChange={(e) => onUpdateProgram && onUpdateProgram(student.id, e.target.value)}
                       style={{
                         padding: "0.35rem 0.75rem",
