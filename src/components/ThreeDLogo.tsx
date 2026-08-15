@@ -42,12 +42,12 @@ export default function ThreeDLogo() {
       }
     };
 
-    const texture = textureLoader.load("/assets/logo.png?v=2", () => {
+    const texture = textureLoader.load("/assets/logo.png?v=3", () => {
       textureLoaded = true;
       checkLoaded();
     });
 
-    const backTexture = textureLoader.load("/assets/logo.png?v=2", () => {
+    const backTexture = textureLoader.load("/assets/logo.png?v=3", () => {
       backTextureLoaded = true;
       checkLoaded();
     });
@@ -66,7 +66,7 @@ export default function ThreeDLogo() {
     const frontMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
-      alphaTest: 0.15,
+      alphaTest: 0.05,
       depthWrite: false,
       side: THREE.FrontSide,
       roughness: 0.15,
@@ -79,7 +79,7 @@ export default function ThreeDLogo() {
     const backMaterial = new THREE.MeshPhysicalMaterial({
       map: backTexture,
       transparent: true,
-      alphaTest: 0.15,
+      alphaTest: 0.05,
       depthWrite: false,
       side: THREE.FrontSide,
       roughness: 0.15,
@@ -92,7 +92,7 @@ export default function ThreeDLogo() {
     const innerFrontMaterial = new THREE.MeshPhysicalMaterial({
       map: texture,
       transparent: true,
-      alphaTest: 0.15,
+      alphaTest: 0.05,
       depthWrite: false,
       side: THREE.FrontSide,
       roughness: 0.25,
@@ -103,7 +103,7 @@ export default function ThreeDLogo() {
     const innerBackMaterial = new THREE.MeshPhysicalMaterial({
       map: backTexture,
       transparent: true,
-      alphaTest: 0.15,
+      alphaTest: 0.05,
       depthWrite: false,
       side: THREE.FrontSide,
       roughness: 0.25,
@@ -148,57 +148,33 @@ export default function ThreeDLogo() {
 
     // Dual specular directional lights (front & back) to sweep reflection shine
     const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
-    dirLight1.position.set(3, 3, 5);
+    dirLight1.position.set(2, 3, 4);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.1);
-    dirLight2.position.set(-3, -3, -5);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.0);
+    dirLight2.position.set(-2, -2, -3);
     scene.add(dirLight2);
 
-    let animId: number;
-    const clock = new THREE.Clock();
+    let animationFrameId: number;
+    let targetRotY = 0;
+    let targetRotX = 0;
 
-    // IntersectionObserver to pause rendering when the element is off-screen (saves visitor CPU/battery)
-    let isVisible = true;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0.05 }
-    );
-    observer.observe(container);
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      targetRotY = x * 0.5;
+      targetRotX = -y * 0.5;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
 
     const animate = () => {
-      animId = requestAnimationFrame(animate);
-      if (!isVisible) return; // Pause draw/render calls when off-screen
+      animationFrameId = requestAnimationFrame(animate);
 
-      const time = clock.getElapsedTime();
-
-      // 1. Soft vertical floating motion applied to the entire group
-      group.position.y = Math.sin(time * 1.5) * 0.05;
-      
-      // 2. Subtle organic Z-axis tilt
-      group.rotation.z = Math.sin(time * 0.5) * 0.02;
-
-      // 3. Periodic Y-axis spin every 5 seconds (lasts 1.8 seconds)
-      const spinDuration = 1.8;
-      const cycleDuration = 5.0;
-      const progress = time % cycleDuration;
-
-      if (progress < spinDuration) {
-        const t = progress / spinDuration;
-        // Ease-in-out smooth transition curve
-        const ease = t * t * (3 - 2 * t);
-        group.rotation.y = ease * Math.PI * 2;
-
-        // Dynamic light sweep to simulate reflection shine glares
-        dirLight1.position.x = -4 + ease * 8;
-        dirLight2.position.x = 4 - ease * 8;
-      } else {
-        group.rotation.y = 0;
-        dirLight1.position.x = 3;
-        dirLight2.position.x = -3;
-      }
+      // Continuous 360deg Y-axis rotation
+      group.rotation.y += 0.012;
+      group.rotation.x += (targetRotX - group.rotation.x) * 0.05;
 
       renderer.render(scene, camera);
     };
@@ -207,61 +183,50 @@ export default function ThreeDLogo() {
 
     const handleResize = () => {
       if (!containerRef.current) return;
-      const newWidth = containerRef.current.clientWidth || 50;
-      const newHeight = containerRef.current.clientHeight || 50;
-
-      camera.aspect = newWidth / newHeight;
+      width = containerRef.current.clientWidth || 50;
+      height = containerRef.current.clientHeight || 50;
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      renderer.setSize(newWidth, newHeight);
+      renderer.setSize(width, height);
     };
 
-    // Keep size in sync when parent header dimensions scale on scroll
-    const sizeSyncInterval = setInterval(handleResize, 200);
     window.addEventListener("resize", handleResize);
 
     return () => {
-      cancelAnimationFrame(animId);
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
-      observer.disconnect();
-      clearInterval(sizeSyncInterval);
+      cancelAnimationFrame(animationFrameId);
       geometry.dispose();
       frontMaterial.dispose();
       backMaterial.dispose();
       innerFrontMaterial.dispose();
       innerBackMaterial.dispose();
+      texture.dispose();
+      backTexture.dispose();
       renderer.dispose();
     };
   }, []);
 
   return (
-    <div ref={containerRef} style={{ width: "100%", height: "100%", position: "relative" }}>
-      {/* Fallback Static Image */}
-      <img
-        src="/assets/logo.png"
-        alt="Ibra Global English Logo"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          opacity: loaded ? 0 : 1,
-          transition: "opacity 0.4s ease",
-          zIndex: 1,
-          pointerEvents: "none",
-        }}
-      />
+    <div
+      ref={containerRef}
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <canvas
         ref={canvasRef}
         style={{
           width: "100%",
           height: "100%",
-          display: loaded ? "block" : "none",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 2,
+          display: "block",
+          opacity: loaded ? 1 : 0,
+          transition: "opacity 0.3s ease",
         }}
       />
     </div>
