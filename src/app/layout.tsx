@@ -1,4 +1,3 @@
-import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
@@ -14,8 +13,6 @@ import { websiteSchema, educationalOrgSchema, faqSchema, breadcrumbSchema } from
 import "./globals.css";
 
 export const dynamic = 'force-dynamic';
-
-const montserrat = Montserrat({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800", "900"], variable: "--font-sans", display: "swap" });
 
 export const viewport: Viewport = { themeColor: "#4a9ba8", colorScheme: "light dark", width: "device-width", initialScale: 1 };
 
@@ -45,8 +42,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const nonce = headersList.get("x-nonce") || "";
 
   return (
-    <html lang="id" className={montserrat.variable} suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css" rel="stylesheet" />
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-989GJL5VCF" strategy="afterInteractive" nonce={nonce} />
         <Script id="google-analytics" strategy="afterInteractive" nonce={nonce}>{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-989GJL5VCF');`}</Script>

@@ -3,6 +3,7 @@
    ========================================================================== */
 
 :root {
+  --font-sans: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   /* ── Brand Colors (Apple-refined teal palette) ── */
   --color-primary: #216c7e;
   --color-primary-dark: #164d57;
