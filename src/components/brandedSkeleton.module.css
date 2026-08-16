@@ -5,11 +5,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
+  min-height: 85vh;
   width: 100%;
   padding: 2rem 1rem;
   box-sizing: border-box;
   position: relative;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .logoWrap {
@@ -17,7 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem auto;
   z-index: 10;
 }
 
@@ -27,10 +29,14 @@
   object-fit: contain;
   animation: pulseLogo 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   filter: drop-shadow(0 8px 24px rgba(33, 108, 126, 0.25));
+  margin: 0 auto;
 }
 
 .logoGlow {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 110px;
   height: 110px;
   border-radius: 50%;
@@ -51,11 +57,11 @@
 
 @keyframes pulseGlow {
   0%, 100% {
-    transform: scale(0.9);
+    transform: translate(-50%, -50%) scale(0.9);
     opacity: 0.4;
   }
   50% {
-    transform: scale(1.2);
+    transform: translate(-50%, -50%) scale(1.2);
     opacity: 0.8;
   }
 }
@@ -66,7 +72,9 @@
   max-width: 1100px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1.25rem;
+  margin: 0 auto;
 }
 
 .shimmerBlock {
@@ -94,6 +102,7 @@
 
 /* Responsive Grid / Stack Layout (Rule 21r) */
 .skeletonGrid {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
@@ -104,11 +113,11 @@
     grid-template-columns: 1fr;
   }
   .logoImage {
-    width: 75px;
-    height: 75px;
+    width: 80px;
+    height: 80px;
   }
   .logoGlow {
-    width: 95px;
-    height: 95px;
+    width: 100px;
+    height: 100px;
   }
 }
