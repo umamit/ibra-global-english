@@ -152,6 +152,7 @@ export default function DailyAttendance() {
           <AttendanceInputTable
             students={students}
             attendanceMap={attendanceMap}
+            selectedDate={selectedDate}
             submitting={submitting}
             onStatusChange={handleStatusChange}
             onNotesChange={handleNotesChange}

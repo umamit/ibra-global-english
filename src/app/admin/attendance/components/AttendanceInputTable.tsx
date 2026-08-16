@@ -2,10 +2,12 @@
 
 import React from "react";
 import { Student, AttendanceEntry } from "../hooks/useAttendanceData";
+import { generateWaAbsentMessage } from "@/utils/scheduleSyncHelpers";
 
 interface AttendanceInputTableProps {
   students: Student[];
   attendanceMap: Record<string, AttendanceEntry>;
+  selectedDate?: string;
   submitting: boolean;
   onStatusChange: (studentId: string, status: string) => void;
   onNotesChange: (studentId: string, notes: string) => void;
@@ -20,7 +22,7 @@ const STATUS_OPTIONS = [
   { status: "tidak_ada_kelas", label: "Tidak ada Kelas", activeBg: "#e2e3e5", activeColor: "#41464b", border: "1px solid #6c757d" },
 ];
 
-export default function AttendanceInputTable({ students, attendanceMap, submitting, onStatusChange, onNotesChange, onSave }: AttendanceInputTableProps) {
+export default function AttendanceInputTable({ students, attendanceMap, selectedDate = "", submitting, onStatusChange, onNotesChange, onSave }: AttendanceInputTableProps) {
   if (students.length === 0) return null;
 
   return (
@@ -31,22 +33,32 @@ export default function AttendanceInputTable({ students, attendanceMap, submitti
             <tr>
               <th>No</th>
               <th>Nama Siswa</th>
-              <th>Program Kursus</th>
+              <th>Program &amp; Sesi Agenda</th>
               <th style={{ width: "380px" }}>Status Kehadiran</th>
-              <th>Catatan / Keterangan</th>
+              <th>Catatan / Tindakan WA</th>
             </tr>
           </thead>
           <tbody>
             {students.map((student, idx) => {
               const localData = attendanceMap[student.id] || { status: "hadir", notes: "" };
+              const isAlfa = localData.status === "alfa";
+              const isNoClass = localData.status === "tidak_ada_kelas";
+
               return (
-                <tr key={student.id}>
+                <tr key={student.id} style={{ opacity: isNoClass ? 0.75 : 1 }}>
                   <td style={{ fontWeight: "700" }}>{idx + 1}</td>
                   <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{student.name}</td>
                   <td>
-                    <span className="user-badge" style={{ fontSize: "0.75rem", padding: "0.25rem 0.5rem" }}>
-                      {student.program}
-                    </span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <span className="user-badge" style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem", width: "fit-content" }}>
+                        {student.program}
+                      </span>
+                      {localData.scheduleDetail && (
+                        <span style={{ fontSize: "0.72rem", color: "var(--color-primary-dark)", fontWeight: "600" }}>
+                          📍 {localData.scheduleDetail}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td>
                     <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
@@ -76,15 +88,29 @@ export default function AttendanceInputTable({ students, attendanceMap, submitti
                     </div>
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      placeholder="Catatan opsional..."
-                      className="form-input"
-                      style={{ padding: "0.35rem 0.75rem", fontSize: "0.85rem" }}
-                      value={localData.notes}
-                      onChange={(e) => onNotesChange(student.id, e.target.value)}
-                      disabled={submitting}
-                    />
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <input
+                        type="text"
+                        placeholder="Catatan opsional..."
+                        className="form-input"
+                        style={{ padding: "0.35rem 0.75rem", fontSize: "0.85rem", flex: 1 }}
+                        value={localData.notes}
+                        onChange={(e) => onNotesChange(student.id, e.target.value)}
+                        disabled={submitting}
+                      />
+                      {isAlfa && (
+                        <a
+                          href={generateWaAbsentMessage(student.name, selectedDate, student.program)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-portal-secondary"
+                          style={{ padding: "0.35rem 0.6rem", fontSize: "0.75rem", background: "#dcfce7", color: "#15803d", borderColor: "#86efac", textDecoration: "none", fontWeight: "700" }}
+                          title="Kirim Pesan WhatsApp Peringatan Alfa ke Wali Murid"
+                        >
+                          WA Ortu
+                        </a>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );
