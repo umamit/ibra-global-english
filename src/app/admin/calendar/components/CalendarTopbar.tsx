@@ -70,9 +70,9 @@ export default function CalendarTopbar({
           <button className="btn-portal-danger" onClick={onDeleteAll} style={{ padding: "0.45rem 0.75rem", fontSize: "0.82rem" }}>
             Kosongkan Jadwal
           </button>
-          <button className="btn-portal-primary" onClick={onAddAgenda} style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}>
-            + Buat Agenda
-          </button>
+          <a href="/admin/students" className="btn-portal-primary" style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+            Kelola Jadwal di Kelola Siswa
+          </a>
         </div>
       </div>
 
