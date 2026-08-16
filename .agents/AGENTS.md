@@ -219,17 +219,19 @@ npm run check-limits
       * **Tipe Chip Kompatibel**: **NTAG Series (NTAG213, NTAG215, NTAG216)** atau **Mifare Series (Mifare Classic 1K / Ultralight)**.
       * **Batasan Dilarang**: Dilarang menggunakan atau menyarankan kartu RFID frekuensi rendah 125 kHz (LF) karena tidak didukung oleh browser Web NFC API maupun perangkat HP Android/iOS.
 
-21r. **Kunci Aturan Skema Pelevelan CEFR & Penamaan Program (Strict CEFR Leveling & Naming Rule):**
-    - AI wajib mematuhi dan mempertahankan struktur skema pelevelan dan penamaan program kursus resmi Ibra Global English Bobong sebagai berikut:
-      * **Fun Calistung**: Kategori usia dini / membaca, menulis, berhitung tingkat dasar.
-      * **Kids Program**: Kategori usia anak-anak (SD), dengan tingkatan level CEFR presisi:
-        - **A1 Foundation** (Level 1 - 5 / Hasil Placement Test: 0% - 35%)
-        - **A2 Bridge** (Level 1 - 5 / Hasil Placement Test: 36% - 60%)
-        - **B1 Communicator** (Level 1 - 5 / Hasil Placement Test: 61% - 80%)
-      * **Teens Program**: Kategori usia remaja/dewasa (SMP/SMA/Umum), dengan tingkatan level CEFR presisi:
-        - **B2 Achiever** (Level 1 - 5 / Hasil Placement Test: 81% - 90%)
-        - **C1 Professional** (Level 1 - 5 / Hasil Placement Test: 91% - 100%)
-    - AI dilarang keras mengubah format penamaan level CEFR ini pada seluruh komponen UI, formulir, filter, maupun logika backend aplikasi.
+21r. **Kunci Aturan Skema Kurikulum IGE & Pelevelan CEFR (Strict IGE Curriculum & CEFR Mapping Rule):**
+    - AI wajib mematuhi dan mempertahankan struktur kurikulum resmi Ibra Global English (IGE Curriculum) & target CEFR berikut tanpa modifikasi:
+
+| IGE Curriculum | CEFR Target | Kategori & Rentang Hasil Placement Test |
+| :--- | :--- | :--- |
+| **Foundation 1–5** | **A1** | Kids Program / Tingkat Dasar (Skor 0% – 35%) |
+| **Bridge 1–5** | **A2** | Kids Program / Tingkat Menengah (Skor 36% – 60%) |
+| **Communicator 1–5** | **B1** | Kids Program / Tingkat Mahir (Skor 61% – 80%) |
+| **Achiever 1–5** | **B2** | Teens Program / Tingkat Lanjut (Skor 81% – 90%) |
+| **Professional 1–5** | **C1** | Teens Program / Tingkat Mahir (Skor 91% – 100%) |
+| **Fun Calistung** | *Usia Dini* | Kategori Usia Dini (Membaca, Menulis, Berhitung) |
+
+    - AI dilarang keras mengubah format penamaan IGE Curriculum & CEFR Target ini pada seluruh komponen UI, formulir, filter, maupun logika backend aplikasi.
 
 21s. **Kunci Jaminan Kerapihan & Responsivitas Smartphone (Strict Mobile-First & Smartphone Responsiveness Rule):**
     - AI WAJIB menjamin seluruh antarmuka web, dasbor admin (`/admin`), dasbor orang tua (`/parent`), portal siswa (`/student`), dan portal tutor (`/tutor`) selalu tampil rapi, proporsional, dan 100% responsif pada layar smartphone (HP).
