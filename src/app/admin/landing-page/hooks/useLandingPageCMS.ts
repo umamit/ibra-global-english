@@ -73,9 +73,9 @@ export function useLandingPageCMS() {
       const { data, error } = await supabase.from("landing_settings").select("key, value");
       if (error) throw error;
       if (data) {
-        const map: Record<string, string> = {};
+        const map: Record<string, any> = {};
         data.forEach((item: { key: string; value: any }) => {
-          map[item.key] = typeof item.value === "string" ? item.value : JSON.stringify(item.value);
+          map[item.key] = item.value;
         });
 
         setHeroTitle(map["hero_title"] || "Ibra Global English Bobong");
@@ -100,9 +100,37 @@ export function useLandingPageCMS() {
         setCtaTitle(map["cta_title"] || "Kuasai Bahasa Inggris Lebih Cepat di Ibra Global English Bobong & Jadi Percaya Diri!");
         setCtaDesc(map["cta_desc"] || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
         setCtaBrochureImage(map["cta_brochure_image"] || "/assets/brochure.png");
-        setAllowPublicCopy(map["allow_public_copy"] === "true");
-        setMaintenanceMode(map["maintenance_mode"] === "true");
-        setVisitorOffset(map["visitor_offset"] || "0");
+        setAllowPublicCopy(map["allow_public_copy"] === "true" || map["allow_public_copy"] === true);
+        setMaintenanceMode(map["maintenance_mode"] === "true" || map["maintenance_mode"] === true);
+        setVisitorOffset(String(map["visitor_offset"] || "0"));
+
+        const parseList = (raw: any, fallback: any[]) => {
+          if (!raw) return fallback;
+          if (Array.isArray(raw)) return raw;
+          try { return JSON.parse(raw); } catch { return fallback; }
+        };
+
+        setVideosList(parseList(map["landing_videos"], [{ title: "Final", desc: "Shorts Video", url: "https://youtube.com/shorts/qvVL3p9qybM" }]));
+        setFaqsList(parseList(map["landing_faq"], [
+          { question: "Dimana lokasi les Ibra Global English Bobong?", answer: "Gedung Kost Fitrah Lantai 1, Belakang Mess Tambang, Bobong, Pulau Taliabu." },
+          { question: "Program apa saja yang tersedia?", answer: "Fun Calistung, Kids Program, dan Teens Program." }
+        ]));
+        setProgramsList(parseList(map["landing_programs"], [
+          { title: "Fun Calistung", level: "PAUD & TK", desc: "Membaca, Menulis, Berhitung dengan menyenangkan." },
+          { title: "Kids Program", level: "SD Level 1-6", desc: "Bahasa Inggris interaktif untuk anak SD." },
+          { title: "Teens Program", level: "SMP & SMA", desc: "Bahasa Inggris tingkat lanjut untuk remaja." }
+        ]));
+        setBenefitsList(parseList(map["landing_benefits"], [
+          { title: "Tutor Berpengalaman", desc: "Dididik oleh lulusan S2 Pendidikan Bahasa Inggris." },
+          { title: "Metode Fun & Active", desc: "Belajar interaktif berbasis games & praktik langsung." }
+        ]));
+        setNavigationList(parseList(map["landing_navigation"], [
+          { label: "Beranda", url: "#home" },
+          { label: "Program", url: "#programs" },
+          { label: "Fasilitas", url: "#benefits" },
+          { label: "Galeri", url: "/gallery" },
+          { label: "Kontak", url: "#contact" }
+        ]));
       }
     } catch (err: any) {
       showToast("Gagal memuat data pengaturan: " + err.message, "error");
