@@ -98,10 +98,10 @@ export function useAttendanceData() {
         const schInfo = getScheduleDetailForProgram(matchedSchedules, student.program);
         const detailStr = schInfo ? `${schInfo.room} (${schInfo.timeRange})` : null;
 
-        let defaultStatus = "hadir";
+        let defaultStatus = "tidak_ada_kelas";
         if (hasSchedulesDefined) {
           const isProgramActive = Array.from(activePrograms).some(p => student.program === p || (student.program && student.program.includes(p)));
-          if (!isProgramActive) defaultStatus = "tidak_ada_kelas";
+          if (isProgramActive) defaultStatus = "hadir";
         }
 
         initialMap[student.id] = {
