@@ -57,7 +57,7 @@ export default function CalendarTopbar({
         <div className="topbar-title">
           <h1>Kelola Jadwal &amp; Kalender Akademik</h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-            Buat jadwal kelas rutin, liburan sekolah, serta kegiatan bimbingan belajar Ibra Global English Bobong
+            Tampilan visual agenda bimbingan belajar (Pengelolaan Jadwal Rutin, Reschedule &amp; Pending berpusat di menu <strong>Kelola Siswa</strong>)
           </p>
         </div>
         <div className="topbar-user" style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>

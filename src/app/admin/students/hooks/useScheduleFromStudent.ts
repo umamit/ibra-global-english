@@ -15,6 +15,17 @@ export interface ScheduleFormInput {
   monthsAhead: number; // 1, 3, 6
 }
 
+export interface UpcomingScheduleItem {
+  id: string;
+  title: string;
+  program: string;
+  start_time: string;
+  end_time: string;
+  instructor?: string | null;
+  description?: string | null;
+  type?: string | null;
+}
+
 export function useScheduleFromStudent() {
   const supabase = createClient();
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -55,6 +66,29 @@ export function useScheduleFromStudent() {
       return null;
     } catch {
       return null;
+    }
+  };
+
+  const fetchUpcomingStudentSchedules = async (studentName: string, program: string): Promise<UpcomingScheduleItem[]> => {
+    try {
+      const todayIso = new Date().toISOString().substring(0, 10);
+      const { data, error } = await supabase
+        .from("academic_schedules")
+        .select("id, title, program, start_time, end_time, instructor, description, type")
+        .gte("start_time", `${todayIso}T00:00:00`)
+        .order("start_time", { ascending: true })
+        .limit(50);
+
+      if (error) throw error;
+      const filtered = (data || []).filter((item: any) => {
+        const matchProgram = item.program === program || (item.program && program.includes(item.program)) || (item.title && item.title.includes(program));
+        const matchName = item.description ? item.description.toLowerCase().includes(studentName.toLowerCase()) : true;
+        return matchProgram || matchName;
+      });
+
+      return filtered;
+    } catch {
+      return [];
     }
   };
 
@@ -123,10 +157,69 @@ export function useScheduleFromStudent() {
     }
   };
 
+  const rescheduleStudentSession = async (
+    scheduleId: string,
+    newDate: string,
+    newStartTime: string,
+    newEndTime: string,
+    newRoom: string,
+    studentName: string
+  ): Promise<{ success: boolean; message: string }> => {
+    setSubmitting(true);
+    try {
+      const startTimeIso = `${newDate}T${newStartTime}:00+09:00`;
+      const endTimeIso = `${newDate}T${newEndTime}:00+09:00`;
+
+      const { error } = await supabase
+        .from("academic_schedules")
+        .update({
+          start_time: startTimeIso,
+          end_time: endTimeIso,
+          type: "reschedule",
+          description: `Terjadwal Ulang untuk ${studentName} (${newRoom || "Ruang Kelas A"}) (WIT)`,
+        })
+        .eq("id", scheduleId);
+
+      if (error) throw error;
+      return { success: true, message: `Sesi ${studentName} berhasil dipindahkan ke tanggal ${newDate} jam ${newStartTime} WIT!` };
+    } catch (err: any) {
+      return { success: false, message: "Gagal memindahkan jadwal: " + err.message };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const setSessionPending = async (
+    scheduleId: string,
+    reason: string,
+    studentName: string
+  ): Promise<{ success: boolean; message: string }> => {
+    setSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from("academic_schedules")
+        .update({
+          type: "pending",
+          description: `Ditunda (Pending) untuk ${studentName}: ${reason || "Diliburkan"}`,
+        })
+        .eq("id", scheduleId);
+
+      if (error) throw error;
+      return { success: true, message: `Sesi ${studentName} berhasil ditunda (Pending)!` };
+    } catch (err: any) {
+      return { success: false, message: "Gagal menunda jadwal: " + err.message };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return {
     submitting,
     conflictWarning,
     checkScheduleConflict,
     generateAndSaveSchedules,
+    fetchUpcomingStudentSchedules,
+    rescheduleStudentSession,
+    setSessionPending,
   };
 }
