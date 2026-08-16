@@ -170,14 +170,6 @@ export default function DailyTimelinePanel({
             {formatIndonesianDate(selectedDate)}
           </h3>
         </div>
-        <button
-          type="button"
-          onClick={() => onAddAgenda(selectedDate)}
-          className="btn-portal-primary"
-          style={{ padding: "0.4rem 0.85rem", fontSize: "0.8rem", borderRadius: "10px" }}
-        >
-          + Tambah
-        </button>
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -189,14 +181,6 @@ export default function DailyTimelinePanel({
             <p style={{ margin: 0, fontSize: "0.88rem", color: "#475569", fontWeight: "600" }}>
               Tidak ada agenda kelas pada tanggal ini.
             </p>
-            <button
-              type="button"
-              onClick={() => onAddAgenda(selectedDate)}
-              className="btn-portal-outline"
-              style={{ marginTop: "0.75rem", fontSize: "0.78rem", padding: "0.35rem 0.75rem" }}
-            >
-              + Tambah Kelas Baru
-            </button>
           </div>
         ) : (
           groupKeys.map((key) => {

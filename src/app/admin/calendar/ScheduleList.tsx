@@ -66,8 +66,7 @@ export default function ScheduleList({ schedules, viewYear, viewMonth, selectedD
         {activeTab === 'day' ? (
           daySchedules.length === 0 ? (
             <div style={{ textAlign: "center", padding: "4rem 1rem" }}>
-              <p style={{ fontSize: "0.9rem", color: "var(--color-gray-400)", fontWeight: "600", margin: "0 0 1rem" }}>Tidak ada agenda untuk tanggal ini.</p>
-              <button type="button" onClick={() => onAddEvent(selectedDate)} className="btn-portal-primary" style={{ fontSize: "0.8rem", padding: "0.5rem 1rem" }}>+ Tambah Agenda Baru</button>
+              <p style={{ fontSize: "0.9rem", color: "var(--color-gray-400)", fontWeight: "600", margin: 0 }}>Tidak ada agenda untuk tanggal ini.</p>
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
