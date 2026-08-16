@@ -133,7 +133,7 @@ export default function QrAttendanceScannerModal({
             if (res.success) {
               setScanMessage({
                 type: "success",
-                text: `[OK] ${student.name} (${student.program}) - HADIR!`,
+                text: `[OK] ${res.message || `${student.name} (${student.program}) - HADIR!`}`,
               });
             } else {
               setScanMessage({

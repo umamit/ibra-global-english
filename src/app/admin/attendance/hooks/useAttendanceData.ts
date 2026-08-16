@@ -128,11 +128,19 @@ export function useAttendanceData() {
       if (!student) return { success: false, message: "Siswa tidak ditemukan." };
       if (attendanceMap[student.id]?.status === "hadir") return { success: false, message: `${student.name} sudah tercatat HADIR hari ini.` };
 
-      const payload = { student_id: student.id, date: selectedDate, status: "hadir", notes: "Presensi Otomatis via QR Code" };
+      const isScheduledToday = dailySchedules.some(s => s.program === student.program || (s.program && student.program.includes(s.program)));
+      const noteText = isScheduledToday ? "Presensi Otomatis via QR Code" : "Presensi Sesi Tambahan / Luar Jadwal (QR Code)";
+
+      const payload = { student_id: student.id, date: selectedDate, status: "hadir", notes: noteText };
       const { error } = await supabase.from("attendance").upsert(payload, { onConflict: "student_id, date" });
       if (error) throw error;
-      setAttendanceMap((prev) => ({ ...prev, [student.id]: { ...prev[student.id], status: "hadir", notes: "Presensi Otomatis via QR Code", isExisting: true } }));
-      return { success: true, message: `Absensi ${student.name} berhasil dicatat!`, studentName: student.name };
+
+      setAttendanceMap((prev) => ({ ...prev, [student.id]: { ...prev[student.id], status: "hadir", notes: noteText, isExisting: true } }));
+      const msg = isScheduledToday
+        ? `${student.name} (${student.program}) - HADIR!`
+        : `${student.name} (${student.program}) - HADIR (Sesi Tambahan)!`;
+
+      return { success: true, message: msg, studentName: student.name };
     } catch (err: any) { return { success: false, message: err?.message || "Gagal mencatat absensi." }; }
   };
 
