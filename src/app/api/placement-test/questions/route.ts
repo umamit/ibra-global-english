@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateFromGroq, fetchDatabaseQuestionsFallback } from "./placementQuestionHelpers";
+import { generateFromGroq } from "./placementQuestionHelpers";
 
 export const dynamic = "force-dynamic";
 const NO_CACHE_HEADERS = {
@@ -11,14 +11,13 @@ const NO_CACHE_HEADERS = {
 export async function GET() {
   try {
     const dynamicQuestions = await generateFromGroq();
-    if (dynamicQuestions) {
+    if (dynamicQuestions && Array.isArray(dynamicQuestions) && dynamicQuestions.length === 20) {
       return NextResponse.json(dynamicQuestions, { headers: NO_CACHE_HEADERS });
     }
 
-    const fallbackQuestions = await fetchDatabaseQuestionsFallback();
-    return NextResponse.json(fallbackQuestions, { headers: NO_CACHE_HEADERS });
+    return NextResponse.json({ error: "Gagal memuat soal dinamis AI Groq." }, { status: 503, headers: NO_CACHE_HEADERS });
   } catch (err) {
-    return NextResponse.json({ error: "Gagal memuat soal." }, { status: 500 });
+    return NextResponse.json({ error: "Terjadi kesalahan server saat memuat soal AI." }, { status: 500, headers: NO_CACHE_HEADERS });
   }
 }
 
