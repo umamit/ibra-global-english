@@ -109,14 +109,20 @@ export function useAdminLayout() {
     const checkSession = async () => {
       if (typeof window === "undefined" || !isMounted) return;
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) { window.location.href = "/login"; return; }
-        const expiresAt = session.expires_at ? session.expires_at * 1000 : 0;
-        if (expiresAt > 0 && Date.now() > expiresAt) { await supabase.auth.signOut(); window.location.href = "/login"; }
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) return;
+          const expiresAt = session.expires_at ? session.expires_at * 1000 : 0;
+          if (expiresAt > 0 && Date.now() > expiresAt) {
+            await supabase.auth.signOut();
+            window.location.href = "/login";
+          }
+        }
       } catch {}
     };
     checkSession();
-    intervalId = setInterval(checkSession, 30000);
+    intervalId = setInterval(checkSession, 60000);
     return () => { isMounted = false; if (intervalId) clearInterval(intervalId); };
   }, [supabase]);
 

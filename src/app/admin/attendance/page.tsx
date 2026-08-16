@@ -3,7 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import React, { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAttendanceData, getIndonesianDay, getIndonesianDate } from "./hooks/useAttendanceData";
 import AttendanceBanner from "./components/AttendanceBanner";
 import AttendanceInputTable from "./components/AttendanceInputTable";
@@ -12,6 +12,7 @@ import QrAttendanceScannerModal from "./components/QrAttendanceScannerModal";
 
 function AttendanceContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const {
     students, selectedDate, setSelectedDate,
     loading, submitting, statusMsg,
@@ -31,6 +32,13 @@ function AttendanceContent() {
       setIsQrScannerOpen(true);
     }
   }, [searchParams]);
+
+  const handleCloseScanner = () => {
+    setIsQrScannerOpen(false);
+    if (searchParams.get("scan") === "true") {
+      router.replace("/admin/attendance");
+    }
+  };
 
   return (
     <div>
@@ -183,7 +191,7 @@ function AttendanceContent() {
       {/* Modal QR Code Scanner */}
       <QrAttendanceScannerModal
         isOpen={isQrScannerOpen}
-        onClose={() => setIsQrScannerOpen(false)}
+        onClose={handleCloseScanner}
         students={students}
         onScanSuccess={handleSingleStudentQrScan}
       />
