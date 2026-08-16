@@ -2,14 +2,16 @@
 
 export const dynamic = "force-dynamic";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAttendanceData, getIndonesianDay, getIndonesianDate } from "./hooks/useAttendanceData";
 import AttendanceBanner from "./components/AttendanceBanner";
 import AttendanceInputTable from "./components/AttendanceInputTable";
 import AttendanceRecapTable from "./components/AttendanceRecapTable";
 import QrAttendanceScannerModal from "./components/QrAttendanceScannerModal";
 
-export default function DailyAttendance() {
+function AttendanceContent() {
+  const searchParams = useSearchParams();
   const {
     students, selectedDate, setSelectedDate,
     loading, submitting, statusMsg,
@@ -23,6 +25,12 @@ export default function DailyAttendance() {
   } = useAttendanceData();
 
   const [isQrScannerOpen, setIsQrScannerOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (searchParams.get("scan") === "true") {
+      setIsQrScannerOpen(true);
+    }
+  }, [searchParams]);
 
   return (
     <div>
@@ -180,5 +188,13 @@ export default function DailyAttendance() {
         onScanSuccess={handleSingleStudentQrScan}
       />
     </div>
+  );
+}
+
+export default function DailyAttendance() {
+  return (
+    <Suspense fallback={<div style={{ padding: "3rem", textAlign: "center" }}>Memuat Pemindai QR...</div>}>
+      <AttendanceContent />
+    </Suspense>
   );
 }

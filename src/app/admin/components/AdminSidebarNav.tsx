@@ -49,6 +49,7 @@ export default function AdminSidebarNav({ pathname, pendingCount, mobileOpen, op
               { href: "/admin/calendar", label: "Jadwal & Kalender" },
               { href: "/admin/online-schedule", label: "Jadwal Kelas Online" },
               { href: "/admin/attendance", label: "Absensi Harian" },
+              { href: "/admin/attendance?scan=true", label: "Pemindai QR Presensi" },
               { href: "/admin/reports", label: "Input Rapor" },
               { href: "/admin/certificates", label: "Kelola Sertifikat" },
               { href: "/admin/placement-test", label: "Hasil Tes Penempatan" },
