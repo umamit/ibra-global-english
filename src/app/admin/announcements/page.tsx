@@ -12,7 +12,7 @@ interface Priority {
   color: string;
 }
 
-const PROGRAMS = ["Semua Program", "Kids Program", "Teens Program", "Fun Calistung"];
+const PROGRAMS = ["Semua Program", "A1 Foundation", "A2 Bridge", "B1 Communicator", "B2 Achiever", "C1 Professional", "Kids Program", "Teens Program", "Fun Calistung"];
 const PRIORITIES: Priority[] = [
   { value: "normal", label: "ℹ️ Normal", color: "var(--color-primary)" },
   { value: "penting", label: "Penting", color: "#f59e0b" },

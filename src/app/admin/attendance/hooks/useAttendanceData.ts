@@ -228,7 +228,7 @@ export function useAttendanceData() {
 
   const filteredRecap = recapData.filter((row) => {
     const matchName = row.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchProgram = programFilter ? row.program === programFilter : true;
+    const matchProgram = programFilter ? (row.program === programFilter || (row.program && row.program.toLowerCase().includes(programFilter.toLowerCase()))) : true;
     return matchName && matchProgram;
   });
 

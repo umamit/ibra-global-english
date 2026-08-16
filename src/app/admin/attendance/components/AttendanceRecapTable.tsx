@@ -55,6 +55,11 @@ export default function AttendanceRecapTable({ filteredRecap, recapLoading, sear
             style={{ padding: "0.55rem 1rem", fontSize: "0.9rem" }}
           >
             <option value="">Semua Program</option>
+            <option value="A1 Foundation">A1 Foundation</option>
+            <option value="A2 Bridge">A2 Bridge</option>
+            <option value="B1 Communicator">B1 Communicator</option>
+            <option value="B2 Achiever">B2 Achiever</option>
+            <option value="C1 Professional">C1 Professional</option>
             <option value="Kids Program">Kids Program</option>
             <option value="Teens Program">Teens Program</option>
             <option value="Fun Calistung">Fun Calistung</option>
