@@ -6,8 +6,8 @@ import AIChatMessageList from "@/components/AIChatMessageList";
 import "@/components/AIChatWidget.css";
 import posthog from "posthog-js";
 
-const QUICK_REPLIES = ["Program untuk anak usia 7 tahun?", "Koreksi: I goes to school", "How to introduce myself?", "Cara daftar kursus?"];
-const INITIAL_MSG = "Halo! Saya **Ibra AI Assistant**, siap membantu kamu!\n\nSaya bisa:\n• Jelaskan program kursus kami (Kids, Teens, Calistung)\n• Latih percakapan Bahasa Inggris\n• Koreksi grammar kamu\n• Rekomendasikan program yang tepat\n\nMau mulai dari mana?";
+const QUICK_REPLIES = ["Bagaimana cara presensi kartu QR?", "Program untuk anak usia 7 tahun?", "Koreksi: I goes to school", "How to introduce myself?", "Cara daftar kursus?"];
+const INITIAL_MSG = "Halo! Saya **Ibra AI Assistant**, siap membantu kamu!\n\nSaya bisa:\n• Informasi Presensi Kartu QR Siswa\n• Jelaskan program kursus kami (Kids, Teens, Calistung)\n• Latih percakapan Bahasa Inggris\n• Koreksi grammar kamu\n• Rekomendasikan program yang tepat\n\nMau mulai dari mana?";
 
 export default function AIChatWidget() {
   const [unreadCount, setUnreadCount] = useState(1);
