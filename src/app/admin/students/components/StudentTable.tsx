@@ -54,6 +54,44 @@ export default function StudentTable({
   const filteredStudents =
     statusFilter === "semua" ? students : students.filter((s) => (s.status || "aktif") === statusFilter);
 
+  const handlePrintIdCard = (student: StudentItem) => {
+    if (typeof window === "undefined") return;
+    const printWin = window.open("", "_blank");
+    if (!printWin) return;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(student.id)}`;
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Kartu ID Siswa - ${student.name}</title>
+          <style>
+            body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #f1f5f9; }
+            .card { width: 320px; background: linear-gradient(135deg, #164d57 0%, #216c7e 100%); border-radius: 20px; color: #fff; padding: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+            .logo { height: 38px; margin-bottom: 6px; }
+            .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #A68849; margin-bottom: 14px; }
+            .qr-box { background: #fff; padding: 10px; border-radius: 16px; display: inline-block; margin-bottom: 14px; }
+            .qr-box img { width: 160px; height: 160px; display: block; }
+            .name { font-size: 17px; font-weight: 800; margin-bottom: 4px; color: #ffffff; }
+            .program { font-size: 12px; color: #e2e8f0; margin-bottom: 10px; }
+            .footer { font-size: 10px; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <img src="https://ibraglobalenglish.uk/assets/logo.png" class="logo" alt="Logo" />
+            <div class="title">KARTU ABSENSI RESMI SISWA</div>
+            <div class="qr-box"><img src="${qrUrl}" alt="QR Code" /></div>
+            <div class="name">${student.name}</div>
+            <div class="program">${student.program || "Kids Program"}</div>
+            <div class="footer">LKP Ibra Global English Bobong</div>
+          </div>
+          <script>setTimeout(() => { window.print(); }, 600);</script>
+        </body>
+      </html>
+    `);
+    printWin.document.close();
+  };
+
   return (
     <div className="table-wrapper">
       {/* Status Filter Bar */}
@@ -166,6 +204,14 @@ export default function StudentTable({
                   </td>
                   <td style={{ textAlign: "right" }}>
                     <div style={{ display: "inline-flex", gap: "0.4rem", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        className="btn-portal-outline"
+                        style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem", borderColor: "#216c7e", color: "#216c7e" }}
+                        onClick={() => handlePrintIdCard(student)}
+                      >
+                        💳 Cetak QR
+                      </button>
                       <button
                         type="button"
                         className="btn-portal-outline"
