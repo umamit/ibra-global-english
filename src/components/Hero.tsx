@@ -140,7 +140,7 @@ export default function Hero({ initialSettings }: HeroProps) {
               alt="Husnita Usman, M.Pd., Direktur & Pendiri Ibra Global English Bobong"
               className="hero-img"
               width={600}
-              height={400}
+              height={480}
               priority
               onError={() => setImgError(true)}
             />
