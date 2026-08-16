@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import styles from "./qrScannerModal.module.css";
+import { getAudioContext, playBeep, playVoiceGreeting } from "./qrAudioHelpers";
 
 interface Student {
   id: string;
@@ -38,35 +39,7 @@ export default function QrAttendanceScannerModal({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const readerRef = useRef<BrowserMultiFormatReader | null>(null);
   const controlsRef = useRef<any>(null);
-
-  const playBeep = () => {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.2);
-    } catch {}
-  };
-
-  const playVoiceGreeting = (studentName: string) => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(`Selamat datang, ${studentName}!`);
-      utterance.lang = "id-ID";
-      utterance.rate = 1.0;
-      window.speechSynthesis.speak(utterance);
-    } catch {}
-  };
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   const stopCamera = () => {
     if (controlsRef.current) {
@@ -101,6 +74,7 @@ export default function QrAttendanceScannerModal({
       return;
     }
 
+    getAudioContext(audioCtxRef);
     let isMounted = true;
     const reader = new BrowserMultiFormatReader();
     readerRef.current = reader;
@@ -111,9 +85,7 @@ export default function QrAttendanceScannerModal({
         const videoElement = videoRef.current;
         if (!videoElement) return;
 
-        const constraints: MediaStreamConstraints = {
-          video: { facingMode: facingMode }
-        };
+        const constraints: MediaStreamConstraints = { video: { facingMode: facingMode } };
 
         const controls = await reader.decodeFromConstraints(
           constraints,
@@ -130,16 +102,17 @@ export default function QrAttendanceScannerModal({
             setLastScannedId(targetId);
             setTimeout(() => setLastScannedId(""), 2000);
 
-            playBeep();
-
             // 1. Student Match
             const student = students.find((s) => s.id.toLowerCase() === targetId || targetId.includes(s.id.toLowerCase()) || s.id.toLowerCase().includes(targetId));
             if (student) {
               const res = await onScanSuccess(student.id);
               if (res.success) {
-                playVoiceGreeting(student.name);
+                await playBeep(audioCtxRef, "success");
+                playVoiceGreeting(`Selamat datang, ${student.name}!`);
                 setScanMessage({ type: "success", text: `[OK] ${res.message || `${student.name} (${student.program}) - HADIR!`}` });
               } else {
+                await playBeep(audioCtxRef, "warning");
+                playVoiceGreeting(`Ananda ${student.name} sudah tercatat presensi hari ini.`);
                 setScanMessage({ type: "warning", text: res.message || `${student.name} sudah tercatat.` });
               }
               setTimeout(() => setScanMessage(null), 3000);
@@ -149,12 +122,15 @@ export default function QrAttendanceScannerModal({
             // 2. Staff Match
             const staff = KNOWN_STAFF.find((st) => st.id.toLowerCase() === targetId || targetId.includes(st.id.toLowerCase()) || st.id.toLowerCase().includes(targetId));
             if (staff) {
-              playVoiceGreeting(staff.name);
+              await playBeep(audioCtxRef, "success");
+              playVoiceGreeting(`Selamat datang, ${staff.name}!`);
               setScanMessage({ type: "success", text: `Halo ${staff.name}! Terdaftar sebagai ${staff.role}.` });
               setTimeout(() => setScanMessage(null), 3000);
               return;
             }
 
+            await playBeep(audioCtxRef, "error");
+            playVoiceGreeting("Kode QR tidak terdaftar.");
             setScanMessage({ type: "warning", text: `Kode QR (${cleanText.substring(0, 12)}...) tidak terdaftar di sistem.` });
             setTimeout(() => setScanMessage(null), 3000);
           }
