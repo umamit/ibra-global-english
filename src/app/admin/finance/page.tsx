@@ -42,7 +42,9 @@ export default function AdminFinance() {
 
   const filteredStudents = students.filter((student) => {
     if (student.created_at && student.created_at.substring(0, 7) > selectedMonth) return false;
-    return (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || (student.profiles?.full_name || "").toLowerCase().includes(searchQuery.toLowerCase())) && (programFilter === "All" || student.program === programFilter);
+    const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) || (student.profiles?.full_name || "").toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesProgram = programFilter === "All" || student.program === programFilter || (student.program && student.program.toLowerCase().includes(programFilter.toLowerCase()));
+    return matchesSearch && matchesProgram;
   });
 
   useEffect(() => { setCurrentPage(1); }, [searchQuery, programFilter, selectedMonth, setCurrentPage]);
