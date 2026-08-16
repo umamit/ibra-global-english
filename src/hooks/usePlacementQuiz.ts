@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import posthog from "posthog-js";
 import {
@@ -36,9 +36,7 @@ export function usePlacementQuiz() {
     const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
-    setTimeout(() => {
-      setTheme(initialTheme);
-    }, 0);
+    setTimeout(() => { setTheme(initialTheme); }, 0);
   }, []);
 
   useEffect(() => {
@@ -59,7 +57,7 @@ export function usePlacementQuiz() {
           }
         }
       } catch (e) {
-        console.warn("Gagal memuat soal dinamis, gunakan fallback.", e);
+        console.warn("Gagal memuat soal dinamis.", e);
       } finally {
         if (!cancelled) setLoadingQuestions(false);
       }
@@ -126,7 +124,7 @@ export function usePlacementQuiz() {
     if (typeof window === "undefined") return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Browser Anda tidak mendukung Web Speech API (Perekam Suara). Silakan gunakan Google Chrome.");
+      alert("Browser Anda tidak mendukung Web Speech API.");
       return;
     }
     setTranscribedText("");
@@ -146,43 +144,34 @@ export function usePlacementQuiz() {
       const score = calculateSpeechAccuracy(resultText, target);
       setSpeakingScore(score);
       const point = score >= 70 ? 1 : 0;
-      setAnswers((prev) => ({
-        ...prev,
-        [QUESTIONS[currentQuestionIndex].id]: point
-      }));
+      setAnswers((prev) => ({ ...prev, [QUESTIONS[currentQuestionIndex].id]: point }));
     };
 
     recognition.onerror = (event: any) => {
-      console.error("Speech recognition error", event.error);
       setRecognitionError(event.error === "not-allowed" ? "Izin mikrofon ditolak." : "Gagal merekam suara.");
       setIsRecording(false);
     };
 
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
-
+    recognition.onend = () => { setIsRecording(false); };
     recognition.start();
   };
 
-  const calculateAndSubmitResult = async () => {
+  const calculateAndSubmitResult = useCallback(async () => {
     setSubmitting(true);
     let totalScore = 0;
 
     QUESTIONS.forEach((q) => {
       if (q.is_speaking) {
-        const speakingVal = answers[q.id] || 0;
-        totalScore += speakingVal;
+        totalScore += answers[q.id] || 0;
       } else {
         const selectedOptIdx = answers[q.id];
-        if (selectedOptIdx !== undefined) {
+        if (selectedOptIdx !== undefined && q.options[selectedOptIdx]) {
           totalScore += q.options[selectedOptIdx].score;
         }
       }
     });
 
     const levelDetails = determineLevelDetails(totalScore);
-
     const payload = {
       full_name: userData.fullName.trim(),
       email: userData.email.trim(),
@@ -205,7 +194,7 @@ export function usePlacementQuiz() {
         if (data?.id) serverId = data.id;
       }
     } catch (err) {
-      console.error("Gagal mengirimkan hasil placement test ke server:", err);
+      console.error("Gagal mengirimkan hasil:", err);
     }
 
     const resultObj: PlacementResult = {
@@ -219,15 +208,11 @@ export function usePlacementQuiz() {
 
     setFinalResult(resultObj);
     setSubmitting(false);
-    posthog.capture("placement_test_completed", {
-      score: totalScore,
-      level: levelDetails.level,
-      total_questions: QUESTIONS.length,
-    });
+    posthog.capture("placement_test_completed", { score: totalScore, level: levelDetails.level });
     setStep(3);
-  };
+  }, [QUESTIONS, answers, userData]);
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = useCallback(() => {
     if (currentQuestionIndex < QUESTIONS.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
       setSecondsLeft(15);
@@ -236,7 +221,7 @@ export function usePlacementQuiz() {
     } else {
       calculateAndSubmitResult();
     }
-  };
+  }, [currentQuestionIndex, QUESTIONS.length, calculateAndSubmitResult]);
 
   const handlePrevQuestion = () => {
     if (currentQuestionIndex > 0) {
@@ -246,6 +231,23 @@ export function usePlacementQuiz() {
       setSpeakingScore(null);
     }
   };
+
+  // Timer countdown 15s per question
+  useEffect(() => {
+    if (step !== 2 || QUESTIONS.length === 0) return;
+
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          handleNextQuestion();
+          return 15;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [step, currentQuestionIndex, QUESTIONS.length, handleNextQuestion]);
 
   return {
     theme,
