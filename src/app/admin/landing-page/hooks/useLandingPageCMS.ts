@@ -10,6 +10,7 @@ export function useLandingPageCMS() {
   const supabase = createClient();
   const [activeTab, setActiveTab] = useState<string>("hero");
   const [loading, setLoading] = useState<boolean>(false);
+  const [fetchingSettings, setFetchingSettings] = useState<boolean>(true);
   const [toast, setToast] = useState<ToastState>({ show: false, message: "", type: "success" });
 
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(false);
@@ -66,6 +67,50 @@ export function useLandingPageCMS() {
 
   const galleryState = useLandingPageGallery(showToast, triggerRevalidation);
 
+  const fetchLandingSettings = async () => {
+    setFetchingSettings(true);
+    try {
+      const { data, error } = await supabase.from("landing_settings").select("key, value");
+      if (error) throw error;
+      if (data) {
+        const map: Record<string, string> = {};
+        data.forEach((item: { key: string; value: any }) => {
+          map[item.key] = typeof item.value === "string" ? item.value : JSON.stringify(item.value);
+        });
+
+        setHeroTitle(map["hero_title"] || "Ibra Global English Bobong");
+        setHeroSubtitle(map["hero_subtitle"] || "Belajar Seru | Lancar Bicara");
+        setHeroDesc(map["hero_desc"] || "Saatnya Percaya Diri Berbahasa Inggris,\nDi IBRA Global English Bobong, belajar tidak hanya tentang teori. Nikmati pengalaman belajar yang seru, aktif, dan penuh praktik sehingga kamu bisa memahami, menggunakan, dan berbicara bahasa Inggris dengan lebih lancar setiap hari.");
+        setHeroImage(map["hero_image"] || "/assets/logo.png");
+        setContactAddress(map["contact_address"] || "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794");
+        setContactPhone(map["contact_phone"] || "+6281357001357");
+        setContactEmail(map["contact_email"] || "admin@ibraglobalenglish.uk");
+        setPaymentBankName(map["payment_bank_name"] || "BRI");
+        setPaymentAccountNumber(map["payment_account_number"] || "767901015374533");
+        setPaymentAccountName(map["payment_account_name"] || "Husnita Usman");
+        setPaymentAccountSub(map["payment_account_sub"] || "Ibra Global English");
+        setPaymentSppAmount(map["payment_spp_amount"] || "300000");
+        setPaymentSppKids(map["payment_spp_kids"] || "300000");
+        setPaymentSppTeens(map["payment_spp_teens"] || "300000");
+        setPaymentSppCalistung(map["payment_spp_calistung"] || "350000");
+        setMarqueeText1(map["marquee_text_1"] || "Pendaftaran ditutup karena kelas full");
+        setMarqueeText2(map["marquee_text_2"] || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
+        setMarqueeText3(map["marquee_text_3"] || "Ikuti Placement Test Offline Secara Gratis, Ayo Kesini dan Cari Tahu Tingkat Kemampuan Kalian");
+        setCtaTag(map["cta_tag"] || "Promo Terbatas!");
+        setCtaTitle(map["cta_title"] || "Kuasai Bahasa Inggris Lebih Cepat di Ibra Global English Bobong & Jadi Percaya Diri!");
+        setCtaDesc(map["cta_desc"] || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
+        setCtaBrochureImage(map["cta_brochure_image"] || "/assets/brochure.png");
+        setAllowPublicCopy(map["allow_public_copy"] === "true");
+        setMaintenanceMode(map["maintenance_mode"] === "true");
+        setVisitorOffset(map["visitor_offset"] || "0");
+      }
+    } catch (err: any) {
+      showToast("Gagal memuat data pengaturan: " + err.message, "error");
+    } finally {
+      setFetchingSettings(false);
+    }
+  };
+
   const handleUploadToStorage = async (file: File): Promise<string> => {
     const fileExt = file.name.split(".").pop();
     const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
@@ -103,10 +148,13 @@ export function useLandingPageCMS() {
     } catch (err: any) { showToast("Gagal menyimpan: " + err.message, "error"); } finally { setLoading(false); }
   };
 
-  useEffect(() => { galleryState.fetchGallery(); }, []);
+  useEffect(() => {
+    fetchLandingSettings();
+    galleryState.fetchGallery();
+  }, []);
 
   return {
-    activeTab, setActiveTab, loading, toast, maintenanceMode, setMaintenanceMode,
+    activeTab, setActiveTab, loading, fetchingSettings, toast, maintenanceMode, setMaintenanceMode,
     savingMaintenance, allowPublicCopy, savingCopySetting, visitorOffset, setVisitorOffset, savingVisitorOffset,
     heroTitle, setHeroTitle, heroSubtitle, setHeroSubtitle, heroDesc, setHeroDesc, heroImage, setHeroImage,
     contactAddress, setContactAddress, contactPhone, setContactPhone, contactEmail, setContactEmail,
