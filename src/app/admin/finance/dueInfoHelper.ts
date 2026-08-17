@@ -24,18 +24,14 @@ export const getStudentSPPDueInfo = (
   const isNasyaPostPaid19 = (/\bnasya\b/i).test(nameLower);
   const isPostPaid = isPostPaidTgl5 || isNasyaPostPaid19;
 
-  let dueDay = 5;
-  if (isNasyaPostPaid19) {
-    dueDay = 19;
-  } else if (isPostPaidTgl5) {
-    dueDay = 5;
+  let dueDay = 10;
+  if (typeof student.due_day === "number" && student.due_day >= 1 && student.due_day <= 31) {
+    dueDay = student.due_day;
   } else if (student.created_at) {
     dueDay = new Date(student.created_at).getDate();
   }
 
-  const modelLabel = isPostPaid
-    ? `Post-Paid (Kursus Dulu, Bayar Tgl ${dueDay} Bln Depan)`
-    : "Pre-Paid (Bayar Awal)";
+  const modelLabel = `Siklus SPP Tgl ${dueDay} Bulanan`;
 
   if (paymentStatus === "lunas") {
     return {

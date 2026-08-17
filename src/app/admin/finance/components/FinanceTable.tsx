@@ -24,6 +24,7 @@ interface FinanceTableProps {
   onEditPayment: (student: Student) => void;
   onTriggerWaBilling: (student: Student, pay: PaymentResult) => void;
   onUpdatePaymentType?: (studentId: string, typeVal: string) => void;
+  onUpdateStudentDueDay?: (studentId: string, dueDay: number) => void;
   onViewAnnualCard?: (student: Student) => void;
   currentPage: number;
   pageSize: number;
@@ -47,6 +48,7 @@ export default function FinanceTable({
   onEditPayment,
   onTriggerWaBilling,
   onUpdatePaymentType,
+  onUpdateStudentDueDay,
   onViewAnnualCard,
   currentPage,
   pageSize,
@@ -128,22 +130,43 @@ export default function FinanceTable({
                   <span className="badge-program">{student.program}</span>
                 </td>
                 <td style={{ padding: "12px" }} data-label="Jatuh Tempo">
-                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                    <span style={{
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                      padding: "0.2rem 0.5rem",
-                      borderRadius: "6px",
-                      display: "inline-block",
-                      width: "fit-content",
-                      backgroundColor: dueInfo.dueStatus === "due_today" ? "#f59e0b" : dueInfo.dueStatus === "due_soon" ? "#fef3c7" : dueInfo.dueStatus === "overdue" ? "#ffe4e6" : dueInfo.dueStatus === "lunas" ? "#d1fae5" : "#f1f5f9",
-                      color: dueInfo.dueStatus === "due_today" ? "#ffffff" : dueInfo.dueStatus === "due_soon" ? "#92400e" : dueInfo.dueStatus === "overdue" ? "#9f1239" : dueInfo.dueStatus === "lunas" ? "#065f46" : "#475569",
-                      border: dueInfo.dueStatus === "due_soon" ? "1px solid #fcd34d" : dueInfo.dueStatus === "overdue" ? "1px solid #fecdd3" : "none"
-                    }}>
-                      {dueInfo.badgeLabel}
-                    </span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                      <span style={{
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                        padding: "0.15rem 0.45rem",
+                        borderRadius: "6px",
+                        display: "inline-block",
+                        backgroundColor: dueInfo.dueStatus === "due_today" ? "#f59e0b" : dueInfo.dueStatus === "due_soon" ? "#fef3c7" : dueInfo.dueStatus === "overdue" ? "#ffe4e6" : dueInfo.dueStatus === "lunas" ? "#d1fae5" : "#f1f5f9",
+                        color: dueInfo.dueStatus === "due_today" ? "#ffffff" : dueInfo.dueStatus === "due_soon" ? "#92400e" : dueInfo.dueStatus === "overdue" ? "#9f1239" : dueInfo.dueStatus === "lunas" ? "#065f46" : "#475569",
+                        border: dueInfo.dueStatus === "due_soon" ? "1px solid #fcd34d" : dueInfo.dueStatus === "overdue" ? "1px solid #fecdd3" : "none"
+                      }}>
+                        {dueInfo.badgeLabel}
+                      </span>
+                      <select
+                        value={dueInfo.dueDay}
+                        onChange={(e) => onUpdateStudentDueDay?.(student.id, Number(e.target.value))}
+                        title="Ubah Siklus Tanggal Jatuh Tempo SPP Siswa (1-31)"
+                        style={{
+                          fontSize: "0.7rem",
+                          fontWeight: "700",
+                          padding: "0.1rem 0.35rem",
+                          borderRadius: "6px",
+                          border: "1px solid #cbd5e1",
+                          backgroundColor: "#fff",
+                          color: "#334155",
+                          cursor: "pointer",
+                          outline: "none",
+                        }}
+                      >
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                          <option key={d} value={d}>Tgl {d}</option>
+                        ))}
+                      </select>
+                    </div>
                     <span style={{ fontSize: "0.68rem", color: "var(--color-gray-500)", fontWeight: "500" }}>
-                      {dueInfo.modelLabel}
+                      Siklus Tgl {dueInfo.dueDay} Bulanan
                     </span>
                   </div>
                 </td>

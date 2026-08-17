@@ -150,12 +150,31 @@ export const useFinanceModal = (
       }
 
       if (error) throw error;
-      const labelText = typeVal === "prepaid" ? "PREPAID (Pra-Bayar)" : typeVal === "postpaid" ? "POSTPAID (Susulan)" : "AUTO (Otomatis)";
-      showToast(`Tipe pembayaran SPP diubah ke ${labelText}!`);
       fetchData();
     } catch (err) {
       console.error("Gagal merubah tipe pembayaran:", err);
       showToast("Gagal memperbarui tipe pembayaran. Pastikan kolom SQL sudah ditambah di Supabase.", "error");
+    }
+  };
+
+  const handleUpdateStudentDueDay = async (studentId: string, dueDay: number): Promise<void> => {
+    try {
+      const { error } = await supabase
+        .from("students")
+        .update({ due_day: dueDay })
+        .eq("id", studentId);
+
+      if (error && (error.code === "42703" || error.message?.includes("due_day"))) {
+        showToast("Jalankan perintah SQL 'due_day' di Supabase SQL Editor!", "error");
+        return;
+      }
+
+      if (error) throw error;
+      showToast(`Siklus jatuh tempo SPP siswa diubah ke Tanggal ${dueDay}!`);
+      fetchData();
+    } catch (err) {
+      console.error("Gagal merubah tanggal jatuh tempo:", err);
+      showToast("Gagal memperbarui tanggal jatuh tempo.", "error");
     }
   };
 
@@ -212,5 +231,6 @@ export const useFinanceModal = (
     handleSavePayment,
     handleQuickConfirmLunas,
     handleUpdatePaymentType,
+    handleUpdateStudentDueDay,
   };
 };

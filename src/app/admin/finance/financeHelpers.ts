@@ -43,19 +43,23 @@ export const calculatePaymentBadge = (
     };
   }
 
-  const joinDate = student?.created_at ? new Date(student.created_at) : null;
-  const joinDay = joinDate ? joinDate.getDate() : 10;
+  let targetDay = 10;
+  if (typeof student?.due_day === "number" && student.due_day >= 1 && student.due_day <= 31) {
+    targetDay = student.due_day;
+  } else if (student?.created_at) {
+    targetDay = new Date(student.created_at).getDate();
+  }
 
   const payDateObj = new Date(paymentDate);
   const payDay = payDateObj.getDate();
   const payMonthStr = `${payDateObj.getFullYear()}-${String(payDateObj.getMonth() + 1).padStart(2, "0")}`;
 
-  if (payMonthStr < month || (payMonthStr === month && payDay <= joinDay)) {
+  if (payMonthStr < month || (payMonthStr === month && payDay <= targetDay)) {
     return {
       type: "prepaid",
       label: "🟢 Prepaid",
       badgeStyle: { backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" },
-      description: `Bayar tgl ${payDay} (Masuk tgl ${joinDay}) - Tepat Waktu`,
+      description: `Bayar tgl ${payDay} (Jatuh tempo tgl ${targetDay}) - Tepat Waktu`,
     };
   }
 
@@ -63,7 +67,7 @@ export const calculatePaymentBadge = (
     type: "postpaid",
     label: "🟡 Postpaid",
     badgeStyle: { backgroundColor: "#fffbeb", color: "#92400e", border: "1px solid #fde68a" },
-    description: `Bayar tgl ${payDay} (Masuk tgl ${joinDay}) - Susulan`,
+    description: `Bayar tgl ${payDay} (Jatuh tempo tgl ${targetDay}) - Susulan`,
   };
 };
 

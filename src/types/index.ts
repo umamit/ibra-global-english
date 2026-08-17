@@ -13,6 +13,7 @@ export interface Student {
   age?: number;
   parent_id?: string | null;
   profiles?: StudentProfile | null;
+  due_day?: number | null;
   created_at?: string;
 }
 
