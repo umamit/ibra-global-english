@@ -176,6 +176,72 @@ export function useLandingPageCMS() {
     } catch (err: any) { showToast("Gagal menyimpan: " + err.message, "error"); } finally { setLoading(false); }
   };
 
+  const handleSaveVideos = async (listToSave: any[]) => {
+    setSavingVideos(true);
+    try {
+      const payload = JSON.stringify(listToSave);
+      const { error } = await supabase
+        .from("landing_settings")
+        .upsert([{ key: "landing_videos", value: payload }]);
+
+      if (error) throw error;
+      showToast("Galeri video berhasil disimpan ke database!");
+      await triggerRevalidation();
+    } catch (err: any) {
+      showToast("Gagal menyimpan galeri video: " + err.message, "error");
+    } finally {
+      setSavingVideos(false);
+    }
+  };
+
+  const handleSavePrograms = async (listToSave: any[]) => {
+    try {
+      const payload = JSON.stringify(listToSave);
+      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_programs", value: payload }]);
+      if (error) throw error;
+      showToast("Daftar program berhasil disimpan!");
+      await triggerRevalidation();
+    } catch (err: any) {
+      showToast("Gagal menyimpan program: " + err.message, "error");
+    }
+  };
+
+  const handleSaveBenefits = async (listToSave: any[]) => {
+    try {
+      const payload = JSON.stringify(listToSave);
+      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_benefits", value: payload }]);
+      if (error) throw error;
+      showToast("Daftar keunggulan berhasil disimpan!");
+      await triggerRevalidation();
+    } catch (err: any) {
+      showToast("Gagal menyimpan keunggulan: " + err.message, "error");
+    }
+  };
+
+  const handleSaveFaqs = async (listToSave: any[]) => {
+    try {
+      const payload = JSON.stringify(listToSave);
+      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_faqs", value: payload }]);
+      if (error) throw error;
+      showToast("Daftar FAQ berhasil disimpan!");
+      await triggerRevalidation();
+    } catch (err: any) {
+      showToast("Gagal menyimpan FAQ: " + err.message, "error");
+    }
+  };
+
+  const handleSaveNavigation = async (listToSave: any[]) => {
+    try {
+      const payload = JSON.stringify(listToSave);
+      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_navigation", value: payload }]);
+      if (error) throw error;
+      showToast("Daftar navigasi berhasil disimpan!");
+      await triggerRevalidation();
+    } catch (err: any) {
+      showToast("Gagal menyimpan navigasi: " + err.message, "error");
+    }
+  };
+
   useEffect(() => {
     fetchLandingSettings();
     galleryState.fetchGallery();
@@ -196,7 +262,7 @@ export function useLandingPageCMS() {
     heroFileRef, ctaBrochureFileRef, galleryFileRef,
     ...galleryState,
     handleGalleryFileChange: () => {}, handleAddGalleryItem: () => {},
-    handleSaveNavigation: () => {}, handleSaveVideos: () => {}, handleSavePrograms: () => {}, handleSaveBenefits: () => {}, handleSaveFaqs: () => {},
+    handleSaveNavigation, handleSaveVideos, handleSavePrograms, handleSaveBenefits, handleSaveFaqs,
     programsList, setProgramsList, benefitsList, setBenefitsList, faqsList, setFaqsList,
     videosList, setVideosList, savingVideos, navigationList, setNavigationList, savingNavigation,
     handleSaveHeroSettings, handleHeroImageChange, handleCtaBrochureImageChange,
