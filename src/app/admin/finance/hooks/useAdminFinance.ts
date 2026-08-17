@@ -96,6 +96,7 @@ export function useAdminFinance() {
         name: s.name,
         program: s.program,
         parent_id: s.parent_id,
+        due_day: s.due_day,
         created_at: s.created_at,
         profiles: Array.isArray(s.profiles) ? s.profiles[0] : s.profiles,
       }));
