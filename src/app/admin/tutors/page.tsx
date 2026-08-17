@@ -72,11 +72,29 @@ export default function AdminTutorsPage() {
     } catch { showToast("Gagal menghapus tutor."); }
   };
 
+  const handleSyncFromProfiles = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/admin/tutors/sync", { method: "POST" });
+      const result = await res.json();
+      if (res.ok) {
+        showToast(result.insertedCount > 0 ? `Berhasil mengimpor ${result.insertedCount} staf dari database profiles!` : "Seluruh akun staf dari profiles sudah terdaftar!");
+        fetchTutors();
+      } else {
+        showToast(`Sinkronisasi: ${result.error || "Gagal"}`);
+      }
+    } catch {
+      showToast("Gagal melakukan sinkronisasi staf.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="dashboard-main" style={{ padding: "2rem" }}>
       {toast && <div className="auth-success-banner" style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "380px" }}>{toast}</div>}
 
-      <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
+      <div className="dashboard-topbar" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
         <div>
           <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--color-primary-dark)", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -84,6 +102,15 @@ export default function AdminTutorsPage() {
           </h1>
           <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>Kelola profil tim pengajar dan staf pendidikan Ibra Global English Bobong.</p>
         </div>
+        <button
+          onClick={handleSyncFromProfiles}
+          className="btn-portal-outline"
+          style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+          title="Sinkronkan data tutor & staf dari akun terdaftar di Supabase Profiles"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span>Sinkronkan Staf (Profiles)</span>
+        </button>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: "2rem", alignItems: "start" }} className="report-detail-layout">
