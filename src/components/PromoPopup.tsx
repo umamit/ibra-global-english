@@ -68,7 +68,7 @@ export default function PromoPopup() {
           {banner.message && (
             <div
               className="promo-popup-description"
-              dangerouslySetInnerHTML={{ __html: cleanHtml }}
+              dangerouslySetInnerHTML={{ __html: cleanHtml || banner.message || "" }}
             />
           )}
 

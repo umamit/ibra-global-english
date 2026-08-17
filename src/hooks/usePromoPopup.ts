@@ -48,7 +48,7 @@ export function usePromoPopup() {
           });
         }
 
-        timer = setTimeout(() => setVisible(true), 3000);
+        timer = setTimeout(() => setVisible(true), 1200);
       } catch {
         // Ignored
       }
