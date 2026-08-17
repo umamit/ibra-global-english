@@ -32,7 +32,7 @@ export default function AdminFinance() {
     isModalOpen, setIsModalOpen, modalStudent, modalAmount, setModalAmount,
     modalStatus, setModalStatus, modalMethod, setModalMethod, modalReceiptUrl, setModalReceiptUrl,
     modalPaymentDate, setModalPaymentDate, savingPayment, fileInputRef, handleUploadReceipt,
-    handleOpenEditModal, handleSavePayment, handleQuickConfirmLunas,
+    handleOpenEditModal, handleSavePayment, handleQuickConfirmLunas, handleUpdatePaymentType,
   } = useFinanceModal(fetchData, selectedMonth, sppPrices, showToast, students, payments);
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function AdminFinance() {
         <>
           <FinanceStatsCards stats={stats} formatRupiah={formatRupiah} />
           <FinanceSearchToolbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} programFilter={programFilter} setProgramFilter={setProgramFilter} filteredCount={filteredStudents.length} totalCount={students.length} />
-          <FinanceTable filteredStudents={paginatedStudents} getStudentPayment={getStudentPayment} formatRupiah={formatRupiah} loading={loading} searchQuery={searchQuery} students={students} payments={payments} selectedMonth={selectedMonth} sppPrices={sppPrices} onQuickConfirm={handleQuickConfirmLunas} onPrintReceipt={handlePrintReceipt} onEditPayment={handleOpenEditModal} onTriggerWaBilling={handleOpenWaBillingModal} onViewAnnualCard={handleOpenAnnualCardModal} currentPage={currentPage} pageSize={pageSize} totalStudents={filteredStudents.length} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
+          <FinanceTable filteredStudents={paginatedStudents} getStudentPayment={getStudentPayment} formatRupiah={formatRupiah} loading={loading} searchQuery={searchQuery} students={students} payments={payments} selectedMonth={selectedMonth} sppPrices={sppPrices} onQuickConfirm={handleQuickConfirmLunas} onPrintReceipt={handlePrintReceipt} onEditPayment={handleOpenEditModal} onTriggerWaBilling={handleOpenWaBillingModal} onUpdatePaymentType={handleUpdatePaymentType} onViewAnnualCard={handleOpenAnnualCardModal} currentPage={currentPage} pageSize={pageSize} totalStudents={filteredStudents.length} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
         </>
       )}
 

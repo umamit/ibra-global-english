@@ -1,7 +1,7 @@
 "use client";
 
 import { Student, Payment, PaymentResult } from "@/types";
-import { getStudentSPPDueInfo } from "../financeHelpers";
+import { getStudentSPPDueInfo, calculatePaymentBadge } from "../financeHelpers";
 
 interface FinanceTableProps {
   filteredStudents: Student[];
@@ -23,6 +23,7 @@ interface FinanceTableProps {
   onPrintReceipt: (student: Student, pay: PaymentResult) => void;
   onEditPayment: (student: Student) => void;
   onTriggerWaBilling: (student: Student, pay: PaymentResult) => void;
+  onUpdatePaymentType?: (studentId: string, typeVal: string) => void;
   onViewAnnualCard?: (student: Student) => void;
   currentPage: number;
   pageSize: number;
@@ -45,6 +46,7 @@ export default function FinanceTable({
   onPrintReceipt,
   onEditPayment,
   onTriggerWaBilling,
+  onUpdatePaymentType,
   onViewAnnualCard,
   currentPage,
   pageSize,
@@ -89,15 +91,38 @@ export default function FinanceTable({
         </thead>
         <tbody>
           {filteredStudents.map((student, idx) => {
-             const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
-             const dueInfo = getStudentSPPDueInfo(student, pay.status, selectedMonth);
+            const pay = getStudentPayment(student.id, students, payments, selectedMonth, sppPrices);
+            const dueInfo = getStudentSPPDueInfo(student, pay.status, selectedMonth);
+            const badgeInfo = calculatePaymentBadge(student, pay.payment_date, selectedMonth, pay.payment_type);
             return (
               <tr key={student.id} style={{ borderBottom: "1px solid var(--color-gray-100)" }} className="table-row-hover">
                 <td style={{ padding: "12px", textAlign: "center", fontWeight: "700", color: "var(--color-gray-500)" }} data-label="#">
                   {startIndex + idx + 1}
                 </td>
                 <td style={{ padding: "12px", fontWeight: "700", color: "var(--color-gray-800)" }} data-label="Nama Siswa">
-                  {student.name}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                      <span>{student.name}</span>
+                      <select
+                        value={pay.payment_type || "auto"}
+                        onChange={(e) => onUpdatePaymentType?.(student.id, e.target.value)}
+                        title={badgeInfo.description}
+                        style={{
+                          fontSize: "0.68rem",
+                          fontWeight: "800",
+                          padding: "0.12rem 0.45rem",
+                          borderRadius: "9999px",
+                          cursor: "pointer",
+                          outline: "none",
+                          ...badgeInfo.badgeStyle,
+                        }}
+                      >
+                        <option value="auto">⚡ {badgeInfo.type === "prepaid" ? "Prepaid (Auto)" : badgeInfo.type === "postpaid" ? "Postpaid (Auto)" : "Belum Bayar"}</option>
+                        <option value="prepaid">🟢 Prepaid</option>
+                        <option value="postpaid">🟡 Postpaid</option>
+                      </select>
+                    </div>
+                  </div>
                 </td>
                 <td style={{ padding: "12px" }} data-label="Program">
                   <span className="badge-program">{student.program}</span>
@@ -217,18 +242,7 @@ export default function FinanceTable({
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <span style={{ color: "var(--color-gray-500)" }}>Tampilkan:</span>
-            <select
-              value={pageSize}
-              onChange={(e) => onPageSizeChange(Number(e.target.value))}
-              style={{
-                padding: "0.25rem 0.5rem",
-                borderRadius: "6px",
-                border: "1px solid var(--color-gray-300, #cbd5e1)",
-                backgroundColor: "var(--color-bg-card, #ffffff)",
-                fontSize: "0.85rem",
-                cursor: "pointer"
-              }}
-            >
+            <select value={pageSize} onChange={(e) => onPageSizeChange(Number(e.target.value))} style={{ padding: "0.3rem 0.6rem", borderRadius: "8px", border: "1px solid #cbd5e1", backgroundColor: "#fff", fontSize: "0.85rem", cursor: "pointer" }}>
               <option value={10}>10 per halaman</option>
               <option value={25}>25 per halaman</option>
               <option value={50}>50 per halaman</option>
@@ -238,35 +252,9 @@ export default function FinanceTable({
 
           {totalPages > 1 && (
             <div style={{ display: "flex", alignItems: "center", gap: "0.38rem" }}>
-              <button
-                disabled={currentPage === 1}
-                onClick={() => onPageChange(currentPage - 1)}
-                className="btn-portal-outline"
-                style={{
-                  padding: "0.3rem 0.65rem",
-                  fontSize: "0.8rem",
-                  opacity: currentPage === 1 ? 0.5 : 1,
-                  cursor: currentPage === 1 ? "not-allowed" : "pointer"
-                }}
-              >
-                &laquo; Prev
-              </button>
-              <span style={{ fontWeight: 700, padding: "0 0.4rem", color: "var(--color-primary-dark)" }}>
-                {currentPage} / {totalPages}
-              </span>
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => onPageChange(currentPage + 1)}
-                className="btn-portal-outline"
-                style={{
-                  padding: "0.3rem 0.65rem",
-                  fontSize: "0.8rem",
-                  opacity: currentPage === totalPages ? 0.5 : 1,
-                  cursor: currentPage === totalPages ? "not-allowed" : "pointer"
-                }}
-              >
-                Next &raquo;
-              </button>
+              <button disabled={currentPage === 1} onClick={() => onPageChange(currentPage - 1)} className="btn-portal-outline" style={{ padding: "0.3rem 0.65rem", fontSize: "0.8rem", opacity: currentPage === 1 ? 0.5 : 1, cursor: currentPage === 1 ? "not-allowed" : "pointer" }}>&laquo; Prev</button>
+              <span style={{ fontWeight: 700, padding: "0 0.4rem", color: "var(--color-primary-dark)" }}>{currentPage} / {totalPages}</span>
+              <button disabled={currentPage === totalPages} onClick={() => onPageChange(currentPage + 1)} className="btn-portal-outline" style={{ padding: "0.3rem 0.65rem", fontSize: "0.8rem", opacity: currentPage === totalPages ? 0.5 : 1, cursor: currentPage === totalPages ? "not-allowed" : "pointer" }}>Next &raquo;</button>
             </div>
           )}
         </div>

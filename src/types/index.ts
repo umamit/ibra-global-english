@@ -23,6 +23,7 @@ export interface Payment {
   amount: number;
   status: string;
   payment_method?: string | null;
+  payment_type?: string | null;
   receipt_url?: string | null;
   payment_date?: string | null;
   created_at?: string;
@@ -33,6 +34,7 @@ export interface PaymentResult {
   amount: number;
   status: string;
   payment_method?: string | null;
+  payment_type?: string | null;
   payment_date?: string | null;
   receipt_url?: string | null;
 }

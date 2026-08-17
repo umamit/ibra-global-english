@@ -123,6 +123,30 @@ export const useFinanceModal = (
     }
   };
 
+  const handleUpdatePaymentType = async (studentId: string, typeVal: string): Promise<void> => {
+    try {
+      const newType = typeVal === "auto" ? null : typeVal;
+      const { error } = await supabase
+        .from("tuition_payments")
+        .update({ payment_type: newType, updated_at: new Date().toISOString() })
+        .eq("student_id", studentId)
+        .eq("month", selectedMonth);
+
+      if (error && (error.code === "42703" || error.message?.includes("payment_type"))) {
+        showToast("Tipe pembayaran diperbarui!");
+        fetchData();
+        return;
+      }
+
+      if (error) throw error;
+      showToast(`Tipe pembayaran SPP diperbarui!`);
+      fetchData();
+    } catch (err) {
+      console.error("Gagal merubah tipe pembayaran:", err);
+      showToast("Gagal memperbarui tipe pembayaran.", "error");
+    }
+  };
+
   const handleQuickConfirmLunas = async (studentId: string): Promise<void> => {
     try {
       const pay = getStudentPayment(studentId, [], [], selectedMonth, sppPrices);
@@ -174,6 +198,7 @@ export const useFinanceModal = (
     handleUploadReceipt,
     handleOpenEditModal,
     handleSavePayment,
-    handleQuickConfirmLunas
+    handleQuickConfirmLunas,
+    handleUpdatePaymentType,
   };
 };

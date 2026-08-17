@@ -4,6 +4,69 @@ import { printReceiptHTML } from "./printReceiptHelper";
 
 export { getStudentSPPDueInfo, printReceiptHTML };
 
+export interface PaymentBadgeInfo {
+  type: "prepaid" | "postpaid" | "unpaid";
+  label: string;
+  badgeStyle: React.CSSProperties;
+  description: string;
+}
+
+export const calculatePaymentBadge = (
+  student: Student | undefined,
+  paymentDate: string | null | undefined,
+  month: string,
+  explicitType?: string | null
+): PaymentBadgeInfo => {
+  if (explicitType === "prepaid") {
+    return {
+      type: "prepaid",
+      label: "🟢 Prepaid",
+      badgeStyle: { backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" },
+      description: "Pra-Bayar (Disetel Admin)",
+    };
+  }
+  if (explicitType === "postpaid") {
+    return {
+      type: "postpaid",
+      label: "🟡 Postpaid",
+      badgeStyle: { backgroundColor: "#fffbeb", color: "#92400e", border: "1px solid #fde68a" },
+      description: "Pasca-Bayar (Disetel Admin)",
+    };
+  }
+
+  if (!paymentDate) {
+    return {
+      type: "unpaid",
+      label: "Belum Bayar",
+      badgeStyle: { backgroundColor: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca" },
+      description: "Belum Melakukan Pembayaran",
+    };
+  }
+
+  const joinDate = student?.created_at ? new Date(student.created_at) : null;
+  const joinDay = joinDate ? joinDate.getDate() : 10;
+
+  const payDateObj = new Date(paymentDate);
+  const payDay = payDateObj.getDate();
+  const payMonthStr = `${payDateObj.getFullYear()}-${String(payDateObj.getMonth() + 1).padStart(2, "0")}`;
+
+  if (payMonthStr < month || (payMonthStr === month && payDay <= joinDay)) {
+    return {
+      type: "prepaid",
+      label: "🟢 Prepaid",
+      badgeStyle: { backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" },
+      description: `Bayar tgl ${payDay} (Masuk tgl ${joinDay}) - Tepat Waktu`,
+    };
+  }
+
+  return {
+    type: "postpaid",
+    label: "🟡 Postpaid",
+    badgeStyle: { backgroundColor: "#fffbeb", color: "#92400e", border: "1px solid #fde68a" },
+    description: `Bayar tgl ${payDay} (Masuk tgl ${joinDay}) - Susulan`,
+  };
+};
+
 export const getStudentPayment = (
   studentId: string, students: Student[], payments: Payment[], selectedMonth: string, sppPrices: Record<string, number>
 ): PaymentResult => {
@@ -17,11 +80,11 @@ export const getStudentPayment = (
   if (pay) {
     return {
       amount: pay.status === "belum_bayar" ? baseAmount : pay.amount,
-      status: pay.status, payment_method: pay.payment_method, receipt_url: pay.receipt_url, payment_date: pay.payment_date
+      status: pay.status, payment_method: pay.payment_method, payment_type: pay.payment_type, receipt_url: pay.receipt_url, payment_date: pay.payment_date
     };
   }
 
-  return { amount: baseAmount, status: "belum_bayar", payment_method: "Transfer Bank", receipt_url: "" };
+  return { amount: baseAmount, status: "belum_bayar", payment_method: "Transfer Bank", payment_type: null, receipt_url: "" };
 };
 
 export const exportPaymentsCSV = (
