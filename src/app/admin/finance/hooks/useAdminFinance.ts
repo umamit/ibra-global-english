@@ -67,6 +67,7 @@ export function useAdminFinance() {
           name,
           program,
           parent_id,
+          due_day,
           created_at,
           profiles:parent_id (
             full_name
