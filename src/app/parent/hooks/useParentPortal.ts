@@ -89,7 +89,10 @@ export function useParentPortal() {
     } catch (err) { console.error("Error fetching child details:", err); } finally { setDetailsLoading(false); }
   };
 
-  useEffect(() => { fetchParentData(); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => { fetchParentData(); }, 0);
+    return () => clearTimeout(timer);
+  }, []);
   useEffect(() => { if (selectedChild) { const t = setTimeout(() => fetchChildDetails(selectedChild), 0); return () => clearTimeout(t); } }, [selectedChild]);
 
   const handleLogout = async () => {

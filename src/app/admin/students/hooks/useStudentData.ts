@@ -114,8 +114,11 @@ export function useStudentData() {
   }, [supabase]);
 
   useEffect(() => {
-    fetchData();
-    fetchRegistrations();
+    const timer = setTimeout(() => {
+      fetchData();
+      fetchRegistrations();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchData, fetchRegistrations]);
 
   const handleUpdateStudentProgram = async (studentId: string, newProgram: string) => {

@@ -34,7 +34,10 @@ export default function AdminTutorsPage() {
     } catch { showToast("Gagal mengambil data tutor dari database."); } finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchTutors(); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => { fetchTutors(); }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
