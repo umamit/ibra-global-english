@@ -70,7 +70,7 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
                     </button>
                     <div className="dropdown-menu">
                       <Link href="/kemitraan" className="dropdown-item">Kemitraan Bimbel</Link>
-                      <a href="https://digital.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" className="dropdown-item" style={{ color: "var(--color-primary)", fontWeight: "700" }}>
+                      <a href="https://ibradigital.id" target="_blank" rel="noopener noreferrer" className="dropdown-item" style={{ color: "var(--color-primary)", fontWeight: "700" }}>
                         Ibra Digital Agency ↗
                       </a>
                     </div>

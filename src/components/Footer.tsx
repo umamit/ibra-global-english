@@ -82,7 +82,7 @@ export default function Footer({ initialSettings }: FooterProps) {
               v{packageInfo.version}
             </span>
             <span className="footer-signature" style={{ opacity: 0.6, fontSize: "0.85em", marginLeft: "8px" }}>
-              | Developed by <a href="https://digital.ibraglobalenglish.uk" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>Ibra Digital Engineering</a>
+              | Developed by <a href="https://ibradigital.id" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>Ibra Digital Engineering</a>
             </span>
           </span>
           <span style={{ fontSize: "0.8rem", opacity: 0.7, display: "flex", gap: "0.5rem 1rem", marginTop: "0.25rem", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
