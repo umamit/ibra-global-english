@@ -14,10 +14,6 @@ export async function proxy(request: NextRequest) {
   const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt|xml|webmanifest)$/);
   const isApiOrNext = pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.startsWith("/ingest");
 
-  if (hostname.startsWith("digital.") && !isStaticAsset && !isApiOrNext && !pathname.startsWith("/digital-agency")) {
-    return NextResponse.rewrite(new URL(`/digital-agency${pathname}`, request.url));
-  }
-
   if (hostname.startsWith("admin.")) {
     if (pathname.startsWith("/admin")) {
       const cleanPath = pathname.replace(/^\/admin/, "") || "/";

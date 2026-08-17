@@ -6,7 +6,7 @@ import DOMPurify from "dompurify";
 import { usePromoPopup } from "@/hooks/usePromoPopup";
 import "./PromoPopup.css";
 
-const EXCLUDED_PATHS = ["/admin", "/student", "/parent", "/tutor", "/login", "/auth", "/digital-agency"];
+const EXCLUDED_PATHS = ["/admin", "/student", "/parent", "/tutor", "/login", "/auth"];
 const subscribe = () => () => {};
 
 export default function PromoPopup() {
