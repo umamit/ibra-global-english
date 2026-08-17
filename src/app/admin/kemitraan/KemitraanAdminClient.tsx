@@ -100,7 +100,7 @@ export default function KemitraanAdminClient() {
                 <p><strong>Hal:</strong> Permohonan Kemitraan Rekomendasi Resmi &amp; Diagnostic Test Gratis</p>
                 <p><strong>Kepada Yth.</strong><br />{selectedSub.rep_name} ({selectedSub.rep_role || "Pimpinan"})<br /><strong>{selectedSub.institution_name}</strong><br />Di Tempat</p>
                 <p style={{ marginTop: "1rem" }}>Dengan hormat,</p>
-                <p>Sehubungan dengan komitmen Ibra Global English dalam meningkatkan mutu kemampuan bahasa Inggris generasi muda di Kabupaten Pulau Taliabu, melalui surat ini kami bermaksud mengundangkan <strong>{selectedSub.institution_name}</strong> untuk bergabung sebagai Mitra Rekomendasi Resmi.</p>
+                <p>Sehubungan dengan komitmen Ibra Global English dalam meningkatkan mutu kemampuan bahasa Inggris generasi muda di Kabupaten Pulau Taliabu, melalui surat ini kami bermaksud mengundang <strong>{selectedSub.institution_name}</strong> untuk bergabung sebagai Mitra Rekomendasi Resmi.</p>
                 <p>Kerja sama ini bersifat <strong>100% Bebas Biaya (Tanpa Anggaran Sekolah)</strong>, di mana murid-murid dari sekolah Bapak/Ibu berhak mendapatkan sesi Diagnostic Test gratis serta Voucher Potongan Pendaftaran Khusus.</p>
                 <p style={{ marginTop: "1.5rem" }}>Hormat kami,<br /><strong>Direksi Ibra Global English</strong></p>
               </div>
