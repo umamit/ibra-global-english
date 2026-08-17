@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import * as XLSX from "xlsx";
 import { RecapRow } from "../hooks/useAttendanceData";
 
 interface AttendanceRecapTableProps {
@@ -33,6 +34,27 @@ function getAttendanceRateBadge(rate: number): React.ReactElement {
 }
 
 export default function AttendanceRecapTable({ filteredRecap, recapLoading, searchTerm, programFilter, selectedMonth, onSearchChange, onProgramFilterChange, onExportCSV }: AttendanceRecapTableProps) {
+  const handleExportExcel = () => {
+    if (!filteredRecap || filteredRecap.length === 0) return;
+    const dataToExport = filteredRecap.map((r, idx) => {
+      const rate = r.total > 0 ? Math.round((r.hadir / r.total) * 100) : 100;
+      return {
+        No: idx + 1,
+        "Nama Siswa": r.name,
+        Program: r.program,
+        "Hadir (H)": r.hadir,
+        "Izin (I)": r.izin,
+        "Sakit (S)": r.sakit,
+        "Alpa (A)": r.alfa,
+        "Persentase Kehadiran": `${rate}%`,
+      };
+    });
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Presensi");
+    XLSX.writeFile(workbook, `Rekap_Presensi_Ibra_${selectedMonth || "Bulan"}.xlsx`);
+  };
+
   return (
     <div>
       {/* Search & Filter */}
@@ -67,6 +89,10 @@ export default function AttendanceRecapTable({ filteredRecap, recapLoading, sear
         </div>
         {filteredRecap.length > 0 && (
           <div style={{ display: "flex", gap: "0.5rem" }} className="no-print">
+            <button className="btn-portal-outline" onClick={handleExportExcel} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem", backgroundColor: "#ecfdf5", color: "#065f46", borderColor: "#a7f3d0" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>Export Excel</span>
+            </button>
             <button className="btn-portal-outline" onClick={onExportCSV} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.875rem" }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               <span>Export CSV</span>

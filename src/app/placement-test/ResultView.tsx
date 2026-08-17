@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import Button from "@/components/Button";
+import { playSuccessSound, triggerConfettiCelebration } from "./quizAudioHelpers";
 
 interface PlacementResult {
   id: string;
@@ -28,6 +30,13 @@ export default function ResultView({
   issueDateStr,
   onRestart
 }: ResultViewProps) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      playSuccessSound();
+      triggerConfettiCelebration();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, []);
   const getWhatsAppURL = () => {
     const targetPhone = "6281357001357";
     const text = `Halo Ibra Global English Bobong!\nSaya baru saja menyelesaikan *Tes Penempatan Bahasa Inggris Online* di website.\n\n*Nama:* ${userData.fullName}\n*Rekomendasi Level:* ${finalResult.level}\n*Skor Tes:* ${finalResult.score} / ${questionsLength}\n*Nomor Tes:* ${finalResult.id.slice(0, 8).toUpperCase()}\n\nSaya ingin berkonsultasi mengenai kelas yang sesuai dengan hasil pengujian saya. Terima kasih!`;

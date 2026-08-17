@@ -1,3 +1,22 @@
+import html2canvas from "html2canvas";
+
+export const generateReceiptPNG = async (elementId: string, filename: string): Promise<string | null> => {
+  const elem = document.getElementById(elementId);
+  if (!elem) return null;
+  try {
+    const canvas = await html2canvas(elem, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+    const image = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = `${filename}.png`;
+    link.click();
+    return image;
+  } catch (err) {
+    console.error("Gagal membuat gambar kuitansi PNG:", err);
+    return null;
+  }
+};
+
 export const printReceiptHTML = (
   student: any, pay: any, selectedMonth: string, getMonthName: (m: string) => string, formatRupiah: (n: number) => string, terbilang: (n: number) => string
 ): void => {

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import FinanceAiInsights from "./FinanceAiInsights";
 import FinanceDonutChart from "./FinanceDonutChart";
+import FinanceTrendChart from "./FinanceTrendChart";
 import { useFinanceAnalyticsData, Student, Payment, TooltipState, ChartDataPoint } from "../hooks/useFinanceAnalyticsData";
 
 interface FinanceAnalyticsProps { students: Student[]; allPayments: Payment[]; sppPrices: Record<string, number>; formatRupiah: (val: number) => string; selectedMonth: string; loading: boolean; }
@@ -79,6 +80,14 @@ export default function FinanceAnalytics({ students, allPayments, sppPrices, for
           {programBreakdown.map(prog => { const ratio = Math.round((prog.collected / (prog.expected || 1)) * 100); return (<div key={prog.name} style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", fontSize: "0.9rem", fontWeight: "800" }}><span style={{ color: "var(--color-gray-800)" }}>{prog.name}</span><div style={{ display: "flex", gap: "1rem", color: "var(--color-gray-500)" }}><span>Realisasi: <strong style={{ color: "var(--color-primary-dark)" }}>{formatRupiah(prog.collected)}</strong></span><span>Target: <strong>{formatRupiah(prog.expected)}</strong></span></div></div><div style={{ width: "100%", height: "14px", backgroundColor: "#f1f5f9", borderRadius: "10px", overflow: "hidden", position: "relative" }}><div style={{ width: `${Math.min(100, ratio)}%`, height: "100%", backgroundColor: prog.color, borderRadius: "10px", transition: "width 0.5s ease" }} /><span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "0.65rem", fontWeight: "900", color: ratio > 80 ? "white" : "var(--color-gray-600)" }}>{ratio}% Kolektabilitas</span></div></div>); })}
         </div>
       </div>
+
+      <FinanceTrendChart
+        data={chartData.map((d) => ({
+          month: d.monthShortName,
+          total: d.collected,
+          verifiedCount: d.collected > 0 ? 1 : 0,
+        }))}
+      />
 
       <FinanceAiInsights selectedMonth={selectedMonth} activeExpected={activeExpected} activeCollected={activeCollected} outstanding={outstanding} collectionRate={collectionRate} activePaidCount={activePaidCount} activeUnpaidCount={activeUnpaidCount} chartData={chartData} programBreakdown={programBreakdown} formatRupiah={formatRupiah} />
     </div>
