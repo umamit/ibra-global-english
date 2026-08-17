@@ -1,8 +1,8 @@
 import { Student, Payment, PaymentResult } from "@/types";
 import { getStudentSPPDueInfo } from "./dueInfoHelper";
-import { printReceiptHTML } from "./printReceiptHelper";
+import { printReceiptHTML, printAllFinanceReportHTML } from "./printReceiptHelper";
 
-export { getStudentSPPDueInfo, printReceiptHTML };
+export { getStudentSPPDueInfo, printReceiptHTML, printAllFinanceReportHTML };
 
 export interface PaymentBadgeInfo {
   type: "prepaid" | "postpaid" | "unpaid";

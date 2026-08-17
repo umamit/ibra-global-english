@@ -13,7 +13,7 @@ import FinanceDueAlertBanner from "./components/FinanceDueAlertBanner";
 import FinanceSearchToolbar from "./components/FinanceSearchToolbar";
 import { getMonthName, terbilang, formatRupiah } from "../utils";
 import ToastNotification from "../components/ToastNotification";
-import { getStudentPayment, exportPaymentsCSV, printReceiptHTML, getStudentSPPDueInfo } from "./financeHelpers";
+import { getStudentPayment, exportPaymentsCSV, printReceiptHTML, printAllFinanceReportHTML, getStudentSPPDueInfo } from "./financeHelpers";
 import { useFinanceModal } from "./hooks/useFinanceModal";
 import { useAdminFinance } from "./hooks/useAdminFinance";
 import { Student } from "@/types";
@@ -82,6 +82,7 @@ export default function AdminFinance() {
   })();
 
   const handlePrintReceipt = (student: Student, pay: any) => printReceiptHTML(student, pay, selectedMonth, getMonthName, formatRupiah, terbilang);
+  const handlePrintAllPDF = () => printAllFinanceReportHTML(students, payments, selectedMonth, getMonthName, formatRupiah, sppPrices);
 
   const tabBtnStyle = (key: string) => ({ padding: "0.6rem 1.5rem", fontSize: "0.95rem", fontWeight: "800" as const, border: "none", background: "none", color: activeTab === key ? "var(--color-primary-dark)" : "var(--color-gray-400)", borderBottom: activeTab === key ? "3px solid var(--color-primary)" : "3px solid transparent", cursor: "pointer", transition: "all 0.2s ease", marginBottom: "-0.65rem", display: "inline-flex" as const, alignItems: "center" as const, gap: "0.4rem" });
 
@@ -104,7 +105,7 @@ export default function AdminFinance() {
           {activeTab === "list" && students.length > 0 && (
             <>
               <button className="btn-portal-primary" onClick={() => exportPaymentsCSV(students, payments, selectedMonth, sppPrices, formatRupiah)} style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Export CSV</span></button>
-              <button className="btn-portal-primary" onClick={printFinanceReport} style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span>Cetak PDF</span></button>
+              <button className="btn-portal-primary" onClick={handlePrintAllPDF} style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.9rem", fontSize: "0.85rem" }}><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span>Cetak PDF</span></button>
             </>
           )}
         </div>
