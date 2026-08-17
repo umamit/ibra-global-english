@@ -91,9 +91,12 @@ export default function KemitraanAdminClient() {
               <button type="button" onClick={() => setSelectedSub(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer" }}>✕</button>
             </div>
             <div id="print-area" style={{ border: "1px solid #ddd", padding: "1.75rem", borderRadius: "8px", background: "#fff", fontFamily: "serif", lineHeight: 1.6, color: "#111" }}>
-              <div style={{ textAlign: "center", borderBottom: "2px solid #164d57", paddingBottom: "0.75rem", marginBottom: "1.25rem" }}>
-                <h2 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "bold", color: "#164d57" }}>IBRA GLOBAL ENGLISH</h2>
-                <p style={{ margin: 0, fontSize: "0.8rem", color: "#555" }}>Bobong, Kabupaten Pulau Taliabu, Maluku Utara | WhatsApp: {SITE_CONFIG.contact.phone}</p>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1.25rem", borderBottom: "2px solid #164d57", paddingBottom: "0.75rem", marginBottom: "1.25rem" }}>
+                <img src="/assets/logo.png" alt="Logo Ibra Global English" style={{ width: "60px", height: "auto", objectFit: "contain" }} />
+                <div style={{ textAlign: "center" }}>
+                  <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: "800", color: "#164d57", letterSpacing: "0.5px" }}>IBRA GLOBAL ENGLISH</h2>
+                  <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "#555" }}>Bobong, Kabupaten Pulau Taliabu, Maluku Utara | WhatsApp: {SITE_CONFIG.contact.phone}</p>
+                </div>
               </div>
               <div style={{ fontSize: "0.9rem" }}>
                 <p><strong>Nomor Surat:</strong> {printLetterNo}</p>
