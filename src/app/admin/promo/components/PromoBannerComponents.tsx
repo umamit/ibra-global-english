@@ -118,9 +118,11 @@ export function PromoBannerPreview({ badgeText, title, message, ctaText, ctaUrl,
       <div style={{ border: "1px solid var(--color-gray-200)", borderRadius: "16px", overflow: "hidden", maxWidth: "400px", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
         {imageUrl && <img src={imageUrl} alt="Preview" width={400} height={200} style={{ width: "100%", maxHeight: "200px", objectFit: "cover" }} />}
         <div style={{ padding: "1.25rem 1.5rem 1.5rem" }}>
-          <span style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.7rem", fontWeight: 800, borderRadius: "20px", backgroundColor: "rgba(33, 108, 126, 0.1)", color: "#216c7e", border: "1px solid rgba(33, 108, 126, 0.2)", marginBottom: "0.6rem", textTransform: "uppercase" }}>
-            {badgeText || "PROMO KHUSUS"}
-          </span>
+          <div style={{ textAlign: "center", marginBottom: "0.6rem" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0.3rem 0.85rem", fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.05em", textIndent: "0.05em", borderRadius: "9999px", backgroundColor: "rgba(33, 108, 126, 0.1)", color: "#216c7e", border: "1px solid rgba(33, 108, 126, 0.2)", textTransform: "uppercase", lineHeight: 1.2 }}>
+              {badgeText || "PROMO KHUSUS"}
+            </span>
+          </div>
           {title && <p style={{ margin: "0 0 0.5rem", fontWeight: 700, color: "var(--color-primary-dark)", fontSize: "1.05rem" }}>{title}</p>}
           <div
             style={{ margin: "0 0 1rem", fontSize: "0.9rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}
