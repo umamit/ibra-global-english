@@ -35,8 +35,11 @@ export function usePromoPopup() {
         const res = await fetch("/api/promo-banners");
         if (!res.ok) return;
         const data = await res.json();
-        if (!data) return;
         setBanner(data);
+        if (data.image_url && typeof window !== "undefined") {
+          const img = new Image();
+          img.src = data.image_url;
+        }
 
         timer = setTimeout(() => setVisible(true), 3000);
       } catch {

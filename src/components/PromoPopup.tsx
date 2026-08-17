@@ -32,7 +32,7 @@ export default function PromoPopup() {
 
         {banner.image_url && (
           <div className="promo-popup-image-container">
-            <img src={banner.image_url} alt={banner.title || "Promo Ibra Global English"} className="promo-popup-image" />
+            <img src={banner.image_url} alt={banner.title || "Promo Ibra Global English"} className="promo-popup-image" loading="eager" fetchPriority="high" />
           </div>
         )}
 
