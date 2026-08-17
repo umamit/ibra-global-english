@@ -92,7 +92,22 @@
   margin: 0 0 1.5rem;
   font-size: 0.88rem;
   color: #475569;
-  line-height: 1.5;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.promo-popup-description p {
+  margin: 0 0 0.5rem;
+}
+
+.promo-popup-description ul,
+.promo-popup-description ol {
+  margin: 0.4rem 0 0.8rem 1.25rem;
+  padding: 0;
+}
+
+.promo-popup-description li {
+  margin-bottom: 0.3rem;
 }
 
 .promo-popup-cta-btn {
