@@ -13,9 +13,13 @@ export const educationalOrgSchema = {
   "name": "PT. IBRA Global English",
   "alternateName": "Ibra Global English Bobong",
   "image": "https://www.ibraglobalenglish.uk/assets/logo.png",
+  "logo": "https://www.ibraglobalenglish.uk/assets/logo.png",
   "url": "https://www.ibraglobalenglish.uk/",
   "telephone": "+6281357001357",
   "email": "admin@ibraglobalenglish.uk",
+  "priceRange": "$$",
+  "currenciesAccepted": "IDR",
+  "paymentAccepted": "Cash, Bank Transfer",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001",
@@ -24,9 +28,68 @@ export const educationalOrgSchema = {
     "postalCode": "97794",
     "addressCountry": "ID"
   },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -1.8841,
+    "longitude": 124.3644
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "08:00",
+      "closes": "21:00"
+    }
+  ],
   "description": "Kursus Bahasa Inggris offline dan bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu dengan metode interaktif, fun, dan tutor berpengalaman.",
   "sameAs": ["https://maps.app.goo.gl/weuM3h6yCu3rK3ov8", "https://www.facebook.com/IbraGlobalEnglish", "https://www.instagram.com/ibraglobalenglish/"],
   "offers": { "@type": "Offer", "category": "English Language Course" }
+};
+
+export const coursesSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {
+      "@type": "Course",
+      "position": 1,
+      "name": "Kids Program (Kursus Bahasa Inggris Anak)",
+      "description": "Program belajar bahasa Inggris interaktif untuk usia 5-12 tahun dengan metode fun learning, games, lagu, dan visual untuk membangun kecintaan berbahasa Inggris sejak dini.",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "PT. IBRA Global English",
+        "sameAs": "https://www.ibraglobalenglish.uk/"
+      },
+      "educationalLevel": "Beginner / Elementary",
+      "inLanguage": "id, en"
+    },
+    {
+      "@type": "Course",
+      "position": 2,
+      "name": "Teens Program (Kursus Bahasa Inggris Remaja)",
+      "description": "Program peningkatan kemampuan berbicara (speaking practice), tata bahasa (grammar), kosakata, serta melatih kepercayaan diri presentasi dan diskusi untuk usia 13-17 tahun.",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "PT. IBRA Global English",
+        "sameAs": "https://www.ibraglobalenglish.uk/"
+      },
+      "educationalLevel": "Intermediate / Upper-Intermediate",
+      "inLanguage": "id, en"
+    },
+    {
+      "@type": "Course",
+      "position": 3,
+      "name": "Fun Calistung (Bimbingan Baca, Tulis & Hitung)",
+      "description": "Bimbingan belajar dasar membaca, menulis, dan berhitung untuk anak usia 5-7 tahun dengan pendekatan ramah anak dan metode bermain sambil belajar.",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "PT. IBRA Global English",
+        "sameAs": "https://www.ibraglobalenglish.uk/"
+      },
+      "educationalLevel": "Preschool / Kindergarten",
+      "inLanguage": "id"
+    }
+  ]
 };
 
 export const faqSchema = {

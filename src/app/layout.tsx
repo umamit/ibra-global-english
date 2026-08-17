@@ -9,7 +9,7 @@ import CloudflareAnalytics from "@/components/CloudflareAnalytics";
 import QueryProvider from "./QueryProvider";
 import AntiCopyProtection from "@/components/AntiCopyProtection";
 import { createNewsArticleSchema } from "@/utils/seoHelpers";
-import { websiteSchema, educationalOrgSchema, faqSchema, breadcrumbSchema } from "./layoutSchemas";
+import { websiteSchema, educationalOrgSchema, faqSchema, breadcrumbSchema, coursesSchema } from "./layoutSchemas";
 import "./globals.css";
 
 export const dynamic = 'force-dynamic';
@@ -62,6 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(educationalOrgSchema) }} nonce={nonce} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} nonce={nonce} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} nonce={nonce} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(coursesSchema) }} nonce={nonce} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(createNewsArticleSchema({ title: "Pendaftaran Kursus Bahasa Inggris & Calistung Terbaru di Bobong, Pulau Taliabu", description: "Informasi resmi program belajar bahasa Inggris interaktif untuk Kids, Teens, dan Calistung di Ibra Global English Bobong.", image: "https://www.ibraglobalenglish.uk/assets/logo.png", url: "https://www.ibraglobalenglish.uk/" })) }} nonce={nonce} />
         <Script id="register-sw" strategy="afterInteractive" nonce={nonce}>{`if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('/sw.js').catch(function(err) { console.log('SW registration failed: ', err); }); }); }`}</Script>
       </head>

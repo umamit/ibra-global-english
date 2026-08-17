@@ -8,6 +8,19 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.ibraglobalenglish.uk/privacy",
   },
+  openGraph: {
+    title: "Kebijakan Privasi - Ibra Global English Bobong",
+    description: "Kebijakan privasi resmi PT Ibra Global English mengenai pengumpulan, penggunaan, dan perlindungan data siswa serta orang tua.",
+    url: "https://www.ibraglobalenglish.uk/privacy",
+    type: "website",
+    images: [{ url: "/assets/logo.png", width: 512, height: 512, alt: "Ibra Global English Logo" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kebijakan Privasi - Ibra Global English Bobong",
+    description: "Kebijakan privasi resmi PT Ibra Global English mengenai pengumpulan, penggunaan, dan perlindungan data siswa serta orang tua.",
+    images: ["/assets/logo.png"],
+  }
 };
 
 import LegalLayout from "@/app/legal/LegalLayout";

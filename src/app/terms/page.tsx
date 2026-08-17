@@ -8,6 +8,19 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.ibraglobalenglish.uk/terms",
   },
+  openGraph: {
+    title: "Syarat & Ketentuan - Ibra Global English Bobong",
+    description: "Syarat dan ketentuan layanan resmi bimbingan belajar dan kursus bahasa Inggris PT Ibra Global English Bobong.",
+    url: "https://www.ibraglobalenglish.uk/terms",
+    type: "website",
+    images: [{ url: "/assets/logo.png", width: 512, height: 512, alt: "Ibra Global English Logo" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Syarat & Ketentuan - Ibra Global English Bobong",
+    description: "Syarat dan ketentuan layanan resmi bimbingan belajar dan kursus bahasa Inggris PT Ibra Global English Bobong.",
+    images: ["/assets/logo.png"],
+  }
 };
 
 import LegalLayout from "@/app/legal/LegalLayout";

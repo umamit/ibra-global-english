@@ -12,7 +12,21 @@ export const metadata: Metadata = {
     description: "Dokumentasi keseruan belajar-mengajar aktif, speaking practice, dan kelas interaktif di Pulau Taliabu.",
     url: "https://www.ibraglobalenglish.uk/gallery",
     type: "website",
+    images: [
+      {
+        url: "/assets/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Galeri Ibra Global English Bobong",
+      }
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Galeri Kegiatan Siswa | Ibra Global English Bobong",
+    description: "Dokumentasi keseruan belajar-mengajar aktif, speaking practice, dan kelas interaktif di Pulau Taliabu.",
+    images: ["/assets/logo.png"],
+  }
 };
 
 export default function GalleryPage() {
