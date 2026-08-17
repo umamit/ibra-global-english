@@ -6,6 +6,7 @@ const SESSION_KEY = "promo_popup_dismissed";
 
 export interface PromoBanner {
   id: string;
+  badge_text?: string | null;
   title: string | null;
   message: string;
   image_url: string | null;

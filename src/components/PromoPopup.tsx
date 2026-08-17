@@ -37,7 +37,7 @@ export default function PromoPopup() {
         )}
 
         <div className="promo-popup-content">
-          <div className="promo-popup-badge">PROMO KHUSUS</div>
+          <div className="promo-popup-badge">{banner.badge_text || "PROMO KHUSUS"}</div>
 
           <h3 id="promo-title" className="promo-popup-title">
             {banner.title || "Informasi Promo"}

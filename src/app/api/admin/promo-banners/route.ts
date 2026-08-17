@@ -32,6 +32,7 @@ export const PATCH = withAdminAuth(async (request: NextRequest) => {
 
     const allowedFields = [
       "is_active",
+      "badge_text",
       "title",
       "message",
       "image_url",

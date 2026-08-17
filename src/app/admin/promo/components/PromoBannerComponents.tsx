@@ -66,13 +66,17 @@ function PromoTiptapEditor({ value, onChange }: { value: string; onChange: (val:
 }
 
 export function PromoBannerFormFields(props: any) {
-  const { title, setTitle, message, setMessage, ctaText, setCtaText, ctaUrl, setCtaUrl, imageUrl, handleRemoveImage, uploading, fileInputRef, handleImageUpload, handleSave, saving } = props;
+  const { badgeText, setBadgeText, title, setTitle, message, setMessage, ctaText, setCtaText, ctaUrl, setCtaUrl, imageUrl, handleRemoveImage, uploading, fileInputRef, handleImageUpload, handleSave, saving } = props;
   const inputStyle = { width: "100%", padding: "0.75rem", borderRadius: "8px", border: "1px solid var(--color-gray-300)" };
   const labelStyle = { display: "block", fontWeight: 600, fontSize: "0.875rem", marginBottom: "0.4rem" };
 
   return (
     <div style={{ backgroundColor: "#fff", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)" }}>
       <h2 style={{ margin: "0 0 1.25rem", fontSize: "1rem", fontWeight: 700 }}>Konten Popup Promo (TipTap Editor)</h2>
+      <div style={{ marginBottom: "1rem" }}>
+        <label style={labelStyle}>Label / Badge Atas (misal: PROMO KHUSUS / PENGUMUMAN PENTING)</label>
+        <input type="text" value={badgeText} onChange={(e) => setBadgeText(e.target.value)} placeholder="PROMO KHUSUS" style={inputStyle} maxLength={40} />
+      </div>
       <div style={{ marginBottom: "1rem" }}>
         <label style={labelStyle}>Judul Promo</label>
         <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Penawaran Spesial!" style={inputStyle} maxLength={80} />
@@ -106,7 +110,7 @@ export function PromoBannerFormFields(props: any) {
   );
 }
 
-export function PromoBannerPreview({ title, message, ctaText, ctaUrl, imageUrl }: any) {
+export function PromoBannerPreview({ badgeText, title, message, ctaText, ctaUrl, imageUrl }: any) {
   const cleanHtml = typeof window !== "undefined" ? DOMPurify.sanitize(message || "") : message;
   return (
     <div style={{ backgroundColor: "#fff", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)" }}>
@@ -114,6 +118,9 @@ export function PromoBannerPreview({ title, message, ctaText, ctaUrl, imageUrl }
       <div style={{ border: "1px solid var(--color-gray-200)", borderRadius: "16px", overflow: "hidden", maxWidth: "400px", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
         {imageUrl && <img src={imageUrl} alt="Preview" width={400} height={200} style={{ width: "100%", maxHeight: "200px", objectFit: "cover" }} />}
         <div style={{ padding: "1.25rem 1.5rem 1.5rem" }}>
+          <span style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.7rem", fontWeight: 800, borderRadius: "20px", backgroundColor: "rgba(33, 108, 126, 0.1)", color: "#216c7e", border: "1px solid rgba(33, 108, 126, 0.2)", marginBottom: "0.6rem", textTransform: "uppercase" }}>
+            {badgeText || "PROMO KHUSUS"}
+          </span>
           {title && <p style={{ margin: "0 0 0.5rem", fontWeight: 700, color: "var(--color-primary-dark)", fontSize: "1.05rem" }}>{title}</p>}
           <div
             style={{ margin: "0 0 1rem", fontSize: "0.9rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}
