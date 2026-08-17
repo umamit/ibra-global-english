@@ -22,6 +22,12 @@ export const metadata: Metadata = {
         alt: "Ibra Global English Logo",
       }
     ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tes Penempatan Bahasa Inggris Online | Ibra Global English",
+    description: "Tes penempatan level membaca, kosakata, tata bahasa, dan berbicara (speaking) gratis secara online.",
+    images: ["/assets/logo.png"],
   }
 };
 

@@ -32,6 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: "https://www.ibraglobalenglish.uk" },
     robots: { index: true, follow: true },
     openGraph: { title: defaultTitle, description, url: "https://www.ibraglobalenglish.uk/", siteName: "PT. IBRA Global English", type: "website", images: [{ url: heroImage, width: 512, height: 512, alt: "PT. IBRA Global English Logo" }] },
+    twitter: { card: "summary_large_image", title: defaultTitle, description, images: [heroImage] },
     manifest: "/manifest.json",
     verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "google-site-verification-code", other: { "facebook-domain-verification": ["7f0myl220gjkh4ndqe6cvvz26h7iyg"] } },
   };
