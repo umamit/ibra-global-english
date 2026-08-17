@@ -1,8 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-import DOMPurify from "dompurify";
 import { usePromoPopup } from "@/hooks/usePromoPopup";
 import "./PromoPopup.css";
 
@@ -13,14 +12,20 @@ export default function PromoPopup() {
   const isMounted = useSyncExternalStore(subscribe, () => true, () => false);
   const pathname = usePathname();
   const { banner, banners, currentIndex, totalBanners, visible, dismiss, nextSlide, prevSlide, goToSlide } = usePromoPopup();
+  const [cleanHtml, setCleanHtml] = useState<string>("");
+
+  useEffect(() => {
+    if (!banner?.message) { setCleanHtml(""); return; }
+    import("dompurify").then(({ default: DOMPurify }) => {
+      setCleanHtml(DOMPurify.sanitize(banner.message));
+    });
+  }, [banner?.message]);
 
   if (!isMounted) return null;
 
   const isExcludedPath = pathname ? EXCLUDED_PATHS.some((p) => pathname.startsWith(p)) : false;
 
   if (isExcludedPath || !visible || !banner) return null;
-
-  const cleanMessageHtml = typeof window !== "undefined" && banner.message ? DOMPurify.sanitize(banner.message) : banner.message;
 
   return (
     <>
@@ -63,7 +68,7 @@ export default function PromoPopup() {
           {banner.message && (
             <div
               className="promo-popup-description"
-              dangerouslySetInnerHTML={{ __html: cleanMessageHtml || "" }}
+              dangerouslySetInnerHTML={{ __html: cleanHtml }}
             />
           )}
 
@@ -90,3 +95,4 @@ export default function PromoPopup() {
     </>
   );
 }
+
