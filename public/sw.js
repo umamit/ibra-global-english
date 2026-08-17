@@ -34,7 +34,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   
-  let url: URL;
+  let url;
   try {
     url = new URL(event.request.url);
   } catch (_) {
