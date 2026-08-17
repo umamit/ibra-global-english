@@ -159,19 +159,20 @@ export const useFinanceModal = (
 
   const handleUpdateStudentDueDay = async (studentId: string, dueDay: number): Promise<void> => {
     try {
-      const { error } = await supabase
-        .from("students")
-        .update({ due_day: dueDay })
-        .eq("id", studentId);
+      const res = await fetch("/api/admin/update-student-due-day", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId, dueDay }),
+      });
 
-      if (error && (error.code === "42703" || error.message?.includes("due_day"))) {
-        showToast("Jalankan perintah SQL 'due_day' di Supabase SQL Editor!", "error");
+      const result = await res.json();
+      if (!res.ok || result.error) {
+        showToast(result.error || "Gagal memperbarui tanggal jatuh tempo.", "error");
         return;
       }
 
-      if (error) throw error;
-      showToast(`Siklus jatuh tempo SPP siswa diubah ke Tanggal ${dueDay}!`);
-      fetchData();
+      showToast(`Siklus jatuh tempo SPP siswa berhasil diubah ke Tanggal ${dueDay}!`);
+      await fetchData();
     } catch (err) {
       console.error("Gagal merubah tanggal jatuh tempo:", err);
       showToast("Gagal memperbarui tanggal jatuh tempo.", "error");
