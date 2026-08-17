@@ -86,6 +86,9 @@ export function useGalleryData() {
 
   const getEmbedUrl = (url: string): string => {
     if (!url) return "";
+    if (url.includes("facebook.com/") || url.includes("fb.watch/")) {
+      return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false`;
+    }
     if (url.includes("youtube.com/watch")) {
       try {
         const urlObj = new URL(url);

@@ -24,7 +24,7 @@ export default function VideoGallery({
       <div style={{ borderBottom: "1px solid var(--color-gray-250)", paddingBottom: "1rem", marginBottom: "1.5rem" }}>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-primary-dark)" }}>Kelola Galeri Video Kegiatan</h2>
         <p style={{ fontSize: "0.85rem", color: "var(--color-gray-500)", marginTop: "0.25rem" }}>
-          Tambahkan tautan video dokumentasi kegiatan Ibra Global English. Tautan YouTube biasa atau YouTube Shorts otomatis dikonversi ke format embed yang bisa diputar di web.
+          Tambahkan tautan video dokumentasi kegiatan Ibra Global English. Tautan Facebook Video/Reel, YouTube biasa, maupun YouTube Shorts otomatis dikonversi ke format player interaktif.
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export default function VideoGallery({
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>URL Tautan Video (YouTube/CapCut)</label>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-600)", marginBottom: "0.35rem" }}>URL Tautan Video (Facebook / YouTube / CapCut)</label>
                 <input
                   type="text"
                   value={vid.url}
@@ -97,7 +97,7 @@ export default function VideoGallery({
                     setVideosList(updated);
                   }}
                   className="portal-input"
-                  placeholder="Contoh: https://www.youtube.com/watch?v=XXXX atau https://youtu.be/XXXX"
+                  placeholder="Contoh: https://www.facebook.com/watch/?v=XXX atau https://fb.watch/XXX atau https://youtu.be/XXX"
                 />
               </div>
             </div>
