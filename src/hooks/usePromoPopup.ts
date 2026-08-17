@@ -16,7 +16,8 @@ export interface PromoBanner {
 
 export function usePromoPopup() {
   const pathname = usePathname();
-  const [banner, setBanner] = useState<PromoBanner | null>(null);
+  const [banners, setBanners] = useState<PromoBanner[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -29,15 +30,22 @@ export function usePromoPopup() {
     if (isExcludedPath || isDigitalSubdomain) return;
 
     let timer: NodeJS.Timeout;
-    const fetchBanner = async () => {
+    const fetchBanners = async () => {
       try {
         const res = await fetch("/api/promo-banners");
         if (!res.ok) return;
         const data = await res.json();
-        setBanner(data);
-        if (data.image_url && typeof window !== "undefined") {
-          const img = new Image();
-          img.src = data.image_url;
+        const list: PromoBanner[] = Array.isArray(data) ? data : data ? [data] : [];
+        if (list.length === 0) return;
+
+        setBanners(list);
+        if (typeof window !== "undefined") {
+          list.forEach((b) => {
+            if (b.image_url) {
+              const img = new Image();
+              img.src = b.image_url;
+            }
+          });
         }
 
         timer = setTimeout(() => setVisible(true), 3000);
@@ -46,20 +54,53 @@ export function usePromoPopup() {
       }
     };
 
-    fetchBanner();
+    fetchBanners();
 
     return () => {
       if (timer) clearTimeout(timer);
     };
   }, [pathname]);
 
+  // Auto-slide interval every 5 seconds if multiple banners exist
+  useEffect(() => {
+    if (!visible || banners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [visible, banners.length]);
+
+  const nextSlide = () => {
+    if (banners.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % banners.length);
+  };
+
+  const prevSlide = () => {
+    if (banners.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
+  };
+
+  const goToSlide = (idx: number) => {
+    if (idx >= 0 && idx < banners.length) {
+      setCurrentIndex(idx);
+    }
+  };
+
   const dismiss = () => {
     setVisible(false);
   };
 
+  const currentBanner = banners[currentIndex] || null;
+
   return {
-    banner,
+    banners,
+    banner: currentBanner,
+    currentIndex,
+    totalBanners: banners.length,
     visible,
     dismiss,
+    nextSlide,
+    prevSlide,
+    goToSlide,
   };
 }
