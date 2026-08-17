@@ -39,7 +39,7 @@ export default function FinanceAnalytics({ students, allPayments, sppPrices, for
     <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
       <div className="stat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
         {execCards.map(c => (
-          <div key={c.label} className="portal-card" style={{ padding: "1.25rem", borderLeft: `4px solid ${c.border}`, background: c.bg }}>
+          <div key={c.label} className="portal-card" style={{ padding: "1.25rem", border: "1px solid rgba(0, 0, 0, 0.06)", borderRadius: "16px", background: "#ffffff" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-gray-500)" }}>{c.label}</span>
             <h2 style={{ fontSize: "1.6rem", fontWeight: "900", color: c.color, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: "0.35rem" }}>{c.val}</h2>
             <p style={{ fontSize: "0.75rem", color: "var(--color-gray-400)", marginTop: "0.25rem" }}>{c.sub}</p>

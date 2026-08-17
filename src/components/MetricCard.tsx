@@ -48,7 +48,8 @@ export default function MetricCard({
       className="portal-card" 
       style={{ 
         padding: "1.5rem", 
-        borderLeft: `5px solid ${selectedColor.border}`,
+        border: "1px solid rgba(0, 0, 0, 0.06)",
+        borderRadius: "16px",
         display: "flex",
         flexDirection: "column",
         gap: "0.25rem",
