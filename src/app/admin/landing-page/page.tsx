@@ -26,6 +26,8 @@ export default function LandingPageCMS() {
     paymentAccountName, setPaymentAccountName, paymentAccountSub, setPaymentAccountSub,
     paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung,
     marqueeText1, setMarqueeText1, marqueeText2, setMarqueeText2, marqueeText3, setMarqueeText3,
+    marqueeList, setMarqueeList, marqueeIcon, setMarqueeIcon,
+    handleAddMarqueeText, handleRemoveMarqueeText, handleMarqueeTextChange,
     ctaTag, setCtaTag, ctaTitle, setCtaTitle, ctaDesc, setCtaDesc,
     ctaBrochureImage, setCtaBrochureImage, uploadingHero, uploadingCtaBrochure,
     heroFileRef, ctaBrochureFileRef,
@@ -71,6 +73,11 @@ export default function LandingPageCMS() {
           marqueeText1={marqueeText1} setMarqueeText1={setMarqueeText1}
           marqueeText2={marqueeText2} setMarqueeText2={setMarqueeText2}
           marqueeText3={marqueeText3} setMarqueeText3={setMarqueeText3}
+          marqueeList={marqueeList} setMarqueeList={setMarqueeList}
+          marqueeIcon={marqueeIcon} setMarqueeIcon={setMarqueeIcon}
+          handleAddMarqueeText={handleAddMarqueeText}
+          handleRemoveMarqueeText={handleRemoveMarqueeText}
+          handleMarqueeTextChange={handleMarqueeTextChange}
           ctaTag={ctaTag} setCtaTag={setCtaTag}
           ctaTitle={ctaTitle} setCtaTitle={setCtaTitle}
           ctaDesc={ctaDesc} setCtaDesc={setCtaDesc}

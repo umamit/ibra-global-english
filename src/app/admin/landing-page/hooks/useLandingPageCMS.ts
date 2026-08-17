@@ -40,6 +40,12 @@ export function useLandingPageCMS() {
   const [marqueeText1, setMarqueeText1] = useState<string>("");
   const [marqueeText2, setMarqueeText2] = useState<string>("");
   const [marqueeText3, setMarqueeText3] = useState<string>("");
+  const [marqueeList, setMarqueeList] = useState<string[]>([
+    "Pendaftaran Siswa Baru Ibra Global English Bobong Telah Dibuka! Segera Daftarkan Putra-Putri Anda!",
+    "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!",
+    "Ikuti Placement Test Online Secara Gratis di Website Kami dan Cari Tahu Tingkat Kemampuan Anda!"
+  ]);
+  const [marqueeIcon, setMarqueeIcon] = useState<string>("sparkle");
   const [ctaTag, setCtaTag] = useState<string>("");
   const [ctaTitle, setCtaTitle] = useState<string>("");
   const [ctaDesc, setCtaDesc] = useState<string>("");
@@ -96,6 +102,7 @@ export function useLandingPageCMS() {
         setMarqueeText1(map["marquee_text_1"] || "Pendaftaran ditutup karena kelas full");
         setMarqueeText2(map["marquee_text_2"] || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
         setMarqueeText3(map["marquee_text_3"] || "Ikuti Placement Test Offline Secara Gratis, Ayo Kesini dan Cari Tahu Tingkat Kemampuan Kalian");
+        setMarqueeIcon(map["marquee_icon"] || "sparkle");
         setCtaTag(map["cta_tag"] || "Promo Terbatas!");
         setCtaTitle(map["cta_title"] || "Kuasai Bahasa Inggris Lebih Cepat di Ibra Global English Bobong & Jadi Percaya Diri!");
         setCtaDesc(map["cta_desc"] || "Dapatkan tes penempatan level (Placement Test) & bimbingan belajar gratis sekarang juga di Ibra Global English Bobong. Kuota sangat terbatas!");
@@ -110,6 +117,13 @@ export function useLandingPageCMS() {
           try { return JSON.parse(raw); } catch { return fallback; }
         };
 
+        const defaultMarquee = [
+          map["marquee_text_1"] || "Pendaftaran Siswa Baru Ibra Global English Bobong Telah Dibuka!",
+          map["marquee_text_2"] || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!",
+          map["marquee_text_3"] || "Ikuti Placement Test Online Secara Gratis di Website Kami!"
+        ].filter(Boolean);
+
+        setMarqueeList(parseList(map["marquee_items"], defaultMarquee.length > 0 ? defaultMarquee : ["Selamat Datang di Ibra Global English"]));
         setVideosList(parseList(map["landing_videos"], [{ title: "Final", desc: "Shorts Video", url: "https://youtube.com/shorts/qvVL3p9qybM" }]));
         setFaqsList(parseList(map["landing_faq"], [
           { question: "Dimana lokasi les Ibra Global English Bobong?", answer: "Gedung Kost Fitrah Lantai 1, Belakang Mess Tambang, Bobong, Pulau Taliabu." },
@@ -139,6 +153,26 @@ export function useLandingPageCMS() {
     }
   };
 
+  const handleAddMarqueeText = () => {
+    setMarqueeList((prev) => [...prev, ""]);
+  };
+
+  const handleRemoveMarqueeText = (index: number) => {
+    if (marqueeList.length <= 1) {
+      showToast("Minimal harus ada 1 teks pengumuman.", "error");
+      return;
+    }
+    setMarqueeList((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleMarqueeTextChange = (index: number, value: string) => {
+    setMarqueeList((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+  };
+
   const handleUploadToStorage = async (file: File): Promise<string> => {
     const fileExt = file.name.split(".").pop();
     const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
@@ -161,13 +195,18 @@ export function useLandingPageCMS() {
   const handleSaveHeroSettings = async (e: React.FormEvent) => {
     e.preventDefault(); setLoading(true);
     try {
+      const validMarquee = marqueeList.filter((s) => s && s.trim().length > 0);
       const settings = [
         { key: "hero_title", value: heroTitle }, { key: "hero_subtitle", value: heroSubtitle }, { key: "hero_desc", value: heroDesc },
         { key: "hero_image", value: heroImage }, { key: "contact_address", value: contactAddress }, { key: "contact_phone", value: contactPhone },
         { key: "contact_email", value: contactEmail }, { key: "payment_bank_name", value: paymentBankName }, { key: "payment_account_number", value: paymentAccountNumber },
         { key: "payment_account_name", value: paymentAccountName }, { key: "payment_account_sub", value: paymentAccountSub }, { key: "payment_spp_amount", value: paymentSppAmount },
         { key: "payment_spp_kids", value: paymentSppKids }, { key: "payment_spp_teens", value: paymentSppTeens }, { key: "payment_spp_calistung", value: paymentSppCalistung },
-        { key: "marquee_text_1", value: marqueeText1 }, { key: "marquee_text_2", value: marqueeText2 }, { key: "marquee_text_3", value: marqueeText3 },
+        { key: "marquee_text_1", value: validMarquee[0] || marqueeText1 },
+        { key: "marquee_text_2", value: validMarquee[1] || marqueeText2 },
+        { key: "marquee_text_3", value: validMarquee[2] || marqueeText3 },
+        { key: "marquee_items", value: JSON.stringify(validMarquee.length > 0 ? validMarquee : marqueeList) },
+        { key: "marquee_icon", value: marqueeIcon },
         { key: "cta_tag", value: ctaTag }, { key: "cta_title", value: ctaTitle }, { key: "cta_desc", value: ctaDesc }, { key: "cta_brochure_image", value: ctaBrochureImage }
       ];
       const { error } = await supabase.from("landing_settings").upsert(settings);
@@ -176,71 +215,30 @@ export function useLandingPageCMS() {
     } catch (err: any) { showToast("Gagal menyimpan: " + err.message, "error"); } finally { setLoading(false); }
   };
 
+  const saveSettingList = async (key: string, list: any[], successMsg: string, errMsg: string) => {
+    try {
+      const { error } = await supabase.from("landing_settings").upsert([{ key, value: JSON.stringify(list) }]);
+      if (error) throw error;
+      showToast(successMsg);
+      await triggerRevalidation();
+    } catch (err: any) {
+      showToast(`${errMsg}: ${err.message}`, "error");
+    }
+  };
+
   const handleSaveVideos = async (listToSave: any[]) => {
     setSavingVideos(true);
     try {
-      const payload = JSON.stringify(listToSave);
-      const { error } = await supabase
-        .from("landing_settings")
-        .upsert([{ key: "landing_videos", value: payload }]);
-
-      if (error) throw error;
-      showToast("Galeri video berhasil disimpan ke database!");
-      await triggerRevalidation();
-    } catch (err: any) {
-      showToast("Gagal menyimpan galeri video: " + err.message, "error");
+      await saveSettingList("landing_videos", listToSave, "Galeri video berhasil disimpan!", "Gagal menyimpan video");
     } finally {
       setSavingVideos(false);
     }
   };
 
-  const handleSavePrograms = async (listToSave: any[]) => {
-    try {
-      const payload = JSON.stringify(listToSave);
-      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_programs", value: payload }]);
-      if (error) throw error;
-      showToast("Daftar program berhasil disimpan!");
-      await triggerRevalidation();
-    } catch (err: any) {
-      showToast("Gagal menyimpan program: " + err.message, "error");
-    }
-  };
-
-  const handleSaveBenefits = async (listToSave: any[]) => {
-    try {
-      const payload = JSON.stringify(listToSave);
-      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_benefits", value: payload }]);
-      if (error) throw error;
-      showToast("Daftar keunggulan berhasil disimpan!");
-      await triggerRevalidation();
-    } catch (err: any) {
-      showToast("Gagal menyimpan keunggulan: " + err.message, "error");
-    }
-  };
-
-  const handleSaveFaqs = async (listToSave: any[]) => {
-    try {
-      const payload = JSON.stringify(listToSave);
-      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_faqs", value: payload }]);
-      if (error) throw error;
-      showToast("Daftar FAQ berhasil disimpan!");
-      await triggerRevalidation();
-    } catch (err: any) {
-      showToast("Gagal menyimpan FAQ: " + err.message, "error");
-    }
-  };
-
-  const handleSaveNavigation = async (listToSave: any[]) => {
-    try {
-      const payload = JSON.stringify(listToSave);
-      const { error } = await supabase.from("landing_settings").upsert([{ key: "landing_navigation", value: payload }]);
-      if (error) throw error;
-      showToast("Daftar navigasi berhasil disimpan!");
-      await triggerRevalidation();
-    } catch (err: any) {
-      showToast("Gagal menyimpan navigasi: " + err.message, "error");
-    }
-  };
+  const handleSavePrograms = (list: any[]) => saveSettingList("landing_programs", list, "Daftar program berhasil disimpan!", "Gagal menyimpan program");
+  const handleSaveBenefits = (list: any[]) => saveSettingList("landing_benefits", list, "Daftar keunggulan berhasil disimpan!", "Gagal menyimpan keunggulan");
+  const handleSaveFaqs = (list: any[]) => saveSettingList("landing_faqs", list, "Daftar FAQ berhasil disimpan!", "Gagal menyimpan FAQ");
+  const handleSaveNavigation = (list: any[]) => saveSettingList("landing_navigation", list, "Daftar navigasi berhasil disimpan!", "Gagal menyimpan navigasi");
 
   useEffect(() => {
     fetchLandingSettings();
@@ -257,6 +255,8 @@ export function useLandingPageCMS() {
     paymentSppAmount, setPaymentSppAmount, paymentSppKids, setPaymentSppKids,
     paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung,
     marqueeText1, setMarqueeText1, marqueeText2, setMarqueeText2, marqueeText3, setMarqueeText3,
+    marqueeList, setMarqueeList, marqueeIcon, setMarqueeIcon,
+    handleAddMarqueeText, handleRemoveMarqueeText, handleMarqueeTextChange,
     ctaTag, setCtaTag, ctaTitle, setCtaTitle, ctaDesc, setCtaDesc,
     ctaBrochureImage, setCtaBrochureImage, uploadingHero, uploadingCtaBrochure,
     heroFileRef, ctaBrochureFileRef, galleryFileRef,

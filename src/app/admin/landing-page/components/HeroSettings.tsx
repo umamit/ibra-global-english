@@ -22,6 +22,11 @@ interface HeroSettingsProps {
   marqueeText1: string; setMarqueeText1: (val: string) => void;
   marqueeText2: string; setMarqueeText2: (val: string) => void;
   marqueeText3: string; setMarqueeText3: (val: string) => void;
+  marqueeList?: string[]; setMarqueeList?: React.Dispatch<React.SetStateAction<string[]>>;
+  marqueeIcon?: string; setMarqueeIcon?: (val: string) => void;
+  handleAddMarqueeText?: () => void;
+  handleRemoveMarqueeText?: (index: number) => void;
+  handleMarqueeTextChange?: (index: number, val: string) => void;
   ctaTag: string; setCtaTag: (val: string) => void;
   ctaTitle: string; setCtaTitle: (val: string) => void;
   ctaDesc: string; setCtaDesc: (val: string) => void;
