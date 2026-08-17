@@ -39,7 +39,7 @@ export default function AiDiagnosticsPanel({ aiConnectionStatus, aiDiagnosticMes
             },
             {
               label: "Model AI Aktif",
-              value: <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-600)", fontFamily: "monospace" }}>llama-3.3-70b-versatile</span>
+              value: <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-gray-600)", fontFamily: "monospace" }}>openai/gpt-oss-120b</span>
             },
           ].map(({ label, value }) => (
             <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem 1rem", backgroundColor: "var(--color-gray-50)", borderRadius: "8px", border: "1px solid var(--color-gray-150)" }}>

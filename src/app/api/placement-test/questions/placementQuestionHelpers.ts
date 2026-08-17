@@ -50,7 +50,7 @@ export async function generateFromGroq() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
         body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
+          model: "openai/gpt-oss-120b",
           temperature: 0.9,
           max_tokens: 8000,
           messages: [{ role: "user", content: prompt }]

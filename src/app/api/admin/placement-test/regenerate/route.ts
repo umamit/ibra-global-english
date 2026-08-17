@@ -16,7 +16,7 @@ export const POST = withAdminAuth(async (request: Request) => {
       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
-        body: JSON.stringify({ model: "llama-3.3-70b-versatile", temperature: 0.1, max_tokens: 5, messages: [{ role: "user", content: "Hello" }] })
+        body: JSON.stringify({ model: "openai/gpt-oss-120b", temperature: 0.1, max_tokens: 5, messages: [{ role: "user", content: "Hello" }] })
       });
       if (response.ok) {
         return NextResponse.json({ status: "success", message: "Koneksi Groq AI sukses dan siap digunakan." });

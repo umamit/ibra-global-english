@@ -90,6 +90,6 @@ export async function executeGroqAiAssist(apiKey: string, messages: any[], syste
   return await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: formattedMessages, temperature: 0.6, max_tokens: 1500 }),
+    body: JSON.stringify({ model: "openai/gpt-oss-120b", messages: formattedMessages, temperature: 0.6, max_tokens: 1500 }),
   });
 }
