@@ -63,26 +63,15 @@ export const getStudentSPPDueInfo = (
     selMonth = parseInt(parts[1], 10);
   }
 
-  let targetYear = selYear;
-  let targetMonth = selMonth;
-
-  if (isPostPaid) {
-    targetMonth = selMonth + 1;
-    if (targetMonth > 12) {
-      targetMonth = 1;
-      targetYear = selYear + 1;
-    }
-  }
-
-  const maxDaysInTargetMonth = new Date(targetYear, targetMonth, 0).getDate();
+  const maxDaysInTargetMonth = new Date(selYear, selMonth, 0).getDate();
   const effectiveDueDay = Math.min(dueDay, maxDaysInTargetMonth);
 
-  const dueDate = new Date(targetYear, targetMonth - 1, effectiveDueDay);
+  const dueDate = new Date(selYear, selMonth - 1, effectiveDueDay);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const monthNamesId = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-  const targetMonthStr = monthNamesId[targetMonth - 1];
+  const targetMonthStr = monthNamesId[selMonth - 1];
 
   const diffTime = dueDate.getTime() - today.getTime();
   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
