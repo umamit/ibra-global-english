@@ -46,17 +46,30 @@ export const PATCH = withAdminAuth(async (request: NextRequest) => {
     }
 
     const supabase = getAdminSupabase();
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("promo_banners")
       .update(updateData)
       .eq("id", id)
       .select()
       .single();
 
+    if (error && (error.code === "PGRST204" || error.code === "42703" || error.message?.includes("badge_text"))) {
+      const fallbackData = { ...updateData };
+      delete fallbackData.badge_text;
+      const retry = await supabase
+        .from("promo_banners")
+        .update(fallbackData)
+        .eq("id", id)
+        .select()
+        .single();
+      data = retry.data;
+      error = retry.error;
+    }
+
     if (error) throw error;
     return NextResponse.json({ data });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to update promo banner:", err);
-    return NextResponse.json({ error: "Gagal menyimpan perubahan." }, { status: 500 });
+    return NextResponse.json({ error: err?.message || "Gagal menyimpan perubahan." }, { status: 500 });
   }
 });
