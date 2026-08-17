@@ -126,24 +126,36 @@ export const useFinanceModal = (
   const handleUpdatePaymentType = async (studentId: string, typeVal: string): Promise<void> => {
     try {
       const newType = typeVal === "auto" ? null : typeVal;
+      const pay = getStudentPayment(studentId, students, payments, selectedMonth, sppPrices);
+
+      const payload = {
+        student_id: studentId,
+        month: selectedMonth,
+        amount: pay.amount,
+        status: pay.status,
+        payment_method: pay.payment_method || "Transfer Bank",
+        payment_type: newType,
+        payment_date: pay.payment_date || null,
+        receipt_url: pay.receipt_url || null,
+        updated_at: new Date().toISOString()
+      };
+
       const { error } = await supabase
         .from("tuition_payments")
-        .update({ payment_type: newType, updated_at: new Date().toISOString() })
-        .eq("student_id", studentId)
-        .eq("month", selectedMonth);
+        .upsert(payload, { onConflict: "student_id,month" });
 
       if (error && (error.code === "42703" || error.message?.includes("payment_type"))) {
-        showToast("Tipe pembayaran diperbarui!");
-        fetchData();
+        showToast("Jalankan perintah SQL 'payment_type' di Supabase SQL Editor agar opsi ini tersimpan!", "error");
         return;
       }
 
       if (error) throw error;
-      showToast(`Tipe pembayaran SPP diperbarui!`);
+      const labelText = typeVal === "prepaid" ? "PREPAID (Pra-Bayar)" : typeVal === "postpaid" ? "POSTPAID (Susulan)" : "AUTO (Otomatis)";
+      showToast(`Tipe pembayaran SPP diubah ke ${labelText}!`);
       fetchData();
     } catch (err) {
       console.error("Gagal merubah tipe pembayaran:", err);
-      showToast("Gagal memperbarui tipe pembayaran.", "error");
+      showToast("Gagal memperbarui tipe pembayaran. Pastikan kolom SQL sudah ditambah di Supabase.", "error");
     }
   };
 
