@@ -105,7 +105,18 @@ export default function KemitraanAdminClient() {
                 <p style={{ marginTop: "1rem" }}>Dengan hormat,</p>
                 <p>Sehubungan dengan komitmen Ibra Global English dalam meningkatkan mutu kemampuan bahasa Inggris generasi muda di Kabupaten Pulau Taliabu, melalui surat ini kami bermaksud mengundang <strong>{selectedSub.institution_name}</strong> untuk bergabung sebagai Mitra Rekomendasi Resmi.</p>
                 <p>Kerja sama ini bersifat <strong>100% Bebas Biaya (Tanpa Anggaran Sekolah)</strong>, di mana murid-murid dari sekolah Bapak/Ibu berhak mendapatkan sesi Diagnostic Test gratis serta Voucher Potongan Pendaftaran Khusus.</p>
-                <p style={{ marginTop: "1.5rem" }}>Hormat kami,<br /><strong>Direksi Ibra Global English</strong></p>
+                <div style={{ marginTop: "2.5rem", display: "flex", justifyContent: "flex-end" }}>
+                  <div style={{ textAlign: "center", minWidth: "220px" }}>
+                    <p style={{ margin: "0 0 0.25rem 0", fontSize: "0.88rem" }}>
+                      Bobong, {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                    </p>
+                    <p style={{ margin: "0 0 0.25rem 0", fontSize: "0.88rem" }}>Hormat kami,</p>
+                    <p style={{ margin: 0, fontWeight: "bold", fontSize: "0.9rem" }}>Direksi Ibra Global English</p>
+                    <div style={{ height: "60px" }} />
+                    <p style={{ margin: 0, fontWeight: "bold", fontSize: "0.95rem", textDecoration: "underline" }}>Husnita Usman, M.Pd</p>
+                    <p style={{ margin: "2px 0 0 0", fontSize: "0.85rem", color: "#444" }}>Direktur Utama</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div style={{ marginTop: "1.5rem", display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
