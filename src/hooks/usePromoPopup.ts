@@ -27,7 +27,6 @@ export function usePromoPopup() {
     );
 
     if (isExcludedPath || isDigitalSubdomain) return;
-    if (typeof window !== "undefined" && sessionStorage.getItem(SESSION_KEY)) return;
 
     let timer: NodeJS.Timeout;
     const fetchBanner = async () => {
@@ -56,9 +55,6 @@ export function usePromoPopup() {
 
   const dismiss = () => {
     setVisible(false);
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem(SESSION_KEY, "1");
-    }
   };
 
   return {
