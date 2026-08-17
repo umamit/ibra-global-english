@@ -174,31 +174,61 @@ export default function GalleryClient() {
               </div>
 
               <div className="apple-video-grid">
-                {videos.map((vid, idx) => (
-                  <div key={idx} className="apple-video-card">
-                    {/* Video Player Wrapper (16:9 Aspect Ratio) */}
-                    <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", backgroundColor: "#000" }}>
-                      <iframe
-                        src={getEmbedUrl(vid.url)}
-                        title={vid.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
-                      />
+                {videos.map((vid, idx) => {
+                  const isFacebook = vid.url.includes("facebook.com") || vid.url.includes("fb.watch");
+                  return (
+                    <div key={idx} className="apple-video-card">
+                      {/* Video Player Wrapper (16:9 Aspect Ratio) */}
+                      <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", backgroundColor: "#000" }}>
+                        <iframe
+                          src={getEmbedUrl(vid.url)}
+                          title={vid.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          loading="lazy"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                        />
+                      </div>
+                      {/* Video Metadata */}
+                      <div style={{ padding: "1.75rem" }}>
+                        <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
+                          {vid.title}
+                        </h3>
+                        {vid.desc && (
+                          <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", lineHeight: "1.5", marginBottom: "0.75rem" }}>
+                            {vid.desc}
+                          </p>
+                        )}
+                        {isFacebook && (
+                          <a
+                            href={vid.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "0.4rem",
+                              fontSize: "0.85rem",
+                              fontWeight: "700",
+                              color: "#1877F2",
+                              textDecoration: "none",
+                              marginTop: "0.25rem",
+                              padding: "0.4rem 0.8rem",
+                              borderRadius: "6px",
+                              backgroundColor: "rgba(24, 119, 242, 0.08)"
+                            }}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            Tonton Langsung di Facebook ↗
+                          </a>
+                        )}
+                      </div>
                     </div>
-                    {/* Video Metadata */}
-                    <div style={{ padding: "1.75rem" }}>
-                      <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.5rem" }}>
-                        {vid.title}
-                      </h3>
-                      <p style={{ fontSize: "0.9rem", color: "var(--color-gray-500)", lineHeight: "1.5" }}>
-                        {vid.desc}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
