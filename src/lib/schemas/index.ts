@@ -5,3 +5,4 @@ export {
   onlineScheduleSchema,
   onlineScheduleUpdateSchema,
 } from "./onlineScheduleSchema";
+export { studentInsertSchema, studentUpdateSchema } from "./studentSchema";
