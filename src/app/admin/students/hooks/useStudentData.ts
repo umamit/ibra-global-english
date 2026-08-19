@@ -138,6 +138,16 @@ export function useStudentData() {
     }
   };
 
+  const handleUpdateRole = async (userId: string, newRole: string) => {
+    try {
+      const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId);
+      if (error) throw error;
+      setParents((prev) => prev.map((p) => (p.id === userId ? { ...p, role: newRole } : p)));
+    } catch (err: any) {
+      alert("Gagal mengubah peran user: " + err.message);
+    }
+  };
+
   const handleApprove = async (reg: Registration) => {
     if (!confirm(`Setujui pendaftaran "${reg.student_name}"? Data siswa akan otomatis ditambahkan.`)) return;
     try {
@@ -202,5 +212,6 @@ export function useStudentData() {
     handleReject,
     handleDeleteStudent,
     handleUpdateStudentProgram,
+    handleUpdateRole,
   };
 }

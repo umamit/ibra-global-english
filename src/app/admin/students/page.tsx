@@ -2,8 +2,9 @@
 
 export const dynamic = "force-dynamic";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import StudentTable from "./components/StudentTable";
 import ParentTable from "./components/ParentTable";
 import RegistrationTable from "./components/RegistrationTable";
@@ -15,23 +16,14 @@ import ScheduleStudentModal from "./components/ScheduleStudentModal";
 import { useStudentData, StudentItem } from "./hooks/useStudentData";
 import { handleExportStudentsCSV } from "./studentsHelpers";
 
-export default function AdminStudents() {
+function AdminStudentsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const {
-    students,
-    parents,
-    registrations,
-    scheduleCounts,
-    loading,
-    regLoading,
-    errorMsg,
-    waSendingId,
-    waFeedback,
-    fetchData,
-    fetchRegistrations,
-    handleApprove,
-    handleReject,
-    handleDeleteStudent,
-    handleUpdateStudentProgram,
+    students, parents, registrations, scheduleCounts, loading, regLoading,
+    errorMsg, waSendingId, waFeedback, fetchData, fetchRegistrations,
+    handleApprove, handleReject, handleDeleteStudent, handleUpdateStudentProgram, handleUpdateRole,
   } = useStudentData();
 
   const [activeTab, setActiveTab] = useState<string>("students");
@@ -40,48 +32,41 @@ export default function AdminStudents() {
 
   const [scheduleModalOpen, setScheduleModalOpen] = useState<boolean>(false);
   const [scheduleTargetStudent, setScheduleTargetStudent] = useState<StudentItem | null>(null);
-  const [scheduleToast, setScheduleToast] = useState<string>("");
 
   const [name, setName] = useState<string>("");
   const [age, setAge] = useState<string>("");
   const [program, setProgram] = useState<string>("A1 Foundation 1");
   const [status, setStatus] = useState<string>("aktif");
   const [parentId, setParentId] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("semua");
+  
+  const initialStatusFilter = searchParams.get("status") || "semua";
+  const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter);
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [formErrorMsg, setFormErrorMsg] = useState<string>("");
-
   const [rejectModalId, setRejectModalId] = useState<string | null>(null);
   const [rejectNotes, setRejectNotes] = useState<string>("");
-
   const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
+
+  const handleStatusFilterChange = (filter: string) => {
+    setStatusFilter(filter);
+    const params = new URLSearchParams(searchParams.toString());
+    if (filter === "semua") params.delete("status");
+    else params.set("status", filter);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
 
   const handleOpenAddModal = () => {
     setEditingStudent(null);
-    setName("");
-    setAge("");
-    setProgram("A1 Foundation 1");
-    setStatus("aktif");
-    setParentId("");
-    setFormErrorMsg("");
+    setName(""); setAge(""); setProgram("A1 Foundation 1"); setStatus("aktif"); setParentId(""); setFormErrorMsg("");
     setModalOpen(true);
   };
 
   const handleOpenEditModal = (student: StudentItem) => {
     setEditingStudent(student);
-    setName(student.name);
-    setAge(String(student.age));
-    setProgram(student.program || "A1 Foundation 1");
-    setStatus(student.status || "aktif");
-    setParentId(student.parent_id || "");
-    setFormErrorMsg("");
+    setName(student.name); setAge(String(student.age)); setProgram(student.program || "A1 Foundation 1");
+    setStatus(student.status || "aktif"); setParentId(student.parent_id || ""); setFormErrorMsg("");
     setModalOpen(true);
-  };
-
-  const handleOpenScheduleModal = (student: StudentItem) => {
-    setScheduleTargetStudent(student);
-    setScheduleModalOpen(true);
   };
 
   const handleSaveStudent = async (e: React.FormEvent) => {
@@ -102,37 +87,30 @@ export default function AdminStudents() {
         parent_id: parentId || null,
       };
 
-      let res;
-      if (editingStudent) {
-        res = await fetch("/api/admin/students", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: editingStudent.id, ...payload }),
-        });
-      } else {
-        res = await fetch("/api/admin/students", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      }
+      const res = await fetch("/api/admin/students", {
+        method: editingStudent ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingStudent ? { id: editingStudent.id, ...payload } : payload),
+      });
 
       if (!res.ok) {
         const errJson = await res.json();
         throw new Error(errJson.error || "Gagal menyimpan data siswa.");
       }
 
+      toast.success(editingStudent ? `Data siswa "${name}" berhasil diperbarui!` : `Siswa "${name}" berhasil ditambahkan!`);
       setModalOpen(false);
       fetchData();
     } catch (err: any) {
-      setFormErrorMsg(err.message || "Gagal menyimpan data siswa.");
+      setFormErrorMsg(err.message);
+      toast.error(err.message || "Gagal menyimpan data siswa.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDeleteParent = async (id: string, name: string) => {
-    if (!confirm(`Hapus wali/siswa "${name}"?`)) return;
+  const handleDeleteParent = async (id: string, pName: string) => {
+    if (!confirm(`Hapus wali/siswa "${pName}"?`)) return;
     try {
       const res = await fetch("/api/admin/delete-user", {
         method: "DELETE",
@@ -140,62 +118,32 @@ export default function AdminStudents() {
         body: JSON.stringify({ userId: id }),
       });
       if (!res.ok) throw new Error("Gagal menghapus user.");
+      toast.success(`Akun "${pName}" berhasil dihapus.`);
       fetchData();
     } catch (err: any) {
-      alert(err.message);
-    }
-  };
-
-  const handleUpdateRole = async (id: string, currentRole: string) => {
-    const newRole = currentRole === "student" ? "parent" : "student";
-    if (!confirm(`Ubah role user dari "${currentRole}" menjadi "${newRole}"?`)) return;
-    try {
-      const res = await fetch("/api/admin/update-role", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: id, role: newRole }),
-      });
-      if (!res.ok) throw new Error("Gagal memperbarui role.");
-      fetchData();
-    } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
   return (
-    <div>
-      <div className="dashboard-topbar">
-        <div className="topbar-title">
-          <h1>Kelola Akademik Siswa &amp; CEFR Level</h1>
-          <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>
-            Database utama siswa dan pemetaan level kurikulum IGE CEFR LKP Ibra Global English Bobong
-          </p>
+    <div style={{ padding: "0 0.5rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
+        <div>
+          <h1 className="portal-header-title" style={{ margin: 0 }}>Manajemen Siswa & Wali</h1>
+          <p className="portal-header-subtitle" style={{ margin: "0.25rem 0 0" }}>Kelola database siswa, verifikasi pendaftaran baru, dan akun orang tua.</p>
         </div>
-        <div className="topbar-user" style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          {activeTab === "students" && (
-            <>
-              <button className="btn-portal-outline" onClick={() => handleExportStudentsCSV(students)} style={{ padding: "0.5rem 0.85rem", fontSize: "0.85rem" }}>
-                <span>Ekspor CSV</span>
-              </button>
-              <button className="btn-portal-outline" onClick={() => setImportModalOpen(true)} style={{ padding: "0.5rem 0.85rem", fontSize: "0.85rem" }}>
-                <span>Impor Massal</span>
-              </button>
-              <button className="btn-portal-primary" onClick={handleOpenAddModal} style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}>
-                <span>+ Tambah Siswa</span>
-              </button>
-            </>
-          )}
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <button className="btn-portal-outline" onClick={() => setImportModalOpen(true)} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
+            📥 Import Excel
+          </button>
+          <button className="btn-portal-outline" onClick={() => { handleExportStudentsCSV(students); toast.success("Export data siswa selesai!"); }} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
+            📄 Export CSV
+          </button>
+          <button className="btn-portal-primary" onClick={handleOpenAddModal} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
+            + Tambah Siswa
+          </button>
         </div>
       </div>
-
-      {scheduleToast && (
-        <div className="auth-success-banner" style={{ marginBottom: "1.25rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span>✓ {scheduleToast}</span>
-          <Link href="/admin/calendar" className="btn-portal-primary" style={{ padding: "0.25rem 0.65rem", fontSize: "0.78rem", backgroundColor: "#065f46" }}>
-            Buka Kalender Akademik &rarr;
-          </Link>
-        </div>
-      )}
 
       <TabSwitcher
         activeTab={activeTab}
@@ -206,29 +154,36 @@ export default function AdminStudents() {
         fetchRegistrations={fetchRegistrations}
       />
 
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "5rem 0", color: "var(--color-gray-500)" }}>
-          <p>Memuat database siswa &amp; level CEFR...</p>
-        </div>
-      ) : activeTab === "students" ? (
+      {activeTab === "students" && (
         <StudentTable
           students={students}
           scheduleCounts={scheduleCounts}
           statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
+          onStatusFilterChange={handleStatusFilterChange}
           onEdit={handleOpenEditModal}
-          onDelete={handleDeleteStudent}
-          onUpdateProgram={handleUpdateStudentProgram}
-          onScheduleStudent={handleOpenScheduleModal}
+          onDelete={(id, sName) => {
+            handleDeleteStudent(id, sName);
+            toast.success(`Data "${sName}" berhasil dihapus.`);
+          }}
+          onUpdateProgram={(id, newProgram) => {
+            handleUpdateStudentProgram(id, newProgram);
+            toast.success(`Level program diperbarui ke ${newProgram}`);
+          }}
+          onScheduleStudent={(st) => { setScheduleTargetStudent(st); setScheduleModalOpen(true); }}
         />
-      ) : activeTab === "parents" ? (
+      )}
+
+      {activeTab === "parents" && (
         <ParentTable
           parents={parents}
           students={students}
           onDeleteParent={handleDeleteParent}
-          onUpdateRole={handleUpdateRole}
+          onUpdateRole={(userId, newRole) => {
+            handleUpdateRole(userId, newRole);
+            toast.success("Peran user berhasil diperbarui!");
+          }}
         />
-      ) : null}
+      )}
 
       {activeTab === "registrations" && (
         <RegistrationTable
@@ -237,49 +192,48 @@ export default function AdminStudents() {
           errorMsg={errorMsg}
           waSendingId={waSendingId}
           waFeedback={waFeedback}
-          onApprove={handleApprove}
+          onApprove={(reg) => { handleApprove(reg); toast.success(`Pendaftaran ${reg.student_name} disetujui!`); }}
           onOpenReject={(id) => { setRejectModalId(id); setRejectNotes(""); }}
         />
       )}
 
       <StudentFormModal
-        open={modalOpen}
-        editing={!!editingStudent}
+        open={modalOpen} editing={!!editingStudent}
         name={name} onNameChange={(e) => setName(e.target.value)}
         age={age} onAgeChange={(e) => setAge(e.target.value)}
         program={program} onProgramChange={(e) => setProgram(e.target.value)}
         status={status} onStatusChange={(e) => setStatus(e.target.value)}
         parentId={parentId} onParentIdChange={(e) => setParentId(e.target.value)}
-        parents={parents}
-        submitting={submitting}
-        errorMsg={formErrorMsg}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleSaveStudent}
+        parents={parents} submitting={submitting} errorMsg={formErrorMsg}
+        onClose={() => setModalOpen(false)} onSubmit={handleSaveStudent}
       />
 
       <ScheduleStudentModal
-        isOpen={scheduleModalOpen}
-        student={scheduleTargetStudent}
+        isOpen={scheduleModalOpen} student={scheduleTargetStudent}
         onClose={() => setScheduleModalOpen(false)}
-        onSuccess={(msg) => {
-          setScheduleToast(msg);
-          fetchData();
-        }}
+        onSuccess={(msg) => { toast.success(msg); fetchData(); }}
       />
 
       <RejectModal
-        rejectModalId={rejectModalId}
-        rejectNotes={rejectNotes}
-        setRejectNotes={setRejectNotes}
+        rejectModalId={rejectModalId} rejectNotes={rejectNotes} setRejectNotes={setRejectNotes}
         onClose={() => setRejectModalId(null)}
-        onConfirm={() => rejectModalId && handleReject(rejectModalId, rejectNotes)}
+        onConfirm={() => {
+          if (rejectModalId) {
+            handleReject(rejectModalId, rejectNotes);
+            toast.info("Pendaftaran telah ditolak.");
+          }
+        }}
       />
 
-      <StudentImportModal
-        isOpen={importModalOpen}
-        onClose={() => setImportModalOpen(false)}
-        onSuccess={fetchData}
-      />
+      <StudentImportModal isOpen={importModalOpen} onClose={() => setImportModalOpen(false)} onSuccess={() => { toast.success("Import siswa berhasil!"); fetchData(); }} />
     </div>
+  );
+}
+
+export default function AdminStudents() {
+  return (
+    <Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Memuat Manajemen Siswa...</div>}>
+      <AdminStudentsContent />
+    </Suspense>
   );
 }

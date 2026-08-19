@@ -1,6 +1,6 @@
 {
   "name": "next-app-temp",
-  "version": "3.57.2",
+  "version": "3.58.0",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -24,17 +24,20 @@
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
     "canvas-confetti": "^1.9.4",
+    "cmdk": "^1.1.1",
     "dompurify": "^3.2.4",
     "dotenv": "^17.4.2",
     "gsap": "^3.15.0",
     "howler": "^2.2.4",
     "html2canvas": "^1.4.1",
+    "lucide-react": "^1.32.0",
     "next": "^16.2.10",
     "pdf-lib": "^1.17.1",
     "pg": "^8.22.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "recharts": "^2.15.1",
+    "sonner": "^2.0.8",
     "three": "^0.185.1",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"
