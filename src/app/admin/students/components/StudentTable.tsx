@@ -147,12 +147,13 @@ export default function StudentTable({
               const st = student.status || "aktif";
               const stInfo = STATUS_BADGE_MAP[st] || STATUS_BADGE_MAP.aktif;
               const schedCount = scheduleCounts[student.id] || 0;
+              const isInactive = st !== "aktif";
 
               return (
-                <tr key={student.id}>
-                  <td style={{ fontWeight: "700" }}>{idx + 1}</td>
-                  <td style={{ fontWeight: "700", color: "var(--color-gray-900)" }}>{student.name}</td>
-                  <td>{student.age} Tahun</td>
+                <tr key={student.id} style={{ opacity: isInactive ? 0.55 : 1, backgroundColor: isInactive ? "var(--color-gray-50)" : "transparent" }}>
+                  <td style={{ fontWeight: "700", color: isInactive ? "var(--color-gray-400)" : undefined }}>{idx + 1}</td>
+                  <td style={{ fontWeight: "700", color: isInactive ? "var(--color-gray-400)" : "var(--color-gray-900)" }}>{student.name}</td>
+                  <td style={{ color: isInactive ? "var(--color-gray-400)" : undefined }}>{student.age} Tahun</td>
                   <td>
                     <select
                       value={student.program || "Fun Calistung"}
