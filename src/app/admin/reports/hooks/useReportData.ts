@@ -44,7 +44,7 @@ export function useReportData() {
     setLoading(true);
     try {
       const { data: studentData, error: errS } = await supabase
-        .from("students").select("id, name, program").order("name", { ascending: true });
+        .from("students").select("id, name, program").eq("status", "aktif").order("name", { ascending: true });
       if (errS) throw errS;
       setStudents(studentData || []);
 

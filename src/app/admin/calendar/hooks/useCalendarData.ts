@@ -64,6 +64,7 @@ export function useCalendarData() {
       const { data: studentData } = await supabase
         .from("students")
         .select("id, name, program")
+        .eq("status", "aktif")
         .order("name");
 
       setSchedules((scheduleData as AcademicSchedule[]) || []);

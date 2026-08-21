@@ -38,7 +38,7 @@ export default function AdminCertificatesPage() {
     try {
       const [certRes, stuRes, repRes] = await Promise.all([
         supabase.from("certificates").select("*, students(name, program)").order("created_at", { ascending: false }),
-        supabase.from("students").select("id, name, program").order("name"),
+        supabase.from("students").select("id, name, program").eq("status", "aktif").order("name"),
         supabase.from("reports").select("id, student_id, module_name, speaking_score, grammar_score, vocabulary_score, active_score").order("created_at", { ascending: false }),
       ]);
       if (certRes.data) setCertificates(certRes.data as CertWithStudent[]);

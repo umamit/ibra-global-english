@@ -73,7 +73,8 @@ export function useAdminFinance() {
             full_name
           )
         `)
-        .order("name", { ascending: true });
+        .order("name", { ascending: true })
+        .eq("status", "aktif");
 
       if (studentsError) throw studentsError;
 

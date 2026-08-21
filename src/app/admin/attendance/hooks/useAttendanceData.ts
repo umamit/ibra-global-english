@@ -51,7 +51,7 @@ export function useAttendanceData() {
       const { data: attendanceList, error: errA } = await supabase.from("attendance").select("student_id, status").gte("date", firstDay).lte("date", lastDay);
       if (errA) throw errA;
 
-      const { data: studentList, error: errS } = await supabase.from("students").select("id, name, program").order("name", { ascending: true });
+      const { data: studentList, error: errS } = await supabase.from("students").select("id, name, program").eq("status", "aktif").order("name", { ascending: true });
       if (errS) throw errS;
 
       const recapMap: Record<string, RecapRow> = {};
@@ -79,7 +79,7 @@ export function useAttendanceData() {
     if (!selectedDate) return;
     setLoading(true); setStatusMsg({ type: "", text: "" });
     try {
-      const { data: studentList, error: errS } = await supabase.from("students").select("id, name, program").order("name", { ascending: true });
+      const { data: studentList, error: errS } = await supabase.from("students").select("id, name, program").eq("status", "aktif").order("name", { ascending: true });
       if (errS) throw errS;
 
       const { data: attendanceList, error: errA } = await supabase.from("attendance").select("student_id, status, notes").eq("date", selectedDate);
