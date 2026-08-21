@@ -47,12 +47,6 @@ export async function proxy(request: NextRequest) {
     }
   };
 
-  if (pathname.startsWith("/digital-agency")) {
-    const res = NextResponse.next();
-    addSecurityHeaders(res);
-    return res;
-  }
-
   if (pathname === "/" || pathname === "/index.html") {
     if (acceptHeader.includes("text/markdown")) {
       const fallbackMd = `# Ibra Global English Bobong\nBelajar Seru Lancar Bicara. Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu.`;

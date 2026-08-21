@@ -211,7 +211,7 @@ npm run check-limits
 
 21p. **Kunci Paten Logo & Identitas Brand (Strict Brand Logo & Identity Locking):**
     - AI DILARANG KERAS memodifikasi, menimpa, mengganti nama, atau menghapus berkas-berkas aset logo dan ikon resmi brand (`public/assets/logo.png`, `public/assets/apple-touch-icon.png`, dan `public/assets/favicon.png`) di proyek Ibra Global English.
-    - AI wajib memisahkan penggunaan aset logo untuk platform sekolah bahasa Inggris (IGE) menggunakan berkas `logo.png` dan platform agensi digital (IDE) menggunakan berkas `ibra-digital-logo-v3.png` secara eksklusif agar tidak saling menimpa atau memicu salah penempatan logo.
+    - AI wajib menggunakan berkas `logo.png` secara konsisten di seluruh platform Ibra Global English.
 
 21q. **Kunci Spesifikasi Integrasi Web NFC API Masa Depan (Strict Web NFC Integration Spec Rule):**
     - AI wajib mempertahankan keselarasan spesifikasi integrasi teknologi Web NFC API (`NDEFReader`) untuk fitur absensi tap kartu masa depan:
@@ -765,21 +765,13 @@ Seluruh AI Agent WAJIB mematuhi pemetaan rute, domain, dan fungsi halaman websit
      - `/announcements` ➔ Pengelolaan Pengumuman & Berita AI Polish.
      - `/reports` ➔ Pengelolaan & Cetak Rapor Digital A4 Siswa.
 
-3. **Subdomain Agensi Digital** (`digital.ibraglobalenglish.uk`):
-   - **Fungsi**: Landing Page Agensi Layanan Teknologi & Software House (Ibra Digital Engineering).
-   - **Proxy Rewrite**: Otomatis dialihkan oleh `src/proxy.ts` (mengarahkan domain `digital.` langsung ke `app/digital-agency`).
-   - **Rute Publik**:
-     - `/` (`app/digital-agency/page.tsx`) ➔ Beranda Agensi, Layanan, Portofolio Enterprise & Form Pemesanan.
-     - `/privacy` & `/terms` ➔ Syarat & Ketentuan Layanan Agensi.
-
-4. **Portal Siswa, Orang Tua & Tutor**:
+3. **Portal Siswa, Orang Tua & Tutor**:
    - `/parent` ➔ Dasbor Orang Tua (Rapor Anak, SPP Digital, Absensi & Kalender).
    - `/student` ➔ Dasbor Siswa (Modul Materi, Jadwal Kelas, Quiz Quest).
    - `/tutor` ➔ Dasbor Tutor (Absensi Kelas, Upload Nilai, RPP AI Generator).
 
 ### B. Aturan Pemisahan Logo & Identitas Brand Rute
 * **Logo IGE (Ibra Global English)**: `public/assets/logo.png` (Digunakan di Domain Utama, Admin, Parent, Student, Tutor).
-* **Logo IDE (Ibra Digital Engineering)**: `public/assets/ibra-digital-logo-v3.png` (Digunakan secara EKSKLUSIF di Subdomain `digital.ibraglobalenglish.uk`).
 
 ## Compliance & Strict Rule Enforcement
 30. **Strict Enforcement:** If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
