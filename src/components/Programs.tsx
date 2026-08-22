@@ -71,8 +71,13 @@ export default function Programs({ initialSettings }: any) {
   }, []);
 
   return (
-    <section id="programs" className="programs-section" ref={sectionRef}>
-      <div className="container">
+    <section id="programs" className="programs-section ios-aurora-bg" ref={sectionRef}>
+      {/* Ambient Aurora Orbs for True iOS Glass Refraction */}
+      <div className="ios-aurora-orb ios-aurora-orb-teal" style={{ top: "-5%", left: "-8%" }} />
+      <div className="ios-aurora-orb ios-aurora-orb-gold" style={{ top: "35%", right: "-6%" }} />
+      <div className="ios-aurora-orb ios-aurora-orb-sky" style={{ bottom: "-10%", left: "25%" }} />
+
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
         <div className="section-header">
           <h2>Program Kursus di Bobong</h2>
           <p>
