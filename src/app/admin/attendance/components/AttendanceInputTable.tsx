@@ -54,8 +54,12 @@ export default function AttendanceInputTable({ students, attendanceMap, selected
                         {student.program}
                       </span>
                       {localData.scheduleDetail && (
-                        <span style={{ fontSize: "0.72rem", color: "var(--color-primary-dark)", fontWeight: "600" }}>
-                          📍 {localData.scheduleDetail}
+                        <span style={{ fontSize: "0.72rem", color: "var(--color-primary-dark)", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                            <circle cx="12" cy="10" r="3" />
+                          </svg>
+                          <span>{localData.scheduleDetail}</span>
                         </span>
                       )}
                     </div>

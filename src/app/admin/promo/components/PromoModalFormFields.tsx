@@ -95,8 +95,9 @@ export function PromoModalFormFields({
                 height: "26px",
                 cursor: "pointer",
               }}
+              aria-label="Hapus gambar"
             >
-              ✕
+              &times;
             </button>
           </div>
         ) : (

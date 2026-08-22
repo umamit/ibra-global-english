@@ -94,7 +94,7 @@ export function PromoBannerFormFields(props: any) {
         {imageUrl ? (
           <div style={{ position: "relative", display: "inline-block" }}>
             <img src={imageUrl} alt="Preview" width={320} height={160} style={{ width: "100%", maxWidth: "320px", borderRadius: "12px" }} />
-            <button onClick={handleRemoveImage} style={{ position: "absolute", top: "8px", right: "8px", background: "#ef4444", color: "#fff", border: "none", borderRadius: "50%", width: "28px", height: "28px", cursor: "pointer" }}>✕</button>
+            <button onClick={handleRemoveImage} style={{ position: "absolute", top: "8px", right: "8px", background: "#ef4444", color: "#fff", border: "none", borderRadius: "50%", width: "28px", height: "28px", cursor: "pointer" }} aria-label="Hapus gambar">&times;</button>
           </div>
         ) : (
           <div onClick={() => fileInputRef.current?.click()} style={{ border: "2px dashed var(--color-gray-300)", borderRadius: "12px", padding: "2rem", textAlign: "center", cursor: "pointer" }}>

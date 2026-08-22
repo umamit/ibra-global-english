@@ -28,8 +28,13 @@ export default function FinanceTrendChart({ data }: { data: MonthlyData[] }) {
     <div style={{ backgroundColor: "#fff", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)", marginBottom: "1.5rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
         <div>
-          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 700, color: "var(--color-gray-900)" }}>
-            📊 Grafik Tren Pemasukan SPP (Recharts Visual)
+          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 700, color: "var(--color-gray-900)", display: "flex", alignItems: "center", gap: "6px" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #216c7e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            <span>Grafik Tren Pemasukan SPP (Recharts Visual)</span>
           </h3>
           <p style={{ margin: "0.2rem 0 0", fontSize: "0.825rem", color: "var(--color-gray-500)" }}>
             Arus kas penerimaan SPP terverifikasi per bulan di LKP Ibra Global English Bobong

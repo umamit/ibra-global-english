@@ -88,7 +88,7 @@ export default function KemitraanAdminClient() {
           <div style={{ background: "#fff", width: "100%", maxWidth: "650px", borderRadius: "14px", padding: "2rem", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", borderBottom: "1px solid #eee", paddingBottom: "0.75rem" }}>
               <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700 }}>Pratinjau Surat Pengantar Kemitraan</h3>
-              <button type="button" onClick={() => setSelectedSub(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer" }}>✕</button>
+              <button type="button" onClick={() => setSelectedSub(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer" }} aria-label="Tutup">&times;</button>
             </div>
             <div id="print-area" style={{ border: "1px solid #ddd", padding: "1.75rem", borderRadius: "8px", background: "#fff", fontFamily: "serif", lineHeight: 1.6, color: "#111" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1.25rem", borderBottom: "2px solid #164d57", paddingBottom: "0.75rem", marginBottom: "1.25rem" }}>

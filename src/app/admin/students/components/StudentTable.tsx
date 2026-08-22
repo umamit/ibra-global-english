@@ -180,8 +180,11 @@ export default function StudentTable({
                   </td>
                   <td>
                     {schedCount > 0 ? (
-                      <span style={{ backgroundColor: "#d1fae5", color: "#065f46", padding: "0.25rem 0.6rem", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "800" }}>
-                        ✓ Terjadwal ({schedCount} Sesi)
+                      <span style={{ backgroundColor: "#d1fae5", color: "#065f46", padding: "0.25rem 0.6rem", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "800", display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span>Terjadwal ({schedCount} Sesi)</span>
                       </span>
                     ) : (
                       <span style={{ color: "#94a3b8", fontSize: "0.75rem", fontStyle: "italic" }}>
@@ -208,10 +211,14 @@ export default function StudentTable({
                       <button
                         type="button"
                         className="btn-portal-outline"
-                        style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem", borderColor: "#216c7e", color: "#216c7e" }}
+                        style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem", borderColor: "#216c7e", color: "#216c7e", display: "inline-flex", alignItems: "center", gap: "4px" }}
                         onClick={() => handlePrintIdCard(student)}
                       >
-                        💳 Cetak QR
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect width="20" height="14" x="2" y="5" rx="2" />
+                          <line x1="2" x2="22" y1="10" y2="10" />
+                        </svg>
+                        <span>Cetak QR</span>
                       </button>
                       <button
                         type="button"

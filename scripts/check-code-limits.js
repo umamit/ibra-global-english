@@ -45,18 +45,16 @@ walkDir(srcDir, (filePath) => {
       errorsCount++;
     }
 
-    // Check emojis in non-admin src
-    if (!relPath.includes('app/admin')) {
-      const lineList = content.split('\n');
-      lineList.forEach((lineText, idx) => {
-        // Exclude audio cleanup regex in AIChatWidget
-        if (lineText.includes('replace(/[👋🤖📚🗣️✅🎯⚠️💡]/g')) return;
-        if (EMOJI_REGEX.test(lineText)) {
-          emojiFound.push({ relPath, line: idx + 1, text: lineText.trim() });
-          errorsCount++;
-        }
-      });
-    }
+    // Check emojis across entire src (including admin & public components)
+    const lineList = content.split('\n');
+    lineList.forEach((lineText, idx) => {
+      // Exclude audio cleanup regex in AIChatWidget
+      if (lineText.includes('replace(/[👋🤖📚🗣️✅🎯⚠️💡]/g') || lineText.includes('replace(/[')) return;
+      if (EMOJI_REGEX.test(lineText)) {
+        emojiFound.push({ relPath, line: idx + 1, text: lineText.trim() });
+        errorsCount++;
+      }
+    });
   }
 
   // 2. Check CSS module limits (150 lines)
@@ -86,7 +84,7 @@ if (emojiFound.length > 0) {
   console.error(`❌ Terdeteksi Emoji pada Berkas UI (${emojiFound.length}):`);
   emojiFound.forEach(item => console.error(`   - ${item.relPath}:${item.line}: ${item.text}`));
 } else {
-  console.log('✅ Bebas emoji di seluruh komponen non-admin.');
+  console.log('✅ Bebas emoji di seluruh komponen aplikasi (Admin & Publik).');
 }
 
 console.log('\n===============================================');

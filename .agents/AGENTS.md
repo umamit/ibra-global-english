@@ -181,8 +181,8 @@ Anda WAJIB mematuhi instruksi ini untuk menjaga kebersihan basis kode (codebase)
     - Setiap modifikasi pada berkas tampilan wajib mempertahankan keselarasan nama kelas dengan berkas CSS stylesheet yang bersangkutan agar tidak memicu kepecahan tampilan (*CSS layout breakage*).
 
 21k. **Penggunaan Icon vs Emoji (Strict Icon Over Emoji Rule):**
-    - AI wajib selalu menggunakan icon (seperti Lucide Icons / SVG icons) dan dilarang keras menggunakan emoji pada antarmuka web, teks UI, maupun komponen aplikasi, kecuali jika diminta secara spesifik oleh pengguna.
-    - Setelah setiap sesi penggantian emoji atau refaktorisasi kode, AI WAJIB menjalankan skrip Node.js berikut untuk memverifikasi bahwa tidak ada emoji tersisa dan seluruh file memenuhi batas baris kode:
+    - AI DILARANG KERAS menggunakan emoji di seluruh bagian aplikasi (termasuk Dasbor Admin, Portal Orang Tua, Portal Siswa, Portal Tutor, Komponen Publik, maupun tombol aksi UI). WAJIB selalu menggunakan icon SVG / Lucide Icons resmi secara konsisten.
+    - Setelah setiap penambahan kode atau refaktorisasi, AI WAJIB menjalankan skrip verifikasi otomatis berikut:
 
 ```bash
 npm run check-limits
@@ -190,8 +190,8 @@ npm run check-limits
     - Skrip ini (`scripts/check-code-limits.js`) otomatis memverifikasi:
       1. Batas maksimal baris kode JS/TS/TSX (< 300 baris).
       2. Batas maksimal CSS modules (< 150 baris).
-      3. Pembersihan emoji di seluruh komponen non-admin.
-    - Jika skrip menghasilkan `🎉 Audit Lulus 100%!`, maka verifikasi dinyatakan selesai.
+      3. Pembersihan emoji di seluruh komponen aplikasi (Admin & Publik).
+    - Jika skrip menghasilkan `Audit Lulus 100%!`, maka verifikasi dinyatakan selesai.
     - Pengecualian yang diizinkan: emoji yang berada di dalam **regex string filter** (bukan rendering UI), contoh: `.replace(/[👋🤖]/g, "")`.
 
 21l. **Kunci Verifikasi Kode Sebelum Penawaran (Strict Pre-Recommendation Audit Rule):**

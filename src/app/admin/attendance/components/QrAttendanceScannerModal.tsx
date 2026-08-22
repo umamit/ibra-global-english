@@ -164,8 +164,8 @@ export default function QrAttendanceScannerModal({
             <span className={styles.liveDot} />
             <h3 style={{ fontSize: "1rem", fontWeight: 700, margin: 0, color: "#fff" }}>Pemindai Presensi QR Code</h3>
           </div>
-          <button type="button" onClick={handleSafeClose} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "1.2rem" }}>
-            ✕
+          <button type="button" onClick={handleSafeClose} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "1.2rem" }} aria-label="Tutup">
+            &times;
           </button>
         </div>
 
@@ -187,17 +187,26 @@ export default function QrAttendanceScannerModal({
               type="button"
               onClick={toggleTorch}
               title="Aktifkan Senter"
-              style={{ padding: "6px 12px", borderRadius: "20px", backgroundColor: isTorchOn ? "#f59e0b" : "rgba(0,0,0,0.6)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "0.75rem", cursor: "pointer" }}
+              style={{ padding: "6px 12px", borderRadius: "20px", backgroundColor: isTorchOn ? "#f59e0b" : "rgba(0,0,0,0.6)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "0.75rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
             >
-              🔦 {isTorchOn ? "Senter ON" : "Senter OFF"}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              <span>{isTorchOn ? "Senter ON" : "Senter OFF"}</span>
             </button>
             <button
               type="button"
               onClick={toggleFacingMode}
               title="Balik Kamera"
-              style={{ padding: "6px 12px", borderRadius: "20px", backgroundColor: "rgba(0,0,0,0.6)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "0.75rem", cursor: "pointer" }}
+              style={{ padding: "6px 12px", borderRadius: "20px", backgroundColor: "rgba(0,0,0,0.6)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "0.75rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
             >
-              🔄 Balik Kamera
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                <path d="M16 16h5v5" />
+              </svg>
+              <span>Balik Kamera</span>
             </button>
           </div>
 

@@ -104,9 +104,32 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
         </div>
 
         <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "0.5rem" }}>
-          <button type="button" onClick={() => setActiveTab("recurring")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "recurring" ? "#eef6f8" : "transparent", color: activeTab === "recurring" ? "#216c7e" : "#64748b" }}>📅 Jadwal Rutin</button>
-          <button type="button" onClick={() => setActiveTab("reschedule")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "reschedule" ? "#fef3c7" : "transparent", color: activeTab === "reschedule" ? "#b45309" : "#64748b" }}>🔄 Reschedule</button>
-          <button type="button" onClick={() => setActiveTab("pending")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "pending" ? "#fee2e2" : "transparent", color: activeTab === "pending" ? "#b91c1c" : "#64748b" }}>⏸️ Tunda (Pending)</button>
+          <button type="button" onClick={() => setActiveTab("recurring")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "recurring" ? "#eef6f8" : "transparent", color: activeTab === "recurring" ? "#216c7e" : "#64748b", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+              <line x1="16" x2="16" y1="2" y2="6" />
+              <line x1="8" x2="8" y1="2" y2="6" />
+              <line x1="3" x2="21" y1="10" y2="10" />
+            </svg>
+            <span>Jadwal Rutin</span>
+          </button>
+          <button type="button" onClick={() => setActiveTab("reschedule")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "reschedule" ? "#fef3c7" : "transparent", color: activeTab === "reschedule" ? "#b45309" : "#64748b", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+              <path d="M16 16h5v5" />
+            </svg>
+            <span>Reschedule</span>
+          </button>
+          <button type="button" onClick={() => setActiveTab("pending")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "pending" ? "#fee2e2" : "transparent", color: activeTab === "pending" ? "#b91c1c" : "#64748b", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="10" x2="10" y1="15" y2="9" />
+              <line x1="14" x2="14" y1="15" y2="9" />
+            </svg>
+            <span>Tunda (Pending)</span>
+          </button>
         </div>
 
         {conflictWarning && <div style={{ padding: "0.5rem 0.75rem", backgroundColor: "#fffbeb", border: "1px solid #fef3c7", borderRadius: "10px", color: "#b45309", fontSize: "0.78rem", marginBottom: "0.75rem", fontWeight: "600" }}><AlertCircleIcon /> {conflictWarning}</div>}

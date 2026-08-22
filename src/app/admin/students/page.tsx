@@ -133,14 +133,27 @@ function AdminStudentsContent() {
           <p className="portal-header-subtitle" style={{ margin: "0.25rem 0 0" }}>Kelola database siswa, verifikasi pendaftaran baru, dan akun orang tua.</p>
         </div>
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          <button className="btn-portal-outline" onClick={() => setImportModalOpen(true)} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
-            📥 Import Excel
+          <button className="btn-portal-outline" onClick={() => setImportModalOpen(true)} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+            <span>Import Excel</span>
           </button>
-          <button className="btn-portal-outline" onClick={() => { handleExportStudentsCSV(students); toast.success("Export data siswa selesai!"); }} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
-            📄 Export CSV
+          <button className="btn-portal-outline" onClick={() => { handleExportStudentsCSV(students); toast.success("Export data siswa selesai!"); }} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            <span>Export CSV</span>
           </button>
-          <button className="btn-portal-primary" onClick={handleOpenAddModal} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem" }}>
-            + Tambah Siswa
+          <button className="btn-portal-primary" onClick={handleOpenAddModal} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>Tambah Siswa</span>
           </button>
         </div>
       </div>

@@ -119,9 +119,9 @@ export default function FinanceTable({
                           ...badgeInfo.badgeStyle,
                         }}
                       >
-                        <option value="auto">⚡ {badgeInfo.type === "prepaid" ? "Prepaid (Auto)" : badgeInfo.type === "postpaid" ? "Postpaid (Auto)" : "Belum Bayar"}</option>
-                        <option value="prepaid">🟢 Prepaid</option>
-                        <option value="postpaid">🟡 Postpaid</option>
+                        <option value="auto">{badgeInfo.type === "prepaid" ? "Prepaid (Auto)" : badgeInfo.type === "postpaid" ? "Postpaid (Auto)" : "Belum Bayar"}</option>
+                        <option value="prepaid">Prepaid</option>
+                        <option value="postpaid">Postpaid</option>
                       </select>
                     </div>
                   </div>

@@ -92,7 +92,7 @@ export function PromoBannerModal(props: PromoBannerModalProps) {
             }}
             aria-label="Tutup modal"
           >
-            ✕
+            &times;
           </button>
         </div>
 
