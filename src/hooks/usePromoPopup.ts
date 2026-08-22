@@ -57,12 +57,12 @@ export function usePromoPopup() {
     };
   }, [pathname]);
 
-  // Auto-slide interval every 2 seconds if multiple banners exist
+  // Auto-slide interval every 5 seconds if multiple banners exist
   useEffect(() => {
     if (!visible || banners.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
-    }, 2000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [visible, banners.length]);
 

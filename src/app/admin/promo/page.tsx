@@ -102,7 +102,7 @@ export default function AdminPromoPage() {
       <div>
         <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800 }}>Manajemen Popup Promosi &amp; Flyer</h1>
         <p style={{ margin: "0.25rem 0 0", color: "var(--color-gray-500)", fontSize: "0.875rem" }}>
-          Unggah flyer poster atau buat banner teks. Jika ada lebih dari 1 item aktif, popup akan berganti otomatis tiap 2 detik di website.
+          Unggah flyer poster atau buat banner teks. Jika ada lebih dari 1 item aktif, popup akan berganti otomatis tiap 5 detik di website.
         </p>
       </div>
 
