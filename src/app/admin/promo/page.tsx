@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect, useCallback } from "react";
+import { useDynamicIsland } from "../context/DynamicIslandContext";
 import { PromoBannerItem, PromoBannerList } from "./components/PromoBannerList";
 import { PromoBannerModal } from "./components/PromoBannerModal";
 
@@ -11,11 +12,14 @@ export default function AdminPromoPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<PromoBannerItem | null>(null);
-  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" }>({ msg: "", type: "success" });
+  const island = useDynamicIsland();
 
   const showToast = (msg: string, type: "success" | "error" = "success") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast({ msg: "", type: "success" }), 3500);
+    if (type === "success") {
+      island.success(msg);
+    } else {
+      island.error(msg);
+    }
   };
 
   const fetchBanners = useCallback(async () => {
@@ -24,11 +28,11 @@ export default function AdminPromoPage() {
       const json = await res.json();
       setBanners(json.data || []);
     } catch {
-      showToast("Gagal memuat daftar banner.", "error");
+      island.error("Gagal Memuat Banner", "Terjadi kesalahan saat mengambil daftar promo.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [island]);
 
   useEffect(() => {
     fetchBanners();
@@ -95,12 +99,6 @@ export default function AdminPromoPage() {
 
   return (
     <div style={{ padding: "2rem 1.5rem", maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      {toast.msg && (
-        <div style={{ position: "fixed", top: "20px", right: "20px", background: toast.type === "error" ? "#ef4444" : "#10b981", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: "12px", zIndex: 9999, boxShadow: "0 8px 24px rgba(0,0,0,0.15)", fontWeight: 700 }}>
-          {toast.msg}
-        </div>
-      )}
-
       <div>
         <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800 }}>Manajemen Popup Promosi &amp; Flyer</h1>
         <p style={{ margin: "0.25rem 0 0", color: "var(--color-gray-500)", fontSize: "0.875rem" }}>

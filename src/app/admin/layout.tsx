@@ -7,6 +7,8 @@ import AICopilotWidget from "@/components/AICopilotWidget";
 import AdminSidebarNav from "./components/AdminSidebarNav";
 import AdminRealtimeToasts from "./components/AdminRealtimeToasts";
 import AdminCommandPalette from "./components/AdminCommandPalette";
+import { DynamicIslandProvider } from "./context/DynamicIslandContext";
+import { DynamicIsland } from "./components/DynamicIsland";
 import { useAdminLayout } from "./hooks/useAdminLayout";
 import "@/app/dashboard.css";
 import "@/app/dashboard-print.css";
@@ -20,14 +22,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [commandOpen, setCommandOpen] = useState(false);
 
   return (
-    <div className={`dashboard-container ${mobileOpen ? "sidebar-open" : ""}`}>
-      <Toaster richColors position="top-right" closeButton duration={3500} />
-      <AdminCommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
+    <DynamicIslandProvider>
+      <div className={`dashboard-container ${mobileOpen ? "sidebar-open" : ""}`}>
+        <DynamicIsland />
+        <Toaster richColors position="top-right" closeButton duration={3500} />
+        <AdminCommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
 
-      <AdminRealtimeToasts
-        newRegToast={newRegToast} setNewRegToast={setNewRegToast}
-        newTestToast={newTestToast} setNewTestToast={setNewTestToast}
-      />
+        <AdminRealtimeToasts
+          newRegToast={newRegToast} setNewRegToast={setNewRegToast}
+          newTestToast={newTestToast} setNewTestToast={setNewTestToast}
+        />
 
       {/* Mobile Toggle Button */}
       <button
@@ -102,5 +106,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </main>
       <AICopilotWidget />
     </div>
+    </DynamicIslandProvider>
   );
 }
