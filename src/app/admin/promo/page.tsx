@@ -6,10 +6,13 @@ import { useState, useEffect, useCallback } from "react";
 import { useDynamicIsland } from "../context/DynamicIslandContext";
 import { PromoBannerItem, PromoBannerList } from "./components/PromoBannerList";
 import { PromoBannerModal } from "./components/PromoBannerModal";
+import { PromoIntervalCard } from "./components/PromoIntervalCard";
 
 export default function AdminPromoPage() {
   const [banners, setBanners] = useState<PromoBannerItem[]>([]);
+  const [intervalSec, setIntervalSec] = useState<number>(5);
   const [loading, setLoading] = useState(true);
+  const [savingInterval, setSavingInterval] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<PromoBannerItem | null>(null);
   const island = useDynamicIsland();
@@ -24,11 +27,20 @@ export default function AdminPromoPage() {
 
   const fetchBanners = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/promo-banners");
-      const json = await res.json();
-      setBanners(json.data || []);
+      const [resBanners, resInterval] = await Promise.all([
+        fetch("/api/admin/promo-banners"),
+        fetch("/api/admin/promo-banners/interval"),
+      ]);
+
+      const jsonBanners = await resBanners.json();
+      setBanners(jsonBanners.data || []);
+
+      if (resInterval.ok) {
+        const jsonInterval = await resInterval.json();
+        if (jsonInterval?.interval) setIntervalSec(jsonInterval.interval);
+      }
     } catch {
-      island.error("Gagal Memuat Banner", "Terjadi kesalahan saat mengambil daftar promo.");
+      island.error("Gagal Memuat Data", "Terjadi kesalahan saat mengambil data promo.");
     } finally {
       setLoading(false);
     }
@@ -38,9 +50,27 @@ export default function AdminPromoPage() {
     fetchBanners();
   }, [fetchBanners]);
 
+  const handleSaveInterval = async (newSec: number) => {
+    setSavingInterval(true);
+    try {
+      const res = await fetch("/api/admin/promo-banners/interval", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ interval: newSec }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Gagal menyimpan durasi.");
+      setIntervalSec(json.interval);
+      island.success("Kecepatan Carousel Diperbarui", `Popup otomatis berganti tiap ${json.interval} detik.`);
+    } catch (err: any) {
+      island.error("Gagal Menyimpan", err.message || "Terjadi kesalahan sistem.");
+    } finally {
+      setSavingInterval(false);
+    }
+  };
+
   const handleToggleActive = async (item: PromoBannerItem) => {
     const newVal = !item.is_active;
-    // Optimistic UI update
     setBanners((prev) =>
       prev.map((b) => (b.id === item.id ? { ...b, is_active: newVal } : b))
     );
@@ -54,7 +84,6 @@ export default function AdminPromoPage() {
       if (!res.ok) throw new Error();
       showToast(newVal ? "Popup diaktifkan" : "Popup dinonaktifkan", "success");
     } catch {
-      // Rollback on error
       setBanners((prev) =>
         prev.map((b) => (b.id === item.id ? { ...b, is_active: !newVal } : b))
       );
@@ -102,9 +131,15 @@ export default function AdminPromoPage() {
       <div>
         <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800 }}>Manajemen Popup Promosi &amp; Flyer</h1>
         <p style={{ margin: "0.25rem 0 0", color: "var(--color-gray-500)", fontSize: "0.875rem" }}>
-          Unggah flyer poster atau buat banner teks. Jika ada lebih dari 1 item aktif, popup akan berganti otomatis tiap 5 detik di website.
+          Unggah flyer poster atau buat banner teks. Jika ada lebih dari 1 item aktif, popup akan berganti otomatis sesuai durasi yang diatur.
         </p>
       </div>
+
+      <PromoIntervalCard
+        initialInterval={intervalSec}
+        onSaveInterval={handleSaveInterval}
+        saving={savingInterval}
+      />
 
       {loading ? (
         <div style={{ backgroundColor: "#fff", padding: "3rem", borderRadius: "16px", textAlign: "center", color: "var(--color-gray-400)" }}>
@@ -113,6 +148,7 @@ export default function AdminPromoPage() {
       ) : (
         <PromoBannerList
           banners={banners}
+          intervalSec={intervalSec}
           onToggleActive={handleToggleActive}
           onEdit={handleEdit}
           onDelete={handleDelete}

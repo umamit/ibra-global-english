@@ -17,6 +17,7 @@ export interface PromoBannerItem {
 
 interface PromoBannerListProps {
   banners: PromoBannerItem[];
+  intervalSec?: number;
   onToggleActive: (banner: PromoBannerItem) => void;
   onEdit: (banner: PromoBannerItem) => void;
   onDelete: (id: string) => void;
@@ -32,6 +33,7 @@ const PlusIcon = () => (
 
 export function PromoBannerList({
   banners,
+  intervalSec = 5,
   onToggleActive,
   onEdit,
   onDelete,
@@ -61,7 +63,7 @@ export function PromoBannerList({
           </h2>
           <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--color-gray-500)" }}>
             {activeCount > 1
-              ? `${activeCount} item aktif berganti otomatis tiap 5 detik di popup`
+              ? `${activeCount} item aktif berganti otomatis tiap ${intervalSec} detik di popup`
               : activeCount === 1
               ? "1 item aktif tampil tunggal di popup"
               : "Semua popup nonaktif (tidak muncul di website)"}

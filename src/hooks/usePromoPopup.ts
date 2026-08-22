@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const EXCLUDED_PATHS = ["/admin", "/student", "/parent", "/tutor", "/login", "/auth"];
-const SESSION_KEY = "promo_popup_dismissed";
 
 export interface PromoBanner {
   id: string;
@@ -17,6 +16,7 @@ export interface PromoBanner {
 export function usePromoPopup() {
   const pathname = usePathname();
   const [banners, setBanners] = useState<PromoBanner[]>([]);
+  const [intervalMs, setIntervalMs] = useState<number>(5000);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visible, setVisible] = useState(false);
 
@@ -30,9 +30,19 @@ export function usePromoPopup() {
       try {
         const res = await fetch("/api/promo-banners");
         if (!res.ok) return;
-        const data = await res.json();
-        const list: PromoBanner[] = Array.isArray(data) ? data : data ? [data] : [];
+        const json = await res.json();
+
+        const list: PromoBanner[] = Array.isArray(json)
+          ? json
+          : Array.isArray(json.banners)
+          ? json.banners
+          : json.data || [];
+
         if (list.length === 0) return;
+
+        if (json && typeof json.interval === "number" && json.interval > 0) {
+          setIntervalMs(json.interval * 1000);
+        }
 
         setBanners(list);
         if (typeof window !== "undefined") {
@@ -57,14 +67,14 @@ export function usePromoPopup() {
     };
   }, [pathname]);
 
-  // Auto-slide interval every 5 seconds if multiple banners exist
+  // Auto-slide interval based on dynamic duration if multiple banners exist
   useEffect(() => {
     if (!visible || banners.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
-    }, 5000);
+    }, intervalMs);
     return () => clearInterval(interval);
-  }, [visible, banners.length]);
+  }, [visible, banners.length, intervalMs]);
 
   const nextSlide = () => {
     if (banners.length === 0) return;
