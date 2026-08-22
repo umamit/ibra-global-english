@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useDynamicIsland } from "../context/DynamicIslandContext";
 import { Certificate, Student, Report } from "@/types";
 import { buildCertNumber } from "./certHelpers";
 import { CertificateArchiveTable } from "./CertificateArchiveTable";
@@ -13,6 +14,7 @@ interface CertWithStudent extends Certificate { students?: { name: string; progr
 
 export default function AdminCertificatesPage() {
   const supabase = createClient();
+  const island = useDynamicIsland();
   const [certificates, setCertificates] = useState<CertWithStudent[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
@@ -26,11 +28,13 @@ export default function AdminCertificatesPage() {
   const [templateUrl, setTemplateUrl] = useState("");
   const [issueDate, setIssueDate] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [toast, setToast] = useState<{ show: boolean; message: string; type: "success"|"error" }>({ show: false, message: "", type: "success" });
 
   const triggerToast = (message: string, type: "success"|"error" = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast(p => ({ ...p, show: false })), 3500);
+    if (type === "success") {
+      island.success(message);
+    } else {
+      island.error(message);
+    }
   };
 
   const fetchData = async () => {
@@ -89,7 +93,6 @@ export default function AdminCertificatesPage() {
 
   return (
     <div className="cert-page">
-      {toast.show && <div className={`cert-toast cert-toast-${toast.type}`}>{toast.message}</div>}
       <div className="cert-page-grid">
         <div className="cert-card">
           <h2>Terbitkan Sertifikat Baru</h2>

@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { useDynamicIsland } from "../context/DynamicIslandContext";
 import StudentTable from "./components/StudentTable";
 import ParentTable from "./components/ParentTable";
 import RegistrationTable from "./components/RegistrationTable";
@@ -19,6 +19,7 @@ import { handleExportStudentsCSV } from "./studentsHelpers";
 function AdminStudentsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const island = useDynamicIsland();
 
   const {
     students, parents, registrations, scheduleCounts, loading, regLoading,
@@ -98,12 +99,12 @@ function AdminStudentsContent() {
         throw new Error(errJson.error || "Gagal menyimpan data siswa.");
       }
 
-      toast.success(editingStudent ? `Data siswa "${name}" berhasil diperbarui!` : `Siswa "${name}" berhasil ditambahkan!`);
+      island.success(editingStudent ? `Data siswa "${name}" berhasil diperbarui!` : `Siswa "${name}" berhasil ditambahkan!`);
       setModalOpen(false);
       fetchData();
     } catch (err: any) {
       setFormErrorMsg(err.message);
-      toast.error(err.message || "Gagal menyimpan data siswa.");
+      island.error(err.message || "Gagal menyimpan data siswa.");
     } finally {
       setSubmitting(false);
     }
@@ -118,10 +119,10 @@ function AdminStudentsContent() {
         body: JSON.stringify({ userId: id }),
       });
       if (!res.ok) throw new Error("Gagal menghapus user.");
-      toast.success(`Akun "${pName}" berhasil dihapus.`);
+      island.success(`Akun "${pName}" berhasil dihapus.`);
       fetchData();
     } catch (err: any) {
-      toast.error(err.message);
+      island.error(err.message);
     }
   };
 
@@ -141,7 +142,7 @@ function AdminStudentsContent() {
             </svg>
             <span>Import Excel</span>
           </button>
-          <button className="btn-portal-outline" onClick={() => { handleExportStudentsCSV(students); toast.success("Export data siswa selesai!"); }} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+          <button className="btn-portal-outline" onClick={() => { handleExportStudentsCSV(students); island.success("Export Data Selesai", "File CSV data siswa berhasil diunduh."); }} style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
               <polyline points="14 2 14 8 20 8" />
@@ -176,11 +177,11 @@ function AdminStudentsContent() {
           onEdit={handleOpenEditModal}
           onDelete={(id, sName) => {
             handleDeleteStudent(id, sName);
-            toast.success(`Data "${sName}" berhasil dihapus.`);
+            island.success(`Data "${sName}" berhasil dihapus.`);
           }}
           onUpdateProgram={(id, newProgram) => {
             handleUpdateStudentProgram(id, newProgram);
-            toast.success(`Level program diperbarui ke ${newProgram}`);
+            island.success(`Level program diperbarui ke ${newProgram}`);
           }}
           onScheduleStudent={(st) => { setScheduleTargetStudent(st); setScheduleModalOpen(true); }}
         />
@@ -193,7 +194,7 @@ function AdminStudentsContent() {
           onDeleteParent={handleDeleteParent}
           onUpdateRole={(userId, newRole) => {
             handleUpdateRole(userId, newRole);
-            toast.success("Peran user berhasil diperbarui!");
+            island.success("Peran user berhasil diperbarui!");
           }}
         />
       )}
@@ -205,7 +206,7 @@ function AdminStudentsContent() {
           errorMsg={errorMsg}
           waSendingId={waSendingId}
           waFeedback={waFeedback}
-          onApprove={(reg) => { handleApprove(reg); toast.success(`Pendaftaran ${reg.student_name} disetujui!`); }}
+          onApprove={(reg) => { handleApprove(reg); island.success(`Pendaftaran ${reg.student_name} disetujui!`); }}
           onOpenReject={(id) => { setRejectModalId(id); setRejectNotes(""); }}
         />
       )}
@@ -224,7 +225,7 @@ function AdminStudentsContent() {
       <ScheduleStudentModal
         isOpen={scheduleModalOpen} student={scheduleTargetStudent}
         onClose={() => setScheduleModalOpen(false)}
-        onSuccess={(msg) => { toast.success(msg); fetchData(); }}
+        onSuccess={(msg) => { island.success(msg); fetchData(); }}
       />
 
       <RejectModal
@@ -233,12 +234,12 @@ function AdminStudentsContent() {
         onConfirm={() => {
           if (rejectModalId) {
             handleReject(rejectModalId, rejectNotes);
-            toast.info("Pendaftaran telah ditolak.");
+            island.info("Pendaftaran telah ditolak.");
           }
         }}
       />
 
-      <StudentImportModal isOpen={importModalOpen} onClose={() => setImportModalOpen(false)} onSuccess={() => { toast.success("Import siswa berhasil!"); fetchData(); }} />
+      <StudentImportModal isOpen={importModalOpen} onClose={() => setImportModalOpen(false)} onSuccess={() => { island.success("Import siswa berhasil!"); fetchData(); }} />
     </div>
   );
 }

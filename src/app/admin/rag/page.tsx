@@ -51,7 +51,7 @@ $$;`;
 
 export default function AdminRAGPage() {
   const {
-    documents, loading, saving, toast, setToast, tableMissing, copied, mounted,
+    documents, loading, saving, tableMissing, copied, mounted,
     editingId, title, setTitle, content, setContent, source, setSource,
     handleSubmit, handleEditClick, handleCancelEdit, handleDelete, handleCopySql, fetchDocuments,
   } = useRagPage();
@@ -60,28 +60,9 @@ export default function AdminRAGPage() {
     return <div className="dashboard-main" style={{ padding: "2rem", color: "var(--color-gray-500)", textAlign: "center" }}><p>Memuat basis pengetahuan AI...</p></div>;
   }
 
-  const toastColors = {
-    success: { bg: "rgba(240,253,244,0.95)", border: "#bbf7d0", titleColor: "#14532d", msgColor: "#166534" },
-    error: { bg: "rgba(254,242,242,0.95)", border: "#fecaca", titleColor: "#7f1d1d", msgColor: "#991b1b" },
-    info: { bg: "rgba(240,249,255,0.95)", border: "#bae6fd", titleColor: "#0c4a6e", msgColor: "#0369a1" },
-  };
-
   return (
     <div className="dashboard-main" style={{ padding: "2rem", position: "relative" }}>
       <style dangerouslySetInnerHTML={{ __html: `@keyframes slideIn{from{transform:translateY(-1rem) scale(.95);opacity:0}to{transform:none;opacity:1}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes pulseBorder{0%,100%{border-color:rgba(239,68,68,.4);box-shadow:none}50%{border-color:rgba(239,68,68,.8);box-shadow:0 0 12px 3px rgba(239,68,68,.15)}}.animate-slide-in{animation:slideIn .35s cubic-bezier(.16,1,.3,1) forwards}.pulse-error-box{animation:pulseBorder 2.5s infinite ease-in-out}` }} />
-
-      {/* Toast */}
-      {toast && (() => { const c = toastColors[toast.type]; return (
-        <div className="animate-slide-in" style={{ position: "fixed", top: "2rem", right: "2rem", zIndex: 9999, display: "flex", alignItems: "flex-start", gap: "0.875rem", padding: "1rem 1.25rem", borderRadius: "12px", backgroundColor: c.bg, border: `1px solid ${c.border}`, boxShadow: "0 10px 30px -5px rgba(0,0,0,.08)", backdropFilter: "blur(12px)", maxWidth: "400px" }}>
-          <div style={{ flexGrow: 1 }}>
-            <h4 style={{ margin: 0, fontSize: "0.875rem", fontWeight: "800", color: c.titleColor }}>{toast.title}</h4>
-            <p style={{ margin: "0.25rem 0 0 0", fontSize: "0.8rem", color: c.msgColor, lineHeight: "1.4" }}>{toast.message}</p>
-          </div>
-          <button onClick={() => setToast(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-gray-400)" }} aria-label="Tutup notifikasi">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-      )})()}
 
       {/* Setup Required Screen */}
       {tableMissing ? (

@@ -10,7 +10,7 @@ import LetterPreview from "./components/LetterPreview";
 
 export default function AdminLettersPage() {
   const {
-    loading, submitting, aiLoading, toast,
+    loading, submitting, aiLoading,
     id, title, setTitle, letterNumber, setLetterNumber, recipient, setRecipient,
     subject, setSubject, content, setContent, senderName, setSenderName,
     senderRole, setSenderRole, lampiran, setLampiran, attachment, setAttachment,
@@ -23,18 +23,6 @@ export default function AdminLettersPage() {
 
   return (
     <div className="letters-container">
-      {/* Toast */}
-      {toast.show && (
-        <div style={{
-          position: "fixed", top: "20px", right: "20px", zIndex: 9999,
-          padding: "0.75rem 1.5rem", borderRadius: "var(--radius-md)",
-          backgroundColor: toast.type === "success" ? "var(--color-green)" : "var(--color-red)",
-          color: "#ffffff", boxShadow: "var(--shadow-md)",
-          display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: "600",
-        }}>
-          {toast.message}
-        </div>
-      )}
 
       {/* Header */}
       <div className="no-print" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem", borderBottom: "1px solid var(--color-gray-200)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>

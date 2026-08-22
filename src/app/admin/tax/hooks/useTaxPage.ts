@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { DEFAULT_TAX_RECORDS, DEFAULT_TAX_ASSETS } from "@/utils/fallbackData";
 import { formatRupiah } from "../../utils";
+import { useDynamicIsland } from "@/app/admin/context/DynamicIslandContext";
 
 export interface TaxRecord {
   id: string; tax_year: number; tax_period: string; tax_type: string;
@@ -28,10 +29,10 @@ const genRandomId = () => Math.random().toString(36).substring(2, 9);
 
 export function useTaxPage() {
   const supabase = createClient();
+  const island = useDynamicIsland();
 
   const [activeSubTab, setActiveSubTab] = useState<string>("calculator");
   const [taxMethod, setTaxMethod] = useState<string>("final_umkm");
-  const [toast, setToast] = useState<ToastState>({ show: false, message: "", type: "success" });
   const [loading, setLoading] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const [records, setRecords] = useState<TaxRecord[]>([]);
@@ -64,8 +65,11 @@ export function useTaxPage() {
   const [assetPurchasePrice, setAssetPurchasePrice] = useState<string>("");
 
   const showToast = (message: string, type: string = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: "", type: "success" }), 4000);
+    if (type === "success") {
+      island.success(message);
+    } else {
+      island.error(message);
+    }
   };
 
   useEffect(() => {
@@ -194,7 +198,7 @@ export function useTaxPage() {
   const assetsSummary = getAssetsSummary();
 
   return {
-    activeSubTab, setActiveSubTab, taxMethod, setTaxMethod, toast, loading, saving, records,
+    activeSubTab, setActiveSubTab, taxMethod, setTaxMethod, loading, saving, records,
     assetsList, loadingAssets, savingAssets, assetsSummary,
     grossRevenueFinal, setGrossRevenueFinal, resultFinal, grossRevenueBadan, setGrossRevenueBadan,
     netProfitBadan, setNetProfitBadan, resultBadan,

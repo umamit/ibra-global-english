@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useDynamicIsland } from "@/app/admin/context/DynamicIslandContext";
 
 export interface RAGDocument { id: string; title: string; content: string; source?: string; }
 export interface ToastState { title: string; message: string; type: "success" | "error" | "info"; }
 
 export function useRagPage() {
+  const island = useDynamicIsland();
   const [documents, setDocuments] = useState<RAGDocument[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
-  const [toast, setToast] = useState<ToastState | null>(null);
   const [tableMissing, setTableMissing] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
@@ -19,8 +20,13 @@ export function useRagPage() {
   const [source, setSource] = useState<string>("manual");
 
   const showToast = (title: string, message: string, type: "success" | "error" | "info" = "success") => {
-    setToast({ title, message, type });
-    setTimeout(() => setToast(null), 4000);
+    if (type === "success") {
+      island.success(title, message);
+    } else if (type === "error") {
+      island.error(title, message);
+    } else {
+      island.info(title, message);
+    }
   };
 
   const fetchDocuments = async (): Promise<void> => {
@@ -78,7 +84,7 @@ export function useRagPage() {
   };
 
   return {
-    documents, loading, saving, toast, setToast, tableMissing, copied, mounted,
+    documents, loading, saving, tableMissing, copied, mounted,
     editingId, title, setTitle, content, setContent, source, setSource,
     handleSubmit, handleEditClick, handleCancelEdit, handleDelete, handleCopySql, fetchDocuments,
   };

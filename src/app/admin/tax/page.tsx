@@ -10,7 +10,7 @@ import TaxAssets from "./components/TaxAssets";
 
 export default function AdminTaxPage() {
   const {
-    activeSubTab, setActiveSubTab, taxMethod, setTaxMethod, toast, loading, saving, records,
+    activeSubTab, setActiveSubTab, taxMethod, setTaxMethod, loading, saving, records,
     assetsList, loadingAssets, savingAssets, assetsSummary,
     grossRevenueFinal, setGrossRevenueFinal, resultFinal,
     grossRevenueBadan, setGrossRevenueBadan, netProfitBadan, setNetProfitBadan, resultBadan,
@@ -31,12 +31,6 @@ export default function AdminTaxPage() {
 
   return (
     <div style={{ padding: "1.5rem" }}>
-      {/* Toast */}
-      {toast.show && (
-        <div style={{ position: "fixed", top: "2rem", right: "2rem", zIndex: 1000, padding: "1rem 1.5rem", borderRadius: "8px", boxShadow: "0 10px 15px rgba(0,0,0,0.1)", display: "flex", gap: "0.5rem", alignItems: "center", color: "white", backgroundColor: toast.type === "success" ? "#10b981" : "#ef4444" }}>
-          <span>{toast.message}</span>
-        </div>
-      )}
 
       {/* Print Header */}
       <div className="print-only" style={{ marginBottom: "2rem" }}>

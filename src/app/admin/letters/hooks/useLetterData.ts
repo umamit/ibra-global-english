@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useDynamicIsland } from "@/app/admin/context/DynamicIslandContext";
 
 export interface Letter {
   id?: string;
@@ -43,15 +44,15 @@ export function generateNumber(cat: string, allLetters: Letter[]): string {
 
 export function getDefaultDate(): string {
   const now = new Date();
-  return `Bobong, ${now.getDate()} ${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
+  return `${now.getDate()} ${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
 }
 
 export function useLetterData() {
+  const island = useDynamicIsland();
   const [letters, setLetters] = useState<Letter[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [aiLoading, setAiLoading] = useState<boolean>(false);
-  const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" }>({ show: false, message: "", type: "success" });
 
   // Form state
   const [id, setId] = useState<string>("");
@@ -71,9 +72,12 @@ export function useLetterData() {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const triggerToast = useCallback((message: string, type: "success" | "error" = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast((prev) => ({ ...prev, show: false })), 3000);
-  }, []);
+    if (type === "success") {
+      island.success(message);
+    } else {
+      island.error(message);
+    }
+  }, [island]);
 
   const fetchLetters = useCallback(async () => {
     setLoading(true);
@@ -212,7 +216,7 @@ export function useLetterData() {
   );
 
   return {
-    letters, loading, submitting, aiLoading, toast,
+    letters, loading, submitting, aiLoading,
     id, title, setTitle, letterNumber, setLetterNumber, recipient, setRecipient,
     subject, setSubject, content, setContent, senderName, setSenderName,
     senderRole, setSenderRole, lampiran, setLampiran, attachment, setAttachment,
