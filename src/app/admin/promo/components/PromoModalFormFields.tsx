@@ -233,11 +233,24 @@ export function PromoModalFormFields({
             cursor: "pointer",
             fontWeight: 800,
             fontSize: "0.82rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.35rem",
             backgroundColor: isActive ? "#d1fae5" : "var(--color-gray-200)",
             color: isActive ? "#065f46" : "var(--color-gray-600)",
           }}
         >
-          {isActive ? "● Aktif" : "○ Nonaktif"}
+          {isActive ? (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          ) : (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+          )}
+          <span>{isActive ? "Aktif" : "Nonaktif"}</span>
         </button>
       </div>
     </>
