@@ -93,13 +93,8 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-.promo-carousel-nav-btn.prev {
-  left: 0.75rem;
-}
-
-.promo-carousel-nav-btn.next {
-  right: 0.75rem;
-}
+.promo-carousel-nav-btn.prev { left: 0.75rem; }
+.promo-carousel-nav-btn.next { right: 0.75rem; }
 
 .promo-popup-header-row {
   display: flex;
@@ -163,7 +158,6 @@
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  text-indent: 0.05em;
   border-radius: 9999px;
   background-color: rgba(33, 108, 126, 0.1);
   color: var(--color-primary, #216c7e);
@@ -189,19 +183,9 @@
   text-align: left;
 }
 
-.promo-popup-description p {
-  margin: 0 0 0.5rem;
-}
-
-.promo-popup-description ul,
-.promo-popup-description ol {
-  margin: 0.4rem 0 0.8rem 1.25rem;
-  padding: 0;
-}
-
-.promo-popup-description li {
-  margin-bottom: 0.3rem;
-}
+.promo-popup-description p { margin: 0 0 0.5rem; }
+.promo-popup-description ul, .promo-popup-description ol { margin: 0.4rem 0 0.8rem 1.25rem; padding: 0; }
+.promo-popup-description li { margin-bottom: 0.3rem; }
 
 .promo-popup-cta-btn {
   display: inline-flex;
@@ -225,11 +209,7 @@
   color: #ffffff;
 }
 
-@keyframes fadeInBackdrop {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+@keyframes fadeInBackdrop { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popInModal {
   from { opacity: 0; transform: translate(-50%, -46%) scale(0.92); }
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -249,13 +229,13 @@
   }
 }
 
-/* Flyer Only Mode */
+/* Flyer Only Mode - Smartphone Optimization */
 .promo-popup-card.flyer-only {
   background: transparent;
   box-shadow: none;
   border-radius: 0;
-  max-width: min(90vw, 480px);
-  width: auto;
+  width: 95%;
+  max-width: 440px;
   overflow: visible;
 }
 
@@ -266,27 +246,28 @@
   align-items: center;
   justify-content: center;
   max-height: 85vh;
+  width: 100%;
 }
 
 .promo-flyer-link {
   display: block;
   cursor: pointer;
   line-height: 0;
+  width: 100%;
 }
 
 .promo-flyer-full-img {
-  max-height: 80vh;
-  max-width: 100%;
-  width: auto;
+  width: 100%;
   height: auto;
+  max-height: 75vh;
   object-fit: contain;
   border-radius: 20px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .promo-popup-close-btn.floating {
-  top: -12px;
-  right: -12px;
+  top: -16px;
+  right: 0px;
   background-color: #0f172a;
   color: #ffffff;
   border: 2px solid #ffffff;
@@ -310,4 +291,3 @@
   border-radius: 20px;
   backdrop-filter: blur(4px);
 }
-
