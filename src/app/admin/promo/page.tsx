@@ -2,176 +2,133 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, useRef } from "react";
-import { PromoBannerFormFields, PromoBannerPreview } from "./components/PromoBannerComponents";
-
-interface PromoBanner {
-  id: string;
-  is_active: boolean;
-  badge_text?: string | null;
-  title: string;
-  message: string;
-  image_url: string | null;
-  cta_text: string;
-  cta_url: string;
-}
+import { useState, useEffect, useCallback } from "react";
+import { PromoBannerItem, PromoBannerList } from "./components/PromoBannerList";
+import { PromoBannerModal } from "./components/PromoBannerModal";
 
 export default function AdminPromoPage() {
-  const [banner, setBanner] = useState<PromoBanner | null>(null);
+  const [banners, setBanners] = useState<PromoBannerItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<PromoBannerItem | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" }>({ msg: "", type: "success" });
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const [badgeText, setBadgeText] = useState("PROMO KHUSUS");
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [ctaText, setCtaText] = useState("");
-  const [ctaUrl, setCtaUrl] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isActive, setIsActive] = useState(false);
 
   const showToast = (msg: string, type: "success" | "error" = "success") => {
     setToast({ msg, type });
     setTimeout(() => setToast({ msg: "", type: "success" }), 3500);
   };
 
-  useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const res = await fetch("/api/admin/promo-banners");
-        const json = await res.json();
-        const first = (json.data || [])[0] || null;
-        setBanner(first);
-        if (first) {
-          setBadgeText(first.badge_text || "PROMO KHUSUS");
-          setTitle(first.title || "");
-          setMessage(first.message || "");
-          setCtaText(first.cta_text || "");
-          setCtaUrl(first.cta_url || "");
-          setImageUrl(first.image_url || null);
-          setIsActive(first.is_active || false);
-        }
-      } catch {
-        showToast("Gagal memuat data popup.", "error");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBanner();
+  const fetchBanners = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/promo-banners");
+      const json = await res.json();
+      setBanners(json.data || []);
+    } catch {
+      showToast("Gagal memuat daftar banner.", "error");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const handleToggleActive = async () => {
-    if (!banner) return;
-    const newVal = !isActive;
-    setIsActive(newVal);
+  useEffect(() => {
+    fetchBanners();
+  }, [fetchBanners]);
+
+  const handleToggleActive = async (item: PromoBannerItem) => {
+    const newVal = !item.is_active;
+    // Optimistic UI update
+    setBanners((prev) =>
+      prev.map((b) => (b.id === item.id ? { ...b, is_active: newVal } : b))
+    );
+
     try {
       const res = await fetch("/api/admin/promo-banners", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: banner.id, is_active: newVal }),
+        body: JSON.stringify({ id: item.id, is_active: newVal }),
       });
       if (!res.ok) throw new Error();
-      showToast(newVal ? "Popup diaktifkan" : "Popup dinonaktifkan");
+      showToast(newVal ? "Popup diaktifkan" : "Popup dinonaktifkan", "success");
     } catch {
-      setIsActive(!newVal);
+      // Rollback on error
+      setBanners((prev) =>
+        prev.map((b) => (b.id === item.id ? { ...b, is_active: !newVal } : b))
+      );
       showToast("Gagal mengubah status.", "error");
     }
   };
 
-  const handleImageUpload = async (file: File) => {
-    setUploading(true);
+  const handleDelete = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus banner/flyer ini?")) return;
+
     try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch("/api/admin/promo-banners/upload", { method: "POST", body: form });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Upload gagal.");
-      setImageUrl(json.image_url);
-      showToast("Gambar berhasil diunggah");
-    } catch (err: any) {
-      showToast(err.message || "Upload gagal.", "error");
-    } finally {
-      setUploading(false);
+      const res = await fetch(`/api/admin/promo-banners?id=${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error();
+      setBanners((prev) => prev.filter((b) => b.id !== id));
+      showToast("Banner/Flyer berhasil dihapus.", "success");
+    } catch {
+      showToast("Gagal menghapus item.", "error");
     }
   };
 
-  const handleSave = async () => {
-    if (!message.trim()) {
-      showToast("Pesan promo wajib diisi.", "error");
-      return;
-    }
-    setSaving(true);
-    try {
-      const res = await fetch("/api/admin/promo-banners", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: banner?.id || null,
-          badge_text: badgeText.trim(),
-          title: title.trim(),
-          message: message.trim(),
-          cta_text: ctaText.trim(),
-          cta_url: ctaUrl.trim(),
-          image_url: imageUrl,
-          is_active: isActive,
-        }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Gagal menyimpan.");
-      if (json.data) setBanner(json.data[0] || json.data);
-      showToast("Perubahan berhasil disimpan!");
-    } catch (err: any) {
-      showToast(err.message || "Gagal menyimpan.", "error");
-    } finally {
-      setSaving(false);
-    }
+  const handleAddNew = () => {
+    setEditingItem(null);
+    setModalOpen(true);
+  };
+
+  const handleEdit = (item: PromoBannerItem) => {
+    setEditingItem(item);
+    setModalOpen(true);
+  };
+
+  const handleSaved = (savedItem: PromoBannerItem) => {
+    setBanners((prev) => {
+      const exists = prev.some((b) => b.id === savedItem.id);
+      if (exists) {
+        return prev.map((b) => (b.id === savedItem.id ? savedItem : b));
+      }
+      return [savedItem, ...prev];
+    });
   };
 
   return (
     <div style={{ padding: "2rem 1.5rem", maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {toast.msg && (
-        <div style={{ position: "fixed", top: "20px", right: "20px", background: toast.type === "error" ? "#ef4444" : "#10b981", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: "12px", zIndex: 9999 }}>
+        <div style={{ position: "fixed", top: "20px", right: "20px", background: toast.type === "error" ? "#ef4444" : "#10b981", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: "12px", zIndex: 9999, boxShadow: "0 8px 24px rgba(0,0,0,0.15)", fontWeight: 700 }}>
           {toast.msg}
         </div>
       )}
 
       <div>
-        <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800 }}>Manajemen Popup Promosi</h1>
-        <p style={{ margin: "0.25rem 0 0", color: "var(--color-gray-500)", fontSize: "0.875rem" }}>Atur penawaran promosi melayang di Landing Page</p>
+        <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800 }}>Manajemen Popup Promosi &amp; Flyer</h1>
+        <p style={{ margin: "0.25rem 0 0", color: "var(--color-gray-500)", fontSize: "0.875rem" }}>
+          Unggah flyer poster atau buat banner teks. Jika ada lebih dari 1 item aktif, popup akan berganti otomatis tiap 2 detik di website.
+        </p>
       </div>
 
       {loading ? (
-        <p>Memuat data...</p>
+        <div style={{ backgroundColor: "#fff", padding: "3rem", borderRadius: "16px", textAlign: "center", color: "var(--color-gray-400)" }}>
+          Memuat data banner...
+        </div>
       ) : (
-        <>
-          <div style={{ backgroundColor: "#fff", padding: "1.25rem 1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <p style={{ margin: 0, fontWeight: 700 }}>Status Popup</p>
-              <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--color-gray-500)" }}>{isActive ? "Popup sedang aktif" : "Popup nonaktif"}</p>
-            </div>
-            <button
-              onClick={handleToggleActive}
-              style={{ padding: "0.6rem 1.4rem", borderRadius: "999px", border: "none", cursor: "pointer", fontWeight: 700, background: isActive ? "#d1fae5" : "var(--color-gray-200)", color: isActive ? "#065f46" : "var(--color-gray-600)" }}
-            >
-              {isActive ? "Aktif" : "Nonaktif"}
-            </button>
-          </div>
-
-          <PromoBannerFormFields
-            badgeText={badgeText} setBadgeText={setBadgeText}
-            title={title} setTitle={setTitle}
-            message={message} setMessage={setMessage}
-            ctaText={ctaText} setCtaText={setCtaText}
-            ctaUrl={ctaUrl} setCtaUrl={setCtaUrl}
-            imageUrl={imageUrl} handleRemoveImage={() => setImageUrl(null)}
-            uploading={uploading} fileInputRef={fileInputRef}
-            handleImageUpload={handleImageUpload} handleSave={handleSave} saving={saving}
-          />
-          <PromoBannerPreview badgeText={badgeText} title={title} message={message} ctaText={ctaText} ctaUrl={ctaUrl} imageUrl={imageUrl} />
-        </>
+        <PromoBannerList
+          banners={banners}
+          onToggleActive={handleToggleActive}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onAddNew={handleAddNew}
+        />
       )}
+
+      <PromoBannerModal
+        isOpen={modalOpen}
+        editingItem={editingItem}
+        onClose={() => setModalOpen(false)}
+        onSaved={handleSaved}
+        showToast={showToast}
+      />
     </div>
   );
 }

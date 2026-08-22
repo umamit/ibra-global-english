@@ -23,11 +23,7 @@ export function usePromoPopup() {
   useEffect(() => {
     if (!pathname) return;
     const isExcludedPath = EXCLUDED_PATHS.some((p) => pathname.startsWith(p));
-    const isDigitalSubdomain = typeof window !== "undefined" && (
-      window.location.hostname.startsWith("digital.")
-    );
-
-    if (isExcludedPath || isDigitalSubdomain) return;
+    if (isExcludedPath) return;
 
     let timer: NodeJS.Timeout;
     const fetchBanners = async () => {
@@ -48,7 +44,7 @@ export function usePromoPopup() {
           });
         }
 
-        timer = setTimeout(() => setVisible(true), 1200);
+        timer = setTimeout(() => setVisible(true), 1000);
       } catch {
         // Ignored
       }
@@ -61,12 +57,12 @@ export function usePromoPopup() {
     };
   }, [pathname]);
 
-  // Auto-slide interval every 5 seconds if multiple banners exist
+  // Auto-slide interval every 2 seconds if multiple banners exist
   useEffect(() => {
     if (!visible || banners.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
-    }, 5000);
+    }, 2000);
     return () => clearInterval(interval);
   }, [visible, banners.length]);
 

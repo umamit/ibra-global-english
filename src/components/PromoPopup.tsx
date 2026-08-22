@@ -27,70 +27,113 @@ export default function PromoPopup() {
 
   if (isExcludedPath || !visible || !banner) return null;
 
+  const isCleanMsgEmpty = !cleanHtml || cleanHtml === "<p></p>" || cleanHtml.trim() === "";
+  const isFlyerOnly = Boolean(banner.image_url) && !banner.title?.trim() && isCleanMsgEmpty;
+
   return (
     <>
       <div className="promo-popup-backdrop" onClick={dismiss} aria-hidden="true" />
-      <div className="promo-popup-card" role="dialog" aria-modal="true" aria-labelledby="promo-title">
-        <button onClick={dismiss} className="promo-popup-close-btn" aria-label="Tutup promo">
+      <div
+        className={`promo-popup-card ${isFlyerOnly ? "flyer-only" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={isFlyerOnly ? undefined : "promo-title"}
+      >
+        <button onClick={dismiss} className={`promo-popup-close-btn ${isFlyerOnly ? "floating" : ""}`} aria-label="Tutup promo">
           &times;
         </button>
 
-        {banner.image_url && (
-          <div className="promo-popup-image-container">
-            <img src={banner.image_url} alt={banner.title || "Promo Ibra Global English"} className="promo-popup-image" loading="eager" fetchPriority="high" />
+        {isFlyerOnly ? (
+          <div className="promo-flyer-wrapper">
+            {banner.cta_url ? (
+              <a href={banner.cta_url} target="_blank" rel="noopener noreferrer" onClick={dismiss} className="promo-flyer-link">
+                <img src={banner.image_url!} alt="Flyer Promo" className="promo-flyer-full-img" loading="eager" fetchPriority="high" />
+              </a>
+            ) : (
+              <img src={banner.image_url!} alt="Flyer Promo" className="promo-flyer-full-img" loading="eager" fetchPriority="high" />
+            )}
+
             {totalBanners > 1 && (
               <>
-                <button onClick={prevSlide} className="promo-carousel-nav-btn prev" aria-label="Banner sebelumnya">
+                <button onClick={prevSlide} className="promo-carousel-nav-btn prev floating" aria-label="Slide sebelumnya">
                   &#10094;
                 </button>
-                <button onClick={nextSlide} className="promo-carousel-nav-btn next" aria-label="Banner selanjutnya">
+                <button onClick={nextSlide} className="promo-carousel-nav-btn next floating" aria-label="Slide selanjutnya">
                   &#10095;
                 </button>
+                <div className="promo-carousel-dots flyer-dots">
+                  {banners.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => goToSlide(idx)}
+                      className={`promo-carousel-dot ${idx === currentIndex ? "active" : ""}`}
+                      aria-label={`Lihat slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
               </>
             )}
           </div>
-        )}
-
-        <div className="promo-popup-content">
-          <div className="promo-popup-header-row">
-            <div className="promo-popup-badge">{banner.badge_text || "PROMO KHUSUS"}</div>
-            {totalBanners > 1 && (
-              <span className="promo-carousel-counter">
-                {currentIndex + 1} / {totalBanners}
-              </span>
+        ) : (
+          <>
+            {banner.image_url && (
+              <div className="promo-popup-image-container">
+                <img src={banner.image_url} alt={banner.title || "Promo Ibra Global English"} className="promo-popup-image" loading="eager" fetchPriority="high" />
+                {totalBanners > 1 && (
+                  <>
+                    <button onClick={prevSlide} className="promo-carousel-nav-btn prev" aria-label="Banner sebelumnya">
+                      &#10094;
+                    </button>
+                    <button onClick={nextSlide} className="promo-carousel-nav-btn next" aria-label="Banner selanjutnya">
+                      &#10095;
+                    </button>
+                  </>
+                )}
+              </div>
             )}
-          </div>
 
-          <h3 id="promo-title" className="promo-popup-title">
-            {banner.title || "Informasi Promo"}
-          </h3>
+            <div className="promo-popup-content">
+              <div className="promo-popup-header-row">
+                <div className="promo-popup-badge">{banner.badge_text || "PROMO KHUSUS"}</div>
+                {totalBanners > 1 && (
+                  <span className="promo-carousel-counter">
+                    {currentIndex + 1} / {totalBanners}
+                  </span>
+                )}
+              </div>
 
-          {banner.message && (
-            <div
-              className="promo-popup-description"
-              dangerouslySetInnerHTML={{ __html: cleanHtml || banner.message || "" }}
-            />
-          )}
+              <h3 id="promo-title" className="promo-popup-title">
+                {banner.title || "Informasi Promo"}
+              </h3>
 
-          {banner.cta_url && (
-            <a href={banner.cta_url} target="_blank" rel="noopener noreferrer" className="promo-popup-cta-btn" onClick={dismiss}>
-              {banner.cta_text || "Klaim Promo Sekarang"}
-            </a>
-          )}
-
-          {totalBanners > 1 && (
-            <div className="promo-carousel-dots">
-              {banners.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => goToSlide(idx)}
-                  className={`promo-carousel-dot ${idx === currentIndex ? "active" : ""}`}
-                  aria-label={`Lihat slide ${idx + 1}`}
+              {banner.message && !isCleanMsgEmpty && (
+                <div
+                  className="promo-popup-description"
+                  dangerouslySetInnerHTML={{ __html: cleanHtml || banner.message || "" }}
                 />
-              ))}
+              )}
+
+              {banner.cta_url && (
+                <a href={banner.cta_url} target="_blank" rel="noopener noreferrer" className="promo-popup-cta-btn" onClick={dismiss}>
+                  {banner.cta_text || "Klaim Promo Sekarang"}
+                </a>
+              )}
+
+              {totalBanners > 1 && (
+                <div className="promo-carousel-dots">
+                  {banners.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => goToSlide(idx)}
+                      className={`promo-carousel-dot ${idx === currentIndex ? "active" : ""}`}
+                      aria-label={`Lihat slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </>
   );

@@ -110,27 +110,77 @@ export function PromoBannerFormFields(props: any) {
   );
 }
 
-export function PromoBannerPreview({ badgeText, title, message, ctaText, ctaUrl, imageUrl }: any) {
+export { PromoTiptapEditor };
+
+export function PromoBannerPreview({ mode, badgeText, title, message, ctaText, ctaUrl, imageUrl }: any) {
+  const isFlyer = mode === "flyer" || (Boolean(imageUrl) && !title?.trim());
   const cleanHtml = typeof window !== "undefined" ? DOMPurify.sanitize(message || "") : message;
+
   return (
-    <div style={{ backgroundColor: "#fff", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)" }}>
-      <h2 style={{ margin: "0 0 1rem", fontSize: "1rem", fontWeight: 700 }}>Pratinjau Live Popup</h2>
-      <div style={{ border: "1px solid var(--color-gray-200)", borderRadius: "16px", overflow: "hidden", maxWidth: "400px", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
-        {imageUrl && <img src={imageUrl} alt="Preview" width={400} height={200} style={{ width: "100%", maxHeight: "200px", objectFit: "cover" }} />}
-        <div style={{ padding: "1.25rem 1.5rem 1.5rem" }}>
-          <div style={{ textAlign: "center", marginBottom: "0.6rem" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0.3rem 0.85rem", fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.05em", textIndent: "0.05em", borderRadius: "9999px", backgroundColor: "rgba(33, 108, 126, 0.1)", color: "#216c7e", border: "1px solid rgba(33, 108, 126, 0.2)", textTransform: "uppercase", lineHeight: 1.2 }}>
-              {badgeText || "PROMO KHUSUS"}
-            </span>
-          </div>
-          {title && <p style={{ margin: "0 0 0.5rem", fontWeight: 700, color: "var(--color-primary-dark)", fontSize: "1.05rem" }}>{title}</p>}
-          <div
-            style={{ margin: "0 0 1rem", fontSize: "0.9rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}
-            dangerouslySetInnerHTML={{ __html: cleanHtml || "Tulis pesan promo di editor atas..." }}
-          />
-          {ctaText && ctaUrl && <span style={{ display: "inline-block", padding: "0.55rem 1.2rem", background: "var(--color-primary)", color: "#fff", borderRadius: "10px", fontWeight: 600 }}>{ctaText} →</span>}
+    <div style={{ backgroundColor: "#fff", padding: "1.25rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)" }}>
+      <h2 style={{ margin: "0 0 0.75rem", fontSize: "0.95rem", fontWeight: 700, color: "var(--color-gray-700)" }}>
+        Pratinjau Live ({isFlyer ? "Mode Flyer Saja" : "Mode Banner Teks"})
+      </h2>
+
+      {isFlyer ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {imageUrl ? (
+            <div style={{ position: "relative", maxWidth: "340px", width: "100%" }}>
+              <img
+                src={imageUrl}
+                alt="Flyer Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "360px",
+                  objectFit: "contain",
+                  borderRadius: "16px",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                }}
+              />
+              {ctaUrl && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "10px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    backgroundColor: "rgba(15, 23, 42, 0.75)",
+                    color: "#fff",
+                    padding: "4px 12px",
+                    borderRadius: "999px",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  🔗 Klik ke: {ctaUrl}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{ padding: "2rem", border: "1px dashed var(--color-gray-300)", borderRadius: "12px", textAlign: "center", color: "var(--color-gray-400)", fontSize: "0.85rem", width: "100%" }}>
+              Unggah gambar flyer untuk melihat pratinjau
+            </div>
+          )}
         </div>
-      </div>
+      ) : (
+        <div style={{ border: "1px solid var(--color-gray-200)", borderRadius: "16px", overflow: "hidden", maxWidth: "380px", margin: "0 auto", boxShadow: "0 8px 24px rgba(0,0,0,0.1)" }}>
+          {imageUrl && <img src={imageUrl} alt="Preview" width={380} height={180} style={{ width: "100%", maxHeight: "180px", objectFit: "cover" }} />}
+          <div style={{ padding: "1.25rem" }}>
+            <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0.25rem 0.75rem", fontSize: "0.68rem", fontWeight: 800, borderRadius: "9999px", backgroundColor: "rgba(33, 108, 126, 0.1)", color: "#216c7e", border: "1px solid rgba(33, 108, 126, 0.2)", textTransform: "uppercase" }}>
+                {badgeText || "PROMO KHUSUS"}
+              </span>
+            </div>
+            {title && <p style={{ margin: "0 0 0.4rem", fontWeight: 700, color: "var(--color-primary-dark)", fontSize: "1rem", textAlign: "center" }}>{title}</p>}
+            <div
+              style={{ margin: "0 0 1rem", fontSize: "0.85rem", color: "var(--color-gray-600)", lineHeight: 1.5 }}
+              dangerouslySetInnerHTML={{ __html: cleanHtml || "<p style='text-align:center'>Isi pesan promo...</p>" }}
+            />
+            {ctaText && <div style={{ textAlign: "center" }}><span style={{ display: "inline-block", padding: "0.5rem 1.2rem", background: "var(--color-primary)", color: "#fff", borderRadius: "10px", fontWeight: 700, fontSize: "0.85rem" }}>{ctaText} →</span></div>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
