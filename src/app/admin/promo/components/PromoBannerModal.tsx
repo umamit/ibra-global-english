@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { PromoBannerItem } from "./PromoBannerList";
 import { PromoBannerPreview } from "./PromoBannerComponents";
 import { PromoModalFormFields } from "./PromoModalFormFields";
+import { usePromoModal } from "../hooks/usePromoModal";
 
 interface PromoBannerModalProps {
   isOpen: boolean;
@@ -13,225 +14,237 @@ interface PromoBannerModalProps {
   showToast: (msg: string, type?: "success" | "error") => void;
 }
 
-export function PromoBannerModal({
-  isOpen,
-  editingItem,
-  onClose,
-  onSaved,
-  showToast,
-}: PromoBannerModalProps) {
-  const [mode, setMode] = useState<"flyer" | "banner">("flyer");
-  const [badgeText, setBadgeText] = useState("PROMO KHUSUS");
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [ctaText, setCtaText] = useState("");
-  const [ctaUrl, setCtaUrl] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isActive, setIsActive] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+const ImageIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "-3px", marginRight: "6px" }}>
+    <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+    <circle cx="9" cy="9" r="2" />
+    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+  </svg>
+);
 
-  useEffect(() => {
-    if (editingItem) {
-      const isFlyer = Boolean(editingItem.image_url) && !editingItem.title?.trim();
-      setMode(isFlyer ? "flyer" : "banner");
-      setBadgeText(editingItem.badge_text || "PROMO KHUSUS");
-      setTitle(editingItem.title || "");
-      setMessage(editingItem.message || "");
-      setCtaText(editingItem.cta_text || "");
-      setCtaUrl(editingItem.cta_url || "");
-      setImageUrl(editingItem.image_url || null);
-      setIsActive(editingItem.is_active !== false);
-    } else {
-      setMode("flyer");
-      setBadgeText("PROMO KHUSUS");
-      setTitle("");
-      setMessage("");
-      setCtaText("");
-      setCtaUrl("");
-      setImageUrl(null);
-      setIsActive(true);
-    }
-  }, [editingItem, isOpen]);
+const FileTextIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "-3px", marginRight: "6px" }}>
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" x2="8" y1="13" y2="13" />
+    <line x1="16" x2="8" y1="17" y2="17" />
+    <line x1="10" x2="8" y1="9" y2="9" />
+  </svg>
+);
+
+export function PromoBannerModal(props: PromoBannerModalProps) {
+  const { isOpen, editingItem, onClose, onSaved, showToast } = props;
+  const modal = usePromoModal({ editingItem, isOpen, onSaved, onClose, showToast });
 
   if (!isOpen) return null;
 
-  const handleImageUpload = async (file: File) => {
-    setUploading(true);
-    try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch("/api/admin/promo-banners/upload", { method: "POST", body: form });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Upload gagal.");
-      setImageUrl(json.image_url);
-      showToast("Gambar berhasil diunggah", "success");
-    } catch (err: any) {
-      showToast(err.message || "Upload gagal.", "error");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (mode === "flyer" && !imageUrl) {
-      showToast("Harap unggah gambar flyer terlebih dahulu.", "error");
-      return;
-    }
-    if (mode === "banner" && !message.trim()) {
-      showToast("Pesan promo wajib diisi untuk mode banner.", "error");
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const payload = {
-        id: editingItem?.id,
-        badge_text: mode === "banner" ? badgeText.trim() : "FLYER",
-        title: mode === "banner" ? title.trim() : "",
-        message: mode === "banner" ? message.trim() : "",
-        cta_text: mode === "banner" ? ctaText.trim() : "",
-        cta_url: ctaUrl.trim(),
-        image_url: imageUrl,
-        is_active: isActive,
-      };
-
-      const url = "/api/admin/promo-banners";
-      const method = editingItem ? "PATCH" : "POST";
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Gagal menyimpan item.");
-
-      showToast(editingItem ? "Perubahan berhasil disimpan!" : "Flyer/Banner baru berhasil ditambahkan!", "success");
-      onSaved(json.data);
-      onClose();
-    } catch (err: any) {
-      showToast(err.message || "Gagal menyimpan.", "error");
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
-    <div className="portal-modal-overlay" onClick={() => { if (!saving) onClose(); }}>
+    <div className="portal-modal-overlay" onClick={() => { if (!modal.saving) onClose(); }}>
       <div
         className="portal-modal"
-        style={{ maxWidth: "840px", width: "94%", maxHeight: "90vh", overflowY: "auto" }}
+        style={{
+          maxWidth: "960px",
+          width: "95%",
+          maxHeight: "92vh",
+          display: "flex",
+          flexDirection: "column",
+          padding: 0,
+          borderRadius: "20px",
+          overflow: "hidden",
+          boxShadow: "0 25px 60px -15px rgba(0, 0, 0, 0.3)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
+        {/* Sticky Modal Header */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "1.25rem 1.75rem",
+            borderBottom: "1px solid var(--color-gray-200)",
+            backgroundColor: "#ffffff",
+          }}
+        >
           <div>
-            <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800 }}>
-              {editingItem ? "Edit Flyer / Banner" : "Tambah Flyer / Banner Baru"}
+            <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "var(--color-gray-900)" }}>
+              {editingItem ? "Edit Flyer / Banner Promo" : "Tambah Flyer / Banner Baru"}
             </h3>
-            <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--color-gray-500)" }}>
+            <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--color-gray-500)" }}>
               Pilih format tampilan pop-up dan lengkapi pengaturannya
             </p>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--color-gray-400)" }}>✕</button>
-        </div>
-
-        {/* Mode Selector Tabs */}
-        <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", backgroundColor: "var(--color-gray-100)", padding: "4px", borderRadius: "14px" }}>
           <button
-            type="button"
-            onClick={() => setMode("flyer")}
+            onClick={onClose}
             style={{
-              flex: 1,
-              padding: "0.75rem",
-              borderRadius: "10px",
+              background: "var(--color-gray-100)",
               border: "none",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.1rem",
               cursor: "pointer",
-              fontWeight: 800,
-              fontSize: "0.9rem",
-              backgroundColor: mode === "flyer" ? "#ffffff" : "transparent",
-              color: mode === "flyer" ? "var(--color-primary)" : "var(--color-gray-600)",
-              boxShadow: mode === "flyer" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
+              color: "var(--color-gray-500)",
+              transition: "all 0.2s ease",
             }}
+            aria-label="Tutup modal"
           >
-            🖼️ Mode Flyer Gambar Saja
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode("banner")}
-            style={{
-              flex: 1,
-              padding: "0.75rem",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 800,
-              fontSize: "0.9rem",
-              backgroundColor: mode === "banner" ? "#ffffff" : "transparent",
-              color: mode === "banner" ? "var(--color-primary)" : "var(--color-gray-600)",
-              boxShadow: mode === "banner" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
-            }}
-          >
-            📝 Mode Banner + Teks
+            ✕
           </button>
         </div>
 
-        <form onSubmit={handleSave} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          <PromoModalFormFields
-            mode={mode}
-            badgeText={badgeText} setBadgeText={setBadgeText}
-            title={title} setTitle={setTitle}
-            message={message} setMessage={setMessage}
-            ctaText={ctaText} setCtaText={setCtaText}
-            ctaUrl={ctaUrl} setCtaUrl={setCtaUrl}
-            imageUrl={imageUrl} setImageUrl={setImageUrl}
-            uploading={uploading} fileInputRef={fileInputRef}
-            handleImageUpload={handleImageUpload}
-            isActive={isActive} setIsActive={setIsActive}
-          />
-
-          {/* Live Preview */}
-          <div style={{ marginTop: "0.5rem" }}>
-            <PromoBannerPreview
-              mode={mode}
-              badgeText={badgeText}
-              title={title}
-              message={message}
-              ctaText={ctaText}
-              ctaUrl={ctaUrl}
-              imageUrl={imageUrl}
-            />
-          </div>
-
-          {/* Modal Actions */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem", marginTop: "1rem" }}>
-            <button
-              type="button"
-              onClick={onClose}
-              style={{ padding: "0.7rem 1.25rem", borderRadius: "10px", border: "1px solid var(--color-gray-300)", backgroundColor: "#fff", fontWeight: 700, cursor: "pointer" }}
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              disabled={saving || uploading}
+        {/* Scrollable Modal Body */}
+        <form id="promo-banner-form" onSubmit={modal.handleSave} style={{ display: "flex", flexDirection: "column", flex: 1, overflowY: "auto" }}>
+          <div style={{ padding: "1.5rem 1.75rem", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+            {/* Mode Selector Tabs */}
+            <div
               style={{
-                padding: "0.7rem 1.75rem",
-                borderRadius: "10px",
-                border: "none",
-                backgroundColor: "var(--color-primary, #216c7e)",
-                color: "#fff",
-                fontWeight: 700,
-                cursor: saving || uploading ? "not-allowed" : "pointer",
+                display: "flex",
+                gap: "0.5rem",
+                backgroundColor: "var(--color-gray-100)",
+                padding: "5px",
+                borderRadius: "14px",
               }}
             >
-              {saving ? "Menyimpan..." : "Simpan Item"}
-            </button>
+              <button
+                type="button"
+                onClick={() => modal.setMode("flyer")}
+                style={{
+                  flex: 1,
+                  padding: "0.7rem 1rem",
+                  borderRadius: "10px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: 800,
+                  fontSize: "0.88rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: modal.mode === "flyer" ? "#ffffff" : "transparent",
+                  color: modal.mode === "flyer" ? "var(--color-primary, #216c7e)" : "var(--color-gray-600)",
+                  boxShadow: modal.mode === "flyer" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <ImageIcon /> Mode Flyer Gambar Saja
+              </button>
+              <button
+                type="button"
+                onClick={() => modal.setMode("banner")}
+                style={{
+                  flex: 1,
+                  padding: "0.7rem 1rem",
+                  borderRadius: "10px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: 800,
+                  fontSize: "0.88rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: modal.mode === "banner" ? "#ffffff" : "transparent",
+                  color: modal.mode === "banner" ? "var(--color-primary, #216c7e)" : "var(--color-gray-600)",
+                  boxShadow: modal.mode === "banner" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <FileTextIcon /> Mode Banner + Teks
+              </button>
+            </div>
+
+            {/* 2-Column Responsive Layout for Form & Live Preview */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+                gap: "1.5rem",
+                alignItems: "start",
+              }}
+            >
+              {/* Left Column: Form Fields */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem" }}>
+                <PromoModalFormFields
+                  mode={modal.mode}
+                  badgeText={modal.badgeText} setBadgeText={modal.setBadgeText}
+                  title={modal.title} setTitle={modal.setTitle}
+                  message={modal.message} setMessage={modal.setMessage}
+                  ctaText={modal.ctaText} setCtaText={modal.setCtaText}
+                  ctaUrl={modal.ctaUrl} setCtaUrl={modal.setCtaUrl}
+                  imageUrl={modal.imageUrl} setImageUrl={modal.setImageUrl}
+                  uploading={modal.uploading} fileInputRef={modal.fileInputRef}
+                  handleImageUpload={modal.handleImageUpload}
+                  isActive={modal.isActive} setIsActive={modal.setIsActive}
+                />
+              </div>
+
+              {/* Right Column: Live Preview */}
+              <div style={{ position: "sticky", top: 0 }}>
+                <PromoBannerPreview
+                  mode={modal.mode}
+                  badgeText={modal.badgeText}
+                  title={modal.title}
+                  message={modal.message}
+                  ctaText={modal.ctaText}
+                  ctaUrl={modal.ctaUrl}
+                  imageUrl={modal.imageUrl}
+                />
+              </div>
+            </div>
           </div>
         </form>
+
+        {/* Sticky Modal Footer (Never Cut Off!) */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: "0.75rem",
+            padding: "1rem 1.75rem",
+            borderTop: "1px solid var(--color-gray-200)",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              padding: "0.65rem 1.4rem",
+              borderRadius: "12px",
+              border: "1px solid var(--color-gray-300)",
+              backgroundColor: "#ffffff",
+              color: "var(--color-gray-700)",
+              fontWeight: 700,
+              fontSize: "0.88rem",
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+            }}
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            form="promo-banner-form"
+            disabled={modal.saving || modal.uploading}
+            style={{
+              padding: "0.65rem 1.75rem",
+              borderRadius: "12px",
+              border: "none",
+              backgroundColor: "var(--color-primary, #216c7e)",
+              color: "#ffffff",
+              fontWeight: 800,
+              fontSize: "0.88rem",
+              cursor: modal.saving || modal.uploading ? "not-allowed" : "pointer",
+              boxShadow: "0 4px 14px rgba(33, 108, 126, 0.3)",
+              transition: "all 0.15s ease",
+            }}
+          >
+            {modal.saving ? "Menyimpan..." : "Simpan Item"}
+          </button>
+        </div>
       </div>
     </div>
   );
