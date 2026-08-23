@@ -85,8 +85,8 @@
   height: 530px;
   max-height: calc(100vh - 140px);
   background: linear-gradient(135deg, rgba(33, 108, 126, 0.15) 0%, rgba(22, 77, 87, 0.08) 100%);
-  backdrop-filter: blur(20px) saturate(190%) brightness(102%);
-  -webkit-backdrop-filter: blur(20px) saturate(190%) brightness(102%);
+  backdrop-filter: blur(10px) saturate(190%) brightness(102%);
+  -webkit-backdrop-filter: blur(10px) saturate(190%) brightness(102%);
   border-radius: var(--radius-2xl);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-top: 1.5px solid rgba(255, 255, 255, 0.45);
