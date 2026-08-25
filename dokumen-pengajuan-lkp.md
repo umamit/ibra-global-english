@@ -38,8 +38,9 @@ Sebagai bahan pertimbangan Bapak/Ibu Kepala Dinas Pendidikan, kami melampirkan b
 4. Daftar Pendidik dan Tenaga Kependidikan.  
 5. Daftar Inventaris Sarana dan Prasarana Belajar.  
 6. Rencana Pelaksanaan Pembelajaran (RPP) / Silabus Belajar.  
+7. Struktur Tingkatan Level Kurikulum (IGE Curriculum Levels).  
 
-Demikian permohonan ini kami sampaikan. Atas perhatian, arahan, serta terkabulnya permohonan izin operasional ini, kami ucapan terima kasih yang sebesar-besarnya.  
+Demikian permohonan ini kami sampaikan. Atas perhatian, arahan, serta terkabulnya permohonan izin operasional ini, kami ucapkan terima kasih yang sebesar-besarnya.  
 
 Bobong, 25 Agustus 2026  
 
@@ -174,3 +175,29 @@ Acuari kurikulum rencana pelaksanaan pembelajaran bulanan (silabus dasar) LKP Ib
 | Minggu 2 | Merangkai Suku Kata | Anak mampu membaca suku kata sederhana bermotif dua huruf (ba-bi-bu, ca-ci-cu) tanpa mengeja kaku. | Membaca kartu kata bergambar (flashcard), permainan puzzle kata. |
 | Minggu 3 | Menulis Kata Dasar | Anak mampu menuliskan kata benda pendek (buku, meja, sapi, kopi) dengan rapi menggunakan garis bantu. | Menulis di buku garis tiga, menebalkan garis pola huruf. |
 | Minggu 4 | Logika Angka & Penjumlahan Dasar | Anak memahami konsep angka 1-10 dan melakukan penjumlahan sederhana di bawah 10 menggunakan alat bantu visual. | Menghitung stik es krim warna-warni, menempel manik-manik angka. |
+
+---
+
+## DOKUMEN 7: STRUKTUR TINGKATAN LEVEL KURIKULUM (IGE CURRICULUM LEVELS)
+
+Tabel penjenjangan tingkat pembelajaran dan estimasi durasi pada LKP Ibra Global English:
+
+### 1. Rincian Penjenjangan Tingkat Kelas (Leveling System)
+
+| Program | Level Kelas | Durasi Belajar | Target & Kompetensi Utama |
+| :--- | :--- | :--- | :--- |
+| **Kids Program** | Level 1: Starter | 3 Bulan (24 Sesi) | Pengenalan abjad fonetik (*phonics*), angka dasar, warna, dan ekspresi salam sederhana. |
+| | Level 2: Basic | 3 Bulan (24 Sesi) | Penyebunan nama benda, anggota keluarga, organ tubuh, serta kalimat perintah sederhana. |
+| | Level 3: Elementary | 3 Bulan (24 Sesi) | Kemampuan menceritakan hobi secara sederhana, mendeskripsikan hewan peliharaan, dan bercerita pendek. |
+| **Teens Program**| Level 1: Pre-Intermediate | 4 Bulan (32 Sesi) | Penguasaan pola tata bahasa dasar (*Simple Present* & *Past Tenses*), menulis esai pendek, dan berbicara aktif. |
+| | Level 2: Intermediate | 4 Bulan (32 Sesi) | Diskusi opini terbuka (*critical thinking*), presentasi individu di kelas, dan kemampuan negosiasi lisan. |
+| **Fun Calistung**| Level 1: Alphabet & Menulis | 3 Bulan (36 Sesi) | Pengenalan huruf, motorik halus menggambar garis pola, merangkai dan menulis kata dasar 1-2 suku kata. |
+| | Level 2: Baca & Hitung | 3 Bulan (36 Sesi) | Kemampuan membaca kalimat pendek tanpa mengeja kaku, logika angka, serta penjumlahan/pengurangan dasar 1-10. |
+
+### 2. Standar Evaluasi dan Kelulusan Level
+Setiap siswa yang menyelesaikan satu level belajar wajib menempuh evaluasi akhir meliputi:
+* **Ujian Lisan (Oral Test)**: Bobot 40% (kemampuan pelafalan dan kelancaran berbicara).
+* **Ujian Tertulis (Written Test)**: Bobot 30% (pemahaman kosa kata dan struktur tata bahasa).
+* **Nilai Keaktifan Harian (Active Participation)**: Bobot 30% (presensi kehadiran digital dan keterlibatan aktif di ruang kelas).
+
+Siswa dinyatakan lulus dan berhak naik ke level berikutnya apabila memperoleh nilai akumulasi minimal **75 (Skala 100)**, serta berhak menerima sertifikat kelulusan resmi tingkat level dari LKP Ibra Global English.
