@@ -37,8 +37,9 @@ Sebagai bahan pertimbangan Bapak/Ibu Kepala Dinas Pendidikan, kami melampirkan b
 3. Struktur Organisasi dan Tata Kerja LKP.  
 4. Daftar Pendidik dan Tenaga Kependidikan.  
 5. Daftar Inventaris Sarana dan Prasarana Belajar.  
+6. Rencana Pelaksanaan Pembelajaran (RPP) / Silabus Belajar.  
 
-Demikian permohonan ini kami sampaikan. Atas perhatian, arahan, serta terkabulnya permohonan izin operasional ini, kami ucapkan terima kasih yang sebesar-besarnya.  
+Demikian permohonan ini kami sampaikan. Atas perhatian, arahan, serta terkabulnya permohonan izin operasional ini, kami ucapan terima kasih yang sebesar-besarnya.  
 
 Bobong, 25 Agustus 2026  
 
@@ -134,3 +135,42 @@ Daftar Inventaris Sarana Fisik Kegiatan Belajar-Mengajar (KBM) LKP Ibra Global E
 | 7 | Lemari Arsip Dokumen | 1 | Unit | Baik | Penyimpanan dokumen fisik |
 | 8 | Dispenser & Air Minum | 1 | Set | Baik | Fasilitas air minum gratis siswa |
 | 9 | Toilet & Fasilitas Air | 1 | Unit | Sangat Baik | Sanitasi memadai |
+
+---
+
+## DOKUMEN 6: RENCANA PELAKSANAAN PEMBELAJARAN (RPP) & SILABUS BELAJAR
+
+Acuari kurikulum rencana pelaksanaan pembelajaran bulanan (silabus dasar) LKP Ibra Global English:
+
+### A. Silabus Kids Program (Bahasa Inggris Anak-Anak)
+* **Durasi per Pertemuan**: 75 menit (3 kali seminggu)
+* **Pendekatan**: Game-based Learning, TPR (Total Physical Response)
+
+| Minggu ke- | Pokok Bahasan (Topic) | Target Kemampuan (Learning Outcome) | Aktivitas & Media |
+|------------|-----------------------|-------------------------------------|-------------------|
+| Minggu 1 | Greetings and Self-Introduction | Siswa mampu memberi salam, menyebutkan nama, usia, dan hobi mereka dalam Bahasa Inggris. | Bermain peran (roleplay) perkenalan diri, bernyanyi lagu "Hello Song". |
+| Minggu 2 | Colors and Numbers (1-20) | Siswa mampu mengidentifikasi warna benda di sekitar dan menghitung jumlah benda hingga 20. | Permainan kartu warna, menghitung pensil warna, flashcards benda. |
+| Minggu 3 | Family Members | Siswa mampu menyebutkan anggota keluarga inti (Father, Mother, Brother, Sister, dll.). | Menggambar pohon keluarga (family tree) sederhana dan menceritakannya. |
+| Minggu 4 | Things in the Classroom | Siswa mampu menyebutkan nama-nama benda di dalam kelas dan menggunakan frasa "This is..." / "That is...". | Memegang benda langsung (realia) di kelas dan menebak nama benda. |
+
+### B. Silabus Teens Program (Bahasa Inggris Remaja)
+* **Durasi per Pertemuan**: 90 menit (2 kali seminggu)
+* **Pendekatan**: Communicative Approach, Project-based Learning
+
+| Minggu ke- | Pokok Bahasan (Topic) | Target Kemampuan (Learning Outcome) | Aktivitas & Media |
+|------------|-----------------------|-------------------------------------|-------------------|
+| Minggu 1 | Daily Routine & Simple Present | Siswa mampu menceritakan aktivitas sehari-hari menggunakan tata bahasa Simple Present secara lisan dan tulisan. | Membuat daily schedule board dan mempresentasikannya di depan kelas. |
+| Minggu 2 | Asking and Giving Directions | Siswa mampu meminta dan memberikan petunjuk arah jalan dalam percakapan formal dan informal. | Menggambar peta mini (map layout) dan melakukan roleplay simulasi turis. |
+| Minggu 3 | Expressing Opinions | Siswa mampu menyatakan persetujuan (agree) dan ketidaksetujuan (disagree) atas suatu topik diskusi. | Debat mini kelompok terarah tentang topik umum sekolah/teknologi. |
+| Minggu 4 | Future Plans (going to / will) | Siswa mampu memaparkan rencana masa depan dan cita-cita menggunakan struktur tata bahasa future tense. | Menulis "Dream Board Letter" untuk masa depan dan membacakannya. |
+
+### C. Silabus Fun Calistung (Membaca, Menulis, Berhitung Anak)
+* **Durasi per Pertemuan**: 45 menit (3 kali seminggu)
+* **Pendekatan**: Play-based Learning, multisensori
+
+| Minggu ke- | Pokok Bahasan (Topic) | Target Kemampuan (Learning Outcome) | Aktivitas & Media |
+|------------|-----------------------|-------------------------------------|-------------------|
+| Minggu 1 | Pengenalan Huruf & Vokal | Anak mampu melafalkan huruf A-Z, membedakan huruf vokal (a, i, u, e, o), dan mencocokkan bentuk huruf. | Bermain dengan plastisin (clay huruf), menjiplak pasir alfabet. |
+| Minggu 2 | Merangkai Suku Kata | Anak mampu membaca suku kata sederhana bermotif dua huruf (ba-bi-bu, ca-ci-cu) tanpa mengeja kaku. | Membaca kartu kata bergambar (flashcard), permainan puzzle kata. |
+| Minggu 3 | Menulis Kata Dasar | Anak mampu menuliskan kata benda pendek (buku, meja, sapi, kopi) dengan rapi menggunakan garis bantu. | Menulis di buku garis tiga, menebalkan garis pola huruf. |
+| Minggu 4 | Logika Angka & Penjumlahan Dasar | Anak memahami konsep angka 1-10 dan melakukan penjumlahan sederhana di bawah 10 menggunakan alat bantu visual. | Menghitung stik es krim warna-warni, menempel manik-manik angka. |
