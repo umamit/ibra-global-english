@@ -100,7 +100,7 @@ export function useStudentData() {
     setRegLoading(true);
     try {
       const { data, error } = await supabase
-        .from("student_registrations")
+        .from("registrations")
         .select("*")
         .order("created_at", { ascending: false });
 
