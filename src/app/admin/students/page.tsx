@@ -104,7 +104,7 @@ function AdminStudentsContent() {
       fetchData();
     } catch (err: any) {
       setFormErrorMsg(err.message);
-      island.error(err.message || "Gagal menyimpan data siswa.");
+      island.error("Gagal Menyimpan", err.message || "Terjadi kesalahan saat menyimpan data.");
     } finally {
       setSubmitting(false);
     }
@@ -122,7 +122,7 @@ function AdminStudentsContent() {
       island.success(`Akun "${pName}" berhasil dihapus.`);
       fetchData();
     } catch (err: any) {
-      island.error(err.message);
+      island.error("Gagal Menghapus Akun", err.message || "Terjadi kesalahan saat menghapus pengguna.");
     }
   };
 

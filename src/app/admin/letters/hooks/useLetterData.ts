@@ -73,9 +73,17 @@ export function useLetterData() {
 
   const triggerToast = useCallback((message: string, type: "success" | "error" = "success") => {
     if (type === "success") {
-      island.success(message);
+      if (message.length > 25) {
+        island.success("Berhasil", message);
+      } else {
+        island.success(message);
+      }
     } else {
-      island.error(message);
+      if (message.length > 25) {
+        island.error("Gagal", message);
+      } else {
+        island.error(message);
+      }
     }
   }, [island]);
 
