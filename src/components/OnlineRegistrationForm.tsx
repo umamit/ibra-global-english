@@ -21,8 +21,8 @@ export function OnlineRegistrationForm({ regSuccess, setRegSuccess, setActiveTab
       </div>
       <div className="form-grid" style={{ marginBottom: "1rem" }}>
         <div className="form-group">
-          <label className="form-label">Usia Siswa</label>
-          <input type="number" className="form-input" value={regForm.student_age} onChange={(e) => setRegForm({ ...regForm, student_age: e.target.value })} disabled={regSubmitting} />
+          <label className="form-label">Usia Siswa *</label>
+          <input type="number" className="form-input" required value={regForm.student_age} onChange={(e) => setRegForm({ ...regForm, student_age: e.target.value })} disabled={regSubmitting} />
         </div>
         <div className="form-group">
           <label className="form-label">Program *</label>
@@ -40,6 +40,10 @@ export function OnlineRegistrationForm({ regSuccess, setRegSuccess, setActiveTab
       <div className="form-group">
         <label className="form-label">Email Orang Tua / Wali</label>
         <input type="email" className="form-input" value={regForm.parent_email} onChange={(e) => setRegForm({ ...regForm, parent_email: e.target.value })} disabled={regSubmitting} />
+      </div>
+      <div className="form-group">
+        <label className="form-label">Catatan Tambahan (Opsional)</label>
+        <textarea className="form-input" placeholder="Tulis catatan atau permintaan khusus di sini..." rows={3} value={regForm.notes || ""} onChange={(e) => setRegForm({ ...regForm, notes: e.target.value })} disabled={regSubmitting} />
       </div>
       <div className="form-group">
         <label className="form-label">Nomor WhatsApp *</label>

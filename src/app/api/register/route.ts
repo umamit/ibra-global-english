@@ -15,10 +15,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `Data tidak valid: ${errorMessages}` }, { status: 400 });
     }
 
-    const { student_name, student_age, parent_name, parent_email, whatsapp, program } = validation.data;
+    const { student_name, student_age, parent_name, parent_email, whatsapp, program, notes } = validation.data;
     const { data, error } = await supabaseAdmin
       .from("registrations")
-      .insert({ student_name, student_age: student_age || null, parent_name: parent_name || null, parent_email: parent_email || null, whatsapp, program, status: "pending" })
+      .insert({ student_name, student_age: student_age || null, parent_name: parent_name || null, parent_email: parent_email || null, whatsapp, program, notes: notes || null, status: "pending" })
       .select()
       .single();
 

@@ -7,8 +7,7 @@ export const registrationSchema = z.object({
     .max(100, "Nama siswa maksimal 100 karakter")
     .trim(),
   student_age: z
-    .preprocess((val) => (val === "" ? null : val), z.union([z.coerce.number().int().positive("Usia harus positif").max(100), z.null()]))
-    .optional(),
+    .preprocess((val) => (val === "" ? undefined : val), z.coerce.number().int().positive("Usia harus positif").max(100)),
   parent_name: z
     .preprocess((val) => (val === "" ? null : val), z.string().max(100, "Nama orang tua maksimal 100 karakter").trim().nullable())
     .optional(),
@@ -25,6 +24,12 @@ export const registrationSchema = z.object({
     .min(2, "Program harus diisi")
     .max(100)
     .trim(),
+  notes: z
+    .string()
+    .max(500, "Catatan maksimal 500 karakter")
+    .trim()
+    .optional()
+    .nullable(),
 });
 
 export const registrationUpdateSchema = z.object({

@@ -21,6 +21,7 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
     parent_email: "",
     whatsapp: "",
     program: "Kids Program (5-12 tahun)",
+    notes: "",
   });
   const [regSubmitting, setRegSubmitting] = useState(false);
   const [regSuccess, setRegSuccess] = useState(false);
@@ -95,6 +96,7 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
         parent_email: "",
         whatsapp: "",
         program: "Kids Program (5-12 tahun)",
+        notes: "",
       });
     } catch {
       setRegError("Terjadi kesalahan. Silakan coba lagi.");
