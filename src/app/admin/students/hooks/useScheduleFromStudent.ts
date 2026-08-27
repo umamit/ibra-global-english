@@ -175,7 +175,8 @@ export function useScheduleFromStudent() {
         .update({
           start_time: startTimeIso,
           end_time: endTimeIso,
-          type: "reschedule",
+          status: "rescheduled",
+          rescheduled_to: startTimeIso,
           description: `Terjadwal Ulang untuk ${studentName} (${newRoom || "Ruang Kelas A"}) (WIT)`,
         })
         .eq("id", scheduleId);
@@ -199,7 +200,8 @@ export function useScheduleFromStudent() {
       const { error } = await supabase
         .from("academic_schedules")
         .update({
-          type: "pending",
+          status: "pending",
+          pending_reason: reason || "Diliburkan",
           description: `Ditunda (Pending) untuk ${studentName}: ${reason || "Diliburkan"}`,
         })
         .eq("id", scheduleId);
