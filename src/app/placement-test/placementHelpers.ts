@@ -54,22 +54,22 @@ export function determineLevelDetails(totalScore: number) {
   let programRecommendation = "Kids Program (Kelas Dasar) atau Fun Calistung";
   let studyTimeAdvice = "Belajar rutin 3-4 kali seminggu selama 3-6 bulan untuk mencapai level A2.";
 
-  if (totalScore >= 13) {
+  if (totalScore >= 18) {
     determinedLevel = "C1";
     levelDescription = "Mampu memahami berbagai teks panjang dan kompleks, mengekspresikan diri secara lancar dan spontan tanpa memerlukan upaya keras untuk menemukan ungkapan yang tepat.";
     programRecommendation = "Teens Program (Advanced Class) — Persiapan IELTS/TOEFL";
     studyTimeAdvice = "Pertahankan level dengan latihan berbicara dan menulis secara aktif 5 kali seminggu.";
-  } else if (totalScore >= 10) {
+  } else if (totalScore >= 15) {
     determinedLevel = "B2";
     levelDescription = "Dapat memahami gagasan utama teks kompleks, berinteraksi dengan penutur asli dengan cukup lancar, dan menulis teks rinci tentang berbagai topik.";
     programRecommendation = "Teens Program (Upper-Intermediate Class)";
     studyTimeAdvice = "Belajar intensif 4-5 kali seminggu selama 4-6 bulan untuk mencapai level C1.";
-  } else if (totalScore >= 6) {
+  } else if (totalScore >= 11) {
     determinedLevel = "B1";
     levelDescription = "Dapat memahami poin utama input yang jelas tentang topik yang sudah dikenal, berhadapan dengan situasi yang mungkin timbul saat bepergian di area berbahasa Inggris.";
     programRecommendation = "Teens Program (Intermediate Class)";
     studyTimeAdvice = "Belajar rutin 4 kali seminggu selama 4-6 bulan untuk mencapai level B2.";
-  } else if (totalScore >= 3) {
+  } else if (totalScore >= 6) {
     determinedLevel = "A2";
     levelDescription = "Dapat memahami kalimat dan ungkapan yang sering digunakan terkait bidang yang paling relevan, berkomunikasi dalam tugas sederhana dan rutin.";
     programRecommendation = "Kids Program (Elementary Class) atau Teens Program (Beginner Class)";
