@@ -225,7 +225,7 @@ function AdminStudentsContent() {
       <ScheduleStudentModal
         isOpen={scheduleModalOpen} student={scheduleTargetStudent}
         onClose={() => setScheduleModalOpen(false)}
-        onSuccess={(msg) => { island.success(msg); fetchData(); }}
+        onSuccess={(msg) => { island.success("Jadwal Diperbarui", msg); fetchData(); }}
       />
 
       <RejectModal
