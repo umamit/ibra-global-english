@@ -65,7 +65,14 @@ export default function RegistrationTable({ registrations, regLoading, errorMsg,
                   return (
                     <tr key={reg.id}>
                       <td style={{ fontWeight: "700" }}>{idx + 1}</td>
-                      <td style={{ fontWeight: "600" }}>{reg.student_name}</td>
+                      <td style={{ fontWeight: "600" }}>
+                        <div>{reg.student_name}</div>
+                        {reg.notes && reg.status === "pending" && (
+                          <div style={{ fontSize: "0.72rem", color: "var(--color-primary-dark)", marginTop: "0.25rem", fontStyle: "italic", fontWeight: "500", backgroundColor: "#eef6f8", padding: "0.25rem 0.5rem", borderRadius: "6px", display: "inline-block", border: "1px solid rgba(33, 108, 126, 0.08)" }}>
+                            Catatan: {reg.notes}
+                          </div>
+                        )}
+                      </td>
                       <td>{reg.student_age ? `${reg.student_age} thn` : "-"}</td>
                       <td>
                         <span className="user-badge" style={{ backgroundColor: "var(--color-primary-light)", color: "var(--color-primary-dark)", padding: "0.2rem 0.55rem", fontWeight: "700", fontSize: "0.78rem" }}>

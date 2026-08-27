@@ -71,7 +71,7 @@ export async function processRegistrationStatusUpdate(id: string | number, statu
     await logActivity("Tolak Pendaftaran", `Menolak & menghapus pendaftaran siswa: ${reg.student_name} (Program: ${reg.program})`);
     return { success: true, message: "Pendaftaran berhasil ditolak dan dihapus dari database.", status: 200 };
   } else {
-    const { error: updateError } = await supabaseAdmin.from("registrations").update({ status, notes: notes || null }).eq("id", id);
+    const { error: updateError } = await supabaseAdmin.from("registrations").update({ status, notes: notes !== undefined ? notes : reg.notes }).eq("id", id);
     if (updateError) throw updateError;
     await logActivity("Setujui Pendaftaran", `Menyetujui pendaftaran siswa: ${reg.student_name} (Program: ${reg.program})`);
     return { success: true, message: "Pendaftaran disetujui dan siswa berhasil ditambahkan ke database.", status: 200 };
