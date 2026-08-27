@@ -112,7 +112,7 @@ export default function PendingSchedulesCard({
   };
 
   return (
-    <div className="portal-card" style={{ padding: "1.5rem", marginTop: "2rem", border: "1px solid rgba(245, 158, 11, 0.2)", backgroundColor: "#fffdfa" }}>
+    <div className="portal-card" style={{ padding: "1.5rem", marginTop: "2rem", marginBottom: "2rem", border: "1px solid rgba(245, 158, 11, 0.2)", backgroundColor: "#fffdfa" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.75rem" }}>
         <div>
           <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "#b45309", display: "flex", alignItems: "center", gap: "0.4rem" }}>
