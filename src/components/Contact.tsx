@@ -8,6 +8,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
   const sectionRef = useRef<HTMLDivElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
+  const [mapTab, setMapTab] = React.useState<"gmaps" | "situasi">("gmaps");
 
   const contactProps = useContactForm({ form, setForm, honeypot, initialSettings });
 
@@ -87,15 +88,36 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
       </div>
 
       <div className="container contact-map-container scroll-fade-up">
+        <div className="contact-map-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.75rem" }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "700", color: "var(--color-gray-900)", letterSpacing: "-0.02em" }}>Lokasi & Rute Gedung</h3>
+            <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--color-gray-500)" }}>Pilih tampilan Google Maps digital atau Peta Situasi Rute Lokal Bobong.</p>
+          </div>
+          <div className="contact-tab-switcher" style={{ marginBottom: 0, minWidth: "280px" }}>
+            <button type="button" className={`contact-tab-btn ${mapTab === "gmaps" ? "active" : ""}`} onClick={() => setMapTab("gmaps")}>Google Maps</button>
+            <button type="button" className={`contact-tab-btn ${mapTab === "situasi" ? "active" : ""}`} onClick={() => setMapTab("situasi")}>Peta Situasi Rute</button>
+          </div>
+        </div>
+
         <div className="contact-map-card">
-          <iframe
-            title="Google Maps Lokasi Ibra Global English Bobong"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.586616458514!2d124.37475487570889!3d-1.9389935367069792!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d82af33f6c6e6b5%3A0x332ca8e07224c054!2sPT.%20IBRA%20GLOBAL%20ENGLISH%20--%20Kursus%20Bahasa%20Inggris%20dan%20CALISTUNG%20di%20Bobong!5e0!3m2!1sid!2sid!4v1717820000000!5m2!1sid!2sid"
-            className="contact-map-iframe"
-            allowFullScreen={true}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+          {mapTab === "gmaps" ? (
+            <iframe
+              title="Google Maps Lokasi Ibra Global English Bobong"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.586616458514!2d124.37475487570889!3d-1.9389935367069792!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d82af33f6c6e6b5%3A0x332ca8e07224c054!2sPT.%20IBRA%20GLOBAL%20ENGLISH%20--%20Kursus%20Bahasa%20Inggris%20dan%20CALISTUNG%20di%20Bobong!5e0!3m2!1sid!2sid!4v1717820000000!5m2!1sid!2sid"
+              className="contact-map-iframe"
+              allowFullScreen={true}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          ) : (
+            <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "10px", backgroundColor: "#ffffff", padding: "0.5rem" }}>
+              <img
+                src="/assets/peta-situasi-bobong.png"
+                alt="Peta Situasi dan Rute Jalan Ibra Global English Bobong"
+                style={{ width: "100%", maxHeight: "540px", objectFit: "contain", borderRadius: "8px", display: "block" }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>
