@@ -563,3 +563,12 @@
 [data-theme='dark'] .peta-modal-body {
   background-color: #121212;
 }
+
+.peta-modal-pdf-iframe {
+  width: 100%;
+  height: 80vh;
+  min-height: 500px;
+  border: 0;
+  display: block;
+  background-color: #ffffff;
+}

@@ -116,9 +116,9 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
               onClick={() => setIsModalOpen(true)}
               style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "10px", backgroundColor: "#ffffff", padding: "0.5rem", cursor: "zoom-in" }}
             >
-              <div className="peta-zoom-badge">Klik untuk Perbesar Layar Penuh</div>
+              <div className="peta-zoom-badge">Klik untuk Vektor Tajam 100%</div>
               <img
-                src="/assets/peta-situasi-bobong.png"
+                src="/assets/peta-situasi-bobong.png?v=20260901"
                 alt="Peta Situasi dan Rute Jalan Ibra Global English Bobong"
                 style={{ width: "100%", maxHeight: "560px", objectFit: "contain", borderRadius: "8px", display: "block" }}
               />
@@ -136,15 +136,15 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                 <p style={{ margin: "0.2rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)" }}>Penunjuk arah rute gedung dari Mess Tambang menuju Gedung Kost Fitrah Lantai 1</p>
               </div>
               <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <a href="/assets/peta-situasi-bobong.pdf" target="_blank" rel="noopener noreferrer" className="peta-modal-link-btn">Buka PDF Vektor (100% Tajam)</a>
+                <a href="/assets/peta-situasi-bobong.pdf" target="_blank" rel="noopener noreferrer" className="peta-modal-link-btn">Unduh / Buka Tab Baru</a>
                 <button type="button" onClick={() => setIsModalOpen(false)} className="peta-modal-close-btn">Tutup</button>
               </div>
             </div>
-            <div className="peta-modal-body">
-              <img
-                src="/assets/peta-situasi-bobong.png"
-                alt="Peta Situasi Resolusi Tinggi"
-                className="peta-modal-full-img"
+            <div className="peta-modal-body" style={{ padding: 0 }}>
+              <iframe
+                src="/assets/peta-situasi-bobong.pdf#toolbar=0&navpanes=0&view=FitH"
+                title="Dokumen Vektor Peta Situasi LKP Ibra Global English Bobong"
+                className="peta-modal-pdf-iframe"
               />
             </div>
           </div>
