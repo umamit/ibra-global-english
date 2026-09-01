@@ -445,3 +445,121 @@
   border-color: rgba(255, 255, 255, 0.06);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
+
+/* ── Peta Situasi Zoom Modal Lightbox ── */
+.peta-zoom-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: rgba(33, 108, 126, 0.88);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  z-index: 5;
+}
+
+.peta-situasi-preview-box:hover .peta-zoom-badge {
+  background-color: var(--color-primary);
+  transform: scale(1.04);
+}
+
+.peta-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.peta-modal-container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.peta-modal-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background-color: #f8fafc;
+}
+
+.peta-modal-link-btn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-bg-teal-50);
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid rgba(33, 108, 126, 0.2);
+}
+
+.peta-modal-close-btn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--color-gray-800);
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.peta-modal-body {
+  padding: 1rem;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #ffffff;
+  max-height: calc(90vh - 70px);
+}
+
+.peta-modal-full-img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  border-radius: 8px;
+}
+
+[data-theme='dark'] .peta-modal-container {
+  background-color: #1c1c1e;
+}
+
+[data-theme='dark'] .peta-modal-header {
+  background-color: #2c2c2e;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .peta-modal-header h4 {
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .peta-modal-body {
+  background-color: #121212;
+}

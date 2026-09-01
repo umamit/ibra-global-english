@@ -9,6 +9,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
   const leftPanelRef = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const [mapTab, setMapTab] = React.useState<"gmaps" | "situasi">("gmaps");
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const contactProps = useContactForm({ form, setForm, honeypot, initialSettings });
 
@@ -110,16 +111,45 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           ) : (
-            <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "10px", backgroundColor: "#ffffff", padding: "0.5rem" }}>
+            <div
+              className="peta-situasi-preview-box"
+              onClick={() => setIsModalOpen(true)}
+              style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "10px", backgroundColor: "#ffffff", padding: "0.5rem", cursor: "zoom-in" }}
+            >
+              <div className="peta-zoom-badge">Klik untuk Perbesar Layar Penuh</div>
               <img
                 src="/assets/peta-situasi-bobong.png"
                 alt="Peta Situasi dan Rute Jalan Ibra Global English Bobong"
-                style={{ width: "100%", maxHeight: "540px", objectFit: "contain", borderRadius: "8px", display: "block" }}
+                style={{ width: "100%", maxHeight: "560px", objectFit: "contain", borderRadius: "8px", display: "block" }}
               />
             </div>
           )}
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="peta-modal-backdrop" onClick={() => setIsModalOpen(false)}>
+          <div className="peta-modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="peta-modal-header">
+              <div>
+                <h4 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--color-gray-900)" }}>Peta Situasi Resmi LKP Ibra Global English Bobong</h4>
+                <p style={{ margin: "0.2rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)" }}>Penunjuk arah rute gedung dari Mess Tambang menuju Gedung Kost Fitrah Lantai 1</p>
+              </div>
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <a href="/assets/peta-situasi-bobong.png" target="_blank" rel="noopener noreferrer" className="peta-modal-link-btn">Buka Gambar Asli</a>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="peta-modal-close-btn">Tutup</button>
+              </div>
+            </div>
+            <div className="peta-modal-body">
+              <img
+                src="/assets/peta-situasi-bobong.png"
+                alt="Peta Situasi Resolusi Tinggi"
+                className="peta-modal-full-img"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
