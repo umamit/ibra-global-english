@@ -136,7 +136,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                 <p style={{ margin: "0.2rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)" }}>Penunjuk arah rute gedung dari Mess Tambang menuju Gedung Kost Fitrah Lantai 1</p>
               </div>
               <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <a href="/assets/peta-situasi-bobong.png" target="_blank" rel="noopener noreferrer" className="peta-modal-link-btn">Buka Gambar Asli</a>
+                <a href="/assets/peta-situasi-bobong.pdf" target="_blank" rel="noopener noreferrer" className="peta-modal-link-btn">Buka PDF Vektor (100% Tajam)</a>
                 <button type="button" onClick={() => setIsModalOpen(false)} className="peta-modal-close-btn">Tutup</button>
               </div>
             </div>
