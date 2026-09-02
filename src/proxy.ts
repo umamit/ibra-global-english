@@ -32,15 +32,20 @@ export async function proxy(request: NextRequest) {
     res.headers.set("X-Frame-Options", "DENY");
     res.headers.set("Permissions-Policy", "camera=(self), microphone=()");
 
-    // Strict No-Cache & Privacy Headers for Admin Subdomain, Admin, Parent, Tutor, Student, Login, & API Routes
+    // Strict No-Cache & Privacy Headers for Admin/Parent/Tutor/Student Subdomains & All Private Routes
     if (
       hostname.startsWith("admin.") ||
+      hostname.startsWith("parent.") ||
+      hostname.startsWith("student.") ||
+      hostname.startsWith("tutor.") ||
       pathname.startsWith("/admin") ||
       pathname.startsWith("/parent") ||
       pathname.startsWith("/tutor") ||
       pathname.startsWith("/student") ||
       pathname.startsWith("/login") ||
       pathname.startsWith("/onboarding") ||
+      pathname.startsWith("/verify") ||
+      pathname.startsWith("/maintenance") ||
       pathname.startsWith("/api")
     ) {
       res.headers.set("X-Robots-Tag", "noindex, nofollow");
