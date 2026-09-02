@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { WebVitals } from "@/components/WebVitals";
 import { getLandingSettings } from "@/utils/getLandingSettings";
 import PromoPopup from "@/components/PromoPopup";
@@ -72,6 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <QueryProvider>{children}</QueryProvider>
         <PromoPopup />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
