@@ -123,7 +123,7 @@ export default function AdminSidebarNav({ pathname, pendingCount, mobileOpen, op
       </nav>
 
       <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.60.10</span>
+        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.60.11</span>
       </div>
     </aside>
   );
