@@ -118,7 +118,7 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
             >
               <div className="peta-zoom-badge">Klik untuk Perbesar Layar Penuh</div>
               <img
-                src="/assets/peta-situasi-bobong.png?v=20260901_v2"
+                src="/assets/peta-situasi-bobong.png?v=20260902_v3"
                 alt="Peta Situasi dan Rute Jalan Ibra Global English Bobong"
                 style={{ width: "100%", maxHeight: "560px", objectFit: "contain", borderRadius: "8px", display: "block" }}
               />
@@ -136,13 +136,13 @@ export default function Contact({ form, setForm, honeypot, setHoneypot, initialS
                 <p style={{ margin: "0.2rem 0 0", fontSize: "0.8rem", color: "var(--color-gray-500)" }}>Penunjuk arah rute gedung dari Mess Tambang menuju Gedung Kost Fitrah Lantai 1</p>
               </div>
               <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <a href="/assets/peta-situasi-bobong.png?v=20260901_v2" target="_blank" rel="noopener noreferrer" className="peta-modal-link-btn">Buka Gambar Asli</a>
+                <a href="/assets/peta-situasi-bobong.png?v=20260902_v3" target="_blank" rel="noopener noreferrer" className="peta-modal-link-btn">Buka Gambar Asli</a>
                 <button type="button" onClick={() => setIsModalOpen(false)} className="peta-modal-close-btn">Tutup</button>
               </div>
             </div>
             <div className="peta-modal-body" style={{ padding: "1rem", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff" }}>
               <img
-                src="/assets/peta-situasi-bobong.png?v=20260901_v2"
+                src="/assets/peta-situasi-bobong.png?v=20260902_v3"
                 alt="Peta Situasi Resmi LKP Ibra Global English Bobong"
                 className="peta-modal-full-img"
                 style={{ width: "100%", height: "auto", maxHeight: "80vh", objectFit: "contain", display: "block" }}
