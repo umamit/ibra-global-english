@@ -9,6 +9,8 @@ Disallow: /api/
 Disallow: /auth/
 Disallow: /verify/
 Disallow: /onboarding/
+Disallow: /login
+Disallow: /login/
 Disallow: /maintenance
 Disallow: /posthog-test
 Content-Signal: ai-train=no, search=yes, ai-input=no

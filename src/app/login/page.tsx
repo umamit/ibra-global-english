@@ -4,6 +4,10 @@ import LoginClient from "./LoginClient";
 export const metadata: Metadata = {
   title: "Masuk ke LMS Portal | Ibra Global English Bobong",
   description: "Masuk ke Portal Akademik Ibra Global English Bobong untuk mengakses detail kelas, jadwal belajar, absensi harian, laporan hasil belajar, kuis, dan sertifikat kelulusan digital.",
+  robots: {
+    index: false,
+    follow: false,
+  },
   alternates: {
     canonical: "https://www.ibraglobalenglish.uk/login",
   },
