@@ -1,6 +1,6 @@
 {
   "name": "next-app-temp",
-  "version": "3.60.13",
+  "version": "3.61.0",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -18,8 +18,9 @@
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
     "@tanstack/react-query": "^5.101.2",
-    "@tiptap/react": "^2.11.5",
-    "@tiptap/starter-kit": "^2.11.5",
+    "@tiptap/pm": "^3.31.0",
+    "@tiptap/react": "^3.31.0",
+    "@tiptap/starter-kit": "^3.31.0",
     "@vercel/analytics": "^2.0.1",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
@@ -36,7 +37,7 @@
     "pg": "^8.22.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "recharts": "^2.15.1",
+    "recharts": "^3.10.1",
     "sonner": "^2.0.8",
     "three": "^0.185.1",
     "xlsx": "^0.18.5",
