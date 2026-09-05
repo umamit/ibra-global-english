@@ -1,5 +1,6 @@
 import { getAdminSupabase } from "@/app/api/_middleware";
 import { logActivity } from "@/utils/auditLogger";
+import { sendWhatsAppMessage } from "@/lib/whatsapp/sendWhatsAppMessage";
 
 const supabaseAdmin = getAdminSupabase();
 
@@ -38,6 +39,17 @@ export async function processStudentApproval(reg: any) {
       return { success: false, error: "Gagal menambahkan siswa ke database.", details: insertError.message, status: 500 };
     }
   }
+
+  // Otomatis kirim notifikasi WhatsApp ke Orang Tua jika nomor telepon tersedia
+  const parentPhone = reg.phone || reg.whatsapp;
+  if (parentPhone) {
+    const parentNameStr = reg.parent_name ? `Bapak/Ibu ${reg.parent_name}` : "Orang Tua/Wali";
+    sendWhatsAppMessage({
+      to: parentPhone,
+      message: `Halo ${parentNameStr},\n\nPendaftaran siswa *${reg.student_name}* untuk program *${normalizedProgram}* di LKP Ibra Global English Bobong telah *DISETUJUI* oleh Admin.\n\nDetail Pendaftaran:\n- Nama Siswa: ${reg.student_name}\n- Program: ${normalizedProgram}\n- Status: Disetujui\n\nTerima kasih atas kepercayaan Anda pada LKP Ibra Global English Bobong.\nWebsite: https://www.ibraglobalenglish.uk`,
+    }).catch((err) => console.error("Gagal memicu pengiriman notifikasi WhatsApp:", err));
+  }
+
   return { success: true, status: 200 };
 }
 
