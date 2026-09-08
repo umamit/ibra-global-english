@@ -31,6 +31,15 @@ export default function ParentSidebar({ mobileOpen, setMobileOpen, activeView, s
         </button>
 
         <button
+          onClick={() => { setActiveView("session_notes"); setMobileOpen(false); }}
+          className={`sidebar-nav-link ${activeView === "session_notes" ? "active" : ""}`}
+          type="button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Catatan Pertemuan</span>
+        </button>
+
+        <button
           onClick={() => { setActiveView("calendar"); setMobileOpen(false); }}
           className={`sidebar-nav-link ${activeView === "calendar" ? "active" : ""}`}
           type="button"
@@ -68,7 +77,7 @@ export default function ParentSidebar({ mobileOpen, setMobileOpen, activeView, s
       </div>
 
       <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Orang Tua Dashboard v3.62.2</span>
+        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Orang Tua Dashboard v3.63.0</span>
       </div>
     </aside>
   );

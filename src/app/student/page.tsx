@@ -10,6 +10,7 @@ import StudentDashboard from "./components/StudentDashboard";
 import StudentModules from "./components/StudentModules";
 import StudentAchievements from "./components/StudentAchievements";
 import StudentLMS from "./components/StudentLMS";
+import StudentSessionNotesView from "./components/StudentSessionNotesView";
 import { useStudentPortal } from "./hooks/useStudentPortal";
 
 export default function StudentPortal() {
@@ -86,6 +87,10 @@ export default function StudentPortal() {
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <span>Tugas &amp; Modul</span>
           </button>
+          <button onClick={() => { setActiveTab("session_notes"); setMobileOpen(false); }} className={`sidebar-nav-link ${activeTab === "session_notes" ? "active" : ""}`} style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.5rem" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Catatan Pertemuan</span>
+          </button>
           <button onClick={() => { setActiveTab("lms"); setMobileOpen(false); }} className={`sidebar-nav-link ${activeTab === "lms" ? "active" : ""}`} style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.5rem" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V3.5A2.5 2.5 0 0 1 6.5 1H20v21H6.5a2.5 2.5 0 0 1-2.5-2.5z"/></svg>
             <span>LMS - Pembelajaran</span>
@@ -135,6 +140,10 @@ export default function StudentPortal() {
 
         {activeTab === "modules" && (
           <StudentModules student={student} getModulesList={getModulesList} />
+        )}
+
+        {activeTab === "session_notes" && (
+          <StudentSessionNotesView studentId={student?.id} />
         )}
 
         {activeTab === "achievements" && (

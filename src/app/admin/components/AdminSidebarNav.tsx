@@ -39,7 +39,7 @@ export default function AdminSidebarNav({ pathname, pendingCount, mobileOpen, op
 
         {/* Akademik & Kelas */}
         <div className="sidebar-group">
-          <button type="button" onClick={() => toggleGroup("akademik")} className={`sidebar-group-toggle ${["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/reports", "/admin/certificates", "/admin/placement-test", "/admin/curriculum", "/admin/feedback"].includes(pathname) ? "active-parent" : ""}`}>
+          <button type="button" onClick={() => toggleGroup("akademik")} className={`sidebar-group-toggle ${["/admin/calendar", "/admin/online-schedule", "/admin/attendance", "/admin/session-notes", "/admin/reports", "/admin/certificates", "/admin/placement-test", "/admin/curriculum", "/admin/feedback"].includes(pathname) ? "active-parent" : ""}`}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             <span>Akademik &amp; Kelas</span>
             <ChevronIcon rotated={openGroups.akademik} />
@@ -50,6 +50,7 @@ export default function AdminSidebarNav({ pathname, pendingCount, mobileOpen, op
               { href: "/admin/online-schedule", label: "Jadwal Kelas Online" },
               { href: "/admin/attendance", label: "Absensi Harian" },
               { href: "/admin/attendance?scan=true", label: "Pemindai QR Presensi" },
+              { href: "/admin/session-notes", label: "Catatan Siswa Per Sesi" },
               { href: "/admin/reports", label: "Input Rapor" },
               { href: "/admin/certificates", label: "Kelola Sertifikat" },
               { href: "/admin/placement-test", label: "Hasil Tes Penempatan" },
@@ -123,7 +124,7 @@ export default function AdminSidebarNav({ pathname, pendingCount, mobileOpen, op
       </nav>
 
       <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.62.2</span>
+        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Admin Dashboard v3.63.0</span>
       </div>
     </aside>
   );

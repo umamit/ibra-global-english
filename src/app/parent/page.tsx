@@ -12,6 +12,7 @@ import FinanceView from "./components/FinanceView";
 import LMSView from "./components/LMSView";
 import FeedbackView from "./components/FeedbackView";
 import ReceiptPrint from "./components/ReceiptPrint";
+import ParentSessionNotesView from "./components/ParentSessionNotesView";
 import "@/app/dashboard.css";
 import "@/app/dashboard-print.css";
 import "./parent.css";
@@ -172,6 +173,12 @@ export default function ParentPortal() {
                   getIndonesianDate={getIndonesianDate}
                   triggerPrint={triggerPrint}
                 />
+              </div>
+            )}
+
+            {activeView === "session_notes" && (
+              <div className="view-fade-in">
+                <ParentSessionNotesView selectedChild={selectedChild} />
               </div>
             )}
 

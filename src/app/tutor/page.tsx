@@ -9,6 +9,7 @@ import "@/app/dashboard-print.css";
 import TutorAttendance from "./components/TutorAttendance";
 import TutorReports from "./components/TutorReports";
 import TutorLMS from "./components/TutorLMS";
+import TutorSessionNotes from "./components/TutorSessionNotes";
 import { formatRupiah } from "../admin/utils";
 import { useTutorPortal } from "./hooks/useTutorPortal";
 
@@ -86,6 +87,10 @@ export default function TutorPortal() {
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
             <span>Input Nilai Rapor</span>
           </button>
+          <button onClick={() => { setActiveTab("session_notes"); setMobileOpen(false); }} className={`sidebar-nav-link ${activeTab === "session_notes" ? "active" : ""}`} style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.5rem" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Catatan Siswa Per Sesi</span>
+          </button>
           <button onClick={() => { setActiveTab("lms"); setMobileOpen(false); }} className={`sidebar-nav-link ${activeTab === "lms" ? "active" : ""}`} style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.5rem" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             <span>LMS - Kelas Digital</span>
@@ -126,6 +131,10 @@ export default function TutorPortal() {
             students={students} attendanceData={attendanceData} attendanceDate={attendanceDate}
             formatRupiah={formatRupiah} onPrintReport={handlePrintReport} onExportCSV={handleExportCSV}
           />
+        )}
+
+        {activeTab === "session_notes" && (
+          <TutorSessionNotes students={students} tutorName={tutorName} />
         )}
 
         {activeTab === "lms" && (
