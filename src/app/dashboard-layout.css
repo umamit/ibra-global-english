@@ -7,7 +7,7 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background-color: var(--color-gray-50);
+  background-color: var(--color-bg-teal-50, #eef6f8);
 }
 
 /* ── Main Content Area ── */
