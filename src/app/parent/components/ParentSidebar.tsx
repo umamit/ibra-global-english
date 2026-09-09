@@ -77,7 +77,7 @@ export default function ParentSidebar({ mobileOpen, setMobileOpen, activeView, s
       </div>
 
       <div className="sidebar-footer" style={{ padding: "1rem", textAlign: "center" }}>
-        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Orang Tua Dashboard v3.63.1</span>
+        <span style={{ fontSize: "0.7rem", color: "var(--color-gray-400)" }}>Orang Tua Dashboard v3.63.2</span>
       </div>
     </aside>
   );

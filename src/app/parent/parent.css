@@ -5,7 +5,7 @@
 
 /* ── Layout base ─────────────────────────────────────────────────────── */
 .dashboard-container {
-  background-color: var(--color-gray-50, #f5f5f7);
+  background-color: var(--color-bg-teal-50, #eef6f8);
 }
 
 [data-theme='dark'] .dashboard-container {
