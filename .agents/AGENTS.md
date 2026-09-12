@@ -239,6 +239,10 @@ npm run check-limits
     - Grid tata letak utama (seperti Split View, form 2 kolom, dan kartu dashboard) WAJIB tumpuk otomatis menjadi 1 kolom vertikal (`grid-template-columns: 1fr` / `span 12`) pada layar kecil (< 900px / < 768px).
     - Seluruh tombol interaktif, elemen menu, dan tombol filter WAJIB memiliki ukuran ramah sentuhan jempol minimal 44px dengan teks yang mudah dibaca tanpa saling tumpang tindih.
 
+21t. **Kunci Desain Kartu Bersih Tanpa Garis Samping Kiri (Strict Clean Uniform Card Border Rule):**
+    - AI DILARANG KERAS menambahkan garis aksen tebal atau warna strip di samping kiri kartu (seperti `border-left: 4px solid ...` atau `border-left: 5px solid ...`) pada seluruh elemen kartu antarmuka (agenda, timeline, jadwal, maupun kartu modul dashboard).
+    - Seluruh elemen kartu (card) WAJIB menggunakan garis tepi pembatas yang halus, seragam, dan melingkar penuh di seluruh sisinya (`border: 1px solid rgba(0, 0, 0, 0.06)` atau `border: 1px solid var(--color-border)`) serta `border-radius` melengkung halus sesuai standar Apple Human Interface Guidelines (HIG).
+
 28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
     - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
 
