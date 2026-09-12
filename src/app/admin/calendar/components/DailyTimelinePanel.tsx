@@ -199,7 +199,6 @@ export default function DailyTimelinePanel({
                   flexDirection: "column",
                   gap: "0.6rem",
                   boxShadow: "0 4px 14px rgba(0,0,0,0.03)",
-                  borderLeft: `5px solid ${colors.text}`,
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
