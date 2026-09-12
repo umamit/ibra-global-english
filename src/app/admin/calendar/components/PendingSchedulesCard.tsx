@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import RescheduleCountdown from "./RescheduleCountdown";
 
 export interface AcademicSchedule {
   id: string;
@@ -193,9 +194,12 @@ export default function PendingSchedulesCard({
                   )}
 
                   {item.rescheduled_to && (
-                    <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "#1d4ed8", backgroundColor: "#eff6ff", padding: "0.4rem 0.6rem", borderRadius: "6px", marginTop: "0.4rem", border: "1px solid #bfdbfe" }}>
-                      Pengganti: {new Date(item.rescheduled_to).toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })} WIB
-                    </div>
+                    <>
+                      <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "#1d4ed8", backgroundColor: "#eff6ff", padding: "0.4rem 0.6rem", borderRadius: "6px", marginTop: "0.4rem", border: "1px solid #bfdbfe" }}>
+                        Pengganti: {new Date(item.rescheduled_to).toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })} WIB
+                      </div>
+                      <RescheduleCountdown targetDate={item.rescheduled_to} />
+                    </>
                   )}
                 </div>
 
