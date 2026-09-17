@@ -26,6 +26,16 @@ const nextConfig = {
     return config;
   },
 
+  async redirects() {
+    return [
+      {
+        source: "/paket-kursus/:slug*",
+        destination: "/#programs",
+        permanent: true,
+      },
+    ];
+  },
+
   async rewrites() {
     return [
       {
