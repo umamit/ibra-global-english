@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 };
 
 import { createBreadcrumbSchema } from "@/utils/seoHelpers";
+import { calendarEventsSchema } from "./calendarSchemas";
 
 export default function CalendarPage() {
   const breadcrumb = createBreadcrumbSchema([
@@ -42,6 +43,10 @@ export default function CalendarPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(calendarEventsSchema) }}
       />
       <CalendarClient />
     </>
