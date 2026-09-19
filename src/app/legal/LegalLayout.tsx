@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import LegalPrintButton from "./LegalPrintButton";
 
 interface LegalLayoutProps {
   title: string;
@@ -21,26 +22,7 @@ export default function LegalLayout({ title, subtitle, children, lastUpdated = "
             <span>Kembali ke Beranda</span>
           </Link>
 
-          <button
-            type="button"
-            onClick={() => window.print()}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.4rem",
-              padding: "0.5rem 1rem",
-              borderRadius: "9999px",
-              border: "1px solid rgba(0, 0, 0, 0.1)",
-              background: "var(--color-white)",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            <i className="fi fi-rr-print"></i>
-            <span>Cetak / Simpan PDF</span>
-          </button>
+          <LegalPrintButton />
         </div>
 
         {/* Legal Card */}
