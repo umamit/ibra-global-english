@@ -23,6 +23,21 @@ export const metadata: Metadata = {
   }
 };
 
+import { createBreadcrumbSchema } from '@/utils/seoHelpers';
+
 export default function OfflineFormPage() {
-  return <OfflineFormClient />;
+  const breadcrumb = createBreadcrumbSchema([
+    { name: "Beranda", url: "https://www.ibraglobalenglish.uk/" },
+    { name: "Cetak Formulir Offline", url: "https://www.ibraglobalenglish.uk/formulir-offline" },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <OfflineFormClient />
+    </>
+  );
 }

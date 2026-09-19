@@ -29,6 +29,21 @@ export const metadata: Metadata = {
   }
 };
 
+import { createBreadcrumbSchema } from "@/utils/seoHelpers";
+
 export default function CalendarPage() {
-  return <CalendarClient />;
+  const breadcrumb = createBreadcrumbSchema([
+    { name: "Beranda", url: "https://www.ibraglobalenglish.uk/" },
+    { name: "Kalender Akademik & Jadwal KBM", url: "https://www.ibraglobalenglish.uk/calendar" },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <CalendarClient />
+    </>
+  );
 }

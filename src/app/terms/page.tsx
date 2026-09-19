@@ -24,10 +24,21 @@ export const metadata: Metadata = {
 };
 
 import LegalLayout from "@/app/legal/LegalLayout";
+import { createBreadcrumbSchema } from "@/utils/seoHelpers";
 
 export default function TermsPage() {
+  const breadcrumb = createBreadcrumbSchema([
+    { name: "Beranda", url: "https://www.ibraglobalenglish.uk/" },
+    { name: "Syarat & Ketentuan Layanan", url: "https://www.ibraglobalenglish.uk/terms" },
+  ]);
+
   return (
-    <LegalLayout title="Syarat & Ketentuan Layanan" lastUpdated="1 Juli 2026">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <LegalLayout title="Syarat & Ketentuan Layanan" lastUpdated="1 Juli 2026">
       <section>
         <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)", marginBottom: "0.75rem" }}>
           1. Persetujuan Syarat
@@ -244,5 +255,6 @@ export default function TermsPage() {
         </p>
       </section>
     </LegalLayout>
+    </>
   );
 }

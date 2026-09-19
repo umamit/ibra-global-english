@@ -31,6 +31,21 @@ export const metadata: Metadata = {
   }
 };
 
+import { createBreadcrumbSchema } from '@/utils/seoHelpers';
+
 export default function PlacementTestPage() {
-  return <PlacementTestClient />;
+  const breadcrumb = createBreadcrumbSchema([
+    { name: "Beranda", url: "https://www.ibraglobalenglish.uk/" },
+    { name: "Tes Penempatan Online", url: "https://www.ibraglobalenglish.uk/placement-test" },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <PlacementTestClient />
+    </>
+  );
 }

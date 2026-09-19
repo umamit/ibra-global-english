@@ -23,6 +23,21 @@ export const metadata: Metadata = {
   }
 };
 
+import { createBreadcrumbSchema } from '@/utils/seoHelpers';
+
 export default function AboutPage() {
-  return <AboutClient />;
+  const breadcrumb = createBreadcrumbSchema([
+    { name: "Beranda", url: "https://www.ibraglobalenglish.uk/" },
+    { name: "Tentang Kami", url: "https://www.ibraglobalenglish.uk/about" },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <AboutClient />
+    </>
+  );
 }

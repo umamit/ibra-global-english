@@ -33,6 +33,11 @@ const nextConfig = {
         destination: "/#programs",
         permanent: true,
       },
+      {
+        source: "/_/view/:path*",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 

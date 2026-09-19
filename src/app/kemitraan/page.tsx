@@ -35,6 +35,21 @@ export const metadata: Metadata = {
   }
 };
 
+import { createBreadcrumbSchema } from "@/utils/seoHelpers";
+
 export default function KemitraanPage() {
-  return <KemitraanClient />;
+  const breadcrumb = createBreadcrumbSchema([
+    { name: "Beranda", url: "https://www.ibraglobalenglish.uk/" },
+    { name: "Kemitraan Sekolah & Instansi", url: "https://www.ibraglobalenglish.uk/kemitraan" },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <KemitraanClient />
+    </>
+  );
 }

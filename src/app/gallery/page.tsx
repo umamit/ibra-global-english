@@ -29,6 +29,21 @@ export const metadata: Metadata = {
   }
 };
 
+import { createBreadcrumbSchema } from '@/utils/seoHelpers';
+
 export default function GalleryPage() {
-  return <GalleryClient />;
+  const breadcrumb = createBreadcrumbSchema([
+    { name: "Beranda", url: "https://www.ibraglobalenglish.uk/" },
+    { name: "Galeri Kegiatan Siswa", url: "https://www.ibraglobalenglish.uk/gallery" },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <GalleryClient />
+    </>
+  );
 }
