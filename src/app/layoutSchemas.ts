@@ -14,7 +14,17 @@ export const educationalOrgSchema = {
   "@type": "EducationalOrganization",
   "@id": "https://www.ibraglobalenglish.uk/#organization",
   "name": "PT. IBRA Global English",
-  "alternateName": "Ibra Global English Bobong",
+  "alternateName": [
+    "Ibra Global English Bobong",
+    "LKP Ibra Global English Bobong",
+    "Lembaga Kursus dan Pelatihan Ibra Global English"
+  ],
+  "identifier": "SK-Disdikbud-870/843/2026",
+  "founder": {
+    "@type": "Person",
+    "name": "Husnita Usman, S.Pd",
+    "jobTitle": "Pimpinan / Pengelola LKP"
+  },
   "image": "https://www.ibraglobalenglish.uk/assets/logo.png",
   "logo": "https://www.ibraglobalenglish.uk/assets/logo.png",
   "url": "https://www.ibraglobalenglish.uk/",

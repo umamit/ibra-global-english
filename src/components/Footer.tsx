@@ -77,7 +77,7 @@ export default function Footer({ initialSettings }: FooterProps) {
       <div className="container footer-content">
         <p className="footer-copyright" style={{ display: "flex", flexDirection: "column", gap: "0.5rem", alignItems: "center", textAlign: "center" }}>
           <span style={{ maxWidth: "100%", wordBreak: "break-word" }}>
-            &copy; 2026 Ibra Global English. Di bawah naungan PT Ibra Global English. All rights reserved. 
+            &copy; 2026 Ibra Global English. Di bawah naungan PT Ibra Global English (Izin Operasional LKP Disdikbud No. 870/843/2026). All rights reserved. 
             <span className="footer-version" style={{ opacity: 0.6, fontSize: "0.85em", marginLeft: "8px" }}>
               v{packageInfo.version}
             </span>

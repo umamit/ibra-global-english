@@ -100,8 +100,8 @@ export async function renderCertificatePdf(cert: any, report: any, origin: strin
   const hdr1 = "IBRA GLOBAL ENGLISH";
   page2.drawText(hdr1, { x: (W - fBold.widthOfTextAtSize(hdr1, 24)) / 2, y: cy, font: fBold, size: 24, color: C_DARK_GREEN });
   cy -= 15;
-  const hdr2 = "Lembaga Kursus & Pelatihan (LKP)";
-  page2.drawText(hdr2, { x: (W - fRegular.widthOfTextAtSize(hdr2, 9.5)) / 2, y: cy, font: fRegular, size: 9.5, color: C_DARK });
+  const hdr2 = "Lembaga Kursus & Pelatihan (LKP) - Izin Disdikbud Kab. Pulau Taliabu No. 870/843/2026";
+  page2.drawText(hdr2, { x: (W - fRegular.widthOfTextAtSize(hdr2, 9)) / 2, y: cy, font: fRegular, size: 9, color: C_DARK });
   cy -= 14;
   const hdr3 = "TRANSKRIP EVALUASI AKADEMIK  /  ACADEMIC TRANSCRIPT";
   page2.drawText(hdr3, { x: (W - fBold.widthOfTextAtSize(hdr3, 10.5)) / 2, y: cy, font: fBold, size: 10.5, color: C_TEAL_DARK });

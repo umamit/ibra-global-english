@@ -53,10 +53,15 @@ export default function AboutStaticSections() {
               <div><h3 style={{ margin: "0", fontSize: "1.35rem", fontWeight: "700", color: "var(--color-gray-900)" }}>PT. Ibra Global English</h3><p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "var(--color-primary-dark)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px" }}>Perseroan Perorangan</p></div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              {[["Nomor SK Pendirian Kemenkumham", "AHU-A096371.AH.01.30.Tahun 2026"], ["Nomor Induk Berusaha (NIB)", "2806230044842"]].map(([label, val]) => (
+              {[
+                ["Izin Operasional LKP Dinas Pendidikan", "No. 870/843/2026 (Disdikbud Kab. Pulau Taliabu)"],
+                ["Pimpinan / Pengelola", "Husnita Usman, S.Pd"],
+                ["Nomor SK Pendirian Kemenkumham", "AHU-A096371.AH.01.30.Tahun 2026"],
+                ["Nomor Induk Berusaha (NIB)", "2806230044842"],
+              ].map(([label, val]) => (
                 <div key={label}><p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>{label}</p><p style={{ margin: "2px 0 0", fontSize: "1rem", color: "var(--color-gray-800)", fontWeight: "600" }}>{val}</p></div>
               ))}
-              <div><p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Status Verifikasi</p><p style={{ margin: "2px 0 0", fontSize: "1rem", color: "#10b981", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-check-circle"></i> Terdaftar &amp; Terverifikasi Resmi</p></div>
+              <div><p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Status Verifikasi</p><p style={{ margin: "2px 0 0", fontSize: "1rem", color: "#10b981", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-check-circle"></i> Terdaftar &amp; Terverifikasi Resmi Dinas Pendidikan &amp; Kemenkumham</p></div>
             </div>
           </div>
         </div>
