@@ -13,7 +13,7 @@ import { createNewsArticleSchema } from "@/utils/seoHelpers";
 import { websiteSchema, educationalOrgSchema, faqSchema, siteNavigationSchema, coursesSchema } from "./layoutSchemas";
 import "./globals.css";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const viewport: Viewport = { themeColor: "#4a9ba8", colorScheme: "light dark", width: "device-width", initialScale: 1 };
 

@@ -41,14 +41,14 @@ export async function GET() {
         interval,
       },
       {
-        headers: { "Cache-Control": "no-store, max-age=0" },
+        headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
       }
     );
   } catch (err) {
     console.error("Failed to fetch active promo banners:", err);
     return NextResponse.json(
       { banners: [], interval: 5 },
-      { headers: { "Cache-Control": "no-store, max-age=0" } }
+      { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } }
     );
   }
 }

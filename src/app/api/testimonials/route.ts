@@ -7,8 +7,12 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const data = await fetchTestimonials(searchParams.get("all") === "true");
-    return NextResponse.json({ data });
+    const isAll = searchParams.get("all") === "true";
+    const data = await fetchTestimonials(isAll);
+    const headers = isAll
+      ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
+      : { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" };
+    return NextResponse.json({ data }, { headers });
   } catch (err) {
     return NextResponse.json({ data: [] });
   }

@@ -15,7 +15,14 @@ export async function GET() {
 
     if (error) throw error;
 
-    return NextResponse.json({ count: count || 0 });
+    return NextResponse.json(
+      { count: count || 0 },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        },
+      }
+    );
   } catch (error) {
     console.error("Failed to fetch student count:", error);
     return NextResponse.json(
