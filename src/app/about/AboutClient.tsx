@@ -67,7 +67,7 @@ export default function AboutPage() {
     <>
       <Header theme={theme} toggleTheme={toggleTheme} hasMarquee={true} />
       <MarqueeBanner />
-      <main className="about-main" ref={mainRef}>
+      <main className="about-wrapper" ref={mainRef}>
         <section className="about-hero-section reveal">
           <div className="about-container text-center">
             <h1>Tentang Kami</h1>
