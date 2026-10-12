@@ -44,8 +44,12 @@ export default function ReportTable({ reports, loading, onPrint, onDelete }: Rep
             </thead>
             <tbody>
               {reports.map((report, idx) => {
-                const isCalistung = report.students?.program === "Fun Calistung";
-                const labels = isCalistung
+                const progStr = report.students?.program?.toLowerCase() || "";
+                const isMath = progStr.includes("matematika");
+                const isCalistung = !isMath && (report.students?.program === "Fun Calistung" || progStr.includes("calistung"));
+                const labels = isMath
+                  ? ["Hitung", "Logika", "Teliti", "Aktif"]
+                  : isCalistung
                   ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
                   : ["Speaking", "Grammar", "Vocab", "Active"];
                 const avg = Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);

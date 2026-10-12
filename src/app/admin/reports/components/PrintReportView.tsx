@@ -9,7 +9,14 @@ interface PrintReportViewProps {
 }
 
 export default function PrintReportView({ printReport, contactAddress, onClose }: PrintReportViewProps) {
-  const isCalistung = printReport.students?.program === "Fun Calistung";
+  const progStr = printReport.students?.program?.toLowerCase() || "";
+  const isMath = progStr.includes("matematika");
+  const isCalistung = !isMath && (printReport.students?.program === "Fun Calistung" || progStr.includes("calistung"));
+  const scoreLabels = isMath
+    ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
+    : isCalistung
+    ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
+    : ["Speaking", "Grammar", "Vocabulary", "Active"];
 
   return (
     <div style={{ padding: "1.5rem", backgroundColor: "white", minHeight: "100vh" }}>
@@ -64,25 +71,25 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
             <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
               <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
               <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {isCalistung ? "Membaca" : "Speaking"}
+                {scoreLabels[0]}
               </p>
             </div>
             <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
               <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.grammar_score}</p>
               <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {isCalistung ? "Menulis" : "Grammar"}
+                {scoreLabels[1]}
               </p>
             </div>
             <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
               <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.vocabulary_score}</p>
               <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {isCalistung ? "Berhitung" : "Vocabulary"}
+                {scoreLabels[2]}
               </p>
             </div>
             <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
               <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.active_score}</p>
               <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {isCalistung ? "Keaktifan" : "Active"}
+                {scoreLabels[3]}
               </p>
             </div>
           </div>
@@ -95,6 +102,7 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
               vocabulary={printReport.vocabulary_score} 
               active={printReport.active_score} 
               isCalistung={isCalistung}
+              isMath={isMath}
             />
           </div>
 

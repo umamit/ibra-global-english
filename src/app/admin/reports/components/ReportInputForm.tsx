@@ -33,8 +33,12 @@ export default function ReportInputForm(props: ReportInputFormProps) {
     submitting, aiLoading, aiProgressLoading, onOpenRubric, onGenerateAiNotes, onOpenAiModal, onSubmit,
   } = props;
 
-  const isFormCalistung = selectedStudentProgram?.toLowerCase()?.includes("calistung");
-  const scoreLabels = isFormCalistung
+  const normProg = selectedStudentProgram?.toLowerCase() || "";
+  const isMath = normProg.includes("matematika");
+  const isFormCalistung = !isMath && normProg.includes("calistung");
+  const scoreLabels = isMath
+    ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
+    : isFormCalistung
     ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
     : ["Speaking", "Grammar", "Vocabulary", "Active"];
 

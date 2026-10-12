@@ -53,7 +53,10 @@ export async function renderCertificatePdf(cert: any, report: any, origin: strin
   const fRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  const isCalistung = cert.students?.program?.toLowerCase()?.includes("calistung");
+  const certProg = cert.students?.program?.toLowerCase() || "";
+  const isMath = certProg.includes("matematika");
+  const isCalistung = !isMath && certProg.includes("calistung");
+  const isIndo = isCalistung || isMath;
   const studentName = sanitize(((cert.students?.name as string) || "")).toUpperCase();
   const tutorName = sanitize((cert.tutor_name as string) || "");
   const moduleName = sanitize((cert.module_name as string) || "");
@@ -61,9 +64,13 @@ export async function renderCertificatePdf(cert: any, report: any, origin: strin
   const grade = sanitize((cert.grade as string) || "");
   const issueDate = new Date(cert.issue_date as string);
 
-  const formattedDate = issueDate.toLocaleDateString(isCalistung ? "id-ID" : "en-US", { day: "numeric", month: "long", year: "numeric" });
-  const completionText = isCalistung ? `telah menyelesaikan program Calistung ${moduleName}` : `for successfully completing the ${moduleName}`;
-  const datePrefixText = isCalistung ? `Diterbitkan tanggal: ${formattedDate}` : `Issued on: ${formattedDate}`;
+  const formattedDate = issueDate.toLocaleDateString(isIndo ? "id-ID" : "en-US", { day: "numeric", month: "long", year: "numeric" });
+  const completionText = isMath
+    ? `telah menyelesaikan program bimbingan Matematika Dasar ${moduleName}`
+    : isCalistung
+    ? `telah menyelesaikan program Calistung ${moduleName}`
+    : `for successfully completing the ${moduleName}`;
+  const datePrefixText = isIndo ? `Diterbitkan tanggal: ${formattedDate}` : `Issued on: ${formattedDate}`;
 
   const page1 = pdfDoc.getPage(0);
   if (certNumber) drawCentered(page1, `Nomor : ${certNumber}`, H * 0.675, fRegular, 12, C_DARK);
@@ -127,7 +134,9 @@ export async function renderCertificatePdf(cert: any, report: any, origin: strin
   const CELL_S = 11;
   const colW = [36, TW - 36 - 96 - 96, 96, 96];
   const colX = [TM, TM + colW[0], TM + colW[0] + colW[1], TM + colW[0] + colW[1] + colW[2]];
-  const subjects = isCalistung
+  const subjects = isMath
+    ? ["Pemahaman Konsep & Operasi Hitung", "Penalaran & Logika Soal Cerita", "Ketelitian & Kerapian Perhitungan", "Keaktifan & Kemandirian Belajar"]
+    : isCalistung
     ? ["Kemampuan Membaca (Reading Skill)", "Kemampuan Menulis (Writing Skill)", "Kemampuan Berhitung (Math Skill)", "Keaktifan Siswa (Class Participation)"]
     : ["Speaking & Pronunciation", "Grammar & Structure", "Vocabulary & Comprehension", "Keaktifan Siswa (Class Participation)"];
   const scoreValues = [scores.speaking, scores.grammar, scores.vocabulary, scores.active];

@@ -13,8 +13,9 @@ export async function processStudentApproval(reg: any) {
   if (normalizedProgram.startsWith("Kids Program")) normalizedProgram = "Kids Program";
   else if (normalizedProgram.startsWith("Teens Program")) normalizedProgram = "Teens Program";
   else if (normalizedProgram.startsWith("Fun Calistung")) normalizedProgram = "Fun Calistung";
+  else if (normalizedProgram.toLowerCase().includes("matematika")) normalizedProgram = "Matematika Dasar";
 
-  const validPrograms = ["Kids Program", "Teens Program", "Fun Calistung"];
+  const validPrograms = ["Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"];
   if (!validPrograms.includes(normalizedProgram)) {
     return { success: false, error: `Program "${reg.program}" tidak valid. Harus salah satu dari: ${validPrograms.join(", ")}.`, status: 400 };
   }

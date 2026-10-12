@@ -131,8 +131,12 @@ export function calculateScoreFromRubric(selectedIds: string[], aspectRubrics: A
   return scores;
 }
 
-export function generateDraftNotesFromRubric(selectedIds: string[], isCalistung: boolean): string {
-  const rubrics = isCalistung ? RUBRIC_DATA_CALISTUNG : RUBRIC_DATA_ENGLISH;
+import { RUBRIC_DATA_MATH, getMathDraftNotes } from "./mathRubricData";
+
+export { RUBRIC_DATA_MATH };
+
+export function generateDraftNotesFromRubric(selectedIds: string[], isCalistung: boolean, isMath: boolean = false): string {
+  const rubrics = isMath ? RUBRIC_DATA_MATH : isCalistung ? RUBRIC_DATA_CALISTUNG : RUBRIC_DATA_ENGLISH;
   const achievedLabels: string[] = [];
 
   rubrics.forEach(r => {
@@ -142,6 +146,10 @@ export function generateDraftNotesFromRubric(selectedIds: string[], isCalistung:
       }
     });
   });
+
+  if (isMath) {
+    return getMathDraftNotes(achievedLabels);
+  }
 
   if (achievedLabels.length === 0) {
     return isCalistung

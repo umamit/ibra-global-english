@@ -2,7 +2,7 @@ export function parseStudentCsv(content: string) {
   const lines = content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   if (lines.length <= 1) return { error: "Berkas tidak memiliki data." };
 
-  const validPrograms = ["Kids Program", "Teens Program", "Fun Calistung"];
+  const validPrograms = ["Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"];
   const validStatuses = ["aktif", "cuti", "alumnus", "non_aktif"];
   const rows: any[] = [];
 

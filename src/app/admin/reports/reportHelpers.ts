@@ -19,7 +19,10 @@ export const exportReportsCSV = (reports: Report[], filterStudentId: string = ""
   const rows = filtered.map((r, idx) => {
     const avg = Math.round((r.speaking_score + r.grammar_score + r.vocabulary_score + r.active_score) / 4);
     const prog = r.students?.program || "";
-    const label = isCalistung(prog)
+    const isMath = prog.toLowerCase().includes("matematika");
+    const label = isMath
+      ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
+      : isCalistung(prog)
       ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
       : ["Speaking", "Grammar", "Vocabulary", "Active"];
     return [

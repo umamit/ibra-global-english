@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function RadarChart({ speaking, grammar, vocabulary, active, isCalistung }: any) {
+export default function RadarChart({ speaking, grammar, vocabulary, active, isCalistung, isMath }: any) {
   // Center (120, 120), Radius 80
   const cx = 120;
   const cy = 120;
@@ -21,6 +21,18 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
   const pActive = { x: cx - r * (active / 100), y: cy };
 
   const polygonPoints = `${pSpeaking.x},${pSpeaking.y} ${pGrammar.x},${pGrammar.y} ${pVocabulary.x},${pVocabulary.y} ${pActive.x},${pActive.y}`;
+
+  const labels = isMath
+    ? ["HITUNG", "LOGIKA", "TELITI", "AKTIF"]
+    : isCalistung
+    ? ["MEMBACA", "MENULIS", "BERHITUNG", "KEAKTIFAN"]
+    : ["SPEAKING", "GRAMMAR", "VOCABULARY", "ACTIVE"];
+
+  const tipLabels = isMath
+    ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
+    : isCalistung
+    ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
+    : ["Speaking", "Grammar", "Vocabulary", "Active"];
 
   const handleMouseEnter = (x: number, y: number, label: string, score: number) => {
     setTooltip({ show: true, x, y: y - 12, label, score });
@@ -55,10 +67,10 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
         <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke="#cbd5e1" strokeWidth="1.5" />
 
         {/* Axis Labels */}
-        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MEMBACA" : "SPEAKING"}</text>
-        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "MENULIS" : "GRAMMAR"}</text>
-        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "BERHITUNG" : "VOCABULARY"}</text>
-        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">{isCalistung ? "KEAKTIFAN" : "ACTIVE"}</text>
+        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{labels[0]}</text>
+        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">{labels[1]}</text>
+        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{labels[2]}</text>
+        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">{labels[3]}</text>
 
         {/* Score Values */}
         <text x={cx + 5} y={cy - r + 10} fontSize="7" fontWeight="700" fill="#94a3b8">100</text>
@@ -81,7 +93,7 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
           stroke="white" 
           strokeWidth="1.5" 
           style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pSpeaking.x, pSpeaking.y, isCalistung ? "Membaca" : "Speaking", speaking)}
+          onMouseEnter={() => handleMouseEnter(pSpeaking.x, pSpeaking.y, tipLabels[0], speaking)}
           onMouseLeave={hideTooltip}
         />
         <circle 
@@ -92,7 +104,7 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
           stroke="white" 
           strokeWidth="1.5" 
           style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pGrammar.x, pGrammar.y, isCalistung ? "Menulis" : "Grammar", grammar)}
+          onMouseEnter={() => handleMouseEnter(pGrammar.x, pGrammar.y, tipLabels[1], grammar)}
           onMouseLeave={hideTooltip}
         />
         <circle 
@@ -103,7 +115,7 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
           stroke="white" 
           strokeWidth="1.5" 
           style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pVocabulary.x, pVocabulary.y, isCalistung ? "Berhitung" : "Vocabulary", vocabulary)}
+          onMouseEnter={() => handleMouseEnter(pVocabulary.x, pVocabulary.y, tipLabels[2], vocabulary)}
           onMouseLeave={hideTooltip}
         />
         <circle 
@@ -114,7 +126,7 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
           stroke="white" 
           strokeWidth="1.5" 
           style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pActive.x, pActive.y, isCalistung ? "Keaktifan" : "Active", active)}
+          onMouseEnter={() => handleMouseEnter(pActive.x, pActive.y, tipLabels[3], active)}
           onMouseLeave={hideTooltip}
         />
       </svg>

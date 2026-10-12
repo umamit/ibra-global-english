@@ -9,8 +9,23 @@ export function constructPromptForMode(mode: string, payload: any, authUserRole:
 
   if (mode === "auto-draft") {
     const { name, program, speaking, grammar, vocabulary, active, module_name } = payload || {};
-    const isCalistung = program?.toLowerCase()?.includes("calistung");
-    if (isCalistung) {
+    const normProg = program?.toLowerCase() || "";
+    const isMath = normProg.includes("matematika");
+    const isCalistung = !isMath && normProg.includes("calistung");
+
+    if (isMath) {
+      systemPrompt = `Kamu adalah asisten AI tutor bimbingan belajar Matematika Dasar di Ibra Global English Bobong. Berikan ulasan rapor deskriptif yang santun, memotivasi, dan profesional kepada orang tua siswa.`;
+      userPrompt = `Buat ulasan rapor untuk siswa Matematika Dasar:
+Nama: ${name}
+Program: ${program}
+Modul: ${module_name || "-"}
+Pemahaman Konsep & Operasi Hitung: ${speaking}/100
+Penalaran & Logika Soal Cerita: ${grammar}/100
+Ketelitian & Kerapian Perhitungan: ${vocabulary}/100
+Keaktifan & Kemandirian Belajar: ${active}/100
+
+Berikan ulasan capaian belajar, apresiasi usaha siswa, serta saran konstruktif untuk latihan di rumah. Maksimal 3-4 kalimat.`;
+    } else if (isCalistung) {
       systemPrompt = `Kamu adalah asisten AI tutor bimbingan belajar Calistung (Membaca, Menulis, Berhitung) di Ibra Global English Bobong...`;
       userPrompt = `Buat ulasan rapor untuk siswa Calistung: ${name}...`;
     } else {

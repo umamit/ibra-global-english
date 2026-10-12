@@ -24,12 +24,19 @@ export default function VerifyCertificate() {
   }
 
   const report = cert?.reports;
-  const isCalistung = cert?.students?.program?.toLowerCase()?.includes("calistung");
+  const certProg = cert?.students?.program?.toLowerCase() || "";
+  const isMath = certProg.includes("matematika");
+  const isCalistung = !isMath && certProg.includes("calistung");
+  const isIndo = isCalistung || isMath;
   const avgScore = report ? Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4) : 0;
   const qrCodeUrl = cert ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin + "/verify/" + cert.id : "https://ibra.com/verify/" + cert.id)}` : "";
-  const formattedDate = cert ? new Date(cert.issue_date).toLocaleDateString(isCalistung ? "id-ID" : "en-US", { day: "numeric", month: "long", year: "numeric" }) : "";
-  const completionText = isCalistung ? `telah menyelesaikan program Calistung ${cert?.module_name || ""}` : `for successfully completing the ${cert?.module_name || ""}`;
-  const datePrefixText = isCalistung ? `Diterbitkan tanggal: ${formattedDate}` : `Issued on: ${formattedDate}`;
+  const formattedDate = cert ? new Date(cert.issue_date).toLocaleDateString(isIndo ? "id-ID" : "en-US", { day: "numeric", month: "long", year: "numeric" }) : "";
+  const completionText = isMath
+    ? `telah menyelesaikan program bimbingan Matematika Dasar ${cert?.module_name || ""}`
+    : isCalistung
+    ? `telah menyelesaikan program Calistung ${cert?.module_name || ""}`
+    : `for successfully completing the ${cert?.module_name || ""}`;
+  const datePrefixText = isIndo ? `Diterbitkan tanggal: ${formattedDate}` : `Issued on: ${formattedDate}`;
 
   const handleDownloadPDF = async () => {
     if (!cert) return;
@@ -78,7 +85,7 @@ export default function VerifyCertificate() {
           <>
             <div id="certificate-print-area" className="certificate-print-container" style={{ display: "flex", flexDirection: "column", gap: "0" }}>
               <CertificateFrontPage cert={cert} completionText={completionText} datePrefixText={datePrefixText} qrCodeUrl={qrCodeUrl} />
-              <CertificateBackPage cert={cert} report={report} isCalistung={isCalistung} avgScore={avgScore} />
+              <CertificateBackPage cert={cert} report={report} isCalistung={isCalistung} isMath={isMath} avgScore={avgScore} />
             </div>
             <div className="verify-legal-card">
               <div style={{ width: "50px", height: "50px", flexShrink: 0 }}><img src="/assets/logo.png" alt="Logo PT. Ibra Global English" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>

@@ -28,7 +28,7 @@ export function CertificateFrontPage({ cert, completionText, datePrefixText, qrC
   );
 }
 
-export function CertificateBackPage({ cert, report, isCalistung, avgScore }: any) {
+export function CertificateBackPage({ cert, report, isCalistung, isMath, avgScore }: any) {
   return (
     <div id="cert-page-2-el" className="certificate-page-2 pdf-page-break" style={{
       backgroundImage: "url('/assets/Salinan dari Salinan dari Blue and Gold Simple Elegant Certificate of Appreciation.png')",
@@ -60,25 +60,25 @@ export function CertificateBackPage({ cert, report, isCalistung, avgScore }: any
         <tbody>
           <tr>
             <td style={{ textAlign: "center" }}>1</td>
-            <td style={{ fontWeight: "600" }}>{isCalistung ? "Kemampuan Membaca (Reading Skill)" : "Speaking & Pronunciation"}</td>
+            <td style={{ fontWeight: "600" }}>{isMath ? "Pemahaman Konsep & Operasi Hitung" : isCalistung ? "Kemampuan Membaca (Reading Skill)" : "Speaking & Pronunciation"}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.speaking_score || 0}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.speaking_score || 0) >= 85 ? "A" : (report?.speaking_score || 0) >= 75 ? "B" : "C"}</td>
           </tr>
           <tr>
             <td style={{ textAlign: "center" }}>2</td>
-            <td style={{ fontWeight: "600" }}>{isCalistung ? "Kemampuan Menulis (Writing Skill)" : "Grammar & Structure"}</td>
+            <td style={{ fontWeight: "600" }}>{isMath ? "Penalaran & Logika Soal Cerita" : isCalistung ? "Kemampuan Menulis (Writing Skill)" : "Grammar & Structure"}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.grammar_score || 0}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.grammar_score || 0) >= 85 ? "A" : (report?.grammar_score || 0) >= 75 ? "B" : "C"}</td>
           </tr>
           <tr>
             <td style={{ textAlign: "center" }}>3</td>
-            <td style={{ fontWeight: "600" }}>{isCalistung ? "Kemampuan Berhitung (Math Skill)" : "Vocabulary & Comprehension"}</td>
+            <td style={{ fontWeight: "600" }}>{isMath ? "Ketelitian & Kerapian Perhitungan" : isCalistung ? "Kemampuan Berhitung (Math Skill)" : "Vocabulary & Comprehension"}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.vocabulary_score || 0}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.vocabulary_score || 0) >= 85 ? "A" : (report?.vocabulary_score || 0) >= 75 ? "B" : "C"}</td>
           </tr>
           <tr>
             <td style={{ textAlign: "center" }}>4</td>
-            <td style={{ fontWeight: "600" }}>Keaktifan Siswa (Class Participation)</td>
+            <td style={{ fontWeight: "600" }}>{isMath ? "Keaktifan & Kemandirian Belajar" : "Keaktifan Siswa (Class Participation)"}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.active_score || 0}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.active_score || 0) >= 85 ? "A" : (report?.active_score || 0) >= 75 ? "B" : "C"}</td>
           </tr>

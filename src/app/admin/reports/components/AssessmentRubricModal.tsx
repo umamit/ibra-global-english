@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { RUBRIC_DATA_ENGLISH, RUBRIC_DATA_CALISTUNG, calculateScoreFromRubric, generateDraftNotesFromRubric } from "../rubricData";
+import { RUBRIC_DATA_ENGLISH, RUBRIC_DATA_CALISTUNG, RUBRIC_DATA_MATH, calculateScoreFromRubric, generateDraftNotesFromRubric } from "../rubricData";
 import { RubricAspectList } from "./RubricAspectList";
 
 interface AssessmentRubricModalProps {
@@ -10,8 +10,10 @@ interface AssessmentRubricModalProps {
 }
 
 export default function AssessmentRubricModal({ isOpen, onClose, programName, studentName, moduleName, onApplyRubricScores }: AssessmentRubricModalProps) {
-  const isCalistung = (programName || "").toLowerCase().includes("calistung");
-  const rubrics = isCalistung ? RUBRIC_DATA_CALISTUNG : RUBRIC_DATA_ENGLISH;
+  const normProg = (programName || "").toLowerCase();
+  const isMath = normProg.includes("matematika");
+  const isCalistung = !isMath && normProg.includes("calistung");
+  const rubrics = isMath ? RUBRIC_DATA_MATH : isCalistung ? RUBRIC_DATA_CALISTUNG : RUBRIC_DATA_ENGLISH;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -20,13 +22,13 @@ export default function AssessmentRubricModal({ isOpen, onClose, programName, st
       rubrics.forEach(r => r.criteria.slice(0, 3).forEach(c => defaultSelected.push(c.id)));
       setSelectedIds(defaultSelected);
     }
-  }, [isOpen, isCalistung, rubrics, selectedIds.length]);
+  }, [isOpen, isCalistung, isMath, rubrics, selectedIds.length]);
 
   if (!isOpen) return null;
 
   const toggleCriterion = (id: string) => setSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   const calculatedScores = calculateScoreFromRubric(selectedIds, rubrics);
-  const draftNotes = generateDraftNotesFromRubric(selectedIds, isCalistung);
+  const draftNotes = generateDraftNotesFromRubric(selectedIds, isCalistung, isMath);
 
   const handleApply = () => { onApplyRubricScores(calculatedScores, draftNotes); onClose(); };
 
