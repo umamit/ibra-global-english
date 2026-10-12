@@ -30,6 +30,11 @@ export const calendarEventsSchema = {
         "name": "PT. IBRA Global English",
         "url": "https://www.ibraglobalenglish.uk/"
       },
+      "performer": {
+        "@type": "EducationalOrganization",
+        "name": "Ibra Global English Bobong",
+        "url": "https://www.ibraglobalenglish.uk/"
+      },
       "offers": {
         "@type": "Offer",
         "url": "https://www.ibraglobalenglish.uk/formulir-offline",
@@ -56,6 +61,11 @@ export const calendarEventsSchema = {
         "@type": "EducationalOrganization",
         "@id": "https://www.ibraglobalenglish.uk/#organization",
         "name": "PT. IBRA Global English",
+        "url": "https://www.ibraglobalenglish.uk/"
+      },
+      "performer": {
+        "@type": "EducationalOrganization",
+        "name": "Ibra Global English Bobong",
         "url": "https://www.ibraglobalenglish.uk/"
       },
       "offers": {
