@@ -1,6 +1,6 @@
 {
   "name": "next-app-temp",
-  "version": "3.64.5",
+  "version": "3.64.6",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "check-limits": "node scripts/check-code-limits.js",
-    "postbuild": "node scripts/generate-sitemap.js"
+    "postbuild": "node scripts/generate-sitemap.js && node scripts/ping-indexnow.js"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
