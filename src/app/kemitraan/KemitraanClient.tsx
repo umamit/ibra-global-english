@@ -29,12 +29,12 @@ export default function KemitraanClient() {
         {/* Hero Section */}
         <section className="kemitraan-hero-section">
           <div className="kemitraan-container">
-            <span className="kemitraan-eyebrow">Program Mitra Rekomendasi Resmi &bull; LKP Izin Disdikbud No. 870/843/2026</span>
+            <span className="kemitraan-eyebrow">Program Mitra Rekomendasi Resmi &bull; NPSN: K7069872 &bull; LKP Izin Disdikbud No. 870/843/2026</span>
             <h1 className="kemitraan-hero-headline">
               Tingkatkan Prestasi Bahasa Inggris Siswa Anda — Mari Bergabung Menjadi Mitra Sekolah Pertama Ibra Global English di Bobong
             </h1>
             <p className="kemitraan-hero-subhead">
-              Sebagai Lembaga Kursus dan Pelatihan (LKP) berizin resmi Dinas Pendidikan &amp; Kebudayaan Kab. Pulau Taliabu (SK No. 870/843/2026), Ibra Global English mengundang Sekolah (SD/SMP/SMA) dan Instansi untuk bergabung sebagai mitra rujukan resmi. Dapatkan akses Diagnostic Test gratis dan voucher pendaftaran khusus untuk siswa Anda.
+              Sebagai Lembaga Kursus dan Pelatihan (LKP) resmi terdaftar di Kemendikdasmen RI (<a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary, #216c7e)", fontWeight: 700, textDecoration: "underline" }}>NPSN: K7069872</a>) dan berizin Dinas Pendidikan &amp; Kebudayaan Kab. Pulau Taliabu (SK No. 870/843/2026), Ibra Global English mengundang Sekolah (SD/SMP/SMA) dan Instansi untuk bergabung sebagai mitra rujukan resmi. Dapatkan akses Diagnostic Test gratis dan voucher pendaftaran khusus untuk siswa Anda.
             </p>
 
             {/* Banner Transparansi Biaya */}

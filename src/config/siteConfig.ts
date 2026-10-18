@@ -4,6 +4,13 @@ export const SITE_CONFIG = {
   description:
     "Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu. Belajar Seru, Lancar Bicara.",
   url: "https://ibraglobalenglish.uk",
+  legal: {
+    npsn: "K7069872",
+    skOperasional: "870/843/2026",
+    tmtOperasional: "25-09-2026",
+    kemendikdasmenUrl: "https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872",
+    profilSekolahUrl: "https://sekolah.data.kemendikdasmen.go.id/profil-sekolah/550721C5-CF3A-4CF3-A057-786C64BAA6ED",
+  },
   contact: {
     address:
       "Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794",

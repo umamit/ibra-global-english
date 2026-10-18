@@ -19,7 +19,7 @@ export const educationalOrgSchema = {
     "LKP Ibra Global English Bobong",
     "Lembaga Kursus dan Pelatihan Ibra Global English"
   ],
-  "identifier": "SK-Disdikbud-870/843/2026",
+  "identifier": ["NPSN: K7069872", "SK-Disdikbud-870/843/2026"],
   "founder": {
     "@type": "Person",
     "name": "Husnita Usman, S.Pd",
@@ -56,6 +56,8 @@ export const educationalOrgSchema = {
   ],
   "description": "Kursus Bahasa Inggris offline dan bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu dengan metode interaktif, fun, dan tutor berpengalaman.",
   "sameAs": [
+    "https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872",
+    "https://sekolah.data.kemendikdasmen.go.id/profil-sekolah/550721C5-CF3A-4CF3-A057-786C64BAA6ED",
     "https://maps.app.goo.gl/weuM3h6yCu3rK3ov8",
     "https://www.facebook.com/IbraGlobalEnglish",
     "https://www.instagram.com/ibraglobalenglish/"

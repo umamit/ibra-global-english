@@ -36,7 +36,7 @@ export function CertificateBackPage({ cert, report, isCalistung, isMath, avgScor
     }}>
       <div className="cert-header" style={{ textAlign: "center", paddingBottom: "0.75rem" }}>
         <h2 style={{ fontSize: "1.5rem", fontWeight: "900", letterSpacing: "1.5px", margin: "0 0 2px" }}>IBRA GLOBAL ENGLISH</h2>
-        <p style={{ fontSize: "0.75rem", color: "var(--color-primary-dark)", letterSpacing: "1px", fontWeight: "bold", margin: "0 0 6px", textTransform: "uppercase" }}>Lembaga Kursus & Pelatihan (LKP)</p>
+        <p style={{ fontSize: "0.75rem", color: "var(--color-primary-dark)", letterSpacing: "1px", fontWeight: "bold", margin: "0 0 6px", textTransform: "uppercase" }}>Lembaga Kursus &amp; Pelatihan (LKP) &bull; NPSN: K7069872 &bull; Izin No. 870/843/2026</p>
         <h3 style={{ fontSize: "1.05rem", fontWeight: "800", margin: "0", textTransform: "uppercase" }}>TRANSKRIP EVALUASI AKADEMIK (ACADEMIC TRANSCRIPT)</h3>
       </div>
       <div className="cert-metadata-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", margin: "1rem 0" }}>

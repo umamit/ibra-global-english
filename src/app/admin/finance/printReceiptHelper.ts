@@ -63,7 +63,7 @@ export const printReceiptHTML = (
         <div class="header">
           <div>
             <h1 class="brand-title">IBRA GLOBAL ENGLISH</h1>
-            <div class="subtitle">Kuitansi Pembayaran SPP Resmi</div>
+            <div class="subtitle">Kuitansi Pembayaran SPP Resmi &bull; NPSN: K7069872</div>
           </div>
           <div style="text-align: right; font-size: 0.8rem; color: #64748b;">
             <div>No. Kuitansi:</div>
@@ -80,7 +80,7 @@ export const printReceiptHTML = (
         </table>
         <div class="amount-box">Nominal: ${formattedAmount}</div>
         <div class="footer">
-          <div style="color: #94a3b8;">* Bukti pembayaran sah LKP Ibra Global English.</div>
+          <div style="color: #94a3b8;">* Bukti pembayaran sah LKP Ibra Global English (NPSN: K7069872 | Izin No. 870/843/2026).</div>
           <div style="text-align: center;">
             <div>Bobong, ${paymentDateStr}</div>
             <div style="height: 45px;"></div>
@@ -197,7 +197,7 @@ export const printAllFinanceReportHTML = (
         <h1 class="title">IBRA GLOBAL ENGLISH</h1>
         <div class="subtitle">Laporan Rekapitulasi Pembayaran SPP — Bulan ${monthName}</div>
         <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">
-          Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lt. 1, Bobong, Taliabu Barat, Maluku Utara
+          NPSN: K7069872 | Izin Disdikbud No. 870/843/2026 | Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lt. 1, Bobong, Taliabu Barat, Maluku Utara
         </div>
       </div>
       <div class="summary-grid">

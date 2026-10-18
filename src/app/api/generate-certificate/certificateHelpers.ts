@@ -107,7 +107,7 @@ export async function renderCertificatePdf(cert: any, report: any, origin: strin
   const hdr1 = "IBRA GLOBAL ENGLISH";
   page2.drawText(hdr1, { x: (W - fBold.widthOfTextAtSize(hdr1, 24)) / 2, y: cy, font: fBold, size: 24, color: C_DARK_GREEN });
   cy -= 15;
-  const hdr2 = "Lembaga Kursus & Pelatihan (LKP) - Izin Disdikbud Kab. Pulau Taliabu No. 870/843/2026";
+  const hdr2 = "Lembaga Kursus & Pelatihan (LKP) - NPSN: K7069872 - Izin Disdikbud No. 870/843/2026";
   page2.drawText(hdr2, { x: (W - fRegular.widthOfTextAtSize(hdr2, 9)) / 2, y: cy, font: fRegular, size: 9, color: C_DARK });
   cy -= 14;
   const hdr3 = "TRANSKRIP EVALUASI AKADEMIK  /  ACADEMIC TRANSCRIPT";

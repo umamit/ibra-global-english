@@ -18,6 +18,7 @@ export default function OfflineFormBody() {
           <h1 style={{ fontSize: "1.3rem", fontWeight: "900", color: "#1f2937", margin: 0, letterSpacing: "0.5px", textTransform: "uppercase" }}>IBRA GLOBAL ENGLISH BOBONG</h1>
           <p style={{ fontSize: "0.78rem", fontWeight: "700", color: "#4b5563", margin: "0.1rem 0", fontStyle: "italic" }}>English Course &amp; Bimbingan Belajar Calistung Terbaik di Pulau Taliabu</p>
           <p style={{ fontSize: "0.68rem", color: "#6b7280", margin: 0, lineHeight: "1.3" }}>
+            NPSN: K7069872 | Izin Operasional LKP Disdikbud No. 870/843/2026 <br />
             Alamat: Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794 <br />
             WhatsApp: +62 813-5700-1357 | Website: www.ibraglobalenglish.uk
           </p>

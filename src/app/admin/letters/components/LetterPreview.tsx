@@ -52,6 +52,9 @@ export default function LetterPreview({ letterNumber, lampiran, subject, recipie
           <img src="/assets/logo.png" alt="Logo IGE" className="letterhead-logo" width={60} height={64} />
           <div className="letterhead-info">
             <h2>IBRA GLOBAL ENGLISH</h2>
+            <p className="address-line" style={{ fontSize: "0.75rem", fontWeight: 700, color: "#164d57", marginBottom: "2px" }}>
+              NPSN: K7069872 | Izin Operasional Disdikbud No. 870/843/2026
+            </p>
             <p className="address-line" style={{ fontSize: "0.78rem" }}>
               Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001,<br />
               Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794<br />

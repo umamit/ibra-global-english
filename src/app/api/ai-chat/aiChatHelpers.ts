@@ -33,6 +33,14 @@ export const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ib
 - Saat tiba di kelas, siswa tinggal mengarahkan kartu QR ke Pemindai QR Admin/Tutor.
 - Sistem secara otomatis berbunyi BEEP, mengucapkan sapaan vokal nama siswa, mencatat kehadiran di database, dan mengirim notifikasi WhatsApp otomatis ke HP Orang Tua secara real-time.
 
+### Legalitas & Akreditasi Resmi Kemendikdasmen RI
+- **Nama Satuan Pendidikan**: IBRA GLOBAL ENGLISH (PT. Ibra Global English)
+- **Nomor Pokok Sekolah Nasional (NPSN)**: K7069872
+- **Bentuk / Jenjang Pendidikan**: Kursus / DIKMAS (Swasta)
+- **Nomor SK Izin Operasional LKP Disdikbud**: 870/843/2026 (TMT: 25-09-2026)
+- **Nomor SK Kemenkumham**: AHU-A096371.AH.01.30.Tahun 2026 | **NIB**: 2806230044842
+- **Link Referensi Resmi Kemendikdasmen**: https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872
+
 ### Kontak & Lokasi
 - **Alamat**: Jl. TPu Bobong, Belakang Mess Tambang, Gedung Kost Fitrah Lantai 1, RT 001, RW 001, Bobong, Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara 97794
 - **WhatsApp**: +62 813-5700-1357

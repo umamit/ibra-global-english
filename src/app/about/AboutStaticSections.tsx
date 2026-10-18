@@ -54,14 +54,22 @@ export default function AboutStaticSections() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {[
-                ["Izin Operasional LKP Dinas Pendidikan", "No. 870/843/2026 (Disdikbud Kab. Pulau Taliabu)"],
+                ["Nomor Pokok Sekolah Nasional (NPSN)", "K7069872 (Kursus / Jenjang DIKMAS - Kemendikdasmen RI)"],
+                ["Izin Operasional LKP Dinas Pendidikan", "No. 870/843/2026 (TMT: 25-09-2026 | Disdikbud Kab. Pulau Taliabu)"],
                 ["Pimpinan / Pengelola", "Husnita Usman, S.Pd"],
                 ["Nomor SK Pendirian Kemenkumham", "AHU-A096371.AH.01.30.Tahun 2026"],
                 ["Nomor Induk Berusaha (NIB)", "2806230044842"],
               ].map(([label, val]) => (
                 <div key={label}><p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>{label}</p><p style={{ margin: "2px 0 0", fontSize: "1rem", color: "var(--color-gray-800)", fontWeight: "600" }}>{val}</p></div>
               ))}
-              <div><p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Status Verifikasi</p><p style={{ margin: "2px 0 0", fontSize: "1rem", color: "#10b981", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-check-circle"></i> Terdaftar &amp; Terverifikasi Resmi Dinas Pendidikan &amp; Kemenkumham</p></div>
+              <div>
+                <p style={{ margin: "0", fontSize: "0.75rem", color: "var(--color-gray-400)", fontWeight: "bold", textTransform: "uppercase" }}>Status Verifikasi Nasional</p>
+                <p style={{ margin: "2px 0 0.75rem", fontSize: "1rem", color: "#10b981", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }}><i className="fi fi-rr-check-circle"></i> Terdaftar &amp; Terverifikasi Resmi di Kemendikdasmen RI, Disdikbud &amp; Kemenkumham</p>
+                <a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", background: "var(--color-bg-teal-50, #eef6f8)", color: "var(--color-primary, #216c7e)", border: "1px solid rgba(33, 108, 126, 0.2)", padding: "0.5rem 1rem", borderRadius: "10px", fontSize: "0.82rem", fontWeight: 700, textDecoration: "none" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span>Cek Data Referensi Kemendikdasmen (NPSN: K7069872)</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
