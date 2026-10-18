@@ -26,7 +26,10 @@ export const printReceiptHTML = (
   const monthName = getMonthName(pay.month || selectedMonth);
   const dateObj = pay.payment_date ? new Date(pay.payment_date) : new Date();
   const paymentDateStr = dateObj.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
-  const receiptNo = `IBRA/SPP/${(pay.id || "000").substring(0, 6).toUpperCase()}/${dateObj.getFullYear()}`;
+  const rawId = (pay.id || "").replace(/[^a-zA-Z0-9]/g, "");
+  const fallbackCode = (student?.id || "").replace(/[^a-zA-Z0-9]/g, "").slice(-4) + (pay.month || selectedMonth || "").replace("-", "");
+  const receiptCode = (rawId.length >= 6 ? rawId.substring(0, 6) : (fallbackCode || "001")).toUpperCase();
+  const receiptNo = `IBRA/SPP/${receiptCode}/${dateObj.getFullYear()}`;
 
   const printWindow = window.open("", "_blank", "width=850,height=750");
   if (!printWindow) {

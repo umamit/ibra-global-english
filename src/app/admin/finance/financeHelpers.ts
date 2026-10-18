@@ -83,12 +83,17 @@ export const getStudentPayment = (
   const pay = payments.find((p: Payment) => p.student_id === studentId);
   if (pay) {
     return {
+      id: pay.id,
       amount: pay.status === "belum_bayar" ? baseAmount : pay.amount,
-      status: pay.status, payment_method: pay.payment_method, payment_type: pay.payment_type, receipt_url: pay.receipt_url, payment_date: pay.payment_date
+      status: pay.status,
+      payment_method: pay.payment_method,
+      payment_type: pay.payment_type,
+      receipt_url: pay.receipt_url,
+      payment_date: pay.payment_date
     };
   }
 
-  return { amount: baseAmount, status: "belum_bayar", payment_method: "Transfer Bank", payment_type: null, receipt_url: "" };
+  return { id: undefined, amount: baseAmount, status: "belum_bayar", payment_method: "Transfer Bank", payment_type: null, receipt_url: "" };
 };
 
 export const exportPaymentsCSV = (

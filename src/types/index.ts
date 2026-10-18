@@ -32,6 +32,7 @@ export interface Payment {
 }
 
 export interface PaymentResult {
+  id?: string;
   amount: number;
   status: string;
   payment_method?: string | null;
