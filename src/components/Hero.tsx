@@ -165,6 +165,13 @@ export default function Hero({ initialSettings }: HeroProps) {
               <div className="stat-desc">Siswa Terdaftar</div>
             </div>
           </div>
+          <div className="hero-mascot-badge" title="Maskot Resmi Ibra Global English">
+            <img src="/assets/mascot.png" alt="Maskot Ibra Global English" width={64} height={70} style={{ objectFit: "contain", filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.12))" }} />
+            <div className="mascot-text">
+              <span className="mascot-name">Ibra Owl</span>
+              <span className="mascot-motto">Official Mascot</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

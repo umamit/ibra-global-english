@@ -5,7 +5,7 @@ interface Message { id: string; role: "user" | "assistant"; content: string; tim
 interface Props { messages: Message[]; isLoading: boolean; isStreaming: boolean; copiedMsgId: string | null; activeSpeechId: string | null; messagesEndRef: React.RefObject<HTMLDivElement>; formatTime: (t: Date) => string; onCopy: (id: string, text: string) => void; onToggleSpeech: (id: string, text: string) => void; }
 
 export default function AIChatMessageList({ messages, isLoading, isStreaming, copiedMsgId, activeSpeechId, messagesEndRef, formatTime, onCopy, onToggleSpeech }: Props) {
-  const avatar = <div className="ai-msg-avatar"><img src="/assets/chatbot-logo.png" alt="Ibra AI Chatbot" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} /></div>;
+  const avatar = <div className="ai-msg-avatar"><img src="/assets/mascot.png" alt="Ibra AI Chatbot" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "contain", backgroundColor: "#fff" }} /></div>;
   return (
     <div className="ai-chat-messages">
       {messages.map((msg) => (

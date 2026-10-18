@@ -46,7 +46,7 @@ export default function AIChatWidget() {
       <div className={`ai-chat-window ${isOpen ? "open" : ""}`} role="dialog" aria-label="Ibra AI Assistant">
         <div className="ai-chat-header">
           <div className="ai-chat-header-info">
-            <div className="ai-chat-avatar"><img src="/assets/chatbot-logo.png" alt="Ibra AI Chatbot Logo" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} /></div>
+            <div className="ai-chat-avatar"><img src="/assets/mascot.png" alt="Maskot Ibra AI Assistant" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "contain", backgroundColor: "#fff" }} /></div>
             <div>
               <div className="ai-chat-header-name">Ibra AI Assistant</div>
               <div className="ai-chat-header-status"><span className="ai-status-dot"></span>{isStreaming ? "Sedang Mengetik..." : "Online — Siap Membantu"}</div>
@@ -74,7 +74,7 @@ export default function AIChatWidget() {
 
       <button className={`ai-chat-fab ${isOpen ? "active" : ""}`} onClick={isOpen ? onClose : onOpen} aria-label={isOpen ? "Tutup Ibra AI Assistant" : "Buka Ibra AI Assistant"} id="ai-chat-fab-btn">
         {!isOpen && unreadCount > 0 && !hasOpened && <span className="ai-chat-badge">{unreadCount}</span>}
-        {isOpen ? <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> : <img src="/assets/chatbot-logo.png" alt="Buka Ibra AI Chatbot" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />}
+        {isOpen ? <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> : <img src="/assets/mascot.png" alt="Buka Ibra AI Assistant" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "contain", padding: "2px", backgroundColor: "#fff" }} />}
       </button>
 
       {!isOpen && !hasOpened && (
