@@ -38,7 +38,8 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
             <img src="/assets/logo.png" alt="Ibra Logo" style={{ width: "64px", height: "64px" }} />
             <div style={{ textAlign: "left" }}>
               <h1 style={{ fontSize: "1.5rem", fontWeight: "900", margin: "0", color: "var(--color-primary)" }}>IBRA GLOBAL ENGLISH</h1>
-              <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", margin: "0" }}>Belajar Seru, Lancar Bicara</p>
+              <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-accent)", margin: "0" }}>Belajar Seru, Lancar Bicara &bull; NPSN: K7069872</p>
+              <p style={{ fontSize: "0.72rem", fontWeight: "600", color: "var(--color-gray-600)", margin: "2px 0 0" }}>Izin Operasional LKP Disdikbud No. 870/843/2026 | PT Ibra Global English</p>
               <p style={{ fontSize: "0.75rem", color: "var(--color-gray-500)", margin: "2px 0 0" }}>{contactAddress}</p>
             </div>
           </div>
