@@ -90,7 +90,7 @@ export default function AboutPage() {
                       <div className="tutor-image-container">
                         {tutor.image_url ? <img src={tutor.image_url} alt={`Foto ${tutor.name}`} className="tutor-img" loading="lazy" /> : <div className="tutor-avatar-placeholder" aria-hidden="true">{getInitials(tutor.name)}</div>}
                       </div>
-                      <div className="tutor-info"><h3>{tutor.name}</h3><span className="tutor-role">{tutor.role}</span><p className="tutor-bio">{tutor.bio || "Tutor berpengalaman di Ibra Global English."}</p></div>
+                      <div className="tutor-info"><h3>{tutor.name}</h3><span className="tutor-role">{(tutor.role || "").replace(/Staf Pendidikan/gi, "Tenaga Kependidikan")}</span><p className="tutor-bio">{tutor.bio || "Tutor berpengalaman di Ibra Global English."}</p></div>
                     </div>
                   ))}
                 </div>

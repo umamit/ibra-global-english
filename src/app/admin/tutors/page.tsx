@@ -56,7 +56,7 @@ export default function AdminTutorsPage() {
   };
 
   const handleEditClick = (t: Tutor) => {
-    setEditingId(t.id); setName(t.name); setRole(t.role); setBio(t.bio || ""); setImageUrl(t.image_url || ""); setDisplayOrder(t.display_order || 0); setIsActive(t.is_active !== false);
+    setEditingId(t.id); setName(t.name); setRole((t.role || "").replace(/Staf Pendidikan/gi, "Tenaga Kependidikan")); setBio(t.bio || ""); setImageUrl(t.image_url || ""); setDisplayOrder(t.display_order || 0); setIsActive(t.is_active !== false);
   };
 
   const handleCancelEdit = () => {
@@ -100,7 +100,7 @@ export default function AdminTutorsPage() {
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span>Kelola Tutor &amp; Staf</span>
           </h1>
-          <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>Kelola profil tim pengajar dan staf pendidikan Ibra Global English Bobong.</p>
+          <p style={{ color: "var(--color-gray-500)", fontSize: "0.95rem" }}>Kelola profil tim pengajar dan tenaga kependidikan Ibra Global English Bobong.</p>
         </div>
         <button
           onClick={handleSyncFromProfiles}
@@ -141,7 +141,7 @@ export default function AdminTutorsPage() {
                         </td>
                         <td style={{ padding: "10px" }}>
                           <div style={{ fontWeight: "700", color: "var(--color-gray-900)" }}>{t.name}</div>
-                          <div style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>{t.role}</div>
+                          <div style={{ fontSize: "0.8rem", color: "var(--color-gray-500)" }}>{(t.role || "").replace(/Staf Pendidikan/gi, "Tenaga Kependidikan")}</div>
                         </td>
                         <td style={{ padding: "10px", textAlign: "center" }}>#{t.display_order ?? 0}</td>
                         <td style={{ padding: "10px", textAlign: "center" }}><span className={`badge-${t.is_active ? "success" : "danger"}`} style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem", borderRadius: "4px" }}>{t.is_active ? "Aktif" : "Nonaktif"}</span></td>

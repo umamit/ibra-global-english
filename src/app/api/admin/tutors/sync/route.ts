@@ -36,7 +36,7 @@ export async function POST() {
       if (!isAlreadyAdded) {
         const roleLabel =
           p.role === "admin"
-            ? "Admin Keuangan & Staf Pendidikan"
+            ? "Admin Keuangan & Tenaga Kependidikan"
             : "Tutor / Pengajar";
 
         await supabase.from("tutors").insert({
@@ -51,6 +51,11 @@ export async function POST() {
         insertedCount++;
       }
     }
+
+    await supabase
+      .from("tutors")
+      .update({ role: "Admin Keuangan & Tenaga Kependidikan" })
+      .ilike("role", "%Staf Pendidikan%");
 
     return NextResponse.json({ success: true, insertedCount });
   } catch (err: any) {
