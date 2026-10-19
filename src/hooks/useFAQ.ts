@@ -18,7 +18,11 @@ export function useFAQ(initialSettings?: { landing_faq?: string | any[] }) {
           ? JSON.parse(initialSettings.landing_faq)
           : initialSettings.landing_faq;
         if (Array.isArray(parsed) && parsed.length > 0) {
-          supabaseFaqs = parsed;
+          const hasLegalFaq = parsed.some((item: any) =>
+            String(item.question || "").toLowerCase().includes("resmi") ||
+            String(item.answer || "").includes("K7069872")
+          );
+          supabaseFaqs = hasLegalFaq ? parsed : [...parsed, DEFAULT_FAQS[DEFAULT_FAQS.length - 1]];
         }
       } catch (e) {
         console.warn("Gagal mem-parsing FAQ dari initialSettings.");

@@ -137,6 +137,11 @@ export const DEFAULT_FAQS: FAQ[] = [
     id: 6,
     question: "Apakah Ibra Global English melayani siswa dari luar kota Bobong (seluruh wilayah Pulau Taliabu)?",
     answer: "Ya, tentu saja. Kami melayani seluruh calon peserta kursus bahasa Inggris dan bimbingan belajar dari berbagai wilayah di Kabupaten Pulau Taliabu. Jadwal dan program belajar kami dirancang fleksibel sehingga dapat diikuti oleh siswa yang berdomisili baik di dalam maupun di luar kota Bobong."
+  },
+  {
+    id: 7,
+    question: "Apakah Ibra Global English merupakan lembaga kursus resmi dan sertifikatnya diakui?",
+    answer: "Ya, Ibra Global English adalah Lembaga Kursus dan Pelatihan (LKP) resmi yang terdaftar di Kementerian Pendidikan Dasar dan Menengah RI (Kemendikdasmen) dengan Nomor Pokok Sekolah Nasional (NPSN) K7069872, SK Izin Operasional Dinas Pendidikan & Kebudayaan Kab. Pulau Taliabu No. 870/843/2026, serta berbadan hukum PT Ibra Global English (SK Kemenkumham AHU-A096371.AH.01.30.Tahun 2026). Setiap sertifikat kelulusan dilengkapi QR Code verifikasi online resmi."
   }
 ];
 

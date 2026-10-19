@@ -201,6 +201,14 @@ export const faqSchema = {
         "@type": "Answer",
         "text": "Ya, tentu saja. Kami melayani seluruh calon peserta kursus bahasa Inggris dan bimbingan belajar dari berbagai wilayah di Kabupaten Pulau Taliabu dengan jadwal belajar yang fleksibel."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Apakah Ibra Global English merupakan lembaga kursus resmi dan sertifikatnya diakui?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ya, Ibra Global English adalah Lembaga Kursus dan Pelatihan (LKP) resmi yang terdaftar di Kemendikdasmen RI dengan NPSN K7069872, SK Izin Operasional Disdikbud Kab. Pulau Taliabu No. 870/843/2026, serta berbadan hukum PT Ibra Global English. Setiap sertifikat kelulusan dilengkapi QR Code verifikasi online resmi."
+      }
     }
   ]
 };
