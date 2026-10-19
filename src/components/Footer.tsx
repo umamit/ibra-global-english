@@ -77,7 +77,7 @@ export default function Footer({ initialSettings }: FooterProps) {
       <div className="container footer-content">
         <p className="footer-copyright" style={{ display: "flex", flexDirection: "column", gap: "0.5rem", alignItems: "center", textAlign: "center" }}>
           <span style={{ maxWidth: "100%", wordBreak: "break-word" }}>
-            &copy; 2026 Ibra Global English. Di bawah naungan PT Ibra Global English (<a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline", fontWeight: 600 }}>NPSN: K7069872</a> &bull; Izin Operasional LKP Disdikbud No. 870/843/2026). All rights reserved. 
+            &copy; 2026 Ibra Global English. Di bawah naungan PT Ibra Global English (<a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>NPSN: K7069872</a>{" | "}Izin LKP Disdikbud No. 870/843/2026). All rights reserved.
             <span className="footer-version" style={{ opacity: 0.6, fontSize: "0.85em", marginLeft: "8px" }}>
               v{packageInfo.version}
             </span>
@@ -86,7 +86,7 @@ export default function Footer({ initialSettings }: FooterProps) {
             </span>
           </span>
           <span style={{ fontSize: "0.8rem", opacity: 0.7, display: "flex", gap: "0.5rem 1rem", marginTop: "0.25rem", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
-            <a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none", fontWeight: 600 }}>Data Referensi Kemendikdasmen (NPSN: K7069872)</a>
+            <a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>Data Referensi Kemendikdasmen</a>
             <span style={{ opacity: 0.5 }}>&bull;</span>
             <a href="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Kebijakan Privasi</a>
             <span style={{ opacity: 0.5 }}>&bull;</span>
