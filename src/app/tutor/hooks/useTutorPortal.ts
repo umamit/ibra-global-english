@@ -42,6 +42,74 @@ export function useTutorPortal() {
 
   const lmsState = useTutorLms(showToast);
 
+  useEffect(() => {
+    setAttendanceDate(new Date().toISOString().split("T")[0]);
+    async function checkAuthAndLoad() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { router.push("/login"); return; }
+
+        const { data: profile, error: errP } = await adminSupabase
+          .from("profiles")
+          .select("role, full_name")
+          .eq("id", user.id)
+          .single();
+
+        if (errP || !["tutor", "admin", "teacher"].includes(profile?.role || "")) {
+          alert("Akses ditolak: Portal khusus untuk pengajar / Tutor.");
+          await supabase.auth.signOut();
+          router.push("/login");
+          return;
+        }
+
+        setTutorName(profile?.full_name || "Tutor Pendamping");
+
+        const [stdRes, repRes, certRes, lmsRes] = await Promise.all([
+          adminSupabase.from("students").select("id, name, program").order("name", { ascending: true }),
+          adminSupabase.from("reports").select("*, students(name)").order("created_at", { ascending: false }).limit(10),
+          adminSupabase.from("certificates").select("*"),
+          adminSupabase.from("lms_materials").select("*").order("created_at", { ascending: false }),
+        ]);
+
+        setStudents((stdRes.data as Student[]) || []);
+        setSelectedStudent(null);
+        setReportsList(repRes.data || []);
+        setCertificates(certRes.data || []);
+        lmsState.setLmsMaterials((lmsRes.data as any[]) || []);
+      } catch (err) {
+        console.error("Error loading tutor portal:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    checkAuthAndLoad();
+  }, [router, supabase, adminSupabase]);
+
+  useEffect(() => {
+    if (!attendanceDate || students.length === 0) return;
+    async function loadAttendanceForDate() {
+      setAttendanceLoading(true);
+      try {
+        const { data: attList, error } = await adminSupabase
+          .from("attendance")
+          .select("student_id, status, notes")
+          .eq("date", attendanceDate);
+        if (error) throw error;
+        const initialData: Record<string, AttendanceEntry> = {};
+        students.forEach((s) => {
+          const match = attList?.find((a: any) => a.student_id === s.id);
+          initialData[s.id] = { status: match ? match.status : "hadir", notes: match?.notes || "", isExisting: !!match };
+        });
+        setAttendanceData(initialData);
+      } catch (err) {
+        console.error("Gagal memuat absensi harian:", err);
+      } finally {
+        setAttendanceLoading(false);
+      }
+    }
+    loadAttendanceForDate();
+  }, [attendanceDate, students, adminSupabase]);
+
   const handleGenerateAiNotes = async () => {
     if (!selectedStudent) { alert("Harap pilih siswa terlebih dahulu!"); return; }
     setAiLoading(true);
@@ -91,6 +159,22 @@ export function useTutorPortal() {
     }
   };
 
+  const handleExportCSV = () => {
+    if (students.length === 0) { alert("Tidak ada data untuk diekspor."); return; }
+    const headers = ["No", "Nama Siswa", "Program", "Status Kehadiran", "Catatan"];
+    const rows = students.map((s, idx) => {
+      const data = attendanceData[s.id] || { status: "hadir", notes: "" };
+      return [idx + 1, s.name, s.program, data.status, data.notes || "-"];
+    });
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const link = document.createElement("a");
+    link.setAttribute("href", encodeURI(csvContent));
+    link.setAttribute("download", `laporan-presensi-${attendanceDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return {
     loading, tutorName, mobileOpen, setMobileOpen, activeTab, setActiveTab,
     students, attendanceDate, setAttendanceDate, attendanceLoading, attendanceData, toast,
@@ -99,6 +183,6 @@ export function useTutorPortal() {
     tutorNotes, setTutorNotes, aiLoading, handleGenerateAiNotes, reportLoading, reportsList, certificates,
     ...lmsState,
     handleStatusChange, handleNotesChange, handleSaveAttendance, handleSaveReport,
-    handleLogout, handlePrintReport: () => window.print(), handleExportCSV: () => {},
+    handleLogout, handlePrintReport: () => window.print(), handleExportCSV,
   };
 }
