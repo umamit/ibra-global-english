@@ -22,7 +22,7 @@ export const educationalOrgSchema = {
   "identifier": ["NPSN: K7069872", "SK-Disdikbud-870/843/2026"],
   "founder": {
     "@type": "Person",
-    "name": "Husnita Usman, S.Pd",
+    "name": "Husnita Usman, M.Pd",
     "jobTitle": "Pimpinan / Pengelola LKP"
   },
   "image": "https://www.ibraglobalenglish.uk/assets/logo.png",

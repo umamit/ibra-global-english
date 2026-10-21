@@ -56,7 +56,7 @@ export default function AboutStaticSections() {
               {[
                 ["Nomor Pokok Sekolah Nasional (NPSN)", "K7069872 (Kursus / Jenjang DIKMAS - Kemendikdasmen RI)"],
                 ["Izin Operasional LKP Dinas Pendidikan", "No. 870/843/2026 (TMT: 25-09-2026 | Disdikbud Kab. Pulau Taliabu)"],
-                ["Pimpinan / Pengelola", "Husnita Usman, S.Pd"],
+                ["Pimpinan / Pengelola", "Husnita Usman, M.Pd"],
                 ["Nomor SK Pendirian Kemenkumham", "AHU-A096371.AH.01.30.Tahun 2026"],
                 ["Nomor Induk Berusaha (NIB)", "2806230044842"],
               ].map(([label, val]) => (
