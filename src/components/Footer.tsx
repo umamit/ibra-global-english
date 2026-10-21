@@ -77,7 +77,7 @@ export default function Footer({ initialSettings }: FooterProps) {
       <div className="container footer-content">
         <p className="footer-copyright" style={{ display: "flex", flexDirection: "column", gap: "0.5rem", alignItems: "center", textAlign: "center" }}>
           <span style={{ maxWidth: "100%", wordBreak: "break-word" }}>
-            &copy; 2026 Ibra Global English. Di bawah naungan PT Ibra Global English (<a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>NPSN: K7069872</a>{" | "}Izin LKP Disdikbud No. 870/843/2026). All rights reserved.
+            &copy; 2026 Ibra Global English (IGE). Di bawah naungan PT Ibra Global English (<a href="https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/K7069872" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>NPSN: K7069872</a>{" | "}Izin LKP Disdikbud No. 870/843/2026). All rights reserved.
             <span className="footer-version" style={{ opacity: 0.6, fontSize: "0.85em", marginLeft: "8px" }}>
               v{packageInfo.version}
             </span>

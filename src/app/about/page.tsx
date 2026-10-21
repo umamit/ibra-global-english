@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import AboutClient from "./AboutClient";
 
 export const metadata: Metadata = {
-  title: "Tentang Kami | Ibra Global English Bobong",
-  description: "Profil lengkap, visi, misi, legalitas SK Kemenkumham, badan hukum PT Ibra Global English, serta daftar tim pengajar/tutor profesional kami di Pulau Taliabu.",
+  title: "Tentang Kami | Ibra Global English (IGE) Bobong",
+  description: "Profil lengkap Ibra Global English (IGE) Bobong, visi, misi, legalitas NPSN K7069872, SK Kemenkumham PT Ibra Global English, serta daftar tim pengajar/tutor profesional IGE di Pulau Taliabu.",
   alternates: {
     canonical: "https://www.ibraglobalenglish.uk/about",
   },
   openGraph: {
-    title: "Tentang Kami | Ibra Global English Bobong",
-    description: "Profil lengkap, visi, misi, legalitas SK Kemenkumham, badan hukum PT Ibra Global English, serta daftar tim pengajar/tutor profesional kami di Pulau Taliabu.",
+    title: "Tentang Kami | Ibra Global English (IGE) Bobong",
+    description: "Profil lengkap Ibra Global English (IGE) Bobong, visi, misi, legalitas NPSN K7069872, SK Kemenkumham PT Ibra Global English, serta daftar tim pengajar/tutor profesional IGE di Pulau Taliabu.",
     url: "https://www.ibraglobalenglish.uk/about",
     type: "website",
     images: [

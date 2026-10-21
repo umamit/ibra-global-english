@@ -1,8 +1,8 @@
 export const SITE_CONFIG = {
-  name: "Ibra Global English Bobong",
-  shortName: "Ibra Global English",
+  name: "Ibra Global English (IGE) Bobong",
+  shortName: "Ibra Global English (IGE)",
   description:
-    "Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu. Belajar Seru, Lancar Bicara.",
+    "Ibra Global English (IGE) — Kursus Bahasa Inggris Offline Terbaik di Bobong, Pulau Taliabu. Belajar Seru, Lancar Bicara.",
   url: "https://ibraglobalenglish.uk",
   legal: {
     npsn: "K7069872",

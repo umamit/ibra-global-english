@@ -4,8 +4,8 @@ export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "@id": "https://www.ibraglobalenglish.uk/#website",
-  "name": "PT. IBRA Global English",
-  "alternateName": ["PT IBRA Global English", "Ibra Global English Bobong", "Ibra Global English"],
+  "name": "Ibra Global English (IGE) Bobong",
+  "alternateName": ["IGE", "IGE Bobong", "IGE Taliabu", "PT. IBRA Global English", "PT IBRA Global English", "Ibra Global English Bobong", "Ibra Global English", "LKP IGE Bobong"],
   "url": "https://www.ibraglobalenglish.uk/"
 };
 
@@ -13,8 +13,13 @@ export const educationalOrgSchema = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
   "@id": "https://www.ibraglobalenglish.uk/#organization",
-  "name": "PT. IBRA Global English",
+  "name": "PT. IBRA Global English (IGE)",
   "alternateName": [
+    "IGE",
+    "IGE Bobong",
+    "IGE Taliabu",
+    "LKP IGE",
+    "LKP IGE Bobong",
     "Ibra Global English Bobong",
     "LKP Ibra Global English Bobong",
     "Lembaga Kursus dan Pelatihan Ibra Global English"

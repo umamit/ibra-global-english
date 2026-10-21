@@ -7,12 +7,14 @@ import { getLandingSettings } from "@/utils/getLandingSettings";
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getLandingSettings();
 
-  const heroTitle = settings.hero_title || "Ibra Global English Bobong";
+  const rawTitle = settings.hero_title || "Ibra Global English (IGE) Bobong";
+  const heroTitle = rawTitle.includes("IGE") ? rawTitle : `${rawTitle} (IGE)`;
   const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris Terbaik";
   const title = `${heroTitle} - ${heroSubtitle}`;
 
-  const description = settings.hero_desc ||
-    "Ibra Global English Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Metode interaktif, menyenangkan, dan tutor berpengalaman. Tingkatkan kemampuan berbicara (speaking) Anda sekarang!";
+  const rawDesc = settings.hero_desc ||
+    "Ibra Global English (IGE) Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Metode interaktif, menyenangkan, dan tutor berpengalaman. Tingkatkan kemampuan berbicara (speaking) Anda di IGE sekarang!";
+  const description = rawDesc.includes("IGE") ? rawDesc : `Ibra Global English (IGE) — ${rawDesc}`;
 
   const heroImage = settings.hero_image || "/assets/logo.png";
 
@@ -20,6 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     keywords: [
+      "ige",
+      "ige bobong",
+      "ige taliabu",
+      "kursus ige",
+      "lkp ige bobong",
+      "ibra global english",
       "kursus bahasa inggris bobong",
       "ibra global english bobong",
       "kursus inggris taliabu",

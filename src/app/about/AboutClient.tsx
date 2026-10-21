@@ -70,8 +70,8 @@ export default function AboutPage() {
       <main className="about-wrapper" ref={mainRef}>
         <section className="about-hero-section reveal">
           <div className="about-container text-center">
-            <h1>Tentang Kami</h1>
-            <p>Ibra Global English Bobong berkomitmen untuk menghadirkan bimbingan kursus Bahasa Inggris berkualitas premium dan bimbingan Calistung (Membaca, Menulis, Berhitung) yang interaktif, menyenangkan, dan berpusat pada perkembangan rasa percaya diri anak di Pulau Taliabu.</p>
+            <h1>Tentang Kami — Ibra Global English (IGE)</h1>
+            <p>Ibra Global English (IGE) Bobong berkomitmen untuk menghadirkan bimbingan kursus Bahasa Inggris berkualitas premium dan bimbingan Calistung (Membaca, Menulis, Berhitung) yang interaktif, menyenangkan, dan berpusat pada perkembangan rasa percaya diri anak di Pulau Taliabu.</p>
           </div>
         </section>
 

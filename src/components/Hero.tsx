@@ -33,9 +33,9 @@ const fetchStudentCount = async (): Promise<{ count: number }> => {
 };
 
 export default function Hero({ initialSettings }: HeroProps) {
-  const heroTitle = initialSettings?.hero_title || "Kursus di Bobong | Ibra Global English";
+  const heroTitle = initialSettings?.hero_title || "Kursus di Bobong | Ibra Global English (IGE)";
   const heroSubtitle = initialSettings?.hero_subtitle || "Belajar Seru | Lancar Bicara";
-  const heroDesc = initialSettings?.hero_desc || "Kursus di Bobong terbaik di Ibra Global English. Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!";
+  const heroDesc = initialSettings?.hero_desc || "Ibra Global English (IGE) — Kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara!";
   const rawHeroImage = initialSettings?.hero_image || "/assets/logo.png";
   
   const [imgError, setImgError] = useState(false);
