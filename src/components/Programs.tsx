@@ -8,6 +8,7 @@ const ICON_MAP = {
   book: <i className="fi fi-rr-book-open-reader"></i>,
   graduation: <i className="fi fi-rr-graduation-cap"></i>,
   users: <i className="fi fi-rr-users"></i>,
+  calculator: <i className="fi fi-rr-calculator"></i>,
 };
 
 export default function Programs({ initialSettings }: any) {
@@ -81,8 +82,8 @@ export default function Programs({ initialSettings }: any) {
         <div className="section-header">
           <h2>Program Kursus di Bobong</h2>
           <p>
-            Pilih program kursus di Bobong terbaik: kursus bahasa Inggris dan
-            bimbingan belajar Calistung terbaik untuk Anda di Pulau Taliabu
+            Pilih program kursus terbaik di Bobong: Bahasa Inggris (Kids &amp; Teens),
+            Fun Calistung, dan Matematika Dasar di Pulau Taliabu
           </p>
         </div>
 

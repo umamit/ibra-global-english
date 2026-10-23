@@ -23,6 +23,7 @@ export default function FinanceSearchToolbar({ searchQuery, setSearchQuery, prog
           <option value="Kids Program">Kids Program</option>
           <option value="Teens Program">Teens Program</option>
           <option value="Fun Calistung">Fun Calistung</option>
+          <option value="Matematika Dasar">Matematika Dasar</option>
         </select>
       </div>
       <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--color-gray-500)" }}>Menampilkan {filteredCount} dari {totalCount} siswa</div>

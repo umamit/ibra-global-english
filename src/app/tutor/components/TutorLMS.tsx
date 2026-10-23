@@ -17,7 +17,7 @@ export default function TutorLMS(props: any) {
             <div>
               <label className="form-label">Program Target</label>
               <select className="form-input" value={lmsProgram} onChange={(e) => setLmsProgram(e.target.value)}>
-                <option value="Kids Program">Kids Program</option><option value="Teens Program">Teens Program</option><option value="Fun Calistung">Fun Calistung</option>
+                <option value="Kids Program">Kids Program</option><option value="Teens Program">Teens Program</option><option value="Fun Calistung">Fun Calistung</option><option value="Matematika Dasar">Matematika Dasar</option>
               </select>
             </div>
             <div>

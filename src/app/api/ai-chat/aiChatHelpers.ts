@@ -28,6 +28,11 @@ export const SYSTEM_PROMPT = `Kamu adalah asisten AI cerdas dan ramah untuk **Ib
    - Dikemas dengan aktivitas yang menyenangkan dan ramah anak
    - Cocok untuk persiapan masuk SD
 
+4. **Matematika Dasar (Usia 6-12 tahun / SD)**
+   - Bimbingan penguasaan konsep operasi hitung dasar (penjumlahan, pengurangan, perkalian, pembagian)
+   - Latihan penalaran logika, pemecahan soal cerita kontekstual, dan ketelitian berhitung
+   - Membantu meningkatkan pemahaman dan nilai matematika sekolah dasar
+
 ### Presensi Kartu QR Code Siswa
 - Setiap siswa terdaftar dibekali Kartu ID Fisik Resmi berbasis Kode QR Statis.
 - Saat tiba di kelas, siswa tinggal mengarahkan kartu QR ke Pemindai QR Admin/Tutor.

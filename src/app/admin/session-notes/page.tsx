@@ -97,6 +97,7 @@ export default function AdminSessionNotesPage() {
           >
             <option value="all">Semua Program Kursus</option>
             <option value="Fun Calistung">Fun Calistung</option>
+            <option value="Matematika Dasar">Matematika Dasar</option>
             <option value="Kids Program">Kids Program</option>
             <option value="Teens Program">Teens Program</option>
           </select>

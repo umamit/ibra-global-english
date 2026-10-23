@@ -106,6 +106,7 @@ export function useFinanceAnalyticsData(
     { name: "Kids Program", color: "#216c7e", bg: "rgba(33, 108, 126, 0.1)", collected: 0, expected: 0 },
     { name: "Teens Program", color: "#A68849", bg: "rgba(166, 136, 73, 0.1)", collected: 0, expected: 0 },
     { name: "Fun Calistung", color: "#0f172a", bg: "rgba(15, 23, 42, 0.1)", collected: 0, expected: 0 },
+    { name: "Matematika Dasar", color: "#059669", bg: "rgba(5, 150, 105, 0.1)", collected: 0, expected: 0 },
   ].map((prog) => {
     const progStudents = students.filter((s) => s.program === prog.name);
     const collected = allPayments

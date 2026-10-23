@@ -35,6 +35,7 @@ export function useAdminFinance() {
     "Kids Program": 300000,
     "Teens Program": 300000,
     "Fun Calistung": 350000,
+    "Matematika Dasar": 300000,
   });
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -126,6 +127,7 @@ export function useAdminFinance() {
             "Kids Program": parseInt(settings.payment_spp_kids || "300000"),
             "Teens Program": parseInt(settings.payment_spp_teens || "300000"),
             "Fun Calistung": parseInt(settings.payment_spp_calistung || "350000"),
+            "Matematika Dasar": parseInt(settings.payment_spp_math || settings.payment_spp_kids || "300000"),
           });
         }
       } catch (err) {

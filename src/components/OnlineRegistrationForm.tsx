@@ -30,6 +30,7 @@ export function OnlineRegistrationForm({ regSuccess, setRegSuccess, setActiveTab
             <option value="Kids Program (5-12 tahun)">Kids Program (5-12 thn)</option>
             <option value="Teens Program (13-17 tahun)">Teens Program (13-17 thn)</option>
             <option value="Fun Calistung (5-7 tahun)">Fun Calistung (5-7 thn)</option>
+            <option value="Matematika Dasar (6-12 tahun)">Matematika Dasar (6-12 thn)</option>
           </select>
         </div>
       </div>

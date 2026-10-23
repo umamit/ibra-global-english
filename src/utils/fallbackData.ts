@@ -71,6 +71,13 @@ export const DEFAULT_PROGRAMS: Program[] = [
     desc: "Program membaca, menulis, dan berhitung yang menyenangkan bagi anak usia dini",
     iconKey: "users",
     features: ["Belajar Membaca", "Belajar Menulis", "Belajar Berhitung"]
+  },
+  {
+    title: "Matematika Dasar",
+    age: "6-12 tahun (SD)",
+    desc: "Program penguatan konsep operasi hitung, penalaran logika soal cerita, dan ketelitian berhitung dasar",
+    iconKey: "calculator",
+    features: ["Operasi Hitung Dasar", "Penalaran Soal Cerita", "Latihan Ketelitian & Logika"]
   }
 ];
 

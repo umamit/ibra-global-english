@@ -31,6 +31,7 @@ const PROGRAM_OPTIONS = [
   { value: "Kids", label: "Kids Program" },
   { value: "Teens", label: "Teens Program" },
   { value: "Calistung", label: "Fun Calistung" },
+  { value: "Matematika", label: "Matematika Dasar" },
 ];
 
 export default function CalendarTopbar({

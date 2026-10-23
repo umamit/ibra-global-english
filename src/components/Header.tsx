@@ -56,6 +56,7 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
                       <Link href="/#kids-program" className="dropdown-item">Kids Program</Link>
                       <Link href="/#teens-program" className="dropdown-item">Teens Program</Link>
                       <Link href="/#fun-calistung" className="dropdown-item">Fun Calistung</Link>
+                      <Link href="/#matematika-dasar" className="dropdown-item">Matematika Dasar</Link>
                       <Link href="/calendar" className="dropdown-item">Kalender Akademik</Link>
                       <Link href="/placement-test" className="dropdown-item">Tes Penempatan Level</Link>
                     </div>
@@ -205,6 +206,7 @@ export default function Header({ theme, toggleTheme, hasMarquee, initialSettings
                       <Link href="/#kids-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Kids Program</Link>
                       <Link href="/#teens-program" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Teens Program</Link>
                       <Link href="/#fun-calistung" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Fun Calistung</Link>
+                      <Link href="/#matematika-dasar" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Matematika Dasar</Link>
                       <Link href="/calendar" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Kalender Akademik</Link>
                       <Link href="/placement-test" className="mobile-link mobile-dropdown-item" onClick={() => setIsMenuOpen(false)}>Tes Penempatan Level</Link>
                     </div>

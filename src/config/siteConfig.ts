@@ -54,5 +54,15 @@ export const SITE_CONFIG = {
       description:
         "Bimbingan belajar membaca, menulis, dan berhitung dasar dengan pendekatan bermain yang menyenangkan.",
     },
+    {
+      id: "math",
+      title: "Matematika Dasar",
+      ageRange: "6 - 12 tahun",
+      duration: "60 menit",
+      frequency: "3 kali seminggu",
+      badge: "Numerasi & Logika",
+      description:
+        "Bimbingan penguasaan konsep operasi hitung, penalaran soal cerita, dan ketelitian berhitung untuk siswa SD.",
+    },
   ],
 };

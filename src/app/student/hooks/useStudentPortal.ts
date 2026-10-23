@@ -42,6 +42,13 @@ export function useStudentPortal() {
   const [onlineSchedules, setOnlineSchedules] = useState<any[]>([]);
 
   const getModulesList = (program: string | undefined): Module[] => {
+    if (program?.toLowerCase()?.includes("matematika")) {
+      return [
+        { name: "Modul 1: Operasi Hitung Dasar & Bilangan Bulat", size: "2.6 MB", url: "#" },
+        { name: "Lembar Kerja Penalaran Logika & Soal Cerita", size: "2.2 MB", url: "#" },
+        { name: "Modul Pecahan, Pengukuran & Geometri Dasar", size: "3.0 MB", url: "#" },
+      ];
+    }
     if (program?.toLowerCase()?.includes("calistung")) {
       return [
         { name: "Modul 1: Lancar Membaca Suku Kata Basika", size: "2.4 MB", url: "#" },

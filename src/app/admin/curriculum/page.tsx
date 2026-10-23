@@ -6,7 +6,7 @@ import React from 'react';
 import ToastNotification from "../components/ToastNotification";
 import { useCurriculumData, Curriculum } from "./hooks/useCurriculumData";
 
-const PROGRAMS = ["Kids Program", "Teens Program", "Fun Calistung"];
+const PROGRAMS = ["Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"];
 
 export default function AdminCurriculumPage() {
   const {

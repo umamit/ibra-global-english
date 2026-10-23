@@ -7,6 +7,7 @@ export function getProgramCode(program: string): string {
   if (p.includes("kids")) return "KIDS";
   if (p.includes("teens")) return "TEENS";
   if (p.includes("calistung")) return "CALISTUNG";
+  if (p.includes("matematika")) return "MATH";
   return "IGE";
 }
 

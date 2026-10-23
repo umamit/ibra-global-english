@@ -68,6 +68,7 @@ export default function AddEditScheduleModal({ isOpen, onClose, onSuccess, selec
                   <option value="Kids Program">Kids Program</option>
                   <option value="Teens Program">Teens Program</option>
                   <option value="Fun Calistung">Fun Calistung</option>
+                  <option value="Matematika Dasar">Matematika Dasar</option>
                 </select>
               </div>
             </div>

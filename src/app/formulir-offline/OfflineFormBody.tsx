@@ -58,10 +58,11 @@ export default function OfflineFormBody() {
         {/* C. Program */}
         <div>
           <h3 style={sectionStyle}>C. PROGRAM YANG DIMINATI (Beri Tanda Centang)</h3>
-          <div style={{ display: "flex", gap: "2.5rem", paddingLeft: "0.5rem", paddingTop: "0.15rem", fontSize: "0.78rem", color: "#1f2937", fontWeight: "600" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 2rem", paddingLeft: "0.5rem", paddingTop: "0.15rem", fontSize: "0.78rem", color: "#1f2937", fontWeight: "600" }}>
             <span>[  ] Kids Program (5-12 tahun)</span>
             <span>[  ] Teens Program (13-17 tahun)</span>
             <span>[  ] Fun Calistung (5-7 tahun)</span>
+            <span>[  ] Matematika Dasar (6-12 tahun)</span>
           </div>
         </div>
 

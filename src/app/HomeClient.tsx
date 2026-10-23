@@ -80,7 +80,7 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
           properties: {
             program: {
               type: "string",
-              description: "Name of the program (Kids Program, Teens Program, Fun Calistung)"
+              description: "Name of the program (Kids Program, Teens Program, Fun Calistung, Matematika Dasar)"
             }
           }
         },
@@ -92,8 +92,10 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
             return "Teens Program (13-17 tahun): Fokus pada speaking, diskusi kelompok, presentasi, dan tata bahasa (grammar) untuk membantu sekolah dan masa depan.";
           } else if (program.includes("calistung")) {
             return "Fun Calistung (5-7 tahun): Bimbingan membaca, menulis, dan berhitung yang dikemas secara seru dan ramah anak.";
+          } else if (program.includes("matematika") || program.includes("math")) {
+            return "Matematika Dasar (6-12 tahun): Bimbingan penguasaan konsep operasi hitung, penalaran logika soal cerita, dan ketelitian berhitung untuk siswa SD.";
           }
-          return "Pilihan program: Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun).";
+          return "Pilihan program: Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun), Matematika Dasar (6-12 tahun).";
         }
       };
 
@@ -105,7 +107,7 @@ export default function HomeClient({ initialSettings }: HomeClientProps) {
           properties: {
             name: { type: "string", description: "Full name of the student" },
             whatsapp: { type: "string", description: "WhatsApp contact number" },
-            program: { type: "string", description: "Selected course program (Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun))" }
+            program: { type: "string", description: "Selected course program (Kids Program (5-12 tahun), Teens Program (13-17 tahun), Fun Calistung (5-7 tahun), Matematika Dasar (6-12 tahun))" }
           },
           required: ["name", "whatsapp"]
         },

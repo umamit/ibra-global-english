@@ -17,7 +17,7 @@ interface OnlineSchedule {
   notes?: string;
 }
 
-const PROGRAMS = ["A1 Foundation", "A2 Bridge", "B1 Communicator", "B2 Achiever", "C1 Professional", "Kids Program", "Teens Program", "Fun Calistung"];
+const PROGRAMS = ["A1 Foundation", "A2 Bridge", "B1 Communicator", "B2 Achiever", "C1 Professional", "Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"];
 const PLATFORMS = ["Google Meet", "Zoom", "Webex", "Microsoft Teams"];
 
 export default function AdminOnlineSchedulePage() {

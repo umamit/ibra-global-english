@@ -151,6 +151,20 @@ export const coursesSchema = {
       },
       "educationalLevel": "Preschool / Kindergarten",
       "inLanguage": "id"
+    },
+    {
+      "@type": "Course",
+      "position": 4,
+      "name": "Matematika Dasar (Bimbingan Numerasi & Logika SD)",
+      "description": "Bimbingan belajar penguasaan operasi hitung dasar, penalaran logika soal cerita, dan ketelitian berhitung untuk siswa usia 6-12 tahun (SD).",
+      "url": "https://www.ibraglobalenglish.uk/#programs",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "@id": "https://www.ibraglobalenglish.uk/#organization",
+        "name": "PT. IBRA Global English"
+      },
+      "educationalLevel": "Elementary",
+      "inLanguage": "id"
     }
   ]
 };
