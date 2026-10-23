@@ -189,7 +189,7 @@ export default function StudentDashboard({
                   
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "1.25rem" }}>
                     <div style={{ background: "var(--color-gray-50)", padding: "0.6rem 0.8rem", borderRadius: "8px" }}>
-                      <p style={{ fontSize: "0.7rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Speaking &amp; Listening</p>
+                      <p style={{ fontSize: "0.7rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Speaking</p>
                       <p style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--color-primary)" }}>{rep.speaking_score}</p>
                     </div>
                     <div style={{ background: "var(--color-gray-50)", padding: "0.6rem 0.8rem", borderRadius: "8px" }}>
@@ -197,10 +197,14 @@ export default function StudentDashboard({
                       <p style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--color-primary)" }}>{rep.grammar_score}</p>
                     </div>
                     <div style={{ background: "var(--color-gray-50)", padding: "0.6rem 0.8rem", borderRadius: "8px" }}>
+                      <p style={{ fontSize: "0.7rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Listening</p>
+                      <p style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--color-primary)" }}>{rep.listening_score ?? rep.speaking_score}</p>
+                    </div>
+                    <div style={{ background: "var(--color-gray-50)", padding: "0.6rem 0.8rem", borderRadius: "8px" }}>
                       <p style={{ fontSize: "0.7rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Vocabulary</p>
                       <p style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--color-primary)" }}>{rep.vocabulary_score}</p>
                     </div>
-                    <div style={{ background: "var(--color-gray-50)", padding: "0.6rem 0.8rem", borderRadius: "8px" }}>
+                    <div style={{ background: "var(--color-gray-50)", padding: "0.6rem 0.8rem", borderRadius: "8px", gridColumn: "1 / -1" }}>
                       <p style={{ fontSize: "0.7rem", color: "var(--color-gray-500)", fontWeight: "600" }}>Keaktifan</p>
                       <p style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--color-primary)" }}>{rep.active_score}</p>
                     </div>

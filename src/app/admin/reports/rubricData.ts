@@ -5,7 +5,7 @@ export interface RubricCriterion {
 }
 
 export interface AspectRubric {
-  aspectKey: string; // 'speaking' | 'grammar' | 'vocabulary' | 'active'
+  aspectKey: string; // 'speaking' | 'grammar' | 'listening' | 'vocabulary' | 'active'
   titleEnglish: string;
   titleCalistung: string;
   criteria: RubricCriterion[];
@@ -14,13 +14,13 @@ export interface AspectRubric {
 export const RUBRIC_DATA_ENGLISH: AspectRubric[] = [
   {
     aspectKey: "speaking",
-    titleEnglish: "Speaking & Listening (Kelancaran Bicara & Pemahaman Dengar)",
+    titleEnglish: "Speaking (Kelancaran & Pengucapan)",
     titleCalistung: "Membaca",
     criteria: [
-      { id: "sp_1", label: "Mampu menyimak (listening) dan merespons pertanyaan lisan tutor secara mandiri", points: 25 },
+      { id: "sp_1", label: "Berani bercakap dan merespons pertanyaan lisan tutor secara mandiri", points: 25 },
       { id: "sp_2", label: "Pengucapan kata (pronunciation) jelas dan mudah dipahami", points: 25 },
-      { id: "sp_3", label: "Memahami instruksi lisan bahasa Inggris dan menjawab dalam kalimat sederhana", points: 25 },
-      { id: "sp_4", label: "Lancar bercakap (speaking) tanpa jeda panjang atau rasa ragu berlebih", points: 25 }
+      { id: "sp_3", label: "Mampu menjawab dan merangkai kata dalam struktur kalimat sederhana", points: 25 },
+      { id: "sp_4", label: "Lancar bercakap tanpa jeda panjang atau rasa ragu berlebih", points: 25 }
     ]
   },
   {
@@ -32,6 +32,17 @@ export const RUBRIC_DATA_ENGLISH: AspectRubric[] = [
       { id: "gr_2", label: "Mampu menyusun bentuk kalimat positif, negatif, dan tanya sederhana", points: 25 },
       { id: "gr_3", label: "Minim kesalahan susunan kata (word order) pada latihan modul", points: 25 },
       { id: "gr_4", label: "Mampu mengoreksi sendiri kekeliruan struktur kalimat setelah diberi contoh", points: 25 }
+    ]
+  },
+  {
+    aspectKey: "listening",
+    titleEnglish: "Listening (Pemahaman Menyimak & Instruksi Lisan)",
+    titleCalistung: "Menyimak",
+    criteria: [
+      { id: "ls_1", label: "Mampu menyimak dan memahami instruksi lisan bahasa Inggris dari tutor dengan cepat", points: 25 },
+      { id: "ls_2", label: "Dapat menangkap informasi penting dari audio, cerita pendek, atau percakapan", points: 25 },
+      { id: "ls_3", label: "Mampu membedakan bunyi pelafalan kata bahasa Inggris yang mirip dengan tepat", points: 25 },
+      { id: "ls_4", label: "Merespons pertanyaan lisan dengan relevan sesuai konteks yang didengar", points: 25 }
     ]
   },
   {
@@ -108,12 +119,14 @@ export const RUBRIC_DATA_CALISTUNG: AspectRubric[] = [
 export function calculateScoreFromRubric(selectedIds: string[], aspectRubrics: AspectRubric[]): {
   speaking: number;
   grammar: number;
+  listening: number;
   vocabulary: number;
   active: number;
 } {
   const scores = {
     speaking: 0,
     grammar: 0,
+    listening: 0,
     vocabulary: 0,
     active: 0
   };

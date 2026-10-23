@@ -29,6 +29,29 @@ export function CertificateFrontPage({ cert, completionText, datePrefixText, qrC
 }
 
 export function CertificateBackPage({ cert, report, isCalistung, isMath, avgScore }: any) {
+  const isEnglish = !isMath && !isCalistung;
+  const listenVal = report?.listening_score ?? report?.speaking_score ?? 0;
+  const rows = isMath
+    ? [
+        { label: "Pemahaman Konsep & Operasi Hitung", score: report?.speaking_score || 0 },
+        { label: "Penalaran & Logika Soal Cerita", score: report?.grammar_score || 0 },
+        { label: "Ketelitian & Kerapian Perhitungan", score: report?.vocabulary_score || 0 },
+        { label: "Keaktifan & Kemandirian Belajar", score: report?.active_score || 0 },
+      ]
+    : isCalistung
+    ? [
+        { label: "Kemampuan Membaca (Reading Skill)", score: report?.speaking_score || 0 },
+        { label: "Kemampuan Menulis (Writing Skill)", score: report?.grammar_score || 0 },
+        { label: "Kemampuan Berhitung (Math Skill)", score: report?.vocabulary_score || 0 },
+        { label: "Keaktifan Siswa (Class Participation)", score: report?.active_score || 0 },
+      ]
+    : [
+        { label: "Speaking (Kelancaran & Pengucapan)", score: report?.speaking_score || 0 },
+        { label: "Grammar (Tata Bahasa & Struktur Kalimat)", score: report?.grammar_score || 0 },
+        { label: "Listening (Pemahaman Menyimak)", score: listenVal },
+        { label: "Vocabulary (Penguasaan Kosakata)", score: report?.vocabulary_score || 0 },
+        { label: "Keaktifan Siswa (Class Participation)", score: report?.active_score || 0 },
+      ];
   return (
     <div id="cert-page-2-el" className="certificate-page-2 pdf-page-break" style={{
       backgroundImage: "url('/assets/Salinan dari Salinan dari Blue and Gold Simple Elegant Certificate of Appreciation.png')",
@@ -58,30 +81,14 @@ export function CertificateBackPage({ cert, report, isCalistung, isMath, avgScor
           <tr><th style={{ width: "40px", textAlign: "center" }}>No</th><th>Kompetensi Belajar (Subjects)</th><th style={{ width: "120px", textAlign: "center" }}>Skor (Score)</th><th style={{ width: "120px", textAlign: "center" }}>Predikat (Grade)</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td style={{ textAlign: "center" }}>1</td>
-            <td style={{ fontWeight: "600" }}>{isMath ? "Pemahaman Konsep & Operasi Hitung" : isCalistung ? "Kemampuan Membaca (Reading Skill)" : "Speaking & Listening"}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.speaking_score || 0}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.speaking_score || 0) >= 85 ? "A" : (report?.speaking_score || 0) >= 75 ? "B" : "C"}</td>
-          </tr>
-          <tr>
-            <td style={{ textAlign: "center" }}>2</td>
-            <td style={{ fontWeight: "600" }}>{isMath ? "Penalaran & Logika Soal Cerita" : isCalistung ? "Kemampuan Menulis (Writing Skill)" : "Grammar & Structure"}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.grammar_score || 0}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.grammar_score || 0) >= 85 ? "A" : (report?.grammar_score || 0) >= 75 ? "B" : "C"}</td>
-          </tr>
-          <tr>
-            <td style={{ textAlign: "center" }}>3</td>
-            <td style={{ fontWeight: "600" }}>{isMath ? "Ketelitian & Kerapian Perhitungan" : isCalistung ? "Kemampuan Berhitung (Math Skill)" : "Vocabulary & Comprehension"}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.vocabulary_score || 0}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.vocabulary_score || 0) >= 85 ? "A" : (report?.vocabulary_score || 0) >= 75 ? "B" : "C"}</td>
-          </tr>
-          <tr>
-            <td style={{ textAlign: "center" }}>4</td>
-            <td style={{ fontWeight: "600" }}>{isMath ? "Keaktifan & Kemandirian Belajar" : "Keaktifan Siswa (Class Participation)"}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.active_score || 0}</td>
-            <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.active_score || 0) >= 85 ? "A" : (report?.active_score || 0) >= 75 ? "B" : "C"}</td>
-          </tr>
+          {rows.map((r, idx) => (
+            <tr key={r.label}>
+              <td style={{ textAlign: "center" }}>{idx + 1}</td>
+              <td style={{ fontWeight: "600" }}>{r.label}</td>
+              <td style={{ textAlign: "center", fontWeight: "700" }}>{r.score}</td>
+              <td style={{ textAlign: "center", fontWeight: "700" }}>{r.score >= 85 ? "A" : r.score >= 75 ? "B" : "C"}</td>
+            </tr>
+          ))}
           <tr className="average-row">
             <td colSpan={2} style={{ textAlign: "right" }}>RATA-RATA / AVERAGE</td>
             <td style={{ textAlign: "center", fontSize: "0.9rem" }}>{avgScore}</td>

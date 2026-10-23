@@ -8,7 +8,7 @@ export function constructPromptForMode(mode: string, payload: any, authUserRole:
   let userPrompt = "";
 
   if (mode === "auto-draft") {
-    const { name, program, speaking, grammar, vocabulary, active, module_name } = payload || {};
+    const { name, program, speaking, grammar, listening, vocabulary, active, module_name } = payload || {};
     const normProg = program?.toLowerCase() || "";
     const isMath = normProg.includes("matematika");
     const isCalistung = !isMath && normProg.includes("calistung");
@@ -29,8 +29,18 @@ Berikan ulasan capaian belajar, apresiasi usaha siswa, serta saran konstruktif u
       systemPrompt = `Kamu adalah asisten AI tutor bimbingan belajar Calistung (Membaca, Menulis, Berhitung) di Ibra Global English Bobong...`;
       userPrompt = `Buat ulasan rapor untuk siswa Calistung: ${name}...`;
     } else {
-      systemPrompt = `Kamu adalah asisten AI tutor bahasa Inggris di Ibra Global English Bobong...`;
-      userPrompt = `Buat ulasan rapor untuk siswa English: ${name}...`;
+      systemPrompt = `Kamu adalah asisten AI tutor bahasa Inggris di Ibra Global English Bobong. Berikan ulasan rapor deskriptif yang santun, memotivasi, dan profesional kepada orang tua siswa.`;
+      userPrompt = `Buat ulasan rapor untuk siswa Bahasa Inggris:
+Nama: ${name}
+Program: ${program}
+Modul: ${module_name || "-"}
+Speaking: ${speaking}/100
+Grammar: ${grammar}/100
+Listening: ${listening ?? speaking}/100
+Vocabulary: ${vocabulary}/100
+Keaktifan: ${active}/100
+
+Berikan ulasan capaian belajar pada aspek speaking, grammar, listening, vocabulary, dan keaktifan, serta saran konstruktif dalam 3-4 kalimat.`;
     }
   } else if (mode === "announcement-polish") {
     const { title, content } = payload || {};

@@ -6,7 +6,7 @@ import { RubricAspectList } from "./RubricAspectList";
 
 interface AssessmentRubricModalProps {
   isOpen: boolean; onClose: () => void; programName: string; studentName: string; moduleName: string;
-  onApplyRubricScores: (scores: { speaking: number; grammar: number; vocabulary: number; active: number }, draftNotes: string) => void;
+  onApplyRubricScores: (scores: { speaking: number; grammar: number; listening: number; vocabulary: number; active: number }, draftNotes: string) => void;
 }
 
 export default function AssessmentRubricModal({ isOpen, onClose, programName, studentName, moduleName, onApplyRubricScores }: AssessmentRubricModalProps) {

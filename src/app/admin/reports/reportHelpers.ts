@@ -15,25 +15,27 @@ export const exportReportsCSV = (reports: Report[], filterStudentId: string = ""
     ? (filtered[0]?.students?.name || "siswa").replace(/\s+/g, "_")
     : "semua_siswa";
 
-  const headers = ["No", "Nama Siswa", "Program", "Modul", "Skor 1", "Skor 2", "Skor 3", "Skor 4", "Rata-rata", "Catatan Tutor", "Tanggal Terbit"];
+  const headers = ["No", "Nama Siswa", "Program", "Modul", "Skor 1", "Skor 2", "Skor 3", "Skor 4", "Skor 5", "Rata-rata", "Catatan Tutor", "Tanggal Terbit"];
   const rows = filtered.map((r, idx) => {
-    const avg = Math.round((r.speaking_score + r.grammar_score + r.vocabulary_score + r.active_score) / 4);
     const prog = r.students?.program || "";
     const isMath = prog.toLowerCase().includes("matematika");
-    const label = isMath
-      ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
-      : isCalistung(prog)
-      ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-      : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
+    const isCal = !isMath && isCalistung(prog);
+    const isEng = !isMath && !isCal;
+    const listenVal = r.listening_score ?? r.speaking_score;
+    const avg = isEng
+      ? Math.round((r.speaking_score + r.grammar_score + listenVal + r.vocabulary_score + r.active_score) / 5)
+      : Math.round((r.speaking_score + r.grammar_score + r.vocabulary_score + r.active_score) / 4);
+    const cols = isMath
+      ? [`Operasi Hitung: ${r.speaking_score}`, `Penalaran & Logika: ${r.grammar_score}`, `Ketelitian: ${r.vocabulary_score}`, `Keaktifan: ${r.active_score}`, "-"]
+      : isCal
+      ? [`Membaca: ${r.speaking_score}`, `Menulis: ${r.grammar_score}`, `Berhitung: ${r.vocabulary_score}`, `Keaktifan: ${r.active_score}`, "-"]
+      : [`Speaking: ${r.speaking_score}`, `Grammar: ${r.grammar_score}`, `Listening: ${listenVal}`, `Vocabulary: ${r.vocabulary_score}`, `Keaktifan: ${r.active_score}`];
     return [
       idx + 1,
       r.students?.name || "-",
       prog || "-",
       r.module_name || "-",
-      `${label[0]}: ${r.speaking_score}`,
-      `${label[1]}: ${r.grammar_score}`,
-      `${label[2]}: ${r.vocabulary_score}`,
-      `${label[3]}: ${r.active_score}`,
+      ...cols,
       avg,
       r.tutor_notes || "-",
       new Date(r.created_at).toLocaleDateString("id-ID")

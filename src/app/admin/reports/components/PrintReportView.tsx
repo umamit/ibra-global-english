@@ -12,11 +12,28 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
   const progStr = printReport.students?.program?.toLowerCase() || "";
   const isMath = progStr.includes("matematika");
   const isCalistung = !isMath && (printReport.students?.program === "Fun Calistung" || progStr.includes("calistung"));
-  const scoreLabels = isMath
-    ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
+  const isEnglish = !isMath && !isCalistung;
+  const scoreItems = isMath
+    ? [
+        { label: "Operasi Hitung", score: printReport.speaking_score },
+        { label: "Penalaran & Logika", score: printReport.grammar_score },
+        { label: "Ketelitian", score: printReport.vocabulary_score },
+        { label: "Keaktifan", score: printReport.active_score },
+      ]
     : isCalistung
-    ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-    : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
+    ? [
+        { label: "Membaca", score: printReport.speaking_score },
+        { label: "Menulis", score: printReport.grammar_score },
+        { label: "Berhitung", score: printReport.vocabulary_score },
+        { label: "Keaktifan", score: printReport.active_score },
+      ]
+    : [
+        { label: "Speaking", score: printReport.speaking_score },
+        { label: "Grammar", score: printReport.grammar_score },
+        { label: "Listening", score: printReport.listening_score ?? printReport.speaking_score },
+        { label: "Vocabulary", score: printReport.vocabulary_score },
+        { label: "Keaktifan", score: printReport.active_score },
+      ];
 
   return (
     <div style={{ padding: "1.5rem", backgroundColor: "white", minHeight: "100vh" }}>
@@ -67,32 +84,26 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
         {/* Grid Layout containing Score Cards on Left and visual SVG Radar Chart on Right */}
         <div className="report-scores-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", alignItems: "center", marginBottom: "1.75rem" }}>
           
-          {/* 4 Scores Grid 2x2 */}
+          {/* Scores Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.speaking_score}</p>
-              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {scoreLabels[0]}
-              </p>
-            </div>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.grammar_score}</p>
-              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {scoreLabels[1]}
-              </p>
-            </div>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.vocabulary_score}</p>
-              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {scoreLabels[2]}
-              </p>
-            </div>
-            <div style={{ border: "1px solid var(--color-gray-200)", padding: "0.85rem", borderRadius: "8px", textAlign: "center", backgroundColor: "white" }}>
-              <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{printReport.active_score}</p>
-              <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
-                {scoreLabels[3]}
-              </p>
-            </div>
+            {scoreItems.map((item, idx) => (
+              <div
+                key={item.label}
+                style={{
+                  border: "1px solid var(--color-gray-200)",
+                  padding: "0.85rem",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  backgroundColor: "white",
+                  gridColumn: isEnglish && idx === 4 ? "1 / -1" : undefined,
+                }}
+              >
+                <p style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--color-primary-dark)", margin: "0" }}>{item.score}</p>
+                <p style={{ fontSize: "0.7rem", fontWeight: "700", color: "var(--color-gray-500)", textTransform: "uppercase", marginTop: "3px" }}>
+                  {item.label}
+                </p>
+              </div>
+            ))}
           </div>
 
           {/* Visual SVG Radar Chart */}
@@ -100,6 +111,7 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
             <RadarChart 
               speaking={printReport.speaking_score} 
               grammar={printReport.grammar_score} 
+              listening={printReport.listening_score}
               vocabulary={printReport.vocabulary_score} 
               active={printReport.active_score} 
               isCalistung={isCalistung}

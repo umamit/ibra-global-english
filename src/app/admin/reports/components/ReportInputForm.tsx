@@ -13,6 +13,7 @@ interface ReportInputFormProps {
   setModuleName: (v: string) => void;
   speakingScore: string; setSpeakingScore: (v: string) => void;
   grammarScore: string; setGrammarScore: (v: string) => void;
+  listeningScore: string; setListeningScore: (v: string) => void;
   vocabularyScore: string; setVocabularyScore: (v: string) => void;
   activeScore: string; setActiveScore: (v: string) => void;
   tutorNotes: string; setTutorNotes: (v: string) => void;
@@ -29,18 +30,35 @@ export default function ReportInputForm(props: ReportInputFormProps) {
   const {
     students, studentId, setStudentId, setSelectedStudentProgram, selectedStudentProgram,
     moduleName, setModuleName, speakingScore, setSpeakingScore, grammarScore, setGrammarScore,
-    vocabularyScore, setVocabularyScore, activeScore, setActiveScore, tutorNotes, setTutorNotes,
+    listeningScore, setListeningScore, vocabularyScore, setVocabularyScore, activeScore, setActiveScore, tutorNotes, setTutorNotes,
     submitting, aiLoading, aiProgressLoading, onOpenRubric, onGenerateAiNotes, onOpenAiModal, onSubmit,
   } = props;
 
   const normProg = selectedStudentProgram?.toLowerCase() || "";
   const isMath = normProg.includes("matematika");
   const isFormCalistung = !isMath && normProg.includes("calistung");
-  const scoreLabels = isMath
-    ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
+  const isEnglish = !isMath && !isFormCalistung;
+  const scoreInputs = isMath
+    ? [
+        { label: "Operasi Hitung (0-100)", value: speakingScore, onChange: setSpeakingScore },
+        { label: "Penalaran & Logika (0-100)", value: grammarScore, onChange: setGrammarScore },
+        { label: "Ketelitian (0-100)", value: vocabularyScore, onChange: setVocabularyScore },
+        { label: "Keaktifan (0-100)", value: activeScore, onChange: setActiveScore },
+      ]
     : isFormCalistung
-    ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-    : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
+    ? [
+        { label: "Membaca (0-100)", value: speakingScore, onChange: setSpeakingScore },
+        { label: "Menulis (0-100)", value: grammarScore, onChange: setGrammarScore },
+        { label: "Berhitung (0-100)", value: vocabularyScore, onChange: setVocabularyScore },
+        { label: "Keaktifan (0-100)", value: activeScore, onChange: setActiveScore },
+      ]
+    : [
+        { label: "Speaking (0-100)", value: speakingScore, onChange: setSpeakingScore },
+        { label: "Grammar (0-100)", value: grammarScore, onChange: setGrammarScore },
+        { label: "Listening (0-100)", value: listeningScore, onChange: setListeningScore },
+        { label: "Vocabulary (0-100)", value: vocabularyScore, onChange: setVocabularyScore },
+        { label: "Keaktifan (0-100)", value: activeScore, onChange: setActiveScore },
+      ];
 
   return (
     <div className="portal-card" style={{ marginBottom: "3rem", padding: "2rem" }}>
@@ -94,13 +112,8 @@ export default function ReportInputForm(props: ReportInputFormProps) {
           </button>
         </div>
 
-        <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "1.25rem" }}>
-          {[
-            { label: `${scoreLabels[0]} (0-100)`, value: speakingScore, onChange: setSpeakingScore },
-            { label: `${scoreLabels[1]} (0-100)`, value: grammarScore, onChange: setGrammarScore },
-            { label: `${scoreLabels[2]} (0-100)`, value: vocabularyScore, onChange: setVocabularyScore },
-            { label: `${scoreLabels[3]} (0-100)`, value: activeScore, onChange: setActiveScore },
-          ].map(({ label, value, onChange }) => (
+        <div className="four-column-grid" style={{ gap: "1rem", marginBottom: "1.25rem", gridTemplateColumns: isEnglish ? "repeat(auto-fit, minmax(140px, 1fr))" : undefined }}>
+          {scoreInputs.map(({ label, value, onChange }) => (
             <div className="form-group" key={label}>
               <label className="form-label">{label}</label>
               <input type="number" min="0" max="100" className="form-input" placeholder="Skor" value={value} onChange={(e) => onChange(e.target.value)} disabled={submitting} required />

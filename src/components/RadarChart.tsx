@@ -2,37 +2,50 @@
 
 import { useState } from "react";
 
-export default function RadarChart({ speaking, grammar, vocabulary, active, isCalistung, isMath }: any) {
-  // Center (120, 120), Radius 80
+export default function RadarChart({ speaking, grammar, listening, vocabulary, active, isCalistung, isMath }: any) {
   const cx = 120;
   const cy = 120;
   const r = 80;
+  const isEnglish = !isMath && !isCalistung;
 
   const [tooltip, setTooltip] = useState({ show: false, x: 0, y: 0, label: "", score: 0 });
 
-  // Coordinate calculations:
-  // 1. Speaking: Up (0, -1) -> (cx, cy - r * score/100)
-  // 2. Grammar: Right (1, 0) -> (cx + r * score/100, cy)
-  // 3. Vocabulary: Down (0, 1) -> (cx, cy + r * score/100)
-  // 4. Keaktifan: Left (-1, 0) -> (cx - r * score/100, cy)
-  const pSpeaking = { x: cx, y: cy - r * (speaking / 100) };
-  const pGrammar = { x: cx + r * (grammar / 100), y: cy };
-  const pVocabulary = { x: cx, y: cy + r * (vocabulary / 100) };
-  const pActive = { x: cx - r * (active / 100), y: cy };
-
-  const polygonPoints = `${pSpeaking.x},${pSpeaking.y} ${pGrammar.x},${pGrammar.y} ${pVocabulary.x},${pVocabulary.y} ${pActive.x},${pActive.y}`;
-
-  const labels = isMath
-    ? ["HITUNG", "LOGIKA", "TELITI", "AKTIF"]
+  const items = isMath
+    ? [
+        { short: "HITUNG", tip: "Operasi Hitung", score: speaking || 0 },
+        { short: "LOGIKA", tip: "Penalaran & Logika", score: grammar || 0 },
+        { short: "TELITI", tip: "Ketelitian", score: vocabulary || 0 },
+        { short: "AKTIF", tip: "Keaktifan", score: active || 0 },
+      ]
     : isCalistung
-    ? ["MEMBACA", "MENULIS", "BERHITUNG", "KEAKTIFAN"]
-    : ["SPEAKING / LISTENING", "GRAMMAR", "VOCABULARY", "KEAKTIFAN"];
+    ? [
+        { short: "MEMBACA", tip: "Membaca", score: speaking || 0 },
+        { short: "MENULIS", tip: "Menulis", score: grammar || 0 },
+        { short: "BERHITUNG", tip: "Berhitung", score: vocabulary || 0 },
+        { short: "KEAKTIFAN", tip: "Keaktifan", score: active || 0 },
+      ]
+    : [
+        { short: "SPEAKING", tip: "Speaking", score: speaking || 0 },
+        { short: "GRAMMAR", tip: "Grammar", score: grammar || 0 },
+        { short: "LISTENING", tip: "Listening", score: listening ?? speaking ?? 0 },
+        { short: "VOCABULARY", tip: "Vocabulary", score: vocabulary || 0 },
+        { short: "KEAKTIFAN", tip: "Keaktifan", score: active || 0 },
+      ];
 
-  const tipLabels = isMath
-    ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
-    : isCalistung
-    ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-    : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
+  const count = items.length;
+  const getPoint = (idx: number, radius: number) => {
+    const angle = -Math.PI / 2 + (idx * 2 * Math.PI) / count;
+    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+  };
+
+  const dataPoints = items.map((item, idx) => ({
+    ...item,
+    ...getPoint(idx, r * (Math.max(0, Math.min(100, item.score)) / 100)),
+    axisEnd: getPoint(idx, r),
+    labelPos: getPoint(idx, r + (isEnglish ? 16 : 12)),
+  }));
+
+  const polygonPoints = dataPoints.map((p) => `${p.x},${p.y}`).join(" ");
 
   const handleMouseEnter = (x: number, y: number, label: string, score: number) => {
     setTooltip({ show: true, x, y: y - 12, label, score });
@@ -47,13 +60,16 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
       <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-primary-dark)", textTransform: "uppercase", marginBottom: "1rem" }}>Visualisasi Performa</p>
       
       <svg width="240" height="240" viewBox="0 0 240 240" style={{ overflow: "visible" }}>
-        {/* Concentric reference grid levels at 25%, 50%, 75%, 100% */}
         {[25, 50, 75, 100].map((percent) => {
           const gridR = r * (percent / 100);
+          const pts = items.map((_, idx) => {
+            const pt = getPoint(idx, gridR);
+            return `${pt.x},${pt.y}`;
+          }).join(" ");
           return (
             <polygon
               key={percent}
-              points={`${cx},${cy - gridR} ${cx + gridR},${cy} ${cx},${cy + gridR} ${cx - gridR},${cy}`}
+              points={pts}
               fill="none"
               stroke="#e2e8f0"
               strokeWidth="1"
@@ -62,21 +78,23 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
           );
         })}
 
-        {/* Axis lines */}
-        <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke="#cbd5e1" strokeWidth="1.5" />
-        <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke="#cbd5e1" strokeWidth="1.5" />
+        {dataPoints.map((p, idx) => (
+          <line key={idx} x1={cx} y1={cy} x2={p.axisEnd.x} y2={p.axisEnd.y} stroke="#cbd5e1" strokeWidth="1.5" />
+        ))}
 
-        {/* Axis Labels */}
-        <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{labels[0]}</text>
-        <text x={cx + r + 8} y={cy + 3} textAnchor="start" fontSize="9" fontWeight="800" fill="#475569">{labels[1]}</text>
-        <text x={cx} y={cy + r + 15} textAnchor="middle" fontSize="9" fontWeight="800" fill="#475569">{labels[2]}</text>
-        <text x={cx - r - 8} y={cy + 3} textAnchor="end" fontSize="9" fontWeight="800" fill="#475569">{labels[3]}</text>
+        {dataPoints.map((p, idx) => {
+          const dx = p.labelPos.x - cx;
+          const anchor = Math.abs(dx) < 10 ? "middle" : dx > 0 ? "start" : "end";
+          return (
+            <text key={idx} x={p.labelPos.x} y={p.labelPos.y + 3} textAnchor={anchor} fontSize="8.5" fontWeight="800" fill="#475569">
+              {p.short}
+            </text>
+          );
+        })}
 
-        {/* Score Values */}
         <text x={cx + 5} y={cy - r + 10} fontSize="7" fontWeight="700" fill="#94a3b8">100</text>
         <text x={cx + 5} y={cy - r * 0.5 + 4} fontSize="7" fontWeight="700" fill="#94a3b8">50</text>
 
-        {/* Filled polygon */}
         <polygon
           points={polygonPoints}
           fill="rgba(33, 108, 126, 0.25)"
@@ -84,51 +102,20 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
           strokeWidth="2.5"
         />
 
-        {/* Data points markers */}
-        <circle 
-          cx={pSpeaking.x} 
-          cy={pSpeaking.y} 
-          r="5.5" 
-          fill="#216c7e" 
-          stroke="white" 
-          strokeWidth="1.5" 
-          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pSpeaking.x, pSpeaking.y, tipLabels[0], speaking)}
-          onMouseLeave={hideTooltip}
-        />
-        <circle 
-          cx={pGrammar.x} 
-          cy={pGrammar.y} 
-          r="5.5" 
-          fill="#216c7e" 
-          stroke="white" 
-          strokeWidth="1.5" 
-          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pGrammar.x, pGrammar.y, tipLabels[1], grammar)}
-          onMouseLeave={hideTooltip}
-        />
-        <circle 
-          cx={pVocabulary.x} 
-          cy={pVocabulary.y} 
-          r="5.5" 
-          fill="#216c7e" 
-          stroke="white" 
-          strokeWidth="1.5" 
-          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pVocabulary.x, pVocabulary.y, tipLabels[2], vocabulary)}
-          onMouseLeave={hideTooltip}
-        />
-        <circle 
-          cx={pActive.x} 
-          cy={pActive.y} 
-          r="5.5" 
-          fill="#216c7e" 
-          stroke="white" 
-          strokeWidth="1.5" 
-          style={{ cursor: "pointer", transition: "all 0.2s ease" }}
-          onMouseEnter={() => handleMouseEnter(pActive.x, pActive.y, tipLabels[3], active)}
-          onMouseLeave={hideTooltip}
-        />
+        {dataPoints.map((p, idx) => (
+          <circle
+            key={idx}
+            cx={p.x}
+            cy={p.y}
+            r="5.5"
+            fill="#216c7e"
+            stroke="white"
+            strokeWidth="1.5"
+            style={{ cursor: "pointer", transition: "all 0.2s ease" }}
+            onMouseEnter={() => handleMouseEnter(p.x, p.y, p.tip, p.score)}
+            onMouseLeave={hideTooltip}
+          />
+        ))}
       </svg>
 
       {/* Floating Tooltip */}

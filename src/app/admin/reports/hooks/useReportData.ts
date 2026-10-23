@@ -25,6 +25,7 @@ export function useReportData() {
   const [moduleName, setModuleName] = useState<string>("");
   const [speakingScore, setSpeakingScore] = useState<string>("");
   const [grammarScore, setGrammarScore] = useState<string>("");
+  const [listeningScore, setListeningScore] = useState<string>("");
   const [vocabularyScore, setVocabularyScore] = useState<string>("");
   const [activeScore, setActiveScore] = useState<string>("");
   const [tutorNotes, setTutorNotes] = useState<string>("");
@@ -50,7 +51,7 @@ export function useReportData() {
 
       const { data: reportData, error: errR } = await supabase
         .from("reports")
-        .select(`id, student_id, module_name, speaking_score, grammar_score, vocabulary_score, active_score, tutor_notes, created_at, students (id, name, program, age)`)
+        .select(`*, students (id, name, program, age)`)
         .order("created_at", { ascending: false });
       if (errR) throw errR;
       setReports((reportData as any[]) || []);
@@ -66,11 +67,12 @@ export function useReportData() {
   }, [supabase]);
 
   const handleApplyRubricScores = (
-    scores: { speaking: number; grammar: number; vocabulary: number; active: number },
+    scores: { speaking: number; grammar: number; listening: number; vocabulary: number; active: number },
     notes: string
   ) => {
     setSpeakingScore(String(scores.speaking));
     setGrammarScore(String(scores.grammar));
+    setListeningScore(String(scores.listening));
     setVocabularyScore(String(scores.vocabulary));
     setActiveScore(String(scores.active));
     setTutorNotes(notes);
@@ -85,7 +87,7 @@ export function useReportData() {
       const res = await fetch("/api/admin/ai-assist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "auto-draft", payload: { name: studentObj?.name || "Siswa", program: studentObj?.program || "General English", module_name: moduleName, speaking: speakingScore || 80, grammar: grammarScore || 80, vocabulary: vocabularyScore || 80, active: activeScore || 80 } }),
+        body: JSON.stringify({ mode: "auto-draft", payload: { name: studentObj?.name || "Siswa", program: studentObj?.program || "General English", module_name: moduleName, speaking: speakingScore || 80, grammar: grammarScore || 80, listening: listeningScore || 80, vocabulary: vocabularyScore || 80, active: activeScore || 80 } }),
       });
       const data = await res.json();
       if (res.ok && data.reply) {
@@ -129,19 +131,30 @@ export function useReportData() {
   const handleCreateReport = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatusMsg({ type: "", text: "" }); setSubmitting(true);
-    if (!studentId || !moduleName.trim() || !speakingScore || !grammarScore || !vocabularyScore || !activeScore) {
+    const normProg = selectedStudentProgram?.toLowerCase() || "";
+    const isEnglish = !normProg.includes("matematika") && !normProg.includes("calistung");
+    if (!studentId || !moduleName.trim() || !speakingScore || !grammarScore || (isEnglish && !listeningScore) || !vocabularyScore || !activeScore) {
       setStatusMsg({ type: "error", text: "Mohon lengkapi semua isian formulir rapor." }); setSubmitting(false); return;
     }
-    const speak = parseInt(speakingScore), gram = parseInt(grammarScore), vocab = parseInt(vocabularyScore), active = parseInt(activeScore);
-    if ([speak, gram, vocab, active].some((n) => n < 0 || n > 100)) {
+    const speak = parseInt(speakingScore), gram = parseInt(grammarScore), listen = isEnglish ? parseInt(listeningScore) : 0, vocab = parseInt(vocabularyScore), active = parseInt(activeScore);
+    const scoresToCheck = isEnglish ? [speak, gram, listen, vocab, active] : [speak, gram, vocab, active];
+    if (scoresToCheck.some((n) => n < 0 || n > 100)) {
       setStatusMsg({ type: "error", text: "Semua nilai harus berada di skala 0-100." }); setSubmitting(false); return;
     }
     try {
-      const { error } = await supabase.from("reports").insert({ student_id: studentId, module_name: moduleName.trim(), speaking_score: speak, grammar_score: gram, vocabulary_score: vocab, active_score: active, tutor_notes: tutorNotes.trim() || null });
+      const payload: Record<string, any> = { student_id: studentId, module_name: moduleName.trim(), speaking_score: speak, grammar_score: gram, vocabulary_score: vocab, active_score: active, tutor_notes: tutorNotes.trim() || null };
+      if (isEnglish) payload.listening_score = listen;
+      let { error } = await supabase.from("reports").insert(payload);
+      if (error && error.message?.includes("listening_score")) {
+        delete payload.listening_score;
+        const retry = await supabase.from("reports").insert(payload);
+        error = retry.error;
+      }
       if (error) throw error;
-      posthog.capture("admin_report_created", { program: selectedStudentProgram, module_name: moduleName.trim(), avg_score: Math.round((speak + gram + vocab + active) / 4) });
+      const avgScore = isEnglish ? Math.round((speak + gram + listen + vocab + active) / 5) : Math.round((speak + gram + vocab + active) / 4);
+      posthog.capture("admin_report_created", { program: selectedStudentProgram, module_name: moduleName.trim(), avg_score: avgScore });
       setStatusMsg({ type: "success", text: "Rapor digital berhasil diterbitkan!" });
-      setStudentId(""); setModuleName(""); setSpeakingScore(""); setGrammarScore(""); setVocabularyScore(""); setActiveScore(""); setTutorNotes("");
+      setStudentId(""); setModuleName(""); setSpeakingScore(""); setGrammarScore(""); setListeningScore(""); setVocabularyScore(""); setActiveScore(""); setTutorNotes("");
       fetchData();
     } catch (err: any) {
       setStatusMsg({ type: "error", text: "Gagal menerbitkan rapor: " + err.message });
@@ -180,8 +193,8 @@ export function useReportData() {
     studentId, setStudentId, exportFilterId, setExportFilterId,
     selectedStudentProgram, setSelectedStudentProgram,
     moduleName, setModuleName, speakingScore, setSpeakingScore,
-    grammarScore, setGrammarScore, vocabularyScore, setVocabularyScore,
-    activeScore, setActiveScore, tutorNotes, setTutorNotes,
+    grammarScore, setGrammarScore, listeningScore, setListeningScore,
+    vocabularyScore, setVocabularyScore, activeScore, setActiveScore, tutorNotes, setTutorNotes,
     aiLoading, aiProgressLoading, isAiModalOpen, setIsAiModalOpen,
     aiFocus, setAiFocus, aiAchievements, setAiAchievements,
     aiChallenges, setAiChallenges, isRubricModalOpen, setIsRubricModalOpen,

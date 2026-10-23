@@ -36,17 +36,30 @@ export default function LineChart({ reports, isCalistung, isMath }: any) {
     return paddingTop + chartHeight * (1 - clamped / 100);
   };
 
-  // Metric styles
-  const metrics = [
-    { key: "speaking_score", label: isMath ? "Operasi Hitung" : isCalistung ? "Membaca" : "Speaking & Listening", color: "#3b82f6", bg: "rgba(59, 130, 246, 0.1)" },
-    { key: "grammar_score", label: isMath ? "Penalaran" : isCalistung ? "Menulis" : "Grammar", color: "#f43f5e", bg: "rgba(244, 63, 94, 0.1)" },
-    { key: "vocabulary_score", label: isMath ? "Ketelitian" : isCalistung ? "Berhitung" : "Vocabulary", color: "#8b5cf6", bg: "rgba(139, 92, 246, 0.1)" },
-    { key: "active_score", label: "Keaktifan", color: "#10b981", bg: "rgba(16, 185, 129, 0.1)" }
-  ];
+  const isEnglish = !isMath && !isCalistung;
+  const metrics = isEnglish
+    ? [
+        { key: "speaking_score", label: "Speaking", color: "#3b82f6", bg: "rgba(59, 130, 246, 0.1)" },
+        { key: "grammar_score", label: "Grammar", color: "#f43f5e", bg: "rgba(244, 63, 94, 0.1)" },
+        { key: "listening_score", label: "Listening", color: "#f59e0b", bg: "rgba(245, 158, 11, 0.1)" },
+        { key: "vocabulary_score", label: "Vocabulary", color: "#8b5cf6", bg: "rgba(139, 92, 246, 0.1)" },
+        { key: "active_score", label: "Keaktifan", color: "#10b981", bg: "rgba(16, 185, 129, 0.1)" },
+      ]
+    : [
+        { key: "speaking_score", label: isMath ? "Operasi Hitung" : "Membaca", color: "#3b82f6", bg: "rgba(59, 130, 246, 0.1)" },
+        { key: "grammar_score", label: isMath ? "Penalaran" : "Menulis", color: "#f43f5e", bg: "rgba(244, 63, 94, 0.1)" },
+        { key: "vocabulary_score", label: isMath ? "Ketelitian" : "Berhitung", color: "#8b5cf6", bg: "rgba(139, 92, 246, 0.1)" },
+        { key: "active_score", label: "Keaktifan", color: "#10b981", bg: "rgba(16, 185, 129, 0.1)" },
+      ];
+
+  const getScoreValue = (rep: any, key: string) => {
+    if (key === "listening_score") return rep.listening_score ?? rep.speaking_score ?? 0;
+    return rep[key] ?? 0;
+  };
 
   // Helper to construct polyline points
   const getPointsString = (key: string) => {
-    return chronological.map((rep, idx) => `${getX(idx)},${getY(rep[key])}`).join(" ");
+    return chronological.map((rep, idx) => `${getX(idx)},${getY(getScoreValue(rep, key))}`).join(" ");
   };
 
   return (
@@ -167,7 +180,7 @@ export default function LineChart({ reports, isCalistung, isMath }: any) {
           {metrics.map((m) =>
             chronological.map((rep, idx) => {
               const x = getX(idx);
-              const y = getY(rep[m.key]);
+              const y = getY(getScoreValue(rep, m.key));
               const isHovered = hoveredIndex === idx;
               return (
                 <circle
@@ -233,7 +246,7 @@ export default function LineChart({ reports, isCalistung, isMath }: any) {
               <div key={m.key} style={{ display: "flex", justifyContent: "space-between", gap: "1.5rem" }}>
                 <span style={{ color: "rgba(255,255,255,0.7)", fontWeight: "500" }}>{m.label}:</span>
                 <span style={{ color: m.color, fontWeight: "900" }}>
-                  {chronological[hoveredIndex][m.key]}
+                  {getScoreValue(chronological[hoveredIndex], m.key)}
                 </span>
               </div>
             ))}

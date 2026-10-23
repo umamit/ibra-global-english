@@ -47,12 +47,16 @@ export default function ReportTable({ reports, loading, onPrint, onDelete }: Rep
                 const progStr = report.students?.program?.toLowerCase() || "";
                 const isMath = progStr.includes("matematika");
                 const isCalistung = !isMath && (report.students?.program === "Fun Calistung" || progStr.includes("calistung"));
-                const labels = isMath
-                  ? ["Hitung", "Logika", "Teliti", "Aktif"]
+                const isEnglish = !isMath && !isCalistung;
+                const listenVal = report.listening_score ?? report.speaking_score;
+                const avg = isEnglish
+                  ? Math.round((report.speaking_score + report.grammar_score + listenVal + report.vocabulary_score + report.active_score) / 5)
+                  : Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);
+                const detailText = isMath
+                  ? `(Hitung:${report.speaking_score} Logika:${report.grammar_score} Teliti:${report.vocabulary_score} Aktif:${report.active_score})`
                   : isCalistung
-                  ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-                  : ["Speaking/Listening", "Grammar", "Vocab", "Keaktifan"];
-                const avg = Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);
+                  ? `(Membaca:${report.speaking_score} Menulis:${report.grammar_score} Berhitung:${report.vocabulary_score} Keaktifan:${report.active_score})`
+                  : `(Speak:${report.speaking_score} Gram:${report.grammar_score} Listen:${listenVal} Vocab:${report.vocabulary_score} Aktif:${report.active_score})`;
 
                 return (
                   <tr key={report.id}>
@@ -70,7 +74,7 @@ export default function ReportTable({ reports, loading, onPrint, onDelete }: Rep
                       <div style={{ display: "inline-flex", flexDirection: "column", gap: "0.15rem" }}>
                         <span style={{ fontWeight: "800", fontSize: "1.1rem", color: "var(--color-primary-dark)" }}>{avg}</span>
                         <span style={{ fontSize: "0.68rem", color: "var(--color-gray-400)" }}>
-                          ({labels[0]}:{report.speaking_score} {labels[1]}:{report.grammar_score} {labels[2]}:{report.vocabulary_score} {labels[3]}:{report.active_score})
+                          {detailText}
                         </span>
                       </div>
                     </td>

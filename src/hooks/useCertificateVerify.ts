@@ -10,6 +10,7 @@ export interface CertStudents {
 export interface CertReport {
   speaking_score: number;
   grammar_score: number;
+  listening_score?: number | null;
   vocabulary_score: number;
   active_score: number;
   tutor_notes?: string;

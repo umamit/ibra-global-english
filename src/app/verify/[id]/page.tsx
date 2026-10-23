@@ -28,7 +28,12 @@ export default function VerifyCertificate() {
   const isMath = certProg.includes("matematika");
   const isCalistung = !isMath && certProg.includes("calistung");
   const isIndo = isCalistung || isMath;
-  const avgScore = report ? Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4) : 0;
+  const listenVal = report?.listening_score ?? report?.speaking_score ?? 0;
+  const avgScore = report
+    ? !isIndo
+      ? Math.round((report.speaking_score + report.grammar_score + listenVal + report.vocabulary_score + report.active_score) / 5)
+      : Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4)
+    : 0;
   const qrCodeUrl = cert ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin + "/verify/" + cert.id : "https://ibra.com/verify/" + cert.id)}` : "";
   const formattedDate = cert ? new Date(cert.issue_date).toLocaleDateString(isIndo ? "id-ID" : "en-US", { day: "numeric", month: "long", year: "numeric" }) : "";
   const completionText = isMath

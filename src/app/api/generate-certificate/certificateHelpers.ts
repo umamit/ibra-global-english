@@ -32,7 +32,7 @@ export async function fetchCertificateData(supabase: any, certId: string) {
   if (!report && cert.student_id) {
     const { data: repData } = await supabase
       .from("reports")
-      .select("speaking_score,grammar_score,vocabulary_score,active_score,tutor_notes")
+      .select("*")
       .eq("student_id", cert.student_id)
       .ilike("module_name", cert.module_name)
       .limit(1)
@@ -126,20 +126,31 @@ export async function renderCertificatePdf(cert: any, report: any, origin: strin
   drawInfo("No. Sertifikat", certNumber || "-", COL2X2, cy - 18);
   drawInfo("Tanggal Terbit", issueDate.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }), COL2X2, cy - 36);
 
-  const scores = { speaking: Number(report?.speaking_score || 0), grammar: Number(report?.grammar_score || 0), vocabulary: Number(report?.vocabulary_score || 0), active: Number(report?.active_score || 0) };
-  const avgScore = Math.round((scores.speaking + scores.grammar + scores.vocabulary + scores.active) / 4);
+  const isEnglish = !isMath && !isCalistung;
+  const scores = {
+    speaking: Number(report?.speaking_score || 0),
+    grammar: Number(report?.grammar_score || 0),
+    listening: Number(report?.listening_score ?? report?.speaking_score ?? 0),
+    vocabulary: Number(report?.vocabulary_score || 0),
+    active: Number(report?.active_score || 0),
+  };
+  const avgScore = isEnglish
+    ? Math.round((scores.speaking + scores.grammar + scores.listening + scores.vocabulary + scores.active) / 5)
+    : Math.round((scores.speaking + scores.grammar + scores.vocabulary + scores.active) / 4);
   const getGrade = (s: number) => (s >= 85 ? "A" : s >= 75 ? "B" : "C");
 
-  const ROW_H = 30;
-  const CELL_S = 11;
+  const ROW_H = isEnglish ? 26 : 30;
+  const CELL_S = 10.5;
   const colW = [36, TW - 36 - 96 - 96, 96, 96];
   const colX = [TM, TM + colW[0], TM + colW[0] + colW[1], TM + colW[0] + colW[1] + colW[2]];
   const subjects = isMath
     ? ["Pemahaman Konsep & Operasi Hitung", "Penalaran & Logika Soal Cerita", "Ketelitian & Kerapian Perhitungan", "Keaktifan & Kemandirian Belajar"]
     : isCalistung
     ? ["Kemampuan Membaca (Reading Skill)", "Kemampuan Menulis (Writing Skill)", "Kemampuan Berhitung (Math Skill)", "Keaktifan Siswa (Class Participation)"]
-    : ["Speaking & Listening", "Grammar & Structure", "Vocabulary & Comprehension", "Keaktifan Siswa (Class Participation)"];
-  const scoreValues = [scores.speaking, scores.grammar, scores.vocabulary, scores.active];
+    : ["Speaking (Kelancaran & Pengucapan)", "Grammar (Tata Bahasa & Struktur Kalimat)", "Listening (Pemahaman Menyimak)", "Vocabulary (Penguasaan Kosakata)", "Keaktifan Siswa (Class Participation)"];
+  const scoreValues = isEnglish
+    ? [scores.speaking, scores.grammar, scores.listening, scores.vocabulary, scores.active]
+    : [scores.speaking, scores.grammar, scores.vocabulary, scores.active];
 
   let ty = cy - 52 - 22;
   page2.drawRectangle({ x: TM, y: ty - ROW_H + 8, width: TW, height: ROW_H, borderColor: C_ROW_BORDER, borderWidth: 0.5 });

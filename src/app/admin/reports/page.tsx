@@ -19,8 +19,8 @@ export default function ReportCardManagement() {
     studentId, setStudentId, exportFilterId, setExportFilterId,
     selectedStudentProgram, setSelectedStudentProgram,
     moduleName, setModuleName, speakingScore, setSpeakingScore,
-    grammarScore, setGrammarScore, vocabularyScore, setVocabularyScore,
-    activeScore, setActiveScore, tutorNotes, setTutorNotes,
+    grammarScore, setGrammarScore, listeningScore, setListeningScore,
+    vocabularyScore, setVocabularyScore, activeScore, setActiveScore, tutorNotes, setTutorNotes,
     aiLoading, aiProgressLoading, isAiModalOpen, setIsAiModalOpen,
     aiFocus, setAiFocus, aiAchievements, setAiAchievements,
     aiChallenges, setAiChallenges, isRubricModalOpen, setIsRubricModalOpen,
@@ -66,6 +66,7 @@ export default function ReportCardManagement() {
         moduleName={moduleName} setModuleName={setModuleName}
         speakingScore={speakingScore} setSpeakingScore={setSpeakingScore}
         grammarScore={grammarScore} setGrammarScore={setGrammarScore}
+        listeningScore={listeningScore} setListeningScore={setListeningScore}
         vocabularyScore={vocabularyScore} setVocabularyScore={setVocabularyScore}
         activeScore={activeScore} setActiveScore={setActiveScore}
         tutorNotes={tutorNotes} setTutorNotes={setTutorNotes}
