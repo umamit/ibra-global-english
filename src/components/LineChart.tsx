@@ -38,7 +38,7 @@ export default function LineChart({ reports, isCalistung, isMath }: any) {
 
   // Metric styles
   const metrics = [
-    { key: "speaking_score", label: isMath ? "Operasi Hitung" : isCalistung ? "Membaca" : "Speaking", color: "#3b82f6", bg: "rgba(59, 130, 246, 0.1)" },
+    { key: "speaking_score", label: isMath ? "Operasi Hitung" : isCalistung ? "Membaca" : "Speaking & Listening", color: "#3b82f6", bg: "rgba(59, 130, 246, 0.1)" },
     { key: "grammar_score", label: isMath ? "Penalaran" : isCalistung ? "Menulis" : "Grammar", color: "#f43f5e", bg: "rgba(244, 63, 94, 0.1)" },
     { key: "vocabulary_score", label: isMath ? "Ketelitian" : isCalistung ? "Berhitung" : "Vocabulary", color: "#8b5cf6", bg: "rgba(139, 92, 246, 0.1)" },
     { key: "active_score", label: "Keaktifan", color: "#10b981", bg: "rgba(16, 185, 129, 0.1)" }

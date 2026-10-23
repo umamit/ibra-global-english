@@ -60,7 +60,7 @@ export function CertificateBackPage({ cert, report, isCalistung, isMath, avgScor
         <tbody>
           <tr>
             <td style={{ textAlign: "center" }}>1</td>
-            <td style={{ fontWeight: "600" }}>{isMath ? "Pemahaman Konsep & Operasi Hitung" : isCalistung ? "Kemampuan Membaca (Reading Skill)" : "Speaking & Pronunciation"}</td>
+            <td style={{ fontWeight: "600" }}>{isMath ? "Pemahaman Konsep & Operasi Hitung" : isCalistung ? "Kemampuan Membaca (Reading Skill)" : "Speaking & Listening"}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{report?.speaking_score || 0}</td>
             <td style={{ textAlign: "center", fontWeight: "700" }}>{(report?.speaking_score || 0) >= 85 ? "A" : (report?.speaking_score || 0) >= 75 ? "B" : "C"}</td>
           </tr>

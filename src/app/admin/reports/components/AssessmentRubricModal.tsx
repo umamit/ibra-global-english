@@ -39,7 +39,7 @@ export default function AssessmentRubricModal({ isOpen, onClose, programName, st
           <h3>Rubrik Penilaian Terstruktur - {studentName}</h3>
           <button onClick={onClose} className="btn-portal-outline">Tutup</button>
         </div>
-        <RubricAspectList rubrics={rubrics} selectedIds={selectedIds} toggleCriterion={toggleCriterion} />
+        <RubricAspectList rubrics={rubrics} selectedIds={selectedIds} toggleCriterion={toggleCriterion} isCalistung={isCalistung} isMath={isMath} />
         <div style={{ marginTop: "1.5rem", display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
           <button onClick={handleApply} className="btn-portal-primary">Terapkan Skor & Catatan</button>
         </div>

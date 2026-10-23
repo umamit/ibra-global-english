@@ -16,7 +16,7 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
     ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
     : isCalistung
     ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-    : ["Speaking", "Grammar", "Vocabulary", "Active"];
+    : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
 
   return (
     <div style={{ padding: "1.5rem", backgroundColor: "white", minHeight: "100vh" }}>

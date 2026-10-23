@@ -24,7 +24,7 @@ export const exportReportsCSV = (reports: Report[], filterStudentId: string = ""
       ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
       : isCalistung(prog)
       ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-      : ["Speaking", "Grammar", "Vocabulary", "Active"];
+      : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
     return [
       idx + 1,
       r.students?.name || "-",

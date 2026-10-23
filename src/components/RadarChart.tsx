@@ -26,13 +26,13 @@ export default function RadarChart({ speaking, grammar, vocabulary, active, isCa
     ? ["HITUNG", "LOGIKA", "TELITI", "AKTIF"]
     : isCalistung
     ? ["MEMBACA", "MENULIS", "BERHITUNG", "KEAKTIFAN"]
-    : ["SPEAKING", "GRAMMAR", "VOCABULARY", "ACTIVE"];
+    : ["SPEAKING / LISTENING", "GRAMMAR", "VOCABULARY", "KEAKTIFAN"];
 
   const tipLabels = isMath
     ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
     : isCalistung
     ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-    : ["Speaking", "Grammar", "Vocabulary", "Active"];
+    : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
 
   const handleMouseEnter = (x: number, y: number, label: string, score: number) => {
     setTooltip({ show: true, x, y: y - 12, label, score });

@@ -40,7 +40,7 @@ export default function ReportInputForm(props: ReportInputFormProps) {
     ? ["Operasi Hitung", "Penalaran & Logika", "Ketelitian", "Keaktifan"]
     : isFormCalistung
     ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-    : ["Speaking", "Grammar", "Vocabulary", "Active"];
+    : ["Speaking & Listening", "Grammar", "Vocabulary", "Keaktifan"];
 
   return (
     <div className="portal-card" style={{ marginBottom: "3rem", padding: "2rem" }}>

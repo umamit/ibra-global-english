@@ -30,10 +30,10 @@ export function ReportCardItem({ report, selectedChild, certificates, onSetPrint
 
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "2rem", alignItems: "center" }} className="report-detail-layout">
         <div className="stats-grid" style={{ marginBottom: 0 }}>
-          <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}><p className="stat-value" style={{ color: "var(--color-primary-dark)" }}>{report.speaking_score}</p><p className="stat-label">{isMath ? "Operasi Hitung" : isCalistung ? "Membaca" : "Speaking"}</p></div>
+          <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}><p className="stat-value" style={{ color: "var(--color-primary-dark)" }}>{report.speaking_score}</p><p className="stat-label">{isMath ? "Operasi Hitung" : isCalistung ? "Membaca" : "Speaking & Listening"}</p></div>
           <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}><p className="stat-value" style={{ color: "var(--color-primary-dark)" }}>{report.grammar_score}</p><p className="stat-label">{isMath ? "Penalaran" : isCalistung ? "Menulis" : "Grammar"}</p></div>
           <div className="stat-card" style={{ borderTop: "3px solid var(--color-primary)" }}><p className="stat-value" style={{ color: "var(--color-primary-dark)" }}>{report.vocabulary_score}</p><p className="stat-label">{isMath ? "Ketelitian" : isCalistung ? "Berhitung" : "Vocabulary"}</p></div>
-          <div className="stat-card" style={{ borderTop: "3px solid var(--color-accent)" }}><p className="stat-value" style={{ color: "var(--color-accent)" }}>{report.active_score}</p><p className="stat-label">{isMath ? "Kemandirian" : isCalistung ? "Keaktifan" : "Active"}</p></div>
+          <div className="stat-card" style={{ borderTop: "3px solid var(--color-accent)" }}><p className="stat-value" style={{ color: "var(--color-accent)" }}>{report.active_score}</p><p className="stat-label">{isMath ? "Kemandirian" : "Keaktifan"}</p></div>
         </div>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <RadarChart speaking={report.speaking_score} grammar={report.grammar_score} vocabulary={report.vocabulary_score} active={report.active_score} isCalistung={isCalistung} isMath={isMath} />

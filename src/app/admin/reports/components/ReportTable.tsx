@@ -51,7 +51,7 @@ export default function ReportTable({ reports, loading, onPrint, onDelete }: Rep
                   ? ["Hitung", "Logika", "Teliti", "Aktif"]
                   : isCalistung
                   ? ["Membaca", "Menulis", "Berhitung", "Keaktifan"]
-                  : ["Speaking", "Grammar", "Vocab", "Active"];
+                  : ["Speaking/Listening", "Grammar", "Vocab", "Keaktifan"];
                 const avg = Math.round((report.speaking_score + report.grammar_score + report.vocabulary_score + report.active_score) / 4);
 
                 return (

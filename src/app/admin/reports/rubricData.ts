@@ -14,13 +14,13 @@ export interface AspectRubric {
 export const RUBRIC_DATA_ENGLISH: AspectRubric[] = [
   {
     aspectKey: "speaking",
-    titleEnglish: "Speaking (Kelancaran & Pengucapan)",
+    titleEnglish: "Speaking & Listening (Kelancaran Bicara & Pemahaman Dengar)",
     titleCalistung: "Membaca",
     criteria: [
-      { id: "sp_1", label: "Berani bercakap dan merespons pertanyaan lisan tutor secara mandiri", points: 25 },
+      { id: "sp_1", label: "Mampu menyimak (listening) dan merespons pertanyaan lisan tutor secara mandiri", points: 25 },
       { id: "sp_2", label: "Pengucapan kata (pronunciation) jelas dan mudah dipahami", points: 25 },
-      { id: "sp_3", label: "Mampu menjawab dan merangkai kata dalam struktur kalimat sederhana", points: 25 },
-      { id: "sp_4", label: "Lancar bercakap tanpa jeda panjang atau rasa ragu berlebih", points: 25 }
+      { id: "sp_3", label: "Memahami instruksi lisan bahasa Inggris dan menjawab dalam kalimat sederhana", points: 25 },
+      { id: "sp_4", label: "Lancar bercakap (speaking) tanpa jeda panjang atau rasa ragu berlebih", points: 25 }
     ]
   },
   {
@@ -47,7 +47,7 @@ export const RUBRIC_DATA_ENGLISH: AspectRubric[] = [
   },
   {
     aspectKey: "active",
-    titleEnglish: "Active (Keaktifan & Partisipasi Belajar)",
+    titleEnglish: "Keaktifan (Partisipasi & Kepercayaan Diri Belajar)",
     titleCalistung: "Keaktifan",
     criteria: [
       { id: "ac_1", label: "Hadir tepat waktu dan mengikuti instruksi tutor dengan sangat baik", points: 25 },

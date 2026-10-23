@@ -138,7 +138,7 @@ export async function renderCertificatePdf(cert: any, report: any, origin: strin
     ? ["Pemahaman Konsep & Operasi Hitung", "Penalaran & Logika Soal Cerita", "Ketelitian & Kerapian Perhitungan", "Keaktifan & Kemandirian Belajar"]
     : isCalistung
     ? ["Kemampuan Membaca (Reading Skill)", "Kemampuan Menulis (Writing Skill)", "Kemampuan Berhitung (Math Skill)", "Keaktifan Siswa (Class Participation)"]
-    : ["Speaking & Pronunciation", "Grammar & Structure", "Vocabulary & Comprehension", "Keaktifan Siswa (Class Participation)"];
+    : ["Speaking & Listening", "Grammar & Structure", "Vocabulary & Comprehension", "Keaktifan Siswa (Class Participation)"];
   const scoreValues = [scores.speaking, scores.grammar, scores.vocabulary, scores.active];
 
   let ty = cy - 52 - 22;
