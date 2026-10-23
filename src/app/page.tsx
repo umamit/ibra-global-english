@@ -7,14 +7,15 @@ import { getLandingSettings } from "@/utils/getLandingSettings";
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getLandingSettings();
 
-  const rawTitle = settings.hero_title || "Ibra Global English (IGE) Bobong";
+  const rawTitle = settings.hero_title || "PT. IBRA GLOBAL ENGLISH (IGE) -- Kursus Bahasa Inggris dan CALISTUNG di Bobong";
   const heroTitle = rawTitle.includes("IGE") ? rawTitle : `${rawTitle} (IGE)`;
-  const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris Terbaik";
-  const title = `${heroTitle} - ${heroSubtitle}`;
+  const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris Terbaik di Bobong";
+  const baseTitle = `${heroTitle} - ${heroSubtitle}`;
+  const title = baseTitle.toLowerCase().includes("bobong") ? baseTitle : `${baseTitle} di Bobong`;
 
   const rawDesc = settings.hero_desc ||
-    "Ibra Global English (IGE) Bobong menawarkan kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Metode interaktif, menyenangkan, dan tutor berpengalaman. Tingkatkan kemampuan berbicara (speaking) Anda di IGE sekarang!";
-  const description = rawDesc.includes("IGE") ? rawDesc : `Ibra Global English (IGE) — ${rawDesc}`;
+    "PT. IBRA GLOBAL ENGLISH (IGE) -- Kursus Bahasa Inggris, Calistung, dan Matematika Dasar terbaik di Bobong, Taliabu Barat, Kabupaten Pulau Taliabu. Metode interaktif, menyenangkan, dan tutor berpengalaman di Bobong!";
+  const description = rawDesc.includes("IGE") ? rawDesc : `PT. IBRA GLOBAL ENGLISH (IGE) Bobong — ${rawDesc}`;
 
   const heroImage = settings.hero_image || "/assets/logo.png";
 
@@ -22,17 +23,24 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     keywords: [
+      "bobong",
+      "kota bobong",
+      "bobong taliabu",
+      "bobong pulau taliabu",
       "ige",
       "ige bobong",
       "ige taliabu",
       "kursus ige",
       "lkp ige bobong",
+      "pt ibra global english",
       "ibra global english",
+      "kursus di bobong",
       "kursus bahasa inggris bobong",
       "ibra global english bobong",
       "kursus inggris taliabu",
       "les bahasa inggris bobong",
       "bimbel calistung bobong",
+      "matematika dasar bobong",
       "belajar bahasa inggris taliabu"
     ],
     alternates: {

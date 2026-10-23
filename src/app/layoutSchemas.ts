@@ -4,17 +4,19 @@ export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "@id": "https://www.ibraglobalenglish.uk/#website",
-  "name": "Ibra Global English (IGE) Bobong",
-  "alternateName": ["IGE", "IGE Bobong", "IGE Taliabu", "PT. IBRA Global English", "PT IBRA Global English", "Ibra Global English Bobong", "Ibra Global English", "LKP IGE Bobong"],
+  "name": "PT. IBRA GLOBAL ENGLISH (IGE) -- Kursus Bahasa Inggris dan CALISTUNG di Bobong",
+  "alternateName": ["Bobong", "IGE", "IGE Bobong", "IGE Taliabu", "PT. IBRA Global English", "PT IBRA Global English", "Ibra Global English Bobong", "Ibra Global English", "LKP IGE Bobong", "Kursus di Bobong"],
   "url": "https://www.ibraglobalenglish.uk/"
 };
 
 export const educationalOrgSchema = {
   "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
+  "@type": ["EducationalOrganization", "LocalBusiness"],
   "@id": "https://www.ibraglobalenglish.uk/#organization",
-  "name": "PT. IBRA Global English (IGE)",
+  "name": "PT. IBRA GLOBAL ENGLISH (IGE) -- Kursus Bahasa Inggris dan CALISTUNG di Bobong",
+  "legalName": "PT. IBRA Global English",
   "alternateName": [
+    "Bobong",
     "IGE",
     "IGE Bobong",
     "IGE Taliabu",
@@ -22,7 +24,19 @@ export const educationalOrgSchema = {
     "LKP IGE Bobong",
     "Ibra Global English Bobong",
     "LKP Ibra Global English Bobong",
-    "Lembaga Kursus dan Pelatihan Ibra Global English"
+    "Lembaga Kursus dan Pelatihan Ibra Global English",
+    "Kursus di Bobong"
+  ],
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Bobong",
+      "sameAs": "https://id.wikipedia.org/wiki/Bobong,_Taliabu_Barat,_Pulau_Taliabu"
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Taliabu Barat, Kabupaten Pulau Taliabu, Maluku Utara"
+    }
   ],
   "identifier": ["NPSN: K7069872", "SK-Disdikbud-870/843/2026"],
   "founder": {

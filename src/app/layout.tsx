@@ -19,21 +19,22 @@ export const viewport: Viewport = { themeColor: "#4a9ba8", colorScheme: "light d
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getLandingSettings();
-  const rawTitle = settings.hero_title || "Kursus di Bobong | Ibra Global English (IGE)";
+  const rawTitle = settings.hero_title || "PT. IBRA GLOBAL ENGLISH (IGE) -- Kursus Bahasa Inggris dan CALISTUNG di Bobong";
   const heroTitle = rawTitle.includes("IGE") ? rawTitle : `${rawTitle} (IGE)`;
-  const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris Terbaik";
-  const defaultTitle = `${heroTitle} - ${heroSubtitle}`;
-  const description = settings.hero_desc || "Ibra Global English (IGE) adalah kursus bahasa Inggris offline & bimbingan belajar Calistung terbaik di Bobong, Pulau Taliabu. Belajar seru lancar bicara bersama IGE Bobong!";
+  const heroSubtitle = settings.hero_subtitle || "Kursus Bahasa Inggris, Calistung & Matematika Dasar di Bobong";
+  const baseTitle = `${heroTitle} - ${heroSubtitle}`;
+  const defaultTitle = baseTitle.toLowerCase().includes("bobong") ? baseTitle : `${baseTitle} di Bobong`;
+  const description = settings.hero_desc || "PT. IBRA GLOBAL ENGLISH (IGE) -- Kursus Bahasa Inggris, Calistung, dan Matematika Dasar terbaik di Bobong, Taliabu Barat, Kabupaten Pulau Taliabu. Belajar seru lancar bicara bersama IGE Bobong!";
   const heroImage = settings.hero_image || "/assets/logo.png";
 
   return {
     title: { default: defaultTitle, template: `%s | ${heroTitle}` },
     description,
-    keywords: ["ige", "ige bobong", "ige taliabu", "kursus ige", "lkp ige", "ibra global english", "kursus di bobong", "kursus bahasa inggris bobong", "ibra global english bobong", "kursus inggris taliabu", "les bahasa inggris bobong", "bimbel calistung bobong", "belajar bahasa inggris taliabu"],
+    keywords: ["bobong", "kota bobong", "bobong taliabu", "bobong pulau taliabu", "ige", "ige bobong", "ige taliabu", "kursus ige", "lkp ige", "pt ibra global english", "ibra global english", "kursus di bobong", "kursus bahasa inggris bobong", "ibra global english bobong", "kursus inggris taliabu", "les bahasa inggris bobong", "bimbel calistung bobong", "matematika dasar bobong", "belajar bahasa inggris taliabu"],
     metadataBase: new URL("https://www.ibraglobalenglish.uk"),
     alternates: { canonical: "https://www.ibraglobalenglish.uk" },
     robots: { index: true, follow: true },
-    openGraph: { title: defaultTitle, description, url: "https://www.ibraglobalenglish.uk/", siteName: "Ibra Global English (IGE)", type: "website", images: [{ url: heroImage, width: 512, height: 512, alt: "Ibra Global English (IGE) Logo" }] },
+    openGraph: { title: defaultTitle, description, url: "https://www.ibraglobalenglish.uk/", siteName: "PT. IBRA GLOBAL ENGLISH (IGE) -- Kursus Bahasa Inggris dan CALISTUNG di Bobong", type: "website", images: [{ url: heroImage, width: 512, height: 512, alt: "PT. IBRA GLOBAL ENGLISH (IGE) Bobong Logo" }] },
     twitter: { card: "summary_large_image", title: defaultTitle, description, images: [heroImage] },
     manifest: "/manifest.json",
     verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "google-site-verification-code", other: { "facebook-domain-verification": ["7f0myl220gjkh4ndqe6cvvz26h7iyg"] } },
