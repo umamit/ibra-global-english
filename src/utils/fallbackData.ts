@@ -6,6 +6,7 @@ export interface NavigationItem {
 export interface Program {
   title: string;
   age: string;
+  schedule?: string;
   desc: string;
   iconKey: string;
   features: string[];
@@ -54,6 +55,7 @@ export const DEFAULT_PROGRAMS: Program[] = [
   {
     title: "Kids Program",
     age: "5-12 tahun",
+    schedule: "3x Seminggu · 75 Menit/Sesi",
     desc: "Program khusus anak dengan metode belajar yang menyenangkan (fun), interaktif, dan penuh lagu/permainan",
     iconKey: "book",
     features: ["Materi Visual", "Games & Activities", "Story Telling"]
@@ -61,6 +63,7 @@ export const DEFAULT_PROGRAMS: Program[] = [
   {
     title: "Teens Program",
     age: "13-17 tahun",
+    schedule: "2x Seminggu · 90 Menit/Sesi",
     desc: "Program remaja yang berfokus pada kelancaran berbicara (conversation) dan penguasaan tata bahasa (grammar)",
     iconKey: "graduation",
     features: ["Speaking Practice", "Grammar", "Writing Skills"]
@@ -68,6 +71,7 @@ export const DEFAULT_PROGRAMS: Program[] = [
   {
     title: "Fun Calistung",
     age: "5-7 tahun",
+    schedule: "3x Seminggu · 45 Menit/Sesi",
     desc: "Program membaca, menulis, dan berhitung yang menyenangkan bagi anak usia dini",
     iconKey: "users",
     features: ["Belajar Membaca", "Belajar Menulis", "Belajar Berhitung"]
@@ -75,6 +79,7 @@ export const DEFAULT_PROGRAMS: Program[] = [
   {
     title: "Matematika Dasar",
     age: "6-12 tahun (SD)",
+    schedule: "3x Seminggu · 75 Menit/Sesi",
     desc: "Program penguatan konsep operasi hitung, penalaran logika soal cerita, dan ketelitian berhitung dasar",
     iconKey: "calculator",
     features: ["Operasi Hitung Dasar", "Penalaran Soal Cerita", "Latihan Ketelitian & Logika"]

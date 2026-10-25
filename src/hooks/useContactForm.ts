@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function useContactForm({ form, setForm, honeypot, initialSettings }: any) {
   const [address] = useState(
@@ -26,6 +26,22 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
   const [regSubmitting, setRegSubmitting] = useState(false);
   const [regSuccess, setRegSuccess] = useState(false);
   const [regError, setRegError] = useState("");
+
+  useEffect(() => {
+    const handleSelectProgram = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      const title = (customEvent.detail || "").toLowerCase();
+      let selectedOption = "Kids Program (5-12 tahun)";
+      if (title.includes("teens")) selectedOption = "Teens Program (13-17 tahun)";
+      else if (title.includes("calistung")) selectedOption = "Fun Calistung (5-7 tahun)";
+      else if (title.includes("matematika")) selectedOption = "Matematika Dasar (6-12 tahun)";
+      setActiveTab("daftar");
+      setRegForm((prev) => ({ ...prev, program: selectedOption }));
+      if (setForm) setForm((prev: any) => ({ ...prev, program: selectedOption }));
+    };
+    window.addEventListener("select-course-program", handleSelectProgram);
+    return () => window.removeEventListener("select-course-program", handleSelectProgram);
+  }, [setForm]);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

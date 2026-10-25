@@ -71,6 +71,21 @@ export default function Programs({ initialSettings }: any) {
     };
   }, []);
 
+  const getDefaultSchedule = (title: string) => {
+    const t = (title || "").toLowerCase();
+    if (t.includes("teens")) return "2x Seminggu · 90 Menit/Sesi";
+    if (t.includes("calistung")) return "3x Seminggu · 45 Menit/Sesi";
+    return "3x Seminggu · 75 Menit/Sesi";
+  };
+
+  const handleChooseProgram = (title: string) => {
+    window.dispatchEvent(new CustomEvent("select-course-program", { detail: title }));
+    const contactEl = document.getElementById("contact");
+    if (contactEl) {
+      contactEl.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section id="programs" className="programs-section ios-aurora-bg" ref={sectionRef}>
       {/* Ambient Aurora Orbs for True iOS Glass Refraction */}
@@ -106,10 +121,15 @@ export default function Programs({ initialSettings }: any) {
                       {ICON_MAP[prog.iconKey as keyof typeof ICON_MAP] || ICON_MAP.book}
                     </div>
                     <h3>{prog.title}</h3>
-                    <p className="program-age">{prog.age}</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", alignItems: "center", marginBottom: "0.5rem" }}>
+                      <p className="program-age" style={{ marginBottom: 0 }}>{prog.age}</p>
+                      <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "var(--color-primary-dark)", backgroundColor: "var(--color-bg-teal-50)", padding: "0.2rem 0.65rem", borderRadius: "9999px", border: "1px solid rgba(33, 108, 126, 0.12)" }}>
+                        {prog.schedule || getDefaultSchedule(prog.title)}
+                      </span>
+                    </div>
                     <p className="program-desc">{prog.desc}</p>
                   </div>
-                  <div className="bento-features-info">
+                  <div className="bento-features-info" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "1rem" }}>
                     <ul className="program-features">
                       {(prog.features || []).map((feature: any, fIdx: number) => (
                         <li key={fIdx}>
@@ -125,6 +145,30 @@ export default function Programs({ initialSettings }: any) {
                         </li>
                       ))}
                     </ul>
+                    <button
+                      type="button"
+                      onClick={() => handleChooseProgram(prog.title)}
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.65rem 1.1rem",
+                        borderRadius: "10px",
+                        border: "1px solid rgba(33, 108, 126, 0.2)",
+                        backgroundColor: "var(--color-bg-teal-50)",
+                        color: "var(--color-primary-dark)",
+                        fontWeight: "700",
+                        fontSize: "0.85rem",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.4rem",
+                        transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                        alignSelf: "flex-start"
+                      }}
+                    >
+                      <span>Daftar {prog.title}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
                   </div>
                 </div>
               </div>
