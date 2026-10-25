@@ -4,7 +4,7 @@ export function ContactAndPaymentFields(props: any) {
   const {
     contactAddress, setContactAddress, contactPhone, setContactPhone, contactEmail, setContactEmail,
     paymentBankName, setPaymentBankName, paymentAccountNumber, setPaymentAccountNumber, paymentAccountName, setPaymentAccountName,
-    paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung
+    paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung, paymentSppMath, setPaymentSppMath
   } = props;
 
   return (
@@ -43,7 +43,7 @@ export function ContactAndPaymentFields(props: any) {
             <input type="text" className="form-input" value={paymentAccountName} onChange={(e) => setPaymentAccountName(e.target.value)} />
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "1rem" }}>
           <div>
             <label className="form-label">SPP Kids Program (Rp)</label>
             <input type="number" className="form-input" value={paymentSppKids} onChange={(e) => setPaymentSppKids(e.target.value)} />
@@ -55,6 +55,10 @@ export function ContactAndPaymentFields(props: any) {
           <div>
             <label className="form-label">SPP Fun Calistung (Rp)</label>
             <input type="number" className="form-input" value={paymentSppCalistung} onChange={(e) => setPaymentSppCalistung(e.target.value)} />
+          </div>
+          <div>
+            <label className="form-label">SPP Matematika Dasar (Rp)</label>
+            <input type="number" className="form-input" value={paymentSppMath} onChange={(e) => setPaymentSppMath(e.target.value)} />
           </div>
         </div>
       </div>

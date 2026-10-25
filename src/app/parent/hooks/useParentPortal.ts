@@ -5,7 +5,7 @@ import { getIndonesianDay, getIndonesianDate, getTerbilang, getMonthName, getChi
 
 export interface StudentRecord { id: string; name: string; program: string; age: number; parent_id?: string; [key: string]: unknown; }
 export interface AttendanceStats { hadir: number; sakit: number; izin: number; alfa: number; }
-export interface PaymentSettings { payment_bank_name: string; payment_account_number: string; payment_account_name: string; payment_account_sub: string; contact_address: string; }
+export interface PaymentSettings { payment_bank_name: string; payment_account_number: string; payment_account_name: string; payment_account_sub: string; contact_address: string; payment_spp_kids?: string; payment_spp_teens?: string; payment_spp_calistung?: string; payment_spp_math?: string; }
 
 const DEFAULT_PAYMENT: PaymentSettings = {
   payment_bank_name: "Bank Mandiri", payment_account_number: "137-00-1234567-8",
@@ -54,7 +54,7 @@ export function useParentPortal() {
       if (settings) {
         const s: Record<string, string> = {};
         settings.forEach((r: { key: string; value: string }) => { s[r.key] = r.value; });
-        setPaymentSettings({ payment_bank_name: s.payment_bank_name || DEFAULT_PAYMENT.payment_bank_name, payment_account_number: s.payment_account_number || DEFAULT_PAYMENT.payment_account_number, payment_account_name: s.payment_account_name || DEFAULT_PAYMENT.payment_account_name, payment_account_sub: s.payment_account_sub || DEFAULT_PAYMENT.payment_account_sub, contact_address: s.contact_address || DEFAULT_PAYMENT.contact_address });
+        setPaymentSettings({ payment_bank_name: s.payment_bank_name || DEFAULT_PAYMENT.payment_bank_name, payment_account_number: s.payment_account_number || DEFAULT_PAYMENT.payment_account_number, payment_account_name: s.payment_account_name || DEFAULT_PAYMENT.payment_account_name, payment_account_sub: s.payment_account_sub || DEFAULT_PAYMENT.payment_account_sub, contact_address: s.contact_address || DEFAULT_PAYMENT.contact_address, payment_spp_kids: s.payment_spp_kids, payment_spp_teens: s.payment_spp_teens, payment_spp_calistung: s.payment_spp_calistung, payment_spp_math: s.payment_spp_math });
       }
       const { data: annData } = await supabase.from("announcements").select("*").order("published_at", { ascending: false }).limit(3);
       setAnnouncements(annData || []);
@@ -112,7 +112,7 @@ export function useParentPortal() {
       const { error: uploadError } = await supabase.storage.from("spp-receipts").upload(filePath, file);
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from("spp-receipts").getPublicUrl(filePath);
-      const { error: updateError } = await supabase.from("tuition_payments").upsert({ student_id: selectedChild.id, month, amount: getChildProgramPrice(selectedChild.program), status: "menunggu_konfirmasi", receipt_url: publicUrl }, { onConflict: "student_id,month" });
+      const { error: updateError } = await supabase.from("tuition_payments").upsert({ student_id: selectedChild.id, month, amount: getChildProgramPrice(selectedChild.program, paymentSettings as any), status: "menunggu_konfirmasi", receipt_url: publicUrl }, { onConflict: "student_id,month" });
       if (updateError) throw updateError;
       alert("Bukti pembayaran berhasil diunggah! Menunggu konfirmasi admin."); fetchChildDetails(selectedChild);
     } catch (err) { alert("Gagal mengunggah bukti pembayaran: " + (err instanceof Error ? err.message : String(err))); } finally { setUploadingReceipt(false); if (receiptFileRef.current) receiptFileRef.current.value = ""; }
@@ -129,6 +129,6 @@ export function useParentPortal() {
     certificates, lmsMaterials, lmsSubmissions, parentPayments, paymentSettings,
     detailsLoading, printReport, printReceipt, setPrintReceipt, uploadingReceipt,
     receiptFileRef, getIndonesianDay, getIndonesianDate, getTerbilang, getMonthName,
-    getChildProgramPrice, handleLogout, handleUploadReceipt, triggerPrint, triggerPrintReceipt,
+    getChildProgramPrice: (prog?: string | null) => getChildProgramPrice(prog, paymentSettings as any), handleLogout, handleUploadReceipt, triggerPrint, triggerPrintReceipt,
   };
 }

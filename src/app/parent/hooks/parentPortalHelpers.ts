@@ -15,11 +15,13 @@ export function getMonthName(ym: string): string {
   return new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleDateString("id-ID", { month: "long", year: "numeric" });
 }
 
-export function getChildProgramPrice(program: string | null | undefined): number {
+export function getChildProgramPrice(program: string | null | undefined, customPrices?: Record<string, string | undefined>): number {
   if (!program) return 300000;
   const lower = program.toLowerCase();
-  if (lower.includes("calistung")) return 350000;
-  return 300000;
+  if (lower.includes("calistung")) return parseInt(customPrices?.payment_spp_calistung || "350000", 10) || 350000;
+  if (lower.includes("matematika")) return parseInt(customPrices?.payment_spp_math || customPrices?.payment_spp_kids || "300000", 10) || 300000;
+  if (lower.includes("teens")) return parseInt(customPrices?.payment_spp_teens || "300000", 10) || 300000;
+  return parseInt(customPrices?.payment_spp_kids || "300000", 10) || 300000;
 }
 
 export function getTerbilang(val: number | string): string {

@@ -19,6 +19,7 @@ interface HeroSettingsProps {
   paymentSppKids: string | number; setPaymentSppKids: (val: string) => void;
   paymentSppTeens: string | number; setPaymentSppTeens: (val: string) => void;
   paymentSppCalistung: string | number; setPaymentSppCalistung: (val: string) => void;
+  paymentSppMath: string | number; setPaymentSppMath: (val: string) => void;
   marqueeText1: string; setMarqueeText1: (val: string) => void;
   marqueeText2: string; setMarqueeText2: (val: string) => void;
   marqueeText3: string; setMarqueeText3: (val: string) => void;

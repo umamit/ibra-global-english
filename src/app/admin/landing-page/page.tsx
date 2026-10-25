@@ -24,7 +24,7 @@ export default function LandingPageCMS() {
     contactAddress, setContactAddress, contactPhone, setContactPhone, contactEmail, setContactEmail,
     paymentBankName, setPaymentBankName, paymentAccountNumber, setPaymentAccountNumber,
     paymentAccountName, setPaymentAccountName, paymentAccountSub, setPaymentAccountSub,
-    paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung,
+    paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung, paymentSppMath, setPaymentSppMath,
     marqueeText1, setMarqueeText1, marqueeText2, setMarqueeText2, marqueeText3, setMarqueeText3,
     marqueeList, setMarqueeList, marqueeIcon, setMarqueeIcon,
     handleAddMarqueeText, handleRemoveMarqueeText, handleMarqueeTextChange,
@@ -70,6 +70,7 @@ export default function LandingPageCMS() {
           paymentSppKids={paymentSppKids} setPaymentSppKids={setPaymentSppKids}
           paymentSppTeens={paymentSppTeens} setPaymentSppTeens={setPaymentSppTeens}
           paymentSppCalistung={paymentSppCalistung} setPaymentSppCalistung={setPaymentSppCalistung}
+          paymentSppMath={paymentSppMath} setPaymentSppMath={setPaymentSppMath}
           marqueeText1={marqueeText1} setMarqueeText1={setMarqueeText1}
           marqueeText2={marqueeText2} setMarqueeText2={setMarqueeText2}
           marqueeText3={marqueeText3} setMarqueeText3={setMarqueeText3}
