@@ -4,7 +4,8 @@ export function ContactAndPaymentFields(props: any) {
   const {
     contactAddress, setContactAddress, contactPhone, setContactPhone, contactEmail, setContactEmail,
     paymentBankName, setPaymentBankName, paymentAccountNumber, setPaymentAccountNumber, paymentAccountName, setPaymentAccountName,
-    paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung, paymentSppMath, setPaymentSppMath
+    paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung, paymentSppMath, setPaymentSppMath,
+    paymentGatewayMode, setPaymentGatewayMode
   } = props;
 
   return (
@@ -61,6 +62,17 @@ export function ContactAndPaymentFields(props: any) {
             <input type="number" className="form-input" value={paymentSppMath} onChange={(e) => setPaymentSppMath(e.target.value)} />
           </div>
         </div>
+        {setPaymentGatewayMode && (
+          <div style={{ marginTop: "1rem" }}>
+            <label className="form-label">Gerbang Pembayaran Otomatis (Payment Gateway Portal Orang Tua)</label>
+            <select className="form-input" value={paymentGatewayMode || "both"} onChange={(e) => setPaymentGatewayMode(e.target.value)}>
+              <option value="both">Aktifkan Keduanya (Midtrans &amp; Xendit + Transfer Manual)</option>
+              <option value="midtrans">Hanya Midtrans + Transfer Manual</option>
+              <option value="xendit">Hanya Xendit + Transfer Manual</option>
+              <option value="manual">Hanya Transfer Manual / Tunai</option>
+            </select>
+          </div>
+        )}
       </div>
     </>
   );

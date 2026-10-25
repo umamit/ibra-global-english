@@ -5,7 +5,7 @@ import { getIndonesianDay, getIndonesianDate, getTerbilang, getMonthName, getChi
 
 export interface StudentRecord { id: string; name: string; program: string; age: number; parent_id?: string; [key: string]: unknown; }
 export interface AttendanceStats { hadir: number; sakit: number; izin: number; alfa: number; }
-export interface PaymentSettings { payment_bank_name: string; payment_account_number: string; payment_account_name: string; payment_account_sub: string; contact_address: string; payment_spp_kids?: string; payment_spp_teens?: string; payment_spp_calistung?: string; payment_spp_math?: string; }
+export interface PaymentSettings { payment_bank_name: string; payment_account_number: string; payment_account_name: string; payment_account_sub: string; contact_address: string; payment_spp_kids?: string; payment_spp_teens?: string; payment_spp_calistung?: string; payment_spp_math?: string; payment_gateway_mode?: string; }
 
 const DEFAULT_PAYMENT: PaymentSettings = {
   payment_bank_name: "Bank Mandiri", payment_account_number: "137-00-1234567-8",
@@ -39,6 +39,7 @@ export function useParentPortal() {
   const [printReport, setPrintReport] = useState<any | null>(null);
   const [printReceipt, setPrintReceipt] = useState<any | null>(null);
   const [uploadingReceipt, setUploadingReceipt] = useState<boolean>(false);
+  const [processingGateway, setProcessingGateway] = useState<string | null>(null);
   const receiptFileRef = useRef<HTMLInputElement>(null);
 
   const fetchParentData = async () => {
@@ -54,7 +55,7 @@ export function useParentPortal() {
       if (settings) {
         const s: Record<string, string> = {};
         settings.forEach((r: { key: string; value: string }) => { s[r.key] = r.value; });
-        setPaymentSettings({ payment_bank_name: s.payment_bank_name || DEFAULT_PAYMENT.payment_bank_name, payment_account_number: s.payment_account_number || DEFAULT_PAYMENT.payment_account_number, payment_account_name: s.payment_account_name || DEFAULT_PAYMENT.payment_account_name, payment_account_sub: s.payment_account_sub || DEFAULT_PAYMENT.payment_account_sub, contact_address: s.contact_address || DEFAULT_PAYMENT.contact_address, payment_spp_kids: s.payment_spp_kids, payment_spp_teens: s.payment_spp_teens, payment_spp_calistung: s.payment_spp_calistung, payment_spp_math: s.payment_spp_math });
+        setPaymentSettings({ payment_bank_name: s.payment_bank_name || DEFAULT_PAYMENT.payment_bank_name, payment_account_number: s.payment_account_number || DEFAULT_PAYMENT.payment_account_number, payment_account_name: s.payment_account_name || DEFAULT_PAYMENT.payment_account_name, payment_account_sub: s.payment_account_sub || DEFAULT_PAYMENT.payment_account_sub, contact_address: s.contact_address || DEFAULT_PAYMENT.contact_address, payment_spp_kids: s.payment_spp_kids, payment_spp_teens: s.payment_spp_teens, payment_spp_calistung: s.payment_spp_calistung, payment_spp_math: s.payment_spp_math, payment_gateway_mode: s.payment_gateway_mode || "both" });
       }
       const { data: annData } = await supabase.from("announcements").select("*").order("published_at", { ascending: false }).limit(3);
       setAnnouncements(annData || []);
@@ -118,6 +119,28 @@ export function useParentPortal() {
     } catch (err) { alert("Gagal mengunggah bukti pembayaran: " + (err instanceof Error ? err.message : String(err))); } finally { setUploadingReceipt(false); if (receiptFileRef.current) receiptFileRef.current.value = ""; }
   };
 
+  const handleGatewayPayment = async (month: string, gateway: "midtrans" | "xendit") => {
+    if (!selectedChild) return;
+    const key = `${month}-${gateway}`;
+    setProcessingGateway(key);
+    try {
+      const res = await fetch("/api/payment/create-invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: selectedChild.id, month, gateway }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal memproses pembayaran otomatis.");
+      if (data.redirect_url) {
+        window.open(data.redirect_url, "_blank", "noopener,noreferrer");
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Gagal memproses pembayaran otomatis.");
+    } finally {
+      setProcessingGateway(null);
+    }
+  };
+
   const triggerPrint = (report: any) => { setPrintReport(report); setTimeout(() => { document.body.classList.add("print-raport"); window.print(); const cleanup = () => { document.body.classList.remove("print-raport"); window.removeEventListener("afterprint", cleanup); }; window.addEventListener("afterprint", cleanup); }, 800); };
   const triggerPrintReceipt = (pay: any) => { setPrintReceipt(pay); setTimeout(() => window.print(), 800); };
 
@@ -128,6 +151,7 @@ export function useParentPortal() {
     onlineSchedules, academicSchedules, attendance, attendanceStats, reports,
     certificates, lmsMaterials, lmsSubmissions, parentPayments, paymentSettings,
     detailsLoading, printReport, printReceipt, setPrintReceipt, uploadingReceipt,
+    processingGateway, handleGatewayPayment,
     receiptFileRef, getIndonesianDay, getIndonesianDate, getTerbilang, getMonthName,
     getChildProgramPrice: (prog?: string | null) => getChildProgramPrice(prog, paymentSettings as any), handleLogout, handleUploadReceipt, triggerPrint, triggerPrintReceipt,
   };

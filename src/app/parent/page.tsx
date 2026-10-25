@@ -26,6 +26,7 @@ export default function ParentPortal() {
     onlineSchedules, academicSchedules, attendance, attendanceStats, reports,
     certificates, lmsMaterials, lmsSubmissions, parentPayments, paymentSettings,
     detailsLoading, printReport, printReceipt, setPrintReceipt, uploadingReceipt,
+    processingGateway, handleGatewayPayment,
     getIndonesianDay, getIndonesianDate, getTerbilang, getMonthName,
     getChildProgramPrice, handleLogout, handleUploadReceipt, triggerPrint, triggerPrintReceipt,
   } = useParentPortal();
@@ -199,6 +200,8 @@ export default function ParentPortal() {
                   paymentSettings={paymentSettings}
                   parentPayments={parentPayments}
                   uploadingReceipt={uploadingReceipt}
+                  processingGateway={processingGateway}
+                  handleGatewayPayment={handleGatewayPayment}
                   getChildProgramPrice={getChildProgramPrice}
                   getMonthName={getMonthName}
                   handleUploadReceipt={handleUploadReceipt}

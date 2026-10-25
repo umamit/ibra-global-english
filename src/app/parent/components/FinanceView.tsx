@@ -12,6 +12,7 @@ interface PaymentSettings {
   payment_account_number?: string;
   payment_account_name?: string;
   payment_account_sub?: string;
+  payment_gateway_mode?: string;
 }
 
 interface Payment {
@@ -27,6 +28,8 @@ interface FinanceViewProps {
   paymentSettings: PaymentSettings;
   parentPayments: Payment[];
   uploadingReceipt: boolean;
+  processingGateway?: string | null;
+  handleGatewayPayment?: (month: string, gateway: "midtrans" | "xendit") => void;
   getChildProgramPrice: (program?: string) => number;
   getMonthName: (month: string) => string;
   handleUploadReceipt: (e: React.ChangeEvent<HTMLInputElement>, month: string) => void;
@@ -39,12 +42,17 @@ export default function FinanceView({
   paymentSettings,
   parentPayments,
   uploadingReceipt,
+  processingGateway,
+  handleGatewayPayment,
   getChildProgramPrice,
   getMonthName,
   handleUploadReceipt,
   triggerPrintReceipt,
   detailsLoading
 }: FinanceViewProps) {
+  const gatewayMode = paymentSettings.payment_gateway_mode || "both";
+  const showMidtrans = gatewayMode === "both" || gatewayMode === "midtrans";
+  const showXendit = gatewayMode === "both" || gatewayMode === "xendit";
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
 
@@ -145,11 +153,35 @@ export default function FinanceView({
                       )}
                     </div>
 
-                    {/* Uploader / Receipt button */}
+                     {/* Uploader / Receipt button */}
                     <div>
                       {pay.status === "belum_bayar" ? (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <label className="btn-portal-primary" style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer", display: "flex", gap: "0.4rem", alignItems: "center", margin: 0 }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
+                          {showMidtrans && handleGatewayPayment && (
+                            <button
+                              type="button"
+                              onClick={() => handleGatewayPayment(month, "midtrans")}
+                              disabled={Boolean(processingGateway)}
+                              className="btn-portal-primary"
+                              style={{ padding: "0.5rem 0.85rem", fontSize: "0.78rem", fontWeight: "700", display: "flex", gap: "0.35rem", alignItems: "center" }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                              <span>{processingGateway === `${month}-midtrans` ? "Memuat..." : "Midtrans (QRIS/VA)"}</span>
+                            </button>
+                          )}
+                          {showXendit && handleGatewayPayment && (
+                            <button
+                              type="button"
+                              onClick={() => handleGatewayPayment(month, "xendit")}
+                              disabled={Boolean(processingGateway)}
+                              className="btn-portal-primary"
+                              style={{ padding: "0.5rem 0.85rem", fontSize: "0.78rem", fontWeight: "700", backgroundColor: "var(--color-primary-dark)", display: "flex", gap: "0.35rem", alignItems: "center" }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                              <span>{processingGateway === `${month}-xendit` ? "Memuat..." : "Xendit (QRIS/VA)"}</span>
+                            </button>
+                          )}
+                          <label className="btn-portal-outline" style={{ padding: "0.5rem 0.85rem", fontSize: "0.78rem", fontWeight: "700", cursor: "pointer", display: "flex", gap: "0.35rem", alignItems: "center", margin: 0 }}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                             <span>{uploadingReceipt ? "Mengunggah..." : "Unggah Bukti"}</span>
                             <input
