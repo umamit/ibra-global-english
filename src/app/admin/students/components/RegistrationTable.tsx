@@ -105,19 +105,26 @@ export default function RegistrationTable({ registrations, regLoading, errorMsg,
                             <div style={{ display: "inline-flex", gap: "0.4rem" }}>
                               <button
                                 className="btn-portal-primary"
-                                style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                                style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}
                                 onClick={() => onApprove(reg)}
                                 disabled={waSendingId === reg.id}
                               >
-                                {waSendingId === reg.id ? " Mengirim WA..." : "Setujui"}
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                <span>{waSendingId === reg.id ? "Mengirim WA..." : "Setujui"}</span>
                               </button>
                               <button
                                 className="btn-portal-danger"
-                                style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                                style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}
                                 onClick={() => onOpenReject(reg.id)}
                                 disabled={waSendingId === reg.id}
                               >
-                                Tolak
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                  <line x1="18" y1="6" x2="6" y2="18" />
+                                  <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                                <span>Tolak</span>
                               </button>
                             </div>
                             {waFeedback.id === reg.id && waFeedback.msg && (

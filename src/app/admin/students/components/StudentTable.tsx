@@ -211,10 +211,10 @@ export default function StudentTable({
                       <button
                         type="button"
                         className="btn-portal-outline"
-                        style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem", borderColor: "#216c7e", color: "#216c7e", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                        style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}
                         onClick={() => handlePrintIdCard(student)}
                       >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                           <rect width="20" height="14" x="2" y="5" rx="2" />
                           <line x1="2" x2="22" y1="10" y2="10" />
                         </svg>
@@ -222,17 +222,39 @@ export default function StudentTable({
                       </button>
                       <button
                         type="button"
-                        className="btn-portal-outline"
-                        style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem", borderColor: "#A68849", color: "#8c6f32" }}
+                        className="btn-portal-primary"
+                        style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}
                         onClick={() => onScheduleStudent && onScheduleStudent(student)}
                       >
-                        + Jadwal
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        <span>Jadwal</span>
                       </button>
-                      <button className="btn-portal-outline" style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem" }} onClick={() => onEdit(student)}>
-                        Edit
+                      <button
+                        type="button"
+                        className="btn-portal-outline"
+                        style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}
+                        onClick={() => onEdit(student)}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 20h9" />
+                          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg>
+                        <span>Edit</span>
                       </button>
-                      <button className="btn-portal-danger" style={{ padding: "0.35rem 0.65rem", fontSize: "0.78rem" }} onClick={() => onDelete(student.id, student.name)}>
-                        Hapus
+                      <button
+                        type="button"
+                        className="btn-portal-danger"
+                        style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", display: "inline-flex", alignItems: "center", gap: "5px" }}
+                        onClick={() => onDelete(student.id, student.name)}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                        <span>Hapus</span>
                       </button>
                     </div>
                   </td>
