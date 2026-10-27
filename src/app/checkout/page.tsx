@@ -10,6 +10,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "Checkout Pembayaran Kursus & SPP | PT. IBRA GLOBAL ENGLISH (IGE) Bobong",
     description:
       "Halaman checkout resmi pembayaran SPP dan biaya bimbingan belajar Bahasa Inggris (Kids & Teens), Fun Calistung, dan Matematika Dasar di PT. IBRA Global English Bobong melalui QRIS dan Virtual Account.",
+    robots: {
+      index: false,
+      follow: true,
+    },
     alternates: {
       canonical: "https://www.ibraglobalenglish.uk/checkout",
     },
