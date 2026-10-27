@@ -21,6 +21,7 @@ interface HeroSettingsProps {
   paymentSppCalistung: string | number; setPaymentSppCalistung: (val: string) => void;
   paymentSppMath: string | number; setPaymentSppMath: (val: string) => void;
   paymentGatewayMode?: string; setPaymentGatewayMode?: (val: string) => void;
+  paymentGatewayFee?: string | number; setPaymentGatewayFee?: (val: string) => void;
   marqueeText1: string; setMarqueeText1: (val: string) => void;
   marqueeText2: string; setMarqueeText2: (val: string) => void;
   marqueeText3: string; setMarqueeText3: (val: string) => void;

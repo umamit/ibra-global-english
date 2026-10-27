@@ -11,6 +11,8 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
     selectedProgram,
     setSelectedProgram,
     activeProduct,
+    serviceFee,
+    totalAmount,
     studentName,
     setStudentName,
     parentName,
@@ -141,12 +143,12 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {activeProduct.price.toLocaleString("id-ID")}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", color: "#59616e", paddingBottom: "1rem", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
-              <span>Biaya Layanan Sistem</span>
-              <span style={{ fontWeight: 700, color: "#164d57" }}>Rp 0</span>
+              <span>Biaya Layanan Pembayaran Otomatis</span>
+              <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {serviceFee.toLocaleString("id-ID")}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 0", fontSize: "1.1rem", fontWeight: 800, color: "#164d57" }}>
               <span>Total Pembayaran (IDR)</span>
-              <span style={{ color: "#A68849", fontSize: "1.25rem" }}>Rp {activeProduct.price.toLocaleString("id-ID")}</span>
+              <span style={{ color: "#A68849", fontSize: "1.25rem" }}>Rp {totalAmount.toLocaleString("id-ID")}</span>
             </div>
 
             <label style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", fontSize: "0.8rem", color: "#59616e", marginBottom: "1.25rem", cursor: "pointer", lineHeight: 1.45 }}>

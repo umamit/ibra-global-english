@@ -83,6 +83,9 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   }, []);
 
   const activeProduct = products.find((p) => p.id === selectedProgram) || products[0];
+  const rawFee = parseInt(String(initialSettings?.payment_gateway_fee || "5000"), 10);
+  const serviceFee = isNaN(rawFee) ? 5000 : rawFee;
+  const totalAmount = activeProduct.price + serviceFee;
 
   const handleCheckout = async (gateway: "midtrans" | "xendit") => {
     setErrorMsg("");
@@ -127,6 +130,8 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     selectedProgram,
     setSelectedProgram,
     activeProduct,
+    serviceFee,
+    totalAmount,
     studentName,
     setStudentName,
     parentName,

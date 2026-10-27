@@ -38,6 +38,7 @@ export function useLandingPageCMS() {
   const [paymentSppCalistung, setPaymentSppCalistung] = useState<string>("");
   const [paymentSppMath, setPaymentSppMath] = useState<string>("");
   const [paymentGatewayMode, setPaymentGatewayMode] = useState<string>("both");
+  const [paymentGatewayFee, setPaymentGatewayFee] = useState<string>("5000");
 
   const [marqueeText1, setMarqueeText1] = useState<string>("");
   const [marqueeText2, setMarqueeText2] = useState<string>("");
@@ -103,6 +104,7 @@ export function useLandingPageCMS() {
         setPaymentSppCalistung(map["payment_spp_calistung"] || "350000");
         setPaymentSppMath(map["payment_spp_math"] || "300000");
         setPaymentGatewayMode(map["payment_gateway_mode"] || "both");
+        setPaymentGatewayFee(map["payment_gateway_fee"] || "5000");
         setMarqueeText1(map["marquee_text_1"] || "Pendaftaran ditutup karena kelas full");
         setMarqueeText2(map["marquee_text_2"] || "Dapatkan Metode Pembelajaran Bahasa Inggris Interaktif, Fun, dan Tutor Berpengalaman!");
         setMarqueeText3(map["marquee_text_3"] || "Ikuti Placement Test Offline Secara Gratis, Ayo Kesini dan Cari Tahu Tingkat Kemampuan Kalian");
@@ -205,7 +207,7 @@ export function useLandingPageCMS() {
         { key: "hero_image", value: heroImage }, { key: "contact_address", value: contactAddress }, { key: "contact_phone", value: contactPhone },
         { key: "contact_email", value: contactEmail }, { key: "payment_bank_name", value: paymentBankName }, { key: "payment_account_number", value: paymentAccountNumber },
         { key: "payment_account_name", value: paymentAccountName }, { key: "payment_account_sub", value: paymentAccountSub }, { key: "payment_spp_amount", value: paymentSppAmount },
-        { key: "payment_spp_kids", value: paymentSppKids }, { key: "payment_spp_teens", value: paymentSppTeens }, { key: "payment_spp_calistung", value: paymentSppCalistung }, { key: "payment_spp_math", value: paymentSppMath }, { key: "payment_gateway_mode", value: paymentGatewayMode },
+        { key: "payment_spp_kids", value: paymentSppKids }, { key: "payment_spp_teens", value: paymentSppTeens }, { key: "payment_spp_calistung", value: paymentSppCalistung }, { key: "payment_spp_math", value: paymentSppMath }, { key: "payment_gateway_mode", value: paymentGatewayMode }, { key: "payment_gateway_fee", value: paymentGatewayFee },
         { key: "marquee_text_1", value: validMarquee[0] || marqueeText1 },
         { key: "marquee_text_2", value: validMarquee[1] || marqueeText2 },
         { key: "marquee_text_3", value: validMarquee[2] || marqueeText3 },
@@ -258,7 +260,7 @@ export function useLandingPageCMS() {
     paymentAccountName, setPaymentAccountName, paymentAccountSub, setPaymentAccountSub,
     paymentSppAmount, setPaymentSppAmount, paymentSppKids, setPaymentSppKids,
     paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung,
-    paymentSppMath, setPaymentSppMath, paymentGatewayMode, setPaymentGatewayMode,
+    paymentSppMath, setPaymentSppMath, paymentGatewayMode, setPaymentGatewayMode, paymentGatewayFee, setPaymentGatewayFee,
     marqueeText1, setMarqueeText1, marqueeText2, setMarqueeText2, marqueeText3, setMarqueeText3,
     marqueeList, setMarqueeList, marqueeIcon, setMarqueeIcon,
     handleAddMarqueeText, handleRemoveMarqueeText, handleMarqueeTextChange,

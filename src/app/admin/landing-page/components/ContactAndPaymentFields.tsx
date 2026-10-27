@@ -5,7 +5,7 @@ export function ContactAndPaymentFields(props: any) {
     contactAddress, setContactAddress, contactPhone, setContactPhone, contactEmail, setContactEmail,
     paymentBankName, setPaymentBankName, paymentAccountNumber, setPaymentAccountNumber, paymentAccountName, setPaymentAccountName,
     paymentSppKids, setPaymentSppKids, paymentSppTeens, setPaymentSppTeens, paymentSppCalistung, setPaymentSppCalistung, paymentSppMath, setPaymentSppMath,
-    paymentGatewayMode, setPaymentGatewayMode
+    paymentGatewayMode, setPaymentGatewayMode, paymentGatewayFee, setPaymentGatewayFee
   } = props;
 
   return (
@@ -63,14 +63,20 @@ export function ContactAndPaymentFields(props: any) {
           </div>
         </div>
         {setPaymentGatewayMode && (
-          <div style={{ marginTop: "1rem" }}>
-            <label className="form-label">Gerbang Pembayaran Otomatis (Payment Gateway Portal Orang Tua)</label>
-            <select className="form-input" value={paymentGatewayMode || "both"} onChange={(e) => setPaymentGatewayMode(e.target.value)}>
-              <option value="both">Aktifkan Keduanya (Midtrans &amp; Xendit + Transfer Manual)</option>
-              <option value="midtrans">Hanya Midtrans + Transfer Manual</option>
-              <option value="xendit">Hanya Xendit + Transfer Manual</option>
-              <option value="manual">Hanya Transfer Manual / Tunai</option>
-            </select>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+            <div>
+              <label className="form-label">Gerbang Pembayaran Otomatis (Payment Gateway Portal Orang Tua)</label>
+              <select className="form-input" value={paymentGatewayMode || "both"} onChange={(e) => setPaymentGatewayMode(e.target.value)}>
+                <option value="both">Aktifkan Keduanya (Midtrans &amp; Xendit + Transfer Manual)</option>
+                <option value="midtrans">Hanya Midtrans + Transfer Manual</option>
+                <option value="xendit">Hanya Xendit + Transfer Manual</option>
+                <option value="manual">Hanya Transfer Manual / Tunai</option>
+              </select>
+            </div>
+            <div>
+              <label className="form-label">Biaya Layanan Gateway (Rp)</label>
+              <input type="number" className="form-input" value={paymentGatewayFee ?? "5000"} onChange={(e) => setPaymentGatewayFee && setPaymentGatewayFee(e.target.value)} />
+            </div>
           </div>
         )}
       </div>

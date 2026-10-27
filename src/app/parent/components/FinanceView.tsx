@@ -13,6 +13,7 @@ interface PaymentSettings {
   payment_account_name?: string;
   payment_account_sub?: string;
   payment_gateway_mode?: string;
+  payment_gateway_fee?: string;
 }
 
 interface Payment {
@@ -53,6 +54,7 @@ export default function FinanceView({
   const gatewayMode = paymentSettings.payment_gateway_mode || "both";
   const showMidtrans = gatewayMode === "both" || gatewayMode === "midtrans";
   const showXendit = gatewayMode === "both" || gatewayMode === "xendit";
+  const gatewayFee = parseInt(paymentSettings.payment_gateway_fee || "5000", 10) || 5000;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
 
@@ -62,7 +64,7 @@ export default function FinanceView({
           <div>
             <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-gray-900)" }}>Panduan Transfer Pembayaran SPP</h3>
             <p style={{ color: "var(--color-gray-600)", fontSize: "0.875rem", marginTop: "4px" }}>
-              Pembayaran SPP sebesar <strong>Rp {getChildProgramPrice(selectedChild?.program).toLocaleString("id-ID")} / bulan</strong> disesuaikan dengan jadwal jatuh tempo bulanan siswa.
+              Pembayaran SPP sebesar <strong>Rp {getChildProgramPrice(selectedChild?.program).toLocaleString("id-ID")} / bulan</strong> (Transfer Manual Rp 0 biaya admin · Pembayaran Otomatis QRIS/VA dikenakan biaya layanan Rp {gatewayFee.toLocaleString("id-ID")}).
             </p>
           </div>
           <div style={{ padding: "0.5rem 1rem", backgroundColor: "var(--color-accent-light)", color: "var(--color-accent)", borderRadius: "8px", fontWeight: "700", fontSize: "0.875rem" }}>
