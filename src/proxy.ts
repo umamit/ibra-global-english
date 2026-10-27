@@ -14,16 +14,18 @@ export async function proxy(request: NextRequest) {
   const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt|xml|webmanifest)$/);
   const isApiOrNext = pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.startsWith("/ingest");
 
+  const matchesSegment = (seg: string) => pathname === seg || pathname.startsWith(`${seg}/`);
+
   const isPortalOrPublicRoute =
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/auth") ||
-    pathname.startsWith("/onboarding") ||
-    pathname.startsWith("/parent") ||
-    pathname.startsWith("/student") ||
-    pathname.startsWith("/tutor") ||
-    pathname.startsWith("/verify") ||
-    pathname.startsWith("/checkout") ||
-    pathname.startsWith("/maintenance");
+    matchesSegment("/login") ||
+    matchesSegment("/auth") ||
+    matchesSegment("/onboarding") ||
+    matchesSegment("/parent") ||
+    matchesSegment("/student") ||
+    matchesSegment("/tutor") ||
+    matchesSegment("/verify") ||
+    matchesSegment("/checkout") ||
+    matchesSegment("/maintenance");
 
   if (hostname.startsWith("admin.")) {
     if (pathname.startsWith("/admin")) {
