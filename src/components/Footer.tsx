@@ -94,6 +94,8 @@ export default function Footer({ initialSettings }: FooterProps) {
             <span style={{ opacity: 0.5 }}>&bull;</span>
             <a href="/formulir-offline" style={{ color: "inherit", textDecoration: "none" }}>Formulir Offline</a>
             <span style={{ opacity: 0.5 }}>&bull;</span>
+            <a href="/checkout" style={{ color: "inherit", textDecoration: "none" }}>Pembayaran / Checkout</a>
+            <span style={{ opacity: 0.5 }}>&bull;</span>
             <a href="/kemitraan" style={{ color: "inherit", textDecoration: "none" }}>Penawaran Kemitraan</a>
           </span>
           {visitorData?.count && (

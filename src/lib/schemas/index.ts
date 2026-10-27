@@ -6,4 +6,4 @@ export {
   onlineScheduleUpdateSchema,
 } from "./onlineScheduleSchema";
 export { studentInsertSchema, studentUpdateSchema } from "./studentSchema";
-export { createPaymentInvoiceSchema } from "./paymentSchema";
+export { createPaymentInvoiceSchema, publicCheckoutSchema } from "./paymentSchema";
