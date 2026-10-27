@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LandingSettings } from "@/utils/getLandingSettings";
 
 export interface CourseProduct {
@@ -60,6 +60,27 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const [agreedTerms, setAgreedTerms] = useState<boolean>(false);
   const [loadingGateway, setLoadingGateway] = useState<"midtrans" | "xendit" | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [paymentSuccessBanner, setPaymentSuccessBanner] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const sName = params.get("student_name");
+    const pName = params.get("parent_name");
+    const em = params.get("email");
+    const wa = params.get("whatsapp");
+    const prog = params.get("program");
+    const st = params.get("status");
+
+    if (sName) setStudentName(sName);
+    if (pName) setParentName(pName);
+    if (em) setEmail(em);
+    if (wa) setWhatsapp(wa);
+    if (prog && ["Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"].includes(prog)) {
+      setSelectedProgram(prog);
+    }
+    if (st === "success") setPaymentSuccessBanner(true);
+  }, []);
 
   const activeProduct = products.find((p) => p.id === selectedProgram) || products[0];
 
@@ -120,6 +141,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     setAgreedTerms,
     loadingGateway,
     errorMsg,
+    paymentSuccessBanner,
     handleCheckout,
   };
 }

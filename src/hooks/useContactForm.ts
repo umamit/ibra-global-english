@@ -26,6 +26,7 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
   const [regSubmitting, setRegSubmitting] = useState(false);
   const [regSuccess, setRegSuccess] = useState(false);
   const [regError, setRegError] = useState("");
+  const [lastRegistered, setLastRegistered] = useState<any>(null);
 
   useEffect(() => {
     const handleSelectProgram = (e: Event) => {
@@ -104,6 +105,7 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
         return;
       }
 
+      setLastRegistered({ ...regForm });
       setRegSuccess(true);
       setRegForm({
         student_name: "",
@@ -133,6 +135,7 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
     regSubmitting,
     regSuccess,
     setRegSuccess,
+    lastRegistered,
     regError,
     setRegError,
     handleFormSubmit,

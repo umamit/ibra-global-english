@@ -72,7 +72,7 @@ export function ContactFormPanel(props: any) {
       )}
 
       {activeTab === "daftar" && (
-        <OnlineRegistrationForm regSuccess={regSuccess} setRegSuccess={setRegSuccess} setActiveTab={setActiveTab} handleRegSubmit={handleRegSubmit} regError={regError} regForm={regForm} setRegForm={setRegForm} regSubmitting={regSubmitting} />
+        <OnlineRegistrationForm regSuccess={regSuccess} setRegSuccess={setRegSuccess} lastRegistered={props.lastRegistered} setActiveTab={setActiveTab} handleRegSubmit={handleRegSubmit} regError={regError} regForm={regForm} setRegForm={setRegForm} regSubmitting={regSubmitting} />
       )}
     </div>
   );

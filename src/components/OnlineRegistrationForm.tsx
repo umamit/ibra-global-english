@@ -1,13 +1,37 @@
 import React from "react";
 import Button from "@/components/Button";
 
-export function OnlineRegistrationForm({ regSuccess, setRegSuccess, setActiveTab, handleRegSubmit, regError, regForm, setRegForm, regSubmitting }: any) {
+export function OnlineRegistrationForm({ regSuccess, setRegSuccess, lastRegistered, setActiveTab, handleRegSubmit, regError, regForm, setRegForm, regSubmitting }: any) {
   if (regSuccess) {
+    const cleanProg = (lastRegistered?.program || "Kids Program").replace(/\s*\(.*\)/, "");
+    const checkoutParams = new URLSearchParams({
+      student_name: lastRegistered?.student_name || "",
+      parent_name: lastRegistered?.parent_name || "",
+      email: lastRegistered?.parent_email || "",
+      whatsapp: lastRegistered?.whatsapp || "",
+      program: cleanProg,
+    });
     return (
       <div className="reg-success-card">
         <h4>Pendaftaran Terkirim!</h4>
-        <p>Data pendaftaran Anda telah kami terima. Tim kami akan segera menghubungi Anda via WhatsApp.</p>
-        <button className="form-btn" style={{ marginTop: "1rem" }} onClick={() => { setRegSuccess(false); setActiveTab("whatsapp"); }} type="button">Kembali ke Beranda Form</button>
+        <p>Data pendaftaran Anda telah kami terima. Anda dapat langsung melanjutkan pembayaran SPP bulan pertama atau menunggu konfirmasi Admin via WhatsApp.</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", marginTop: "1rem" }}>
+          <a
+            href={`/checkout?${checkoutParams.toString()}`}
+            className="form-btn"
+            style={{ textDecoration: "none", textAlign: "center", display: "block" }}
+          >
+            Lanjut ke Pembayaran / Checkout Sekarang →
+          </a>
+          <button
+            className="form-btn"
+            style={{ backgroundColor: "transparent", color: "var(--color-primary-dark)", border: "1px solid rgba(33, 108, 126, 0.25)" }}
+            onClick={() => { setRegSuccess(false); setActiveTab("whatsapp"); }}
+            type="button"
+          >
+            Kembali ke Beranda Form
+          </button>
+        </div>
       </div>
     );
   }

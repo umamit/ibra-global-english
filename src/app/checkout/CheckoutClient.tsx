@@ -25,6 +25,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
     setAgreedTerms,
     loadingGateway,
     errorMsg,
+    paymentSuccessBanner,
     handleCheckout,
   } = usePublicCheckout(initialSettings);
 
@@ -48,6 +49,12 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
             ← Kembali ke Beranda
           </Link>
         </div>
+
+        {paymentSuccessBanner && (
+          <div style={{ padding: "1.1rem 1.25rem", borderRadius: "14px", backgroundColor: "#ecfdf5", border: "1px solid #10b981", color: "#065f46", fontSize: "0.9rem", fontWeight: 700, marginBottom: "1.5rem" }}>
+            Pembayaran Anda telah berhasil diterima oleh sistem. Status SPP akan diperbarui secara otomatis.
+          </div>
+        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1.75rem", alignItems: "start" }}>
           {/* Left Column: Course Catalog & Customer Form */}
