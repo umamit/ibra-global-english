@@ -44,13 +44,21 @@ export async function GET(request: any) {
       const { data: { user } } = await supabase.auth.getUser();
       let role = user?.app_metadata?.role;
 
-      if (user && !role) {
+      if (user) {
         const { data: profile } = await supabase
           .from("profiles")
           .select("role")
           .eq("id", user.id)
           .single();
-        role = profile?.role;
+        if (profile?.role) {
+          role = profile.role;
+        }
+      }
+
+      if (role && role.startsWith("pending_")) {
+        await supabase.auth.signOut();
+        const pendingMsg = encodeURIComponent("Akun Anda sedang menunggu konfirmasi Admin sebelum dapat digunakan untuk masuk.");
+        return NextResponse.redirect(`${origin}/login?error=${pendingMsg}`);
       }
 
       // Validasi tab portal pilihan pengguna

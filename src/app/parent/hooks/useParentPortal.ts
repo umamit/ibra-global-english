@@ -48,6 +48,11 @@ export function useParentPortal() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data: parentData } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+      if (parentData?.role && parentData.role !== "parent" && parentData.role !== "admin") {
+        await supabase.auth.signOut();
+        router.push("/login?error=" + encodeURIComponent(parentData.role.startsWith("pending_") ? "Akun Anda sedang menunggu konfirmasi Admin." : "Akses ditolak: Akun Anda bukan bertipe peran Orang Tua."));
+        return;
+      }
       if (parentData) setParentName(parentData.full_name || "Orang Tua");
       const { data: studentsData } = await supabase.from("students").select("*").eq("parent_id", user.id);
       if (studentsData) { setChildren(studentsData as StudentRecord[]); setSelectedChild(studentsData[0] as StudentRecord); }

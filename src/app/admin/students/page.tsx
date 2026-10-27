@@ -24,7 +24,7 @@ function AdminStudentsContent() {
   const {
     students, parents, registrations, scheduleCounts, loading, regLoading,
     errorMsg, waSendingId, waFeedback, fetchData, fetchRegistrations,
-    handleApprove, handleReject, handleDeleteStudent, handleUpdateStudentProgram, handleUpdateRole,
+    handleApprove, handleReject, handleDeleteStudent, handleUpdateStudentProgram, handleUpdateRole, handleResetUserPassword,
   } = useStudentData();
 
   const [activeTab, setActiveTab] = useState<string>("students");
@@ -192,9 +192,13 @@ function AdminStudentsContent() {
           parents={parents}
           students={students}
           onDeleteParent={handleDeleteParent}
-          onUpdateRole={(userId, newRole) => {
-            handleUpdateRole(userId, newRole);
-            island.success("Peran user berhasil diperbarui!");
+          onUpdateRole={async (userId, newRole) => {
+            const ok = await handleUpdateRole(userId, newRole);
+            if (ok) island.success("Status & peran akun berhasil diperbarui!");
+          }}
+          onResetPassword={async (userId, userName) => {
+            const ok = await handleResetUserPassword(userId, userName);
+            if (ok) island.success(`Kata sandi "${userName}" berhasil diperbarui!`);
           }}
         />
       )}

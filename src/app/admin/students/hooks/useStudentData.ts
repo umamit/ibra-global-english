@@ -66,8 +66,8 @@ export function useStudentData() {
       const { data: parentData, error: errP } = await supabase
         .from("profiles")
         .select("id, full_name, email, role, created_at")
-        .in("role", ["parent", "student"])
-        .order("full_name");
+        .in("role", ["parent", "student", "tutor", "pending_parent", "pending_student", "pending_tutor"])
+        .order("created_at", { ascending: false });
 
       if (errP) throw errP;
 
@@ -140,11 +140,40 @@ export function useStudentData() {
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
     try {
-      const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId);
-      if (error) throw error;
+      const res = await fetch("/api/admin/manage-user", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "update_role", userId, role: newRole }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal mengubah peran user.");
       setParents((prev) => prev.map((p) => (p.id === userId ? { ...p, role: newRole } : p)));
+      return true;
     } catch (err: any) {
       alert("Gagal mengubah peran user: " + err.message);
+      return false;
+    }
+  };
+
+  const handleResetUserPassword = async (userId: string, userName: string) => {
+    const newPassword = prompt(`Masukkan kata sandi baru untuk "${userName}" (minimal 6 karakter):`);
+    if (!newPassword) return false;
+    if (newPassword.trim().length < 6) {
+      alert("Kata sandi minimal 6 karakter.");
+      return false;
+    }
+    try {
+      const res = await fetch("/api/admin/manage-user", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reset_password", userId, password: newPassword.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal mengatur ulang kata sandi.");
+      return true;
+    } catch (err: any) {
+      alert("Gagal mengatur ulang kata sandi: " + err.message);
+      return false;
     }
   };
 
@@ -213,5 +242,6 @@ export function useStudentData() {
     handleDeleteStudent,
     handleUpdateStudentProgram,
     handleUpdateRole,
+    handleResetUserPassword,
   };
 }

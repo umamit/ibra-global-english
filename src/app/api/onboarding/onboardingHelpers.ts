@@ -8,9 +8,10 @@ export async function processUserOnboarding(userId: string, email: string | unde
 
   const adminSupabase = createAdminClient();
   const fullName = userMetadata?.full_name || (email ?? "").split("@")[0];
+  const pendingRole = `pending_${role}`;
 
   const { error: profileError } = await adminSupabase.from("profiles").upsert(
-    { id: userId, role, full_name: fullName, email, updated_at: new Date().toISOString() },
+    { id: userId, role: pendingRole, full_name: fullName, email, updated_at: new Date().toISOString() },
     { onConflict: "id" }
   );
 
@@ -19,8 +20,8 @@ export async function processUserOnboarding(userId: string, email: string | unde
   }
 
   const { error: authError } = await adminSupabase.auth.admin.updateUserById(userId, {
-    app_metadata: { role },
-    user_metadata: { role },
+    app_metadata: { role: pendingRole },
+    user_metadata: { role: pendingRole },
   });
 
   if (authError) {

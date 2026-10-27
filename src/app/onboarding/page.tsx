@@ -59,17 +59,11 @@ export default function OnboardingPage() {
         throw new Error(data.error || "Gagal menyimpan peran. Silakan coba lagi.");
       }
 
-      // Force session refresh so the new app_metadata.role is loaded by the client SDK & middleware
-      await supabase.auth.refreshSession();
-
-      // Redirect user to their corresponding dashboard using window.location for a clean cookie sync
-      if (selectedRole === "student") {
-        window.location.href = "/student";
-      } else if (selectedRole === "tutor") {
-        window.location.href = "/tutor";
-      } else {
-        window.location.href = "/parent";
-      }
+      await supabase.auth.signOut();
+      const pendingMsg = encodeURIComponent(
+        "Pendaftaran akun berhasil! Akun Anda sedang menunggu konfirmasi Admin sebelum dapat digunakan untuk masuk."
+      );
+      window.location.href = `/login?error=${pendingMsg}`;
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Terjadi kesalahan sistem. Silakan coba lagi.");
       setLoading(false);

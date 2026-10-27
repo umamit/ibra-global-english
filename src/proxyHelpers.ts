@@ -20,6 +20,9 @@ export function getCspHeader(isDev: boolean): string {
 }
 
 export function handleRoleAccessControl(pathname: string, user: any, role: string, requestUrl: string) {
+  if (role && role.startsWith("pending_") && (pathname.startsWith("/admin") || pathname.startsWith("/parent") || pathname.startsWith("/tutor") || pathname.startsWith("/student"))) {
+    return NextResponse.redirect(new URL("/login?error=" + encodeURIComponent("Akun Anda sedang menunggu konfirmasi Admin."), requestUrl));
+  }
   if (pathname.startsWith("/admin") && (!user || role !== "admin")) {
     return NextResponse.redirect(new URL("/login?error=unauthorized_admin", requestUrl));
   }
@@ -32,11 +35,11 @@ export function handleRoleAccessControl(pathname: string, user: any, role: strin
   if (pathname.startsWith("/student") && (!user || role !== "student")) {
     return NextResponse.redirect(new URL("/login?error=unauthorized_student", requestUrl));
   }
-  if (pathname === "/login" && user) {
+  if (pathname === "/login" && user && role && !role.startsWith("pending_")) {
     if (role === "admin") return NextResponse.redirect(new URL("/admin", requestUrl));
     if (role === "tutor") return NextResponse.redirect(new URL("/tutor", requestUrl));
     if (role === "student") return NextResponse.redirect(new URL("/student", requestUrl));
-    if (role) return NextResponse.redirect(new URL("/parent", requestUrl));
+    if (role === "parent") return NextResponse.redirect(new URL("/parent", requestUrl));
   }
   return null;
 }

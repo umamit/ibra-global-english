@@ -9,6 +9,7 @@ interface Student {
 
 interface ParentUser {
   id: string;
+  role?: string | null;
   [key: string]: unknown;
 }
 
@@ -30,6 +31,7 @@ interface Props {
 export default function TabSwitcher({ activeTab, setActiveTab, students, parents, registrations, fetchRegistrations }: Props) {
   const pendingCount = registrations.filter(r => r.status === "pending").length;
   const nonApprovedCount = registrations.filter(r => r.status !== "approved").length;
+  const pendingUserCount = parents.filter(p => String(p.role || "").startsWith("pending_")).length;
 
   const tabStyle = (tab: string): React.CSSProperties => ({
     background: "none",
@@ -65,7 +67,11 @@ export default function TabSwitcher({ activeTab, setActiveTab, students, parents
       </button>
       <button onClick={() => setActiveTab("parents")} style={tabStyle("parents")}>
         <span>Kelola Peran & Pengguna</span>
-        <span style={badgeStyle("parents", "var(--color-primary-light)", "var(--color-gray-100)", "var(--color-primary-dark)", "var(--color-gray-600)")}>{parents.length}</span>
+        {pendingUserCount > 0 ? (
+          <span style={{ fontSize: "0.75rem", backgroundColor: "var(--color-red)", color: "white", padding: "0.15rem 0.5rem", borderRadius: "10px", fontWeight: "700" }}>{pendingUserCount} menunggu</span>
+        ) : (
+          <span style={badgeStyle("parents", "var(--color-primary-light)", "var(--color-gray-100)", "var(--color-primary-dark)", "var(--color-gray-600)")}>{parents.length}</span>
+        )}
       </button>
       <button onClick={() => { setActiveTab("registrations"); fetchRegistrations(); }} style={{ ...tabStyle("registrations"), position: "relative" }}>
         <span>Pendaftaran Masuk</span>

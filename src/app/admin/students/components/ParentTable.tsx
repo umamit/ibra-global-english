@@ -8,9 +8,26 @@ interface ParentTableProps {
   students: StudentItem[];
   onDeleteParent: (userId: string, userName: string) => void;
   onUpdateRole: (userId: string, newRole: string) => void;
+  onResetPassword?: (userId: string, userName: string) => void;
 }
 
-export default function ParentTable({ parents, students, onDeleteParent, onUpdateRole }: ParentTableProps) {
+const ROLE_LABELS: Record<string, string> = {
+  parent: "ORANG TUA",
+  student: "SISWA",
+  tutor: "TUTOR",
+  admin: "ADMIN",
+  pending_parent: "MENUNGGU (ORANG TUA)",
+  pending_student: "MENUNGGU (SISWA)",
+  pending_tutor: "MENUNGGU (TUTOR)",
+};
+
+export default function ParentTable({
+  parents,
+  students,
+  onDeleteParent,
+  onUpdateRole,
+  onResetPassword,
+}: ParentTableProps) {
   return (
     <div className="table-wrapper">
       <table className="portal-table parent-table">
@@ -19,7 +36,7 @@ export default function ParentTable({ parents, students, onDeleteParent, onUpdat
             <th>No</th>
             <th>Nama Lengkap</th>
             <th>Alamat Email</th>
-            <th>Peran Aktif</th>
+            <th>Status & Peran</th>
             <th>Siswa Terhubung</th>
             <th>Ubah Peran</th>
             <th style={{ textAlign: "right" }}>Aksi</th>
@@ -35,8 +52,12 @@ export default function ParentTable({ parents, students, onDeleteParent, onUpdat
           ) : (
             parents.map((parent, idx) => {
               const connectedChildren = students.filter((s) => s.parent_id === parent.id);
+              const rawRole = parent.role || "parent";
+              const isPending = rawRole.startsWith("pending_");
+              const targetApprovedRole = isPending ? rawRole.replace("pending_", "") : rawRole;
+
               return (
-                <tr key={parent.id}>
+                <tr key={parent.id} style={isPending ? { backgroundColor: "rgba(245, 158, 11, 0.05)" } : undefined}>
                   <td style={{ fontWeight: "700" }}>{idx + 1}</td>
                   <td style={{ fontWeight: "600", color: "var(--color-gray-900)" }}>{parent.full_name}</td>
                   <td>{parent.email || <span style={{ color: "var(--color-gray-400)", fontStyle: "italic" }}>Tidak tersedia</span>}</td>
@@ -44,15 +65,23 @@ export default function ParentTable({ parents, students, onDeleteParent, onUpdat
                     <span
                       className="user-badge"
                       style={{
-                        backgroundColor:
-                          parent.role === "admin" ? "rgba(239, 68, 68, 0.1)"
-                          : parent.role === "tutor" ? "rgba(166, 136, 73, 0.1)"
-                          : parent.role === "student" ? "var(--color-primary-light)"
+                        backgroundColor: isPending
+                          ? "rgba(245, 158, 11, 0.16)"
+                          : rawRole === "admin"
+                          ? "rgba(239, 68, 68, 0.1)"
+                          : rawRole === "tutor"
+                          ? "rgba(166, 136, 73, 0.1)"
+                          : rawRole === "student"
+                          ? "var(--color-primary-light)"
                           : "var(--color-green-light)",
-                        color:
-                          parent.role === "admin" ? "var(--color-red)"
-                          : parent.role === "tutor" ? "var(--color-accent)"
-                          : parent.role === "student" ? "var(--color-primary-dark)"
+                        color: isPending
+                          ? "#b45309"
+                          : rawRole === "admin"
+                          ? "var(--color-red)"
+                          : rawRole === "tutor"
+                          ? "var(--color-accent)"
+                          : rawRole === "student"
+                          ? "var(--color-primary-dark)"
                           : "var(--color-green)",
                         padding: "0.25rem 0.65rem",
                         fontWeight: "700",
@@ -60,7 +89,7 @@ export default function ParentTable({ parents, students, onDeleteParent, onUpdat
                         fontSize: "0.75rem",
                       }}
                     >
-                      {parent.role || "parent"}
+                      {ROLE_LABELS[rawRole] || rawRole}
                     </span>
                   </td>
                   <td>
@@ -78,26 +107,54 @@ export default function ParentTable({ parents, students, onDeleteParent, onUpdat
                   </td>
                   <td>
                     <select
-                      value={parent.role || "parent"}
+                      value={rawRole}
                       onChange={(e) => onUpdateRole(parent.id, e.target.value)}
                       className="form-input"
                       style={{ padding: "0.35rem 0.75rem", fontSize: "0.85rem", width: "auto", borderRadius: "6px", border: "1px solid var(--color-gray-200)", cursor: "pointer", backgroundColor: "white", fontWeight: "600" }}
                     >
-                      <option value="parent">Orang Tua (Parent)</option>
-                      <option value="tutor">Pengajar (Tutor)</option>
-                      <option value="student">Siswa (Student)</option>
+                      <option value="parent">Orang Tua (Aktif)</option>
+                      <option value="student">Siswa (Aktif)</option>
+                      <option value="tutor">Pengajar / Tutor (Aktif)</option>
                       <option value="admin">Administrator</option>
+                      <option value="pending_parent">Menunggu: Orang Tua</option>
+                      <option value="pending_student">Menunggu: Siswa</option>
+                      <option value="pending_tutor">Menunggu: Tutor</option>
                     </select>
                   </td>
                   <td style={{ textAlign: "right" }}>
-                    <button
-                      className="btn-portal-danger"
-                      style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem", height: "auto" }}
-                      onClick={() => onDeleteParent(parent.id, parent.full_name)}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                      <span>Hapus</span>
-                    </button>
+                    <div style={{ display: "inline-flex", gap: "0.4rem", alignItems: "center", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                      {isPending && (
+                        <button
+                          type="button"
+                          className="btn-portal-primary"
+                          style={{ padding: "0.4rem 0.75rem", fontSize: "0.8rem", height: "auto", backgroundColor: "var(--color-green)" }}
+                          onClick={() => onUpdateRole(parent.id, targetApprovedRole)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="20 6 9 17 4 12" /></svg>
+                          <span>Setujui</span>
+                        </button>
+                      )}
+                      {onResetPassword && (
+                        <button
+                          type="button"
+                          className="btn-portal-outline"
+                          style={{ padding: "0.4rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                          onClick={() => onResetPassword(parent.id, parent.full_name)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                          <span>Ubah Sandi</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className="btn-portal-danger"
+                        style={{ padding: "0.4rem 0.75rem", fontSize: "0.8rem", height: "auto" }}
+                        onClick={() => onDeleteParent(parent.id, parent.full_name)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "0.25rem" }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                        <span>Hapus</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

@@ -139,6 +139,13 @@ export function useLoginLogic() {
         userRole = user?.app_metadata?.role || user?.user_metadata?.role || "parent";
       }
 
+      if (userRole.startsWith("pending_")) {
+        await supabase.auth.signOut();
+        setErrorBanner("Akun Anda sedang menunggu konfirmasi Admin sebelum dapat digunakan untuk masuk.");
+        setLoading(false);
+        return;
+      }
+
       if (role !== userRole) {
         await supabase.auth.signOut();
         const roleLabels: Record<string, string> = { student: "Siswa", parent: "Orang Tua", tutor: "Tutor", admin: "Admin" };
@@ -198,10 +205,11 @@ export function useLoginLogic() {
     }
 
     try {
+      const pendingRole = `pending_${role}`;
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName.trim(), role } },
+        options: { data: { full_name: fullName.trim(), role: pendingRole } },
       });
 
       if (error) {
@@ -211,17 +219,21 @@ export function useLoginLogic() {
       }
 
       if (data?.user) {
-        posthog.identify(data.user.id, { email: data.user.email, role, name: fullName.trim() });
+        try {
+          await supabase.from("profiles").update({ role: pendingRole }).eq("id", data.user.id);
+        } catch {}
+        posthog.identify(data.user.id, { email: data.user.email, role: pendingRole, name: fullName.trim() });
       }
-      posthog.capture("user_registered", { role });
+      posthog.capture("user_registered", { role: pendingRole });
+      await supabase.auth.signOut();
 
-      setSuccessBanner("Pendaftaran berhasil! Akun Anda telah aktif, silakan masuk.");
+      setSuccessBanner("Pendaftaran berhasil! Akun Anda menunggu konfirmasi Admin sebelum dapat digunakan untuk masuk.");
       setFullName("");
+      setLoading(false);
 
       setTimeout(() => {
         setIsRegister(false);
-        setSuccessBanner("");
-      }, 2000);
+      }, 3000);
     } catch (err) {
       setErrorBanner("Gagal mendaftar: " + (err instanceof Error ? err.message : String(err)));
       setLoading(false);
