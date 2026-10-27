@@ -14,12 +14,23 @@ export async function proxy(request: NextRequest) {
   const isStaticAsset = pathname.match(/\.(?:svg|png|jpg|jpeg|gif|webp|pdf|md|json|css|js|ico|txt|xml|webmanifest)$/);
   const isApiOrNext = pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.startsWith("/ingest");
 
+  const isPortalOrPublicRoute =
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/parent") ||
+    pathname.startsWith("/student") ||
+    pathname.startsWith("/tutor") ||
+    pathname.startsWith("/verify") ||
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/maintenance");
+
   if (hostname.startsWith("admin.")) {
     if (pathname.startsWith("/admin")) {
       const cleanPath = pathname.replace(/^\/admin/, "") || "/";
       return NextResponse.redirect(new URL(cleanPath, request.url));
     }
-    if (!isStaticAsset && !isApiOrNext && !pathname.startsWith("/login") && !pathname.startsWith("/auth")) {
+    if (!isStaticAsset && !isApiOrNext && !isPortalOrPublicRoute) {
       return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
     }
   } else if (pathname.startsWith("/admin") && !isStaticAsset && !isApiOrNext && !isDev) {
