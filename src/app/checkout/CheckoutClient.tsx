@@ -177,7 +177,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               </button>
             </div>
 
-            <div style={{ marginTop: "1.25rem", padding: "0.9rem", borderRadius: "10px", backgroundColor: "#f5f5f7", fontSize: "0.78rem", color: "#59616e", lineHeight: 1.5 }}>
+            <div className="selectable" style={{ marginTop: "1.25rem", padding: "0.9rem", borderRadius: "10px", backgroundColor: "#f5f5f7", fontSize: "0.78rem", color: "#59616e", lineHeight: 1.5 }}>
               <strong>Alternatif Transfer Bank Manual:</strong><br />
               Bank {bankName} · No. Rek: <strong>{accountNumber}</strong> a.n. <strong>{accountName}</strong>.<br />
               Konfirmasi otomatis 24 jam tersedia di <Link href="/login" style={{ color: "#216c7e", fontWeight: 700 }}>Portal Orang Tua</Link>.

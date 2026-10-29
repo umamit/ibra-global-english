@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { markSppAsPaid } from "../paymentHelpers";
+import { markSppAsPaid, verifyXenditCallbackToken } from "../paymentHelpers";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
     const callbackToken = req.headers.get("x-callback-token") || "";
-    const expectedToken = process.env.XENDIT_WEBHOOK_TOKEN || "";
-    if (!expectedToken || callbackToken !== expectedToken) {
+    if (!verifyXenditCallbackToken(callbackToken)) {
       return NextResponse.json({ error: "Invalid Xendit callback token" }, { status: 403 });
     }
     const body = await req.json();

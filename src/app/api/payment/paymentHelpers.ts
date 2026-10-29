@@ -6,6 +6,31 @@ const supabaseAdmin = getAdminSupabase();
 
 export const GATEWAY_ADMIN_FEE = 5000;
 
+function escapeLikePattern(input: string): string {
+  return input.replace(/[%_\\]/g, "\\$&");
+}
+
+function safeCompareStrings(a: string, b: string): boolean {
+  if (!a || !b) return false;
+  const bufA = Buffer.from(a, "utf8");
+  const bufB = Buffer.from(b, "utf8");
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
+async function ensureNotAlreadyPaid(studentId: string, month: string) {
+  const { data: existingPayment } = await supabaseAdmin
+    .from("tuition_payments")
+    .select("status")
+    .eq("student_id", studentId)
+    .eq("month", month)
+    .maybeSingle();
+
+  if (existingPayment?.status === "lunas") {
+    throw new Error(`Tagihan SPP siswa untuk periode ${month} sudah tercatat LUNAS.`);
+  }
+}
+
 export async function processCreateInvoice(student_id: string, month: string, gateway: "midtrans" | "xendit") {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -22,6 +47,8 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   if (student.parent_id !== user.id && profile?.role !== "admin") {
     throw new Error("Anda tidak memiliki akses untuk membayar tagihan siswa ini.");
   }
+
+  await ensureNotAlreadyPaid(student.id, month);
 
   const { baseAmount, feeAmount } = await getProgramSppWithFee(student.program);
   const orderId = `SPP|${student.id}|${month}|${Date.now()}`;
@@ -42,22 +69,45 @@ export async function processPublicCheckout(data: {
   month: string;
   gateway: "midtrans" | "xendit";
 }) {
-  const { baseAmount, feeAmount } = await getProgramSppWithFee(data.program);
-  const { data: existingStudent } = await supabaseAdmin
+  const cleanName = escapeLikePattern(data.student_name.trim());
+  if (!cleanName || cleanName.length < 2) {
+    throw new Error("Nama lengkap siswa tidak valid.");
+  }
+
+  const { data: matchedStudents } = await supabaseAdmin
     .from("students")
-    .select("id")
-    .ilike("name", data.student_name.trim())
-    .eq("program", data.program)
-    .maybeSingle();
+    .select("id, name, program")
+    .ilike("name", cleanName)
+    .limit(5);
+
+  const existingStudent = (matchedStudents || []).find(
+    (s) => s.name.trim().toLowerCase() === data.student_name.trim().toLowerCase()
+  );
+
+  if (existingStudent?.id) {
+    await ensureNotAlreadyPaid(existingStudent.id, data.month);
+  }
+
+  const effectiveProgram = existingStudent?.program || data.program;
+  const { baseAmount, feeAmount } = await getProgramSppWithFee(effectiveProgram);
 
   const orderId = existingStudent?.id
     ? `SPP|${existingStudent.id}|${data.month}|${Date.now()}`
     : `PUB|${data.program}|${data.month}|${Date.now()}`;
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, data.student_name, data.program, data.month, data.email);
+    return createMidtransTransaction(orderId, baseAmount, feeAmount, data.student_name, effectiveProgram, data.month, data.email);
   }
-  return createXenditInvoice(orderId, baseAmount, feeAmount, data.student_name, data.program, data.month, data.email, "https://www.ibraglobalenglish.uk/checkout?status=success");
+  return createXenditInvoice(
+    orderId,
+    baseAmount,
+    feeAmount,
+    data.student_name,
+    effectiveProgram,
+    data.month,
+    data.email,
+    "https://www.ibraglobalenglish.uk/checkout?status=success"
+  );
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {
@@ -71,7 +121,7 @@ export async function getProgramSppWithFee(program: string): Promise<{ baseAmoun
   else if (p.includes("teens")) baseAmount = parseInt(map.payment_spp_teens || "300000", 10) || 300000;
 
   const feeAmount = parseInt(map.payment_gateway_fee || String(GATEWAY_ADMIN_FEE), 10);
-  const validFee = isNaN(feeAmount) ? GATEWAY_ADMIN_FEE : feeAmount;
+  const validFee = isNaN(feeAmount) || feeAmount < 0 ? GATEWAY_ADMIN_FEE : feeAmount;
   return { baseAmount, feeAmount: validFee, totalAmount: baseAmount + validFee };
 }
 
@@ -128,12 +178,16 @@ export function verifyMidtransSignature(orderId: string, statusCode: string, gro
   const serverKey = process.env.MIDTRANS_SERVER_KEY || "";
   if (!serverKey || !signatureKey) return false;
   const expected = crypto.createHash("sha512").update(`${orderId}${statusCode}${grossAmount}${serverKey}`).digest("hex");
-  return expected === signatureKey;
+  return safeCompareStrings(expected, signatureKey);
+}
+
+export function verifyXenditCallbackToken(callbackToken: string): boolean {
+  const expectedToken = process.env.XENDIT_WEBHOOK_TOKEN || "";
+  return safeCompareStrings(expectedToken, callbackToken);
 }
 
 export function parseOrderMetadata(orderId: string): { studentId: string; month: string } | null {
-  // Format: SPP|{student_uuid}|{YYYY-MM}|{timestamp}
-  const parts = orderId.split("|");
+  const parts = String(orderId || "").split("|");
   if (parts.length < 3 || parts[0] !== "SPP") return null;
   return { studentId: parts[1], month: parts[2] };
 }
@@ -143,6 +197,9 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
   if (!meta) return;
   const { data: student } = await supabaseAdmin.from("students").select("program").eq("id", meta.studentId).maybeSingle();
   const netSpp = student?.program ? (await getProgramSppWithFee(student.program)).baseAmount : grossAmount;
+  if (!isNaN(grossAmount) && grossAmount > 0 && grossAmount < netSpp) {
+    throw new Error(`Nominal pembayaran (${grossAmount}) kurang dari tagihan SPP (${netSpp}).`);
+  }
   const { error } = await supabaseAdmin.from("tuition_payments").upsert(
     {
       student_id: meta.studentId,
