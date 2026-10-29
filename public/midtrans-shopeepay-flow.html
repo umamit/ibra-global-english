@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Payment Flow Guideline - ShopeePay Midtrans | PT. IBRA GLOBAL ENGLISH</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      line-height: 1.5;
+      padding: 2rem 1rem;
+    }
+    .doc-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .print-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #eef6f8;
+      border: 1px solid rgba(33,108,126,0.2);
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    .print-btn {
+      background: #216c7e;
+      color: #ffffff;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .doc-header {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      border-bottom: 2px solid #216c7e;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+    .doc-header img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+    }
+    .doc-header h1 {
+      font-size: 1.35rem;
+      color: #164d57;
+      font-weight: 800;
+    }
+    .doc-header p {
+      font-size: 0.85rem;
+      color: #59616e;
+      margin-top: 2px;
+    }
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      font-size: 0.88rem;
+    }
+    .meta-table th, .meta-table td {
+      padding: 0.6rem 0.85rem;
+      border: 1px solid #e5e7eb;
+      text-align: left;
+    }
+    .meta-table th {
+      background: #f8fafc;
+      color: #164d57;
+      width: 32%;
+      font-weight: 700;
+    }
+    .step-block {
+      margin-bottom: 2rem;
+      page-break-inside: avoid;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .step-header {
+      background: #164d57;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .step-header span.url-tag {
+      background: rgba(255,255,255,0.16);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .step-body {
+      padding: 1.25rem;
+      background: #ffffff;
+    }
+    .step-desc {
+      font-size: 0.9rem;
+      color: #3a3a3c;
+      margin-bottom: 1rem;
+    }
+    .mockup-box {
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 1.25rem;
+    }
+    .mockup-bar {
+      background: #e2e8f0;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: #475569;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .ui-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 0.85rem;
+    }
+    .ui-card.selected {
+      border: 2px solid #216c7e;
+      background: #eef6f8;
+    }
+    .ui-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #216c7e;
+      color: #ffffff;
+      padding: 0.65rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+    .ui-btn-shopee {
+      background: #ee4d2d;
+      color: #ffffff;
+    }
+    @media print {
+      body { background: #ffffff; padding: 0; }
+      .doc-container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+      .print-bar { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="doc-container">
+    <div class="print-bar">
+      <div>
+        <strong style="color: #164d57;">Dokumen Verifikasi Midtrans (ShopeePay / GoPay / QRIS)</strong>
+        <p style="font-size: 0.82rem; color: #59616e;">Klik tombol di kanan lalu pilih <strong>"Save as PDF" (Simpan sebagai PDF)</strong> untuk diunggah ke Midtrans.</p>
+      </div>
+      <button class="print-btn" onclick="window.print()">Simpan / Cetak PDF</button>
+    </div>
+
+    <div class="doc-header">
+      <img src="/assets/logo.png" alt="Logo Ibra Global English" />
+      <div>
+        <h1>GUIDELINE PAYMENT FLOW — SHOPEEPAY (MIDTRANS SNAP)</h1>
+        <p>PT. IBRA GLOBAL ENGLISH (IGE) · LKP Resmi Kemendikdasmen RI (NPSN: K7069872)</p>
+        <p>Website Resmi: https://www.ibraglobalenglish.uk | Halaman Checkout: https://www.ibraglobalenglish.uk/checkout</p>
+      </div>
+    </div>
+
+    <table class="meta-table">
+      <tr>
+        <th>Nama Badan Hukum / Merchant</th>
+        <td>PT. IBRA GLOBAL ENGLISH</td>
+      </tr>
+      <tr>
+        <th>Bidang Usaha &amp; Produk</th>
+        <td>Lembaga Kursus &amp; Pelatihan (Kids Program, Teens Program, Fun Calistung, Matematika Dasar)</td>
+      </tr>
+      <tr>
+        <th>URL Website &amp; Checkout</th>
+        <td>https://www.ibraglobalenglish.uk/checkout</td>
+      </tr>
+      <tr>
+        <th>Metode Integrasi Midtrans</th>
+        <td>Midtrans Snap API (Redirect / Pop-up) dengan Callback Finish &amp; Webhook Notification</td>
+      </tr>
+      <tr>
+        <th>Callback / Finish Redirect URL</th>
+        <td>https://www.ibraglobalenglish.uk/checkout?status=success</td>
+      </tr>
+      <tr>
+        <th>Webhook Notification URL</th>
+        <td>https://www.ibraglobalenglish.uk/api/payment/midtrans-webhook</td>
+      </tr>
+    </table>
+
+    <!-- STEP 1 -->
+    <div class="step-block">
+      <div class="step-header">
+        <span>LANGKAH 1: Pelanggan Memilih Program Kursus di Website</span>
+        <span class="url-tag">https://www.ibraglobalenglish.uk/#programs</span>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">
+          1. Pelanggan (Orang Tua / Siswa) mengunjungi website <strong>https://www.ibraglobalenglish.uk</strong>, melihat daftar program kursus beserta jadwal dan biaya SPP bulanan dalam mata uang Rupiah (IDR), lalu menekan tombol <strong>"Daftar [Program]"</strong> atau membuka halaman Checkout.
+        </p>
+        <div class="mockup-box">
+          <div class="mockup-bar">https://www.ibraglobalenglish.uk/#programs</div>
+          <div class="grid-2">
+            <div class="ui-card selected">
+              <strong style="color:#164d57;">Kids Program (Usia 5-12 Tahun)</strong>
+              <p style="font-size:0.78rem; color:#59616e; margin:4px 0;">3x Seminggu · 75 Menit/Sesi</p>
+              <strong style="color:#A68849; font-size:0.95rem;">Rp 300.000 / bulan</strong>
+              <div class="ui-btn">Daftar Kids Program</div>
+            </div>
+            <div class="ui-card">
+              <strong style="color:#164d57;">Fun Calistung (Usia 5-7 Tahun)</strong>
+              <p style="font-size:0.78rem; color:#59616e; margin:4px 0;">3x Seminggu · 45 Menit/Sesi</p>
+              <strong style="color:#A68849; font-size:0.95rem;">Rp 350.000 / bulan</strong>
+              <div class="ui-btn">Daftar Fun Calistung</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-block">
+      <div class="step-header">
+        <span>LANGKAH 2: Pengisian Data Siswa, Ringkasan Tagihan &amp; Klik Bayar via Midtrans</span>
+        <span class="url-tag">https://www.ibraglobalenglish.uk/checkout</span>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">
+          2. Pada halaman <strong>/checkout</strong>, pelanggan memilih program kursus, mengisi Nama Lengkap Siswa, Nama Orang Tua/Wali, Periode Bulan SPP, Email, dan Nomor WhatsApp, mencentang persetujuan <strong>Syarat &amp; Ketentuan</strong> serta <strong>Kebijakan Privasi</strong>, lalu menekan tombol <strong>"Bayar Sekarang via Midtrans (ShopeePay / GoPay / QRIS / VA)"</strong>.
+        </p>
+        <div class="mockup-box">
+          <div class="mockup-bar">https://www.ibraglobalenglish.uk/checkout</div>
+          <div class="grid-2">
+            <div class="ui-card">
+              <strong style="font-size:0.85rem; color:#164d57;">Data Siswa &amp; Wali Murid</strong>
+              <div style="font-size:0.78rem; color:#3a3a3c; margin-top:8px;">
+                <div>Nama Siswa: <strong>Ahmad Fauzan</strong></div>
+                <div>Nama Wali: <strong>Bapak Fauzan</strong></div>
+                <div>Periode SPP: <strong>2026-10</strong></div>
+                <div>Email: <strong>orangtua@email.com</strong></div>
+                <div>WhatsApp: <strong>081357001357</strong></div>
+              </div>
+            </div>
+            <div class="ui-card">
+              <strong style="font-size:0.85rem; color:#164d57;">Ringkasan Tagihan (Order Summary)</strong>
+              <div style="font-size:0.78rem; margin-top:8px;">
+                <div style="display:flex; justify-content:space-between;"><span>SPP Kids Program (2026-10)</span><span>Rp 300.000</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>Biaya Layanan Gateway</span><span>Rp 5.000</span></div>
+                <hr style="margin:6px 0; border:none; border-top:1px solid #e5e7eb;" />
+                <div style="display:flex; justify-content:space-between; font-weight:800; color:#164d57;"><span>Total Pembayaran (IDR)</span><span style="color:#A68849;">Rp 305.000</span></div>
+              </div>
+              <div style="font-size:0.72rem; color:#065f46; margin-top:6px;">[x] Saya menyetujui Syarat &amp; Ketentuan dan Kebijakan Privasi</div>
+              <div class="ui-btn">Bayar Sekarang via Midtrans (ShopeePay / GoPay / QRIS / VA)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-block">
+      <div class="step-header">
+        <span>LANGKAH 3: Halaman Midtrans Snap — Memilih Metode Pembayaran ShopeePay</span>
+        <span class="url-tag">https://app.midtrans.com/snap/v2/vtweb/...</span>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">
+          3. Sistem memanggil API Midtrans Snap (<code>POST /snap/v1/transactions</code>) dan mengarahkan pelanggan ke halaman pembayaran resmi Midtrans Snap. Pelanggan memilih metode pembayaran <strong>ShopeePay / QRIS ShopeePay</strong>.
+        </p>
+        <div class="mockup-box">
+          <div class="mockup-bar">https://app.midtrans.com/snap/v2/vtweb/...</div>
+          <div class="ui-card" style="max-width:440px; margin:0 auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e5e7eb; padding-bottom:8px; margin-bottom:10px;">
+              <strong style="color:#164d57;">PT. IBRA GLOBAL ENGLISH</strong>
+              <strong style="color:#1d1d1f;">Rp 305.000</strong>
+            </div>
+            <div style="font-size:0.78rem; color:#59616e; margin-bottom:8px;">Pilih Metode Pembayaran:</div>
+            <div style="border:2px solid #ee4d2d; background:#fff5f2; padding:0.65rem 0.85rem; border-radius:8px; font-weight:700; color:#ee4d2d; font-size:0.85rem; margin-bottom:6px;">
+              ShopeePay / SpayLater (Dipilih)
+            </div>
+            <div style="border:1px solid #e5e7eb; padding:0.6rem 0.85rem; border-radius:8px; font-size:0.82rem; color:#475569;">
+              GoPay / QRIS / Virtual Account Bank
+            </div>
+            <div class="ui-btn ui-btn-shopee">Lanjutkan ke Aplikasi ShopeePay</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-block">
+      <div class="step-header">
+        <span>LANGKAH 4: Konfirmasi &amp; Otorisasi PIN di Aplikasi ShopeePay</span>
+        <span class="url-tag">Aplikasi Shopee / QRIS ShopeePay</span>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">
+          4. Pada perangkat seluler (mobile), pelanggan otomatis diarahkan melalui <em>deeplink</em> ke aplikasi <strong>Shopee (ShopeePay)</strong> (atau memindai kode QR pada perangkat desktop). Pelanggan memeriksa rincian merchant <strong>PT. IBRA GLOBAL ENGLISH</strong> sebesar <strong>Rp 305.000</strong> lalu memasukkan PIN ShopeePay untuk menyelesaikan pembayaran.
+        </p>
+        <div class="mockup-box">
+          <div class="ui-card" style="max-width:400px; margin:0 auto; text-align:center;">
+            <div style="font-weight:800; color:#ee4d2d; font-size:0.95rem; margin-bottom:4px;">Konfirmasi Pembayaran ShopeePay</div>
+            <div style="font-size:0.8rem; color:#59616e;">Merchant: <strong>PT. IBRA GLOBAL ENGLISH</strong></div>
+            <div style="font-size:0.8rem; color:#59616e;">Order ID: <code>SPP|...|2026-10|...</code></div>
+            <div style="font-size:1.25rem; font-weight:800; color:#1d1d1f; margin:8px 0;">Rp 305.000</div>
+            <div class="ui-btn ui-btn-shopee">Bayar Sekarang (Masukkan PIN ShopeePay)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step-block">
+      <div class="step-header">
+        <span>LANGKAH 5: Redirect Kembali ke Halaman Sukses &amp; Pencatatan Lunas Otomatis</span>
+        <span class="url-tag">https://www.ibraglobalenglish.uk/checkout?status=success</span>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">
+          5. Setelah transaksi berhasil (`settlement`), aplikasi Shopee mengarahkan pelanggan kembali ke <code>shopeepay.callback_url</code> / <code>callbacks.finish</code> yaitu <strong>https://www.ibraglobalenglish.uk/checkout?status=success</strong>. Secara bersamaan, server Midtrans mengirim HTTP Notification ke <code>/api/payment/midtrans-webhook</code> yang memverifikasi SHA-512 signature dan memperbarui status SPP siswa menjadi <strong>LUNAS</strong> secara otomatis.
+        </p>
+        <div class="mockup-box">
+          <div class="mockup-bar">https://www.ibraglobalenglish.uk/checkout?status=success</div>
+          <div style="padding:1rem; border-radius:10px; background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-weight:700; font-size:0.88rem; text-align:center;">
+            Pembayaran Anda telah berhasil diterima oleh sistem. Status SPP akan diperbarui secara otomatis.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

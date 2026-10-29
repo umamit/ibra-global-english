@@ -55,7 +55,7 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   const email = user.email || "parent@ibraglobalenglish.uk";
 
   if (gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, student.program, month, email);
+    return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, student.program, month, email, "https://www.ibraglobalenglish.uk/parent");
   }
   return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, student.program, month, email);
 }
@@ -96,7 +96,16 @@ export async function processPublicCheckout(data: {
     : `PUB|${data.program}|${data.month}|${Date.now()}`;
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, data.student_name, effectiveProgram, data.month, data.email);
+    return createMidtransTransaction(
+      orderId,
+      baseAmount,
+      feeAmount,
+      data.student_name,
+      effectiveProgram,
+      data.month,
+      data.email,
+      "https://www.ibraglobalenglish.uk/checkout?status=success"
+    );
   }
   return createXenditInvoice(
     orderId,
@@ -125,7 +134,16 @@ export async function getProgramSppWithFee(program: string): Promise<{ baseAmoun
   return { baseAmount, feeAmount: validFee, totalAmount: baseAmount + validFee };
 }
 
-export async function createMidtransTransaction(orderId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string) {
+export async function createMidtransTransaction(
+  orderId: string,
+  baseAmount: number,
+  feeAmount: number,
+  studentName: string,
+  program: string,
+  month: string,
+  email: string,
+  finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success"
+) {
   const serverKey = process.env.MIDTRANS_SERVER_KEY;
   if (!serverKey) throw new Error("MIDTRANS_SERVER_KEY belum dikonfigurasi di server.");
   const isProd = process.env.MIDTRANS_IS_PRODUCTION === "true";
@@ -142,6 +160,8 @@ export async function createMidtransTransaction(orderId: string, baseAmount: num
       transaction_details: { order_id: orderId, gross_amount: totalAmount },
       item_details: items,
       customer_details: { first_name: studentName.slice(0, 50), email: email || "parent@ibraglobalenglish.uk" },
+      callbacks: { finish: finishUrl },
+      shopeepay: { callback_url: finishUrl },
     }),
   });
   const json = await res.json();
