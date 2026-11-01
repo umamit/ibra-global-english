@@ -101,7 +101,7 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   if (gateway === "midtrans") {
     return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, student.program, month, email, "https://www.ibraglobalenglish.uk/parent", phone);
   }
-  return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, student.program, month, email);
+  return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, student.program, month, email, "https://www.ibraglobalenglish.uk/parent", phone);
 }
 
 export async function processPublicCheckout(data: {
@@ -127,28 +127,9 @@ export async function processPublicCheckout(data: {
   const orderId = buildCompactOrderId(student.id, data.month);
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(
-      orderId,
-      baseAmount,
-      feeAmount,
-      student.name,
-      effectiveProgram,
-      data.month,
-      data.email,
-      "https://www.ibraglobalenglish.uk/checkout?status=success",
-      data.whatsapp
-    );
+    return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, "https://www.ibraglobalenglish.uk/checkout?status=success", data.whatsapp);
   }
-  return createXenditInvoice(
-    orderId,
-    baseAmount,
-    feeAmount,
-    student.name,
-    effectiveProgram,
-    data.month,
-    data.email,
-    "https://www.ibraglobalenglish.uk/checkout?status=success"
-  );
+  return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, "https://www.ibraglobalenglish.uk/checkout?status=success", data.whatsapp);
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {
@@ -206,12 +187,25 @@ export async function createMidtransTransaction(
   return { gateway: "midtrans", token: json.token, redirect_url: json.redirect_url, order_id: orderId };
 }
 
-export async function createXenditInvoice(externalId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, redirectUrl?: string) {
+function formatIdPhone(raw: string): string {
+  const digits = String(raw || "").replace(/[^0-9]/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("0")) return `+62${digits.slice(1)}`;
+  if (digits.startsWith("62")) return `+${digits}`;
+  return `+62${digits}`;
+}
+
+export async function createXenditInvoice(externalId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, redirectUrl?: string, phone = "") {
   const secretKey = process.env.XENDIT_SECRET_KEY;
   if (!secretKey) throw new Error("XENDIT_SECRET_KEY belum dikonfigurasi di server.");
   const authHeader = "Basic " + Buffer.from(`${secretKey}:`).toString("base64");
   const totalAmount = baseAmount + feeAmount;
   const fees = feeAmount > 0 ? [{ type: "Biaya Layanan Transaksi Otomatis", value: feeAmount }] : undefined;
+  const items = [{ name: `SPP ${program} (${month})`, quantity: 1, price: baseAmount, category: "Education" }];
+  if (feeAmount > 0) items.push({ name: "Biaya Layanan Transaksi Otomatis", quantity: 1, price: feeAmount, category: "Service Fee" });
+  const mobile = formatIdPhone(phone);
+  const targetUrl = redirectUrl || "https://www.ibraglobalenglish.uk/parent";
+  const failUrl = targetUrl.includes("/checkout") ? "https://www.ibraglobalenglish.uk/checkout" : targetUrl;
 
   const res = await fetch("https://api.xendit.co/v2/invoices", {
     method: "POST",
@@ -220,10 +214,17 @@ export async function createXenditInvoice(externalId: string, baseAmount: number
       external_id: externalId,
       amount: totalAmount,
       fees,
+      items,
+      customer: {
+        given_names: studentName.slice(0, 50) || "Siswa IGE",
+        email: email || "parent@ibraglobalenglish.uk",
+        ...(mobile ? { mobile_number: mobile } : {}),
+      },
       description: `Pembayaran SPP ${program} - ${studentName} (Bulan ${month})`,
       payer_email: email || "parent@ibraglobalenglish.uk",
       currency: "IDR",
-      success_redirect_url: redirectUrl || "https://www.ibraglobalenglish.uk/parent",
+      success_redirect_url: targetUrl,
+      failure_redirect_url: failUrl,
     }),
   });
   const json = await res.json();
