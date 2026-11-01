@@ -64,9 +64,19 @@ export async function resolveOrCreatePublicStudent(data: {
 
   if (existing) return existing;
 
+  const { data: pendingReg } = await supabaseAdmin
+    .from("registrations")
+    .select("student_age")
+    .ilike("student_name", cleanName)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const validAge = pendingReg?.student_age && pendingReg.student_age > 0 ? pendingReg.student_age : 7;
+
   const { data: created, error: createErr } = await supabaseAdmin
     .from("students")
-    .insert([{ name: data.student_name.trim(), program: data.program, parent_name: data.parent_name.trim(), parent_phone: data.whatsapp.trim(), status: "active" }])
+    .insert([{ name: data.student_name.trim(), age: validAge, program: data.program, parent_id: null }])
     .select("id, name, program")
     .single();
 
@@ -81,7 +91,7 @@ export async function processCreateInvoice(student_id: string, month: string, ga
 
   const { data: student, error: errS } = await supabaseAdmin
     .from("students")
-    .select("id, name, program, parent_id, parent_phone")
+    .select("id, name, program, parent_id")
     .eq("id", student_id)
     .single();
   if (errS || !student) throw new Error("Data siswa tidak ditemukan.");
@@ -96,7 +106,7 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   const { baseAmount, feeAmount } = await getProgramSppWithFee(student.program);
   const orderId = buildCompactOrderId(student.id, month);
   const email = user.email || "parent@ibraglobalenglish.uk";
-  const phone = student.parent_phone || profile?.phone || "";
+  const phone = profile?.phone || "";
 
   if (gateway === "midtrans") {
     return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, student.program, month, email, "https://www.ibraglobalenglish.uk/parent", phone);
@@ -104,32 +114,19 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, student.program, month, email, "https://www.ibraglobalenglish.uk/parent", phone);
 }
 
-export async function processPublicCheckout(data: {
-  student_name: string;
-  parent_name: string;
-  email: string;
-  whatsapp: string;
-  program: string;
-  month: string;
-  gateway: "midtrans" | "xendit";
-}) {
-  const student = await resolveOrCreatePublicStudent({
-    student_name: data.student_name,
-    parent_name: data.parent_name,
-    whatsapp: data.whatsapp,
-    program: data.program,
-  });
-
+export async function processPublicCheckout(data: { student_name: string; parent_name: string; email: string; whatsapp: string; program: string; month: string; gateway: "midtrans" | "xendit" }) {
+  const student = await resolveOrCreatePublicStudent({ student_name: data.student_name, parent_name: data.parent_name, whatsapp: data.whatsapp, program: data.program });
   await ensureNotAlreadyPaid(student.id, data.month);
 
   const effectiveProgram = student.program || data.program;
   const { baseAmount, feeAmount } = await getProgramSppWithFee(effectiveProgram);
   const orderId = buildCompactOrderId(student.id, data.month);
+  const finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success";
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, "https://www.ibraglobalenglish.uk/checkout?status=success", data.whatsapp);
+    return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
   }
-  return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, "https://www.ibraglobalenglish.uk/checkout?status=success", data.whatsapp);
+  return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {
@@ -147,17 +144,7 @@ export async function getProgramSppWithFee(program: string): Promise<{ baseAmoun
   return { baseAmount, feeAmount: validFee, totalAmount: baseAmount + validFee };
 }
 
-export async function createMidtransTransaction(
-  orderId: string,
-  baseAmount: number,
-  feeAmount: number,
-  studentName: string,
-  program: string,
-  month: string,
-  email: string,
-  finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success",
-  phone = ""
-) {
+export async function createMidtransTransaction(orderId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success", phone = "") {
   const serverKey = process.env.MIDTRANS_SERVER_KEY;
   if (!serverKey) throw new Error("MIDTRANS_SERVER_KEY belum dikonfigurasi di server.");
   const isProd = process.env.MIDTRANS_IS_PRODUCTION === "true";
@@ -265,7 +252,7 @@ export function parseOrderMetadata(orderId: string): { studentId: string; month:
 export async function markSppAsPaid(orderId: string, grossAmount: number, gatewayLabel: string) {
   const meta = parseOrderMetadata(orderId);
   if (!meta) return;
-  const { data: student } = await supabaseAdmin.from("students").select("program").eq("id", meta.studentId).maybeSingle();
+  const { data: student } = await supabaseAdmin.from("students").select("name, program").eq("id", meta.studentId).maybeSingle();
   const netSpp = student?.program ? (await getProgramSppWithFee(student.program)).baseAmount : grossAmount;
   if (!isNaN(grossAmount) && grossAmount > 0 && grossAmount < netSpp) {
     throw new Error(`Nominal pembayaran (${grossAmount}) kurang dari tagihan SPP (${netSpp}).`);
@@ -283,4 +270,13 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
     { onConflict: "student_id,month" }
   );
   if (error) throw new Error(error.message);
+
+  if (student?.name) {
+    const cleanName = escapeLikePattern(student.name.trim());
+    await supabaseAdmin
+      .from("registrations")
+      .update({ status: "approved" })
+      .ilike("student_name", cleanName)
+      .eq("status", "pending");
+  }
 }
