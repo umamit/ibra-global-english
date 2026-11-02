@@ -34,7 +34,7 @@ export default function AssessmentRubricModal({ isOpen, onClose, programName, st
 
   return (
     <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", zIndex: 9999, display: "flex", justifyContent: "center", alignItems: "center", padding: "1rem" }}>
-      <div style={{ backgroundColor: "#fff", borderRadius: "16px", maxWidth: "800px", width: "100%", maxHeight: "90vh", overflowY: "auto", padding: "1.5rem" }}>
+      <div className="portal-modal" style={{ borderRadius: "16px", maxWidth: "800px", width: "100%", maxHeight: "90vh", overflowY: "auto", padding: "1.5rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
           <h3>Rubrik Penilaian Terstruktur - {studentName}</h3>
           <button onClick={onClose} className="btn-portal-outline">Tutup</button>

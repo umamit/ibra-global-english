@@ -67,7 +67,7 @@ export default function AdminRAGPage() {
       {/* Setup Required Screen */}
       {tableMissing ? (
         <div style={{ maxWidth: "900px", margin: "1.5rem auto", animation: "fadeIn 0.4s ease-out" }}>
-          <div className="pulse-error-box" style={{ backgroundColor: "#fff", borderRadius: "16px", padding: "2.5rem", border: "1px solid rgba(239,68,68,.4)", boxShadow: "0 10px 30px rgba(0,0,0,.04)" }}>
+          <div className="pulse-error-box portal-card" style={{ borderRadius: "16px", padding: "2.5rem", border: "1px solid rgba(239,68,68,.4)" }}>
             <h2 style={{ fontSize: "1.5rem", fontWeight: "900", color: "#111827", margin: "0 0 0.5rem 0" }}>Tabel Database RAG Belum Aktif</h2>
             <p style={{ color: "#4b5563", fontSize: "0.95rem", lineHeight: "1.6" }}>Tabel <code>rag_documents</code> atau fungsi pgvector belum terpasang di Supabase Anda.</p>
             <ol style={{ paddingLeft: "1.25rem", fontSize: "0.9rem", color: "#4b5563", lineHeight: "1.7" }}>

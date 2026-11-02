@@ -52,7 +52,7 @@ export default function StudentImportModal({ isOpen, onClose, onSuccess }: Stude
 
   return (
     <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ backgroundColor: "#fff", padding: "2rem", borderRadius: "16px", maxWidth: "600px", width: "100%" }}>
+      <div className="portal-modal" style={{ padding: "2rem", borderRadius: "16px", maxWidth: "600px", width: "100%" }}>
         <h3>Impor Data Siswa CSV</h3>
         <p style={{ fontSize: "0.85rem", color: "#666" }}>Unggah berkas CSV untuk menambahkan siswa secara massal.</p>
         <div style={{ margin: "1rem 0", display: "flex", gap: "1rem" }}>

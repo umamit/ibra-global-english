@@ -92,7 +92,7 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
 
   return (
     <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "18px", padding: "1.5rem", maxWidth: "540px", width: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.15)" }}>
+      <div className="portal-modal" style={{ borderRadius: "18px", padding: "1.5rem", maxWidth: "540px", width: "100%" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
           <div>
             <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#0f172a" }}>Kelola Jadwal Siswa</h3>

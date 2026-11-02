@@ -15,7 +15,7 @@ export default function OfflineFormPage() {
   return (
     <div className="print-body-wrapper" style={{ backgroundColor: "#f3f4f6", minHeight: "100vh", padding: "2rem 1rem" }}>
       {/* Kontrol Tombol - Tidak Tercetak */}
-      <div className="no-print" style={{ maxWidth: "800px", margin: "0 auto 1.5rem auto", display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "white", padding: "1rem 1.5rem", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e5e7eb" }}>
+      <div className="no-print liquid-glass-card" style={{ maxWidth: "800px", margin: "0 auto 1.5rem auto", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderRadius: "12px" }}>
         <Link href="/" style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-primary-dark, #216c7e)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
           ← Kembali ke Beranda
         </Link>

@@ -87,11 +87,9 @@ export default function FinanceModal({
       <div
         className="portal-modal"
         style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
+          borderRadius: "16px",
           width: "100%",
           maxWidth: "520px",
-          boxShadow: "var(--shadow-2xl)",
           overflow: "hidden",
         }}
       >

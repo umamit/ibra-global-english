@@ -38,13 +38,11 @@ export default function AiReportModal({
       display: "flex", alignItems: "center", justifyContent: "center",
       padding: "1rem"
     }}>
-      <div style={{
-        backgroundColor: "white",
+      <div className="portal-modal" style={{
         borderRadius: "16px",
         width: "100%",
         maxWidth: "500px",
         overflow: "hidden",
-        boxShadow: "var(--shadow-xl, 0 20px 25px -5px rgba(0,0,0,0.1))"
       }}>
         <div style={{
           padding: "1.25rem 1.5rem",

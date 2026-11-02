@@ -46,7 +46,7 @@ export default function AnnualSPPCardModal({ isOpen, onClose, student, allPaymen
 
   return (
     <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0, 0, 0, 0.6)", backdropFilter: "blur(4px)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", width: "100%", maxWidth: "860px", maxHeight: "90vh", overflowY: "auto", display: "flex", flexDirection: "column" }}>
+      <div className="portal-modal" style={{ borderRadius: "16px", width: "100%", maxWidth: "860px", maxHeight: "90vh", overflowY: "auto", display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.25rem 1.5rem", borderBottom: "1px solid #e2e8f0" }}>
           <div><h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#216c7e", margin: 0 }}>Kartu SPP Tahunan ({selectedYear})</h3></div>
           <div style={{ display: "flex", gap: "0.5rem" }}><button onClick={handlePrint} className="btn-portal-primary">Cetak Kartu</button><button onClick={onClose} className="btn-portal-outline">Tutup</button></div>
