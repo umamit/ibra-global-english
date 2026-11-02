@@ -12,6 +12,7 @@ import AntiCopyProtection from "@/components/AntiCopyProtection";
 import { createNewsArticleSchema } from "@/utils/seoHelpers";
 import { websiteSchema, educationalOrgSchema, faqSchema, siteNavigationSchema, coursesSchema } from "./layoutSchemas";
 import "./globals.css";
+import "./glass-system.css";
 
 export const revalidate = 300;
 

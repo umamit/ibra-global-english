@@ -123,11 +123,11 @@
   border-right-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Dark portal cards */
+/* Dark portal cards — inherited from glass-system.css */
 [data-theme="dark"] .portal-card,
 [data-theme="dark"] .table-wrapper {
-  background-color: #1c1c1e;
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--glass-bg);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* Dark table header */
@@ -159,14 +159,11 @@
   background-color: #2c2c2e;
 }
 
-/* Dark modal */
+/* Dark modal — inherited from glass-system.css */
 [data-theme="dark"] .portal-modal {
-  background: rgba(28, 28, 30, 0.96);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    0 30px 60px rgba(0, 0, 0, 0.5);
+  background: var(--glass-bg);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: var(--glass-shadow);
 }
 
 [data-theme="dark"] .portal-modal-header {
