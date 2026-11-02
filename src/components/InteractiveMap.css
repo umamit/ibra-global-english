@@ -48,10 +48,14 @@
 
 /* Canvas styling */
 .map-canvas-container {
-  background-color: var(--color-white);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0%, rgba(232, 238, 245, 0.80) 100%);
+  backdrop-filter: blur(32px) saturate(210%) brightness(106%);
+  -webkit-backdrop-filter: blur(32px) saturate(210%) brightness(106%);
   border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-top: 2px solid #ffffff;
+  border-left: 1.5px solid #ffffff;
+  box-shadow: inset 0 2px 3px 0 #ffffff, inset 0 -2px 4px 0 rgba(33, 108, 126, 0.10), 0 14px 36px rgba(15, 35, 45, 0.12), 0 2px 6px rgba(15, 35, 45, 0.06);
   padding: 1rem;
   overflow: hidden;
   display: flex;
@@ -173,10 +177,14 @@
 
 /* Detail Card */
 .map-info-card {
-  background: var(--color-white);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0%, rgba(232, 238, 245, 0.80) 100%);
+  backdrop-filter: blur(32px) saturate(210%) brightness(106%);
+  -webkit-backdrop-filter: blur(32px) saturate(210%) brightness(106%);
   border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-top: 2px solid #ffffff;
+  border-left: 1.5px solid #ffffff;
+  box-shadow: inset 0 2px 3px 0 #ffffff, inset 0 -2px 4px 0 rgba(33, 108, 126, 0.10), 0 14px 36px rgba(15, 35, 45, 0.12), 0 2px 6px rgba(15, 35, 45, 0.06);
   padding: 2.2rem;
   min-height: 350px;
   display: flex;

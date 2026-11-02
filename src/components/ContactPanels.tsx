@@ -30,7 +30,7 @@ export function ContactInfoPanel({ address, phone, rawPhone, email, leftPanelRef
         </div>
       </div>
 
-      <div className="contact-qr-card" style={{ marginTop: "1.75rem", display: "flex", alignItems: "center", gap: "1rem", backgroundColor: "var(--color-bg-teal-50)", padding: "1rem", borderRadius: "14px", border: "1px solid rgba(33, 108, 126, 0.12)" }}>
+      <div className="contact-qr-card liquid-glass-card" style={{ marginTop: "1.75rem", display: "flex", alignItems: "center", gap: "1rem", padding: "1rem", borderRadius: "14px" }}>
         <img src="/assets/qr-whatsapp.png" alt="Scan QR Code WhatsApp Ibra Global English" style={{ width: "76px", height: "76px", borderRadius: "10px", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(0,0,0,0.05)" }} />
         <div>
           <h4 style={{ margin: "0 0 4px", fontSize: "0.95rem", fontWeight: "700", color: "var(--color-gray-900)" }}>Scan QR WhatsApp</h4>

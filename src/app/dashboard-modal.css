@@ -20,17 +20,19 @@
 
 /* ── Modal Window — Apple sheet/card ── */
 .portal-modal {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94) 0%, rgba(232, 238, 245, 0.86) 100%);
+  backdrop-filter: blur(40px) saturate(210%) brightness(106%);
+  -webkit-backdrop-filter: blur(40px) saturate(210%) brightness(106%);
   border-radius: var(--radius-2xl);
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-top: 2px solid #ffffff;
+  border-left: 1.5px solid #ffffff;
   width: 100%;
   max-width: 660px;
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.04),
-    0 8px 24px rgba(0, 0, 0, 0.06),
-    0 30px 60px rgba(0, 0, 0, 0.1);
+    inset 0 2px 3px 0 #ffffff,
+    inset 0 -2px 4px 0 rgba(33, 108, 126, 0.10),
+    0 30px 60px rgba(15, 35, 45, 0.18);
   overflow: hidden;
   animation: modalSlideUp 0.38s cubic-bezier(0.32, 0.72, 0, 1);
   transform-origin: bottom center;

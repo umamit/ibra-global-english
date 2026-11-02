@@ -26,14 +26,14 @@ export default function LegalLayout({ title, subtitle, children, lastUpdated = "
         </div>
 
         {/* Legal Card */}
-        <div style={{
-          backgroundColor: "var(--color-white, #ffffff)",
-          padding: "3.5rem 3rem",
-          borderRadius: "var(--radius-2xl, 24px)",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.03), 0 20px 48px rgba(0,0,0,0.06)",
-          border: "1px solid rgba(0, 0, 0, 0.06)",
-          transition: "transform 0.35s ease, box-shadow 0.35s ease",
-        }}>
+        <div
+          className="liquid-glass-card"
+          style={{
+            padding: "3.5rem 3rem",
+            borderRadius: "var(--radius-2xl, 24px)",
+            transition: "transform 0.35s ease, box-shadow 0.35s ease",
+          }}
+        >
           <div style={{ borderBottom: "1px solid var(--color-gray-150, #e2e8f0)", paddingBottom: "1.75rem", marginBottom: "2.25rem" }}>
             <h1 style={{ fontSize: "2.125rem", fontWeight: "900", color: "var(--color-primary-dark, #164d57)", marginBottom: "0.6rem", letterSpacing: "-0.025em" }}>
               {title}
