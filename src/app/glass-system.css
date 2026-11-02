@@ -89,7 +89,11 @@
   .verify-legal-card,
   .cert-card,
   .letters-card,
-  .promo-popup-card
+  .promo-popup-card,
+  .testimonial-modal-card,
+  .dropdown-menu,
+  .ai-chat-window,
+  .tutor-review-box
 ) {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
@@ -100,6 +104,11 @@
   box-shadow: var(--glass-shadow);
 }
 
+/* Preserve gold left accent bar on tutor-review-box */
+.tutor-review-box {
+  border-left: 3.5px solid var(--color-accent, #a68849);
+}
+
 /* ── Universal Selector Group: Eyebrow Badges & Filter Pills ── */
 :is(
   .glass-pill,
@@ -108,7 +117,8 @@
   .hero-mascot-badge,
   .kemitraan-eyebrow,
   .calendar-badge,
-  .apple-pill:not(.apple-pill--active)
+  .apple-pill:not(.apple-pill--active),
+  .gallery-filter-btn:not(.active)
 ) {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-pill-blur);
@@ -117,4 +127,19 @@
   border-top: var(--glass-pill-border-top);
   border-left: var(--glass-pill-border-left);
   box-shadow: var(--glass-pill-shadow);
+}
+
+/* ── Universal Selector Group: Dark-Surface Glass Containers (CTA Banner) ── */
+.cta-banner {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+  backdrop-filter: blur(32px) saturate(200%) brightness(108%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(108%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 2px solid rgba(255, 255, 255, 0.45);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.30);
+  box-shadow:
+    inset 0 2px 3px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -2px 4px 0 rgba(0, 0, 0, 0.25),
+    0 18px 48px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.14);
 }

@@ -185,8 +185,13 @@
 .gallery-filter-btn {
   padding: 0.45rem 1.1rem;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-gray-200);
-  background: var(--color-white);
+  border: var(--glass-border);
+  border-top: var(--glass-pill-border-top);
+  border-left: var(--glass-pill-border-left);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-pill-blur);
+  -webkit-backdrop-filter: var(--glass-pill-blur);
+  box-shadow: var(--glass-pill-shadow);
   color: var(--color-gray-600);
   font-weight: 500;
   font-size: 0.85rem;

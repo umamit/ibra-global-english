@@ -408,21 +408,23 @@ header.scrolled .logo-text p {
   top: 100%;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background-color: var(--color-header-bg-scrolled);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-top: var(--glass-border-top);
+  border-left: var(--glass-border-left);
   border-radius: var(--radius-lg);
   padding: 0.5rem 0;
   min-width: 160px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--glass-shadow);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
   z-index: 120;
 }
 [data-theme="dark"] .dropdown-menu {
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 .dropdown-container:hover .dropdown-menu {
   opacity: 1;

@@ -188,15 +188,19 @@
 
 /* ──── Tutor Review Box ──── */
 .tutor-review-box {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-top: var(--glass-border-top);
   border-left: 3.5px solid var(--color-accent, #a68849);
-  background-color: var(--color-white);
   padding: 0.75rem 1rem;
   border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--glass-shadow);
 }
 
 [data-theme="dark"] .tutor-review-box {
-  background-color: var(--color-gray-100);
+  background: var(--glass-bg);
 }
 
 .tutor-review-box p.title {
