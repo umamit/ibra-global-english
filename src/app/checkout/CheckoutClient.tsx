@@ -61,7 +61,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1.75rem", alignItems: "start" }}>
           {/* Left Column: Course Catalog & Customer Form */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            <div style={{ backgroundColor: "#ffffff", borderRadius: "18px", padding: "1.75rem", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
+            <div className="liquid-glass-card" style={{ borderRadius: "18px", padding: "1.75rem" }}>
               <h2 style={{ margin: "0 0 1rem", fontSize: "1.05rem", fontWeight: 800, color: "#164d57" }}>1. Pilih Program Kursus</h2>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
                 {products.map((item) => {
@@ -93,7 +93,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               </div>
             </div>
 
-            <div style={{ backgroundColor: "#ffffff", borderRadius: "18px", padding: "1.75rem", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
+            <div className="liquid-glass-card" style={{ borderRadius: "18px", padding: "1.75rem" }}>
               <h2 style={{ margin: "0 0 1rem", fontSize: "1.05rem", fontWeight: 800, color: "#164d57" }}>2. Data Siswa &amp; Wali Murid</h2>
               {errorMsg && (
                 <div style={{ padding: "0.85rem 1rem", borderRadius: "10px", backgroundColor: "#fef2f2", color: "#b91c1c", fontSize: "0.85rem", fontWeight: 600, marginBottom: "1rem" }}>
@@ -130,7 +130,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
           </div>
 
           {/* Right Column: Order Summary & Payment Buttons */}
-          <div style={{ backgroundColor: "#ffffff", borderRadius: "18px", padding: "1.75rem", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
+          <div className="liquid-glass-card" style={{ borderRadius: "18px", padding: "1.75rem" }}>
             <h2 style={{ margin: "0 0 1rem", fontSize: "1.05rem", fontWeight: 800, color: "#164d57" }}>Ringkasan Tagihan (Order Summary)</h2>
             <div style={{ padding: "1rem", borderRadius: "12px", backgroundColor: "#eef6f8", marginBottom: "1.25rem" }}>
               <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#164d57" }}>{activeProduct.name}</div>
