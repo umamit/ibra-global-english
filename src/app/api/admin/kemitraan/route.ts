@@ -22,7 +22,7 @@ const DEFAULT_SUBMISSIONS: PartnershipSubmission[] = [
     rep_name: "Bapak Ahmad, S.Pd.",
     rep_role: "Kepala Sekolah",
     phone: "081234567890",
-    notes: "Berminat mengadakan Diagnostic Test gratis untuk siswa kelas 5 & 6.",
+    notes: "Berminat mengadakan Placement Test gratis untuk siswa kelas 5 & 6.",
     status: "contacted",
     created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
   },

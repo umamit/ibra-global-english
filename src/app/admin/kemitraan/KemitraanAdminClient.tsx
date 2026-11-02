@@ -100,11 +100,11 @@ export default function KemitraanAdminClient() {
               </div>
               <div style={{ fontSize: "0.9rem" }}>
                 <p><strong>Nomor Surat:</strong> {printLetterNo}</p>
-                <p><strong>Hal:</strong> Permohonan Kemitraan Rekomendasi Resmi &amp; Diagnostic Test Gratis</p>
+                <p><strong>Hal:</strong> Permohonan Kemitraan Rekomendasi Resmi &amp; Placement Test Gratis</p>
                 <p><strong>Kepada Yth.</strong><br />{selectedSub.rep_name} ({selectedSub.rep_role || "Pimpinan"})<br /><strong>{selectedSub.institution_name}</strong><br />Di Tempat</p>
                 <p style={{ marginTop: "1rem" }}>Dengan hormat,</p>
                 <p>Sehubungan dengan komitmen Ibra Global English dalam meningkatkan mutu kemampuan bahasa Inggris generasi muda di Kabupaten Pulau Taliabu, melalui surat ini kami bermaksud mengundang <strong>{selectedSub.institution_name}</strong> untuk bergabung sebagai Mitra Rekomendasi Resmi.</p>
-                <p>Kerja sama ini bersifat <strong>100% Bebas Biaya (Tanpa Anggaran Sekolah)</strong>, di mana murid-murid dari sekolah Bapak/Ibu berhak mendapatkan sesi Diagnostic Test gratis serta Voucher Potongan Pendaftaran Khusus.</p>
+                <p>Kerja sama ini bersifat <strong>100% Bebas Biaya (Tanpa Anggaran Sekolah)</strong>, di mana murid-murid dari sekolah Bapak/Ibu berhak mendapatkan sesi Placement Test gratis serta Voucher Potongan Pendaftaran Khusus.</p>
                 <div style={{ marginTop: "2.5rem", display: "flex", justifyContent: "flex-end" }}>
                   <div style={{ textAlign: "center", minWidth: "220px" }}>
                     <p style={{ margin: "0 0 0.25rem 0", fontSize: "0.88rem" }}>

@@ -5,7 +5,7 @@ import { SITE_CONFIG } from "@/config/siteConfig";
 export const metadata: Metadata = {
   title: `Penawaran Kemitraan Sekolah & Instansi | ${SITE_CONFIG.shortName}`,
   description:
-    "Program Mitra Rekomendasi Resmi Ibra Global English Bobong untuk Sekolah (SD/SMP/SMA) dan Instansi di Kabupaten Pulau Taliabu. Diagnostic test gratis & voucher siswa mitra.",
+    "Program Mitra Rekomendasi Resmi Ibra Global English Bobong untuk Sekolah (SD/SMP/SMA) dan Instansi di Kabupaten Pulau Taliabu. Placement Test gratis & voucher siswa mitra.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/kemitraan`,
   },

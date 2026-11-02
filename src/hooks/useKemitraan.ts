@@ -24,8 +24,8 @@ export const KEMITRAAN_FAQS: FAQItem[] = [
     answer: "Biaya kursus (SPP bulanan) dibayarkan mandiri oleh orang tua murid. Sebagai siswa dari sekolah mitra, orang tua murid justru mendapatkan keuntungan khusus berupa Bebas Biaya Pendaftaran dan Voucher Potongan Khusus."
   },
   {
-    question: "Apakah sesi Diagnostic Test gratis mengganggu jam pelajaran sekolah?",
-    answer: "Tidak mengganggu. Pelaksanaan Diagnostic Test gratis disesuaikan sepenuhnya dengan waktu luang yang disepakati sekolah (misal saat jam pelajaran seni/olahraga atau sesi kegiatan ekstra)."
+    question: "Apakah sesi Placement Test gratis mengganggu jam pelajaran sekolah?",
+    answer: "Tidak mengganggu. Pelaksanaan Placement Test gratis disesuaikan sepenuhnya dengan waktu luang yang disepakati sekolah (misal saat jam pelajaran seni/olahraga, kegiatan ekstra, atau diakses mandiri secara online)."
   },
   {
     question: "Bagaimana cara sekolah kami mendaftar menjadi mitra rujukan resmi?",
