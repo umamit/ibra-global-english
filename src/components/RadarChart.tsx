@@ -56,7 +56,7 @@ export default function RadarChart({ speaking, grammar, listening, vocabulary, a
   };
 
   return (
-    <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", backgroundColor: "white", borderRadius: "12px", border: "1px solid var(--color-gray-150)", boxShadow: "var(--shadow-sm)", maxWidth: "300px", margin: "0 auto" }}>
+    <div className="liquid-glass-card" style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", borderRadius: "12px", maxWidth: "300px", margin: "0 auto" }}>
       <p style={{ fontSize: "0.8rem", fontWeight: "800", color: "var(--color-primary-dark)", textTransform: "uppercase", marginBottom: "1rem" }}>Visualisasi Performa</p>
       
       <svg width="240" height="240" viewBox="0 0 240 240" style={{ overflow: "visible" }}>

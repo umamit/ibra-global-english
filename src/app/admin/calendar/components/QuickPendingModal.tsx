@@ -86,7 +86,7 @@ export default function QuickPendingModal({
       backdropFilter: "blur(4px)",
       padding: "1rem"
     }}>
-      <div className="portal-card" style={{ width: "100%", maxWidth: "520px", padding: "1.75rem", backgroundColor: "white", borderRadius: "16px" }}>
+      <div className="portal-card" style={{ width: "100%", maxWidth: "520px", padding: "1.75rem", borderRadius: "16px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
           <div>
             <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "#d97706", display: "flex", alignItems: "center", gap: "0.4rem" }}>

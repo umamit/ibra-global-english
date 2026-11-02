@@ -63,13 +63,10 @@ export default function LineChart({ reports, isCalistung, isMath }: any) {
   };
 
   return (
-    <div style={{
+    <div className="liquid-glass-card" style={{
       position: "relative",
-      backgroundColor: "white",
       padding: "2rem 1.5rem",
       borderRadius: "16px",
-      border: "1px solid var(--color-gray-150)",
-      boxShadow: "var(--shadow-md)",
       width: "100%",
       margin: "0 auto"
     }}>

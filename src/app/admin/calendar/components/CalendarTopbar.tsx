@@ -78,10 +78,9 @@ export default function CalendarTopbar({
       </div>
 
       {/* Control Bar: View Switcher, Date Navigation, & Program Filter */}
-      <div style={{
+      <div className="portal-card" style={{
         display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem",
-        backgroundColor: "#ffffff", padding: "0.85rem 1.25rem", borderRadius: "16px",
-        border: "1px solid rgba(0, 0, 0, 0.06)", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.02)",
+        padding: "0.85rem 1.25rem", borderRadius: "16px",
         marginBottom: "1.25rem",
       }}>
         {/* Month Navigation */}

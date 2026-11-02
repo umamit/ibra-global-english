@@ -42,11 +42,9 @@ export default function CalendarGrid({
 
   return (
     <div
+      className="portal-card"
       style={{
-        backgroundColor: "white",
         borderRadius: "16px",
-        border: "1px solid rgba(0, 0, 0, 0.05)",
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.02)",
         padding: "1.25rem",
         overflowX: "auto",
       }}

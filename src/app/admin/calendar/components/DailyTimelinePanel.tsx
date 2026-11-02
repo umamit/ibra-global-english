@@ -151,10 +151,8 @@ export default function DailyTimelinePanel({
   const groupKeys = Object.keys(groupedByProgram);
 
   return (
-    <div style={{
-      backgroundColor: "#ffffff", borderRadius: "18px",
-      border: "1px solid rgba(0, 0, 0, 0.06)",
-      boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.04)",
+    <div className="portal-card" style={{
+      borderRadius: "18px",
       padding: "1.25rem", height: "100%", display: "flex", flexDirection: "column",
     }}>
       <div style={{

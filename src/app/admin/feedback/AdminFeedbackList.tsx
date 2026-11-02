@@ -20,7 +20,7 @@ export default function AdminFeedbackList({ feedbacks, loading }: { feedbacks: F
   return (
     <>
       {feedbacks.map((fb) => (
-        <div key={fb.id} className="portal-card" style={{ padding: "1.5rem", borderRadius: "14px", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 4px 20px rgba(0,0,0,0.015)", backgroundColor: "white" }}>
+        <div key={fb.id} className="portal-card" style={{ padding: "1.5rem", borderRadius: "14px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
             <div>
               <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "var(--color-gray-900)" }}>{fb.parent_name}</h3>

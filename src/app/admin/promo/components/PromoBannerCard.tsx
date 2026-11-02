@@ -47,10 +47,9 @@ export function PromoBannerCard({
 
   return (
     <div
+      className="portal-card"
       style={{
-        backgroundColor: "#fff",
         borderRadius: "16px",
-        border: `1.5px solid ${item.is_active ? "rgba(33, 108, 126, 0.3)" : "var(--color-gray-200)"}`,
         padding: "1.25rem",
         display: "flex",
         alignItems: "center",

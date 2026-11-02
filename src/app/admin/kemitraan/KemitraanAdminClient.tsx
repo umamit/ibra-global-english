@@ -62,7 +62,7 @@ export default function KemitraanAdminClient() {
       {successMsg && <div style={{ padding: "0.85rem 1.25rem", borderRadius: "10px", background: "#d1e7dd", color: "#0f5132", marginBottom: "1.25rem", fontSize: "0.9rem" }}>{successMsg}</div>}
       {error && <div style={{ padding: "0.85rem 1.25rem", borderRadius: "10px", background: "#f8d7da", color: "#842029", marginBottom: "1.25rem", fontSize: "0.9rem" }}>{error}</div>}
 
-      <div style={{ background: "#ffffff", borderRadius: "14px", border: "1px solid rgba(0,0,0,0.08)", padding: "1.5rem", marginBottom: "2rem", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+      <div className="portal-card" style={{ borderRadius: "14px", padding: "1.5rem", marginBottom: "2rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <div><h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>Berkas Proposal Kemitraan PDF Aktif</h3><p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.25rem", marginBottom: 0 }}>Berkas proposal resmi yang diakses publik dan dilampirkan ke pihak sekolah/dinas.</p></div>
           <div style={{ display: "flex", gap: "0.75rem" }}>

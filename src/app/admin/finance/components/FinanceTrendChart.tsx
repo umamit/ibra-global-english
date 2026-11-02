@@ -12,7 +12,7 @@ interface MonthlyData {
 export default function FinanceTrendChart({ data }: { data: MonthlyData[] }) {
   if (!data || data.length === 0) {
     return (
-      <div style={{ backgroundColor: "#fff", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)", textAlign: "center", color: "var(--color-gray-500)" }}>
+      <div className="portal-card" style={{ padding: "1.5rem", borderRadius: "16px", textAlign: "center", color: "var(--color-gray-500)" }}>
         Belum ada data grafik keuangan bulanan.
       </div>
     );
@@ -25,7 +25,7 @@ export default function FinanceTrendChart({ data }: { data: MonthlyData[] }) {
   };
 
   return (
-    <div style={{ backgroundColor: "#fff", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)", marginBottom: "1.5rem" }}>
+    <div className="portal-card" style={{ padding: "1.5rem", borderRadius: "16px", marginBottom: "1.5rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
         <div>
           <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 700, color: "var(--color-gray-900)", display: "flex", alignItems: "center", gap: "6px" }}>

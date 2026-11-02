@@ -47,11 +47,8 @@ export default function CalendarSplitView({
   return (
     <div className={styles.splitGrid}>
       {/* Left 35% Mini Calendar Card */}
-      <div className={styles.leftCol} style={{
-        backgroundColor: "#ffffff",
+      <div className={`${styles.leftCol} portal-card`} style={{
         borderRadius: "18px",
-        border: "1px solid rgba(0, 0, 0, 0.06)",
-        boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.04)",
         padding: "1.25rem",
       }}>
         {/* Month Navigator Header */}

@@ -44,10 +44,9 @@ export function PromoIntervalCard({
 
   return (
     <div
+      className="portal-card"
       style={{
-        backgroundColor: "#ffffff",
         borderRadius: "16px",
-        border: "1px solid var(--color-gray-200)",
         padding: "1.25rem 1.5rem",
         display: "flex",
         flexDirection: "column",

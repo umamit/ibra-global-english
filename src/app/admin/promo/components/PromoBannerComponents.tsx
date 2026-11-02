@@ -71,7 +71,7 @@ export function PromoBannerFormFields(props: any) {
   const labelStyle = { display: "block", fontWeight: 600, fontSize: "0.875rem", marginBottom: "0.4rem" };
 
   return (
-    <div style={{ backgroundColor: "#fff", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)" }}>
+    <div className="portal-card" style={{ padding: "1.5rem", borderRadius: "16px" }}>
       <h2 style={{ margin: "0 0 1.25rem", fontSize: "1rem", fontWeight: 700 }}>Konten Popup Promo (TipTap Editor)</h2>
       <div style={{ marginBottom: "1rem" }}>
         <label style={labelStyle}>Label / Badge Atas (misal: PROMO KHUSUS / PENGUMUMAN PENTING)</label>
@@ -117,7 +117,7 @@ export function PromoBannerPreview({ mode, badgeText, title, message, ctaText, c
   const cleanHtml = typeof window !== "undefined" ? DOMPurify.sanitize(message || "") : message;
 
   return (
-    <div style={{ backgroundColor: "#fff", padding: "1.25rem", borderRadius: "16px", border: "1px solid var(--color-gray-200)" }}>
+    <div className="portal-card" style={{ padding: "1.25rem", borderRadius: "16px" }}>
       <h2 style={{ margin: "0 0 0.75rem", fontSize: "0.95rem", fontWeight: 700, color: "var(--color-gray-700)" }}>
         Pratinjau Live ({isFlyer ? "Mode Flyer Saja" : "Mode Banner Teks"})
       </h2>

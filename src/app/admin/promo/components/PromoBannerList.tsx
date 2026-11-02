@@ -45,16 +45,15 @@ export function PromoBannerList({
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       {/* Header Bar */}
       <div
+        className="portal-card"
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
           gap: "0.75rem",
-          backgroundColor: "#fff",
           padding: "1.25rem 1.5rem",
           borderRadius: "16px",
-          border: "1px solid var(--color-gray-200)",
         }}
       >
         <div>

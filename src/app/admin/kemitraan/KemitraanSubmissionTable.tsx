@@ -8,7 +8,7 @@ const STATUS_STYLE: Record<string, { bg: string; color: string }> = { approved: 
 
 export default function KemitraanSubmissionTable({ submissions, loading, onRefresh, onWhatsApp, onUpdateStatus, onSelectSub }: Props) {
   return (
-    <div style={{ background: "#ffffff", borderRadius: "14px", border: "1px solid rgba(0,0,0,0.08)", padding: "1.5rem", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+    <div className="portal-card" style={{ borderRadius: "14px", padding: "1.5rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
         <div>
           <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>Daftar Pengajuan Kemitraan Sekolah &amp; Instansi</h3>

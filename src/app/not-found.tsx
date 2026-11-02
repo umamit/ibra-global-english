@@ -24,18 +24,13 @@ export default function NotFound() {
       }}
     >
       <div
+        className="liquid-glass-card"
         style={{
           maxWidth: "480px",
           width: "100%",
           textAlign: "center",
           padding: "2.5rem 2rem",
           borderRadius: "24px",
-          background: "rgba(255, 255, 255, 0.85)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          border: "1px solid rgba(33, 108, 126, 0.12)",
-          borderTop: "1.5px solid rgba(255, 255, 255, 0.8)",
-          boxShadow: "0 20px 40px rgba(33, 108, 126, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04)",
         }}
       >
         <div
