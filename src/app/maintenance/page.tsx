@@ -72,7 +72,7 @@ export default function MaintenancePage() {
         </div>
       </div>
 
-      <p className={styles.footer}>© 2026 Ibra Global English · Bobong, Pulau Taliabu</p>
+      <p className={styles.footer}>&copy; {new Date().getFullYear()} Ibra Global English &middot; Bobong, Pulau Taliabu</p>
     </div>
   );
 }
