@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { StudentItem } from "../hooks/useStudentData";
-import { useScheduleFromStudent, UpcomingScheduleItem } from "../hooks/useScheduleFromStudent";
+import { useScheduleFromStudent, UpcomingScheduleItem, formatScheduleLabelWIT } from "../hooks/useScheduleFromStudent";
 
 interface ScheduleStudentModalProps {
   isOpen: boolean;
@@ -23,7 +23,11 @@ const DAYS_OPTIONS = [
 ];
 
 export default function ScheduleStudentModal({ isOpen, student, onClose, onSuccess }: ScheduleStudentModalProps) {
-  const { submitting, conflictWarning, generateAndSaveSchedules, fetchUpcomingStudentSchedules, rescheduleStudentSession, setSessionPending } = useScheduleFromStudent();
+  const {
+    submitting, conflictWarning, setConflictWarning,
+    generateAndSaveSchedules, fetchUpcomingStudentSchedules,
+    rescheduleStudentSession, setSessionPending, deleteAllStudentSchedules,
+  } = useScheduleFromStudent();
 
   const [activeTab, setActiveTab] = useState<"recurring" | "reschedule" | "pending">("recurring");
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 3, 6]);
@@ -44,14 +48,20 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
 
   useEffect(() => {
     if (student) {
+      setStatusMsg("");
+      setConflictWarning("");
       const p = (student.program || "").toLowerCase();
-      if (p.includes("teen")) { setSelectedDays([2, 4]); setStartTime("15:30"); setEndTime("17:00"); }
-      else if (p.includes("calistung")) { setSelectedDays([1, 3, 5]); setStartTime("15:00"); setEndTime("15:45"); }
-      else { setSelectedDays([1, 3, 6]); setStartTime("15:30"); setEndTime("16:45"); }
+      if (p.includes("teen") || p.startsWith("b1") || p.startsWith("b2") || p.startsWith("c1")) {
+        setSelectedDays([2, 4]); setStartTime("15:30"); setEndTime("17:00");
+      } else if (p.includes("calistung")) {
+        setSelectedDays([1, 3, 5]); setStartTime("15:00"); setEndTime("15:45");
+      } else {
+        setSelectedDays([1, 3, 6]); setStartTime("15:30"); setEndTime("16:45");
+      }
 
-      fetchUpcomingStudentSchedules(student.name, student.program || "").then((list) => {
+      fetchUpcomingStudentSchedules(student.name).then((list) => {
         setUpcomingSchedules(list);
-        if (list.length > 0) setSelectedScheduleId(list[0].id);
+        setSelectedScheduleId(list.length > 0 ? list[0].id : "");
       });
     }
   }, [student]);
@@ -62,15 +72,16 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
     setSelectedDays((prev) => prev.includes(dayNum) ? prev.filter((d) => d !== dayNum) : [...prev, dayNum]);
   };
 
-  const handleSaveRecurring = async (e: React.FormEvent) => {
+  const handleSaveRecurring = async (e: React.FormEvent, ignoreConflict = false) => {
     e.preventDefault();
     if (selectedDays.length === 0) { setStatusMsg("Pilih setidaknya 1 hari belajar."); return; }
     setStatusMsg("");
     const res = await generateAndSaveSchedules({
       studentId: student.id, studentName: student.name, program: student.program || "Kids Program",
-      selectedDays, startTime, endTime, instructor, room, monthsAhead,
+      selectedDays, startTime, endTime, instructor, room, monthsAhead, ignoreConflict,
     });
-    if (res.success) { onSuccess(res.message); onClose(); } else { setStatusMsg(res.message); }
+    if (res.success) { onSuccess(res.message); onClose(); }
+    else if (!res.hasConflict) { setStatusMsg(res.message); }
   };
 
   const handleSaveReschedule = async (e: React.FormEvent) => {
@@ -90,6 +101,13 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
     if (res.success) { onSuccess(res.message); onClose(); } else { setStatusMsg(res.message); }
   };
 
+  const handleClearStudentSchedules = async () => {
+    if (!confirm(`Apakah Anda yakin ingin MENGHAPUS SEMUA jadwal belajar milik "${student.name}"?`)) return;
+    setStatusMsg("");
+    const res = await deleteAllStudentSchedules(student.name);
+    if (res.success) { onSuccess(res.message); onClose(); } else { setStatusMsg(res.message); }
+  };
+
   return (
     <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
       <div className="portal-modal" style={{ borderRadius: "18px", padding: "1.5rem", maxWidth: "540px", width: "100%" }}>
@@ -103,40 +121,29 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
           <button type="button" onClick={onClose} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "#94a3b8" }}>&times;</button>
         </div>
 
-        <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "0.5rem" }}>
-          <button type="button" onClick={() => setActiveTab("recurring")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "recurring" ? "#eef6f8" : "transparent", color: activeTab === "recurring" ? "#216c7e" : "#64748b", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-              <line x1="16" x2="16" y1="2" y2="6" />
-              <line x1="8" x2="8" y1="2" y2="6" />
-              <line x1="3" x2="21" y1="10" y2="10" />
-            </svg>
-            <span>Jadwal Rutin</span>
-          </button>
-          <button type="button" onClick={() => setActiveTab("reschedule")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "reschedule" ? "#fef3c7" : "transparent", color: activeTab === "reschedule" ? "#b45309" : "#64748b", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-              <path d="M3 3v5h5" />
-              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-              <path d="M16 16h5v5" />
-            </svg>
-            <span>Reschedule</span>
-          </button>
-          <button type="button" onClick={() => setActiveTab("pending")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "pending" ? "#fee2e2" : "transparent", color: activeTab === "pending" ? "#b91c1c" : "#64748b", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="10" x2="10" y1="15" y2="9" />
-              <line x1="14" x2="14" y1="15" y2="9" />
-            </svg>
-            <span>Tunda (Pending)</span>
+        <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "0.5rem", flexWrap: "wrap", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", gap: "0.4rem" }}>
+            <button type="button" onClick={() => setActiveTab("recurring")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "recurring" ? "#eef6f8" : "transparent", color: activeTab === "recurring" ? "#216c7e" : "#64748b" }}>Jadwal Rutin</button>
+            <button type="button" onClick={() => setActiveTab("reschedule")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "reschedule" ? "#fef3c7" : "transparent", color: activeTab === "reschedule" ? "#b45309" : "#64748b" }}>Reschedule ({upcomingSchedules.length})</button>
+            <button type="button" onClick={() => setActiveTab("pending")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: activeTab === "pending" ? "#fee2e2" : "transparent", color: activeTab === "pending" ? "#b91c1c" : "#64748b" }}>Tunda (Pending)</button>
+          </div>
+          <button type="button" onClick={handleClearStudentSchedules} disabled={submitting} style={{ padding: "0.35rem 0.65rem", fontSize: "0.75rem", fontWeight: 700, borderRadius: "8px", border: "1px solid #fecaca", backgroundColor: "#fef2f2", color: "#dc2626", cursor: "pointer" }}>
+            Bersihkan Jadwal Siswa Ini
           </button>
         </div>
 
-        {conflictWarning && <div style={{ padding: "0.5rem 0.75rem", backgroundColor: "#fffbeb", border: "1px solid #fef3c7", borderRadius: "10px", color: "#b45309", fontSize: "0.78rem", marginBottom: "0.75rem", fontWeight: "600" }}><AlertCircleIcon /> {conflictWarning}</div>}
+        {conflictWarning && (
+          <div style={{ padding: "0.6rem 0.75rem", backgroundColor: "#fffbeb", border: "1px solid #fde68a", borderRadius: "10px", color: "#b45309", fontSize: "0.78rem", marginBottom: "0.75rem", fontWeight: "600", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+            <div><AlertCircleIcon /> {conflictWarning}</div>
+            <button type="button" onClick={(e) => handleSaveRecurring(e as any, true)} disabled={submitting} style={{ alignSelf: "flex-start", padding: "0.25rem 0.6rem", fontSize: "0.74rem", fontWeight: 700, borderRadius: "6px", border: "1px solid #d97706", backgroundColor: "#fef3c7", color: "#92400e", cursor: "pointer" }}>
+              Tetap Simpan (Gabung Kelas)
+            </button>
+          </div>
+        )}
         {statusMsg && <div style={{ padding: "0.5rem 0.75rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: "10px", color: "#b91c1c", fontSize: "0.78rem", marginBottom: "0.75rem", fontWeight: "600" }}>{statusMsg}</div>}
 
         {activeTab === "recurring" && (
-          <form onSubmit={handleSaveRecurring} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+          <form onSubmit={(e) => handleSaveRecurring(e, false)} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
             <div>
               <label style={{ fontSize: "0.8rem", fontWeight: "800", color: "#334155", display: "block", marginBottom: "0.35rem" }}>Pilih Hari Belajar Rutin (WIT):</label>
               <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
@@ -164,9 +171,9 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
         {activeTab === "reschedule" && (
           <form onSubmit={handleSaveReschedule} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
             <div>
-              <label style={{ fontSize: "0.78rem", fontWeight: "700", color: "#334155" }}>Pilih Sesi Asal yang Ingin Dipindahkan:</label>
+              <label style={{ fontSize: "0.78rem", fontWeight: "700", color: "#334155" }}>Pilih Sesi Asal Milik {student.name}:</label>
               <select value={selectedScheduleId} onChange={(e) => setSelectedScheduleId(e.target.value)} style={{ width: "100%", padding: "0.4rem 0.5rem", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "0.85rem" }} required>
-                {upcomingSchedules.length === 0 ? <option value="">Tidak ada sesi akan datang terdaftar</option> : upcomingSchedules.map((s) => (<option key={s.id} value={s.id}>{s.start_time.substring(0, 10)} (Jam {s.start_time.substring(11, 16)} WIT)</option>))}
+                {upcomingSchedules.length === 0 ? <option value="">Belum ada sesi akan datang untuk siswa ini</option> : upcomingSchedules.map((s) => (<option key={s.id} value={s.id}>{formatScheduleLabelWIT(s.start_time)}</option>))}
               </select>
             </div>
             <div><label style={{ fontSize: "0.78rem", fontWeight: "700", color: "#334155" }}>Tanggal Pengganti Baru</label><input type="date" value={rescheduleDate} onChange={(e) => setRescheduleDate(e.target.value)} style={{ width: "100%", padding: "0.4rem 0.5rem", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "0.85rem" }} required /></div>
@@ -185,9 +192,9 @@ export default function ScheduleStudentModal({ isOpen, student, onClose, onSucce
         {activeTab === "pending" && (
           <form onSubmit={handleSavePending} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
             <div>
-              <label style={{ fontSize: "0.78rem", fontWeight: "700", color: "#334155" }}>Pilih Sesi yang Ingin Ditunda (Pending):</label>
+              <label style={{ fontSize: "0.78rem", fontWeight: "700", color: "#334155" }}>Pilih Sesi Milik {student.name} yang Ingin Ditunda:</label>
               <select value={selectedScheduleId} onChange={(e) => setSelectedScheduleId(e.target.value)} style={{ width: "100%", padding: "0.4rem 0.5rem", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "0.85rem" }} required>
-                {upcomingSchedules.length === 0 ? <option value="">Tidak ada sesi akan datang terdaftar</option> : upcomingSchedules.map((s) => (<option key={s.id} value={s.id}>{s.start_time.substring(0, 10)} (Jam {s.start_time.substring(11, 16)} WIT)</option>))}
+                {upcomingSchedules.length === 0 ? <option value="">Belum ada sesi akan datang untuk siswa ini</option> : upcomingSchedules.map((s) => (<option key={s.id} value={s.id}>{formatScheduleLabelWIT(s.start_time)}</option>))}
               </select>
             </div>
             <div><label style={{ fontSize: "0.78rem", fontWeight: "700", color: "#334155" }}>Alasan Penundaan Sesi</label><input type="text" value={pendingReason} onChange={(e) => setPendingReason(e.target.value)} placeholder="Contoh: Libur Lembaga / Izin Tutor" style={{ width: "100%", padding: "0.4rem 0.5rem", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "0.85rem" }} required /></div>

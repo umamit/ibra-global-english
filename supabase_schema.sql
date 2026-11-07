@@ -362,11 +362,14 @@ CREATE TABLE IF NOT EXISTS public.academic_schedules (
   title TEXT NOT NULL,
   description TEXT,
   type TEXT NOT NULL CHECK (type IN ('class', 'event', 'holiday')),
-  program TEXT DEFAULT 'All' CHECK (program IN ('Kids Program', 'Teens Program', 'Fun Calistung', 'All')),
+  program TEXT DEFAULT 'All',
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   instructor TEXT,
   recurrence_id TEXT,
+  status TEXT DEFAULT 'active',
+  pending_reason TEXT,
+  rescheduled_to TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
