@@ -31,11 +31,11 @@ async function ensureNotAlreadyPaid(studentId: string, month: string) {
   }
 }
 
-function buildCompactOrderId(studentId: string, month: string): string {
-  const cleanUuid = studentId.replace(/-/g, "");
+function buildCompactOrderId(prefix: "S" | "R", entityId: string, month: string): string {
+  const cleanUuid = entityId.replace(/-/g, "");
   const cleanMonth = month.replace(/-/g, "");
   const ts = Date.now().toString(36);
-  return `S_${cleanUuid}_${cleanMonth}_${ts}`;
+  return `${prefix}_${cleanUuid}_${cleanMonth}_${ts}`;
 }
 
 export async function resolveOrCreatePublicStudent(data: {
@@ -43,7 +43,7 @@ export async function resolveOrCreatePublicStudent(data: {
   parent_name: string;
   whatsapp: string;
   program: string;
-}): Promise<{ id: string; name: string; program: string }> {
+}): Promise<{ id: string; name: string; program: string; prefix: "S" | "R" }> {
   const cleanName = escapeLikePattern(data.student_name.trim());
   if (!cleanName || cleanName.length < 2) {
     throw new Error("Nama lengkap siswa tidak valid.");
@@ -62,26 +62,28 @@ export async function resolveOrCreatePublicStudent(data: {
     list.find((s) => s.name.trim().toLowerCase() === norm && (s.program || "").toLowerCase().includes(baseProgram)) ||
     list.find((s) => s.name.trim().toLowerCase() === norm);
 
-  if (existing) return existing;
+  if (existing) return { ...existing, prefix: "S" };
 
   const { data: pendingReg } = await supabaseAdmin
     .from("registrations")
-    .select("student_age")
+    .select("id, student_name, program")
     .ilike("student_name", cleanName)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
-  const validAge = pendingReg?.student_age && pendingReg.student_age > 0 ? pendingReg.student_age : 7;
+  if (pendingReg) {
+    return {
+      id: pendingReg.id,
+      name: pendingReg.student_name || data.student_name.trim(),
+      program: pendingReg.program || data.program,
+      prefix: "R",
+    };
+  }
 
-  const { data: created, error: createErr } = await supabaseAdmin
-    .from("students")
-    .insert([{ name: data.student_name.trim(), age: validAge, program: data.program, parent_id: null }])
-    .select("id, name, program")
-    .single();
-
-  if (createErr || !created) throw new Error(createErr?.message || "Gagal mendaftarkan data siswa baru untuk pembayaran.");
-  return created;
+  throw new Error(
+    `Data siswa "${data.student_name.trim()}" belum terdaftar di sistem. Silakan lakukan Pendaftaran Siswa Baru terlebih dahulu atau pastikan ejaan nama lengkap siswa sesuai dengan data pendaftaran.`
+  );
 }
 
 export async function processCreateInvoice(student_id: string, month: string, gateway: "midtrans" | "xendit") {
@@ -104,7 +106,7 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   await ensureNotAlreadyPaid(student.id, month);
 
   const { baseAmount, feeAmount } = await getProgramSppWithFee(student.program);
-  const orderId = buildCompactOrderId(student.id, month);
+  const orderId = buildCompactOrderId("S", student.id, month);
   const email = user.email || "parent@ibraglobalenglish.uk";
   const phone = profile?.phone || "";
 
@@ -115,18 +117,20 @@ export async function processCreateInvoice(student_id: string, month: string, ga
 }
 
 export async function processPublicCheckout(data: { student_name: string; parent_name: string; email: string; whatsapp: string; program: string; month: string; gateway: "midtrans" | "xendit" }) {
-  const student = await resolveOrCreatePublicStudent({ student_name: data.student_name, parent_name: data.parent_name, whatsapp: data.whatsapp, program: data.program });
-  await ensureNotAlreadyPaid(student.id, data.month);
+  const target = await resolveOrCreatePublicStudent({ student_name: data.student_name, parent_name: data.parent_name, whatsapp: data.whatsapp, program: data.program });
+  if (target.prefix === "S") {
+    await ensureNotAlreadyPaid(target.id, data.month);
+  }
 
-  const effectiveProgram = student.program || data.program;
+  const effectiveProgram = target.program || data.program;
   const { baseAmount, feeAmount } = await getProgramSppWithFee(effectiveProgram);
-  const orderId = buildCompactOrderId(student.id, data.month);
+  const orderId = buildCompactOrderId(target.prefix, target.id, data.month);
   const finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success";
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
+    return createMidtransTransaction(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
   }
-  return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
+  return createXenditInvoice(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {
@@ -160,11 +164,7 @@ export async function createMidtransTransaction(orderId: string, baseAmount: num
     body: JSON.stringify({
       transaction_details: { order_id: orderId.slice(0, 50), gross_amount: totalAmount },
       item_details: items,
-      customer_details: {
-        first_name: studentName.slice(0, 50),
-        email: email || "parent@ibraglobalenglish.uk",
-        ...(phone ? { phone: phone.slice(0, 20) } : {}),
-      },
+      customer_details: { first_name: studentName.slice(0, 50), email: email || "parent@ibraglobalenglish.uk", ...(phone ? { phone: phone.slice(0, 20) } : {}) },
       callbacks: { finish: finishUrl },
       shopeepay: { callback_url: finishUrl },
     }),
@@ -178,8 +178,7 @@ function formatIdPhone(raw: string): string {
   const digits = String(raw || "").replace(/[^0-9]/g, "");
   if (!digits) return "";
   if (digits.startsWith("0")) return `+62${digits.slice(1)}`;
-  if (digits.startsWith("62")) return `+${digits}`;
-  return `+62${digits}`;
+  return digits.startsWith("62") ? `+${digits}` : `+62${digits}`;
 }
 
 export async function createXenditInvoice(externalId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, redirectUrl?: string, phone = "") {
@@ -202,11 +201,7 @@ export async function createXenditInvoice(externalId: string, baseAmount: number
       amount: totalAmount,
       fees,
       items,
-      customer: {
-        given_names: studentName.slice(0, 50) || "Siswa IGE",
-        email: email || "parent@ibraglobalenglish.uk",
-        ...(mobile ? { mobile_number: mobile } : {}),
-      },
+      customer: { given_names: studentName.slice(0, 50) || "Siswa IGE", email: email || "parent@ibraglobalenglish.uk", ...(mobile ? { mobile_number: mobile } : {}) },
       description: `Pembayaran SPP ${program} - ${studentName} (Bulan ${month})`,
       payer_email: email || "parent@ibraglobalenglish.uk",
       currency: "IDR",
@@ -231,20 +226,20 @@ export function verifyXenditCallbackToken(callbackToken: string): boolean {
   return safeCompareStrings(expectedToken, callbackToken);
 }
 
-export function parseOrderMetadata(orderId: string): { studentId: string; month: string } | null {
+export function parseOrderMetadata(orderId: string): { prefix: "S" | "R"; entityId: string; month: string } | null {
   const raw = String(orderId || "");
-  if (raw.startsWith("S_")) {
+  if (raw.startsWith("S_") || raw.startsWith("R_")) {
     const parts = raw.split("_");
     if (parts.length >= 3 && parts[1].length === 32 && parts[2].length === 6) {
       const h = parts[1];
-      const studentId = `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`;
+      const entityId = `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`;
       const month = `${parts[2].slice(0, 4)}-${parts[2].slice(4, 6)}`;
-      return { studentId, month };
+      return { prefix: raw.startsWith("R_") ? "R" : "S", entityId, month };
     }
   }
   const legacyParts = raw.split("|");
   if (legacyParts.length >= 3 && legacyParts[0] === "SPP") {
-    return { studentId: legacyParts[1], month: legacyParts[2] };
+    return { prefix: "S", entityId: legacyParts[1], month: legacyParts[2] };
   }
   return null;
 }
@@ -252,14 +247,36 @@ export function parseOrderMetadata(orderId: string): { studentId: string; month:
 export async function markSppAsPaid(orderId: string, grossAmount: number, gatewayLabel: string) {
   const meta = parseOrderMetadata(orderId);
   if (!meta) return;
-  const { data: student } = await supabaseAdmin.from("students").select("name, program").eq("id", meta.studentId).maybeSingle();
+
+  let studentId = meta.entityId;
+  let student: { id: string; name: string; program: string } | null = null;
+
+  if (meta.prefix === "R") {
+    const { data: reg } = await supabaseAdmin.from("registrations").select("student_name, student_age, program").eq("id", meta.entityId).maybeSingle();
+    if (!reg) return;
+    const cleanName = escapeLikePattern(reg.student_name.trim());
+    const { data: existingStu } = await supabaseAdmin.from("students").select("id, name, program").ilike("name", cleanName).limit(1).maybeSingle();
+    if (existingStu) {
+      student = existingStu;
+    } else {
+      const validAge = reg.student_age && reg.student_age > 0 ? reg.student_age : 7;
+      const { data: created } = await supabaseAdmin.from("students").insert([{ name: reg.student_name.trim(), age: validAge, program: reg.program, parent_id: null }]).select("id, name, program").single();
+      student = created;
+    }
+    if (!student) return;
+    studentId = student.id;
+  } else {
+    const { data: s } = await supabaseAdmin.from("students").select("id, name, program").eq("id", studentId).maybeSingle();
+    student = s;
+  }
+
   const netSpp = student?.program ? (await getProgramSppWithFee(student.program)).baseAmount : grossAmount;
   if (!isNaN(grossAmount) && grossAmount > 0 && grossAmount < netSpp) {
     throw new Error(`Nominal pembayaran (${grossAmount}) kurang dari tagihan SPP (${netSpp}).`);
   }
   const { error } = await supabaseAdmin.from("tuition_payments").upsert(
     {
-      student_id: meta.studentId,
+      student_id: studentId,
       month: meta.month,
       amount: netSpp,
       status: "lunas",
@@ -273,10 +290,6 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
 
   if (student?.name) {
     const cleanName = escapeLikePattern(student.name.trim());
-    await supabaseAdmin
-      .from("registrations")
-      .update({ status: "approved" })
-      .ilike("student_name", cleanName)
-      .eq("status", "pending");
+    await supabaseAdmin.from("registrations").update({ status: "approved" }).ilike("student_name", cleanName).eq("status", "pending");
   }
 }

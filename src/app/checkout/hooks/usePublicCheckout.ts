@@ -57,6 +57,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const [email, setEmail] = useState<string>("");
   const [whatsapp, setWhatsapp] = useState<string>("");
   const [month, setMonth] = useState<string>(defaultMonth);
+  const [websiteUrl, setWebsiteUrl] = useState<string>("");
   const [agreedTerms, setAgreedTerms] = useState<boolean>(false);
   const [loadingGateway, setLoadingGateway] = useState<"midtrans" | "xendit" | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -111,6 +112,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
           program: selectedProgram,
           month,
           gateway,
+          website_url: websiteUrl,
         }),
       });
       const data = await res.json();
@@ -142,6 +144,8 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     setWhatsapp,
     month,
     setMonth,
+    websiteUrl,
+    setWebsiteUrl,
     agreedTerms,
     setAgreedTerms,
     loadingGateway,
