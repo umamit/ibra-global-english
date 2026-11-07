@@ -30,6 +30,7 @@ export const registrationSchema = z.object({
     .trim()
     .optional()
     .nullable(),
+  honeypot: z.string().max(0, "Permintaan otomatis terdeteksi.").optional(),
 });
 
 export const registrationUpdateSchema = z.object({

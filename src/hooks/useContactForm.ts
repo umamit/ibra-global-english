@@ -88,6 +88,10 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
 
   const handleRegSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (honeypot) {
+      setRegSuccess(true);
+      return;
+    }
     setRegError("");
     setRegSubmitting(true);
 
@@ -95,7 +99,7 @@ export function useContactForm({ form, setForm, honeypot, initialSettings }: any
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(regForm),
+        body: JSON.stringify({ ...regForm, honeypot: honeypot || "" }),
       });
 
       const result = await res.json();

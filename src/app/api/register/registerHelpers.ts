@@ -62,6 +62,57 @@ export interface ProcessUpdateResult {
   status: number;
 }
 
+export async function createOrReusePendingRegistration(input: {
+  student_name: string;
+  student_age?: number;
+  parent_name?: string | null;
+  parent_email?: string | null;
+  whatsapp: string;
+  program: string;
+  notes?: string | null;
+}) {
+  const cleanName = input.student_name.trim().replace(/[%_\\]/g, "\\$&");
+  const { data: existingPending } = await supabaseAdmin
+    .from("registrations")
+    .select("id")
+    .ilike("student_name", cleanName)
+    .eq("whatsapp", input.whatsapp)
+    .eq("status", "pending")
+    .limit(1)
+    .maybeSingle();
+
+  if (existingPending?.id) {
+    await supabaseAdmin
+      .from("registrations")
+      .update({
+        student_age: input.student_age || null,
+        parent_name: input.parent_name || null,
+        parent_email: input.parent_email || null,
+        program: input.program,
+        notes: input.notes || null,
+      })
+      .eq("id", existingPending.id);
+    return { id: existingPending.id, error: null };
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from("registrations")
+    .insert({
+      student_name: input.student_name,
+      student_age: input.student_age || null,
+      parent_name: input.parent_name || null,
+      parent_email: input.parent_email || null,
+      whatsapp: input.whatsapp,
+      program: input.program,
+      notes: input.notes || null,
+      status: "pending",
+    })
+    .select("id")
+    .single();
+
+  return { id: data?.id, error };
+}
+
 export async function processRegistrationStatusUpdate(id: string | number, status: string, notes?: string | null): Promise<ProcessUpdateResult> {
   const { data: reg, error: fetchError } = await supabaseAdmin
     .from("registrations")
