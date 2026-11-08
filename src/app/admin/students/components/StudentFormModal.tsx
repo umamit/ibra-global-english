@@ -17,6 +17,9 @@ interface Props {
   program: string;
   status?: string;
   parentId: string;
+  parentName?: string;
+  parentEmail?: string;
+  whatsapp?: string;
   parents: Parent[];
   errorMsg: string;
   submitting: boolean;
@@ -25,11 +28,14 @@ interface Props {
   onProgramChange: React.ChangeEventHandler<HTMLSelectElement>;
   onStatusChange?: React.ChangeEventHandler<HTMLSelectElement>;
   onParentIdChange: React.ChangeEventHandler<HTMLSelectElement>;
+  onParentNameChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onParentEmailChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onWhatsappChange?: React.ChangeEventHandler<HTMLInputElement>;
   onClose: () => void;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 }
 
-export default function StudentFormModal({ open, editing, name, age, program, status = "aktif", parentId, parents, errorMsg, submitting, onNameChange, onAgeChange, onProgramChange, onStatusChange, onParentIdChange, onClose, onSubmit }: Props) {
+export default function StudentFormModal({ open, editing, name, age, program, status = "aktif", parentId, parentName = "", parentEmail = "", whatsapp = "", parents, errorMsg, submitting, onNameChange, onAgeChange, onProgramChange, onStatusChange, onParentIdChange, onParentNameChange, onParentEmailChange, onWhatsappChange, onClose, onSubmit }: Props) {
   if (!open) return null;
 
   return (
@@ -69,6 +75,20 @@ export default function StudentFormModal({ open, editing, name, age, program, st
                 <option value="alumnus">Alumnus / Lulus</option>
                 <option value="non_aktif">Non-Aktif</option>
               </select>
+            </div>
+          </div>
+          <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem", marginTop: "1.25rem", marginBottom: "1.25rem" }}>
+            <div className="form-group">
+              <label className="form-label">Nama Orang Tua / Wali</label>
+              <input type="text" className="form-input" placeholder="Nama Wali Murid" value={parentName} onChange={onParentNameChange} disabled={submitting} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Nomor WhatsApp Wali</label>
+              <input type="tel" className="form-input" placeholder="0813xxxxxxx" value={whatsapp} onChange={onWhatsappChange} disabled={submitting} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Email Orang Tua / Wali</label>
+              <input type="email" className="form-input" placeholder="email@contoh.com" value={parentEmail} onChange={onParentEmailChange} disabled={submitting} />
             </div>
           </div>
           <div className="form-group" style={{ marginBottom: "2rem" }}>

@@ -23,13 +23,16 @@ export function handleExportStudentsCSV(students: any[]) {
     return;
   }
 
-  const headers = ["No", "Nama Siswa", "Usia", "Program / Level CEFR", "Status"];
+  const headers = ["No", "Nama Siswa", "Usia", "Program / Level CEFR", "Status", "Nama Orang Tua / Wali", "Nomor WhatsApp", "Email Orang Tua"];
   const rows = students.map((s, idx) => [
     idx + 1,
     `"${(s.name || "").replace(/"/g, '""')}"`,
     s.age || "",
     `"${(s.program || "").replace(/"/g, '""')}"`,
     `"${(s.status || "aktif").replace(/"/g, '""')}"`,
+    `"${(s.parent_name || s.profiles?.full_name || "").replace(/"/g, '""')}"`,
+    `"${(s.whatsapp || "").replace(/"/g, '""')}"`,
+    `"${(s.parent_email || s.profiles?.email || "").replace(/"/g, '""')}"`,
   ]);
 
   const csvContent = "\uFEFF" + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");

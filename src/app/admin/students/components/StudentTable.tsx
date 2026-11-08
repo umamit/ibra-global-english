@@ -131,7 +131,7 @@ export default function StudentTable({
             <th>Level &amp; Target CEFR</th>
             <th>Status Jadwal</th>
             <th>Status Siswa</th>
-            <th>Orang Tua Terhubung</th>
+            <th>Orang Tua / Wali &amp; Kontak</th>
             <th style={{ textAlign: "right" }}>Aksi</th>
           </tr>
         </thead>
@@ -198,12 +198,24 @@ export default function StudentTable({
                     </span>
                   </td>
                   <td>
-                    {student.profiles ? (
-                      <span style={{ color: "var(--color-green)", fontWeight: "700" }}>
-                        {student.profiles.full_name}
-                      </span>
+                    {student.parent_name || student.profiles?.full_name || student.whatsapp || student.parent_email ? (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "0.78rem" }}>
+                        <span style={{ color: "var(--color-primary-dark)", fontWeight: "800" }}>
+                          {student.parent_name || student.profiles?.full_name || "-"}
+                        </span>
+                        {student.whatsapp && (
+                          <span style={{ color: "var(--color-gray-600)", fontWeight: "600" }}>
+                            WA: {student.whatsapp}
+                          </span>
+                        )}
+                        {student.parent_email && (
+                          <span style={{ color: "var(--color-gray-500)", fontSize: "0.72rem" }}>
+                            {student.parent_email}
+                          </span>
+                        )}
+                      </div>
                     ) : (
-                      <span style={{ color: "var(--color-gray-500)", fontStyle: "italic" }}>Belum dipasangkan</span>
+                      <span style={{ color: "var(--color-gray-500)", fontStyle: "italic" }}>Belum diisi</span>
                     )}
                   </td>
                   <td style={{ textAlign: "right" }}>

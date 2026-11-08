@@ -39,6 +39,9 @@ function AdminStudentsContent() {
   const [program, setProgram] = useState<string>("A1 Foundation 1");
   const [status, setStatus] = useState<string>("aktif");
   const [parentId, setParentId] = useState<string>("");
+  const [parentName, setParentName] = useState<string>("");
+  const [parentEmail, setParentEmail] = useState<string>("");
+  const [whatsapp, setWhatsapp] = useState<string>("");
   
   const initialStatusFilter = searchParams.get("status") || "semua";
   const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter);
@@ -59,14 +62,17 @@ function AdminStudentsContent() {
 
   const handleOpenAddModal = () => {
     setEditingStudent(null);
-    setName(""); setAge(""); setProgram("A1 Foundation 1"); setStatus("aktif"); setParentId(""); setFormErrorMsg("");
+    setName(""); setAge(""); setProgram("A1 Foundation 1"); setStatus("aktif"); setParentId("");
+    setParentName(""); setParentEmail(""); setWhatsapp(""); setFormErrorMsg("");
     setModalOpen(true);
   };
 
   const handleOpenEditModal = (student: StudentItem) => {
     setEditingStudent(student);
     setName(student.name); setAge(String(student.age)); setProgram(student.program || "A1 Foundation 1");
-    setStatus(student.status || "aktif"); setParentId(student.parent_id || ""); setFormErrorMsg("");
+    setStatus(student.status || "aktif"); setParentId(student.parent_id || "");
+    setParentName(student.parent_name || ""); setParentEmail(student.parent_email || ""); setWhatsapp(student.whatsapp || "");
+    setFormErrorMsg("");
     setModalOpen(true);
   };
 
@@ -86,6 +92,9 @@ function AdminStudentsContent() {
         program,
         status,
         parent_id: parentId || null,
+        parent_name: parentName.trim() || null,
+        parent_email: parentEmail.trim() || null,
+        whatsapp: whatsapp.trim() || null,
       };
 
       const res = await fetch("/api/admin/students", {
@@ -222,6 +231,9 @@ function AdminStudentsContent() {
         program={program} onProgramChange={(e) => setProgram(e.target.value)}
         status={status} onStatusChange={(e) => setStatus(e.target.value)}
         parentId={parentId} onParentIdChange={(e) => setParentId(e.target.value)}
+        parentName={parentName} onParentNameChange={(e) => setParentName(e.target.value)}
+        parentEmail={parentEmail} onParentEmailChange={(e) => setParentEmail(e.target.value)}
+        whatsapp={whatsapp} onWhatsappChange={(e) => setWhatsapp(e.target.value)}
         parents={parents} submitting={submitting} errorMsg={formErrorMsg}
         onClose={() => setModalOpen(false)} onSubmit={handleSaveStudent}
       />

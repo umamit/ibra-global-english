@@ -20,6 +20,9 @@ export interface StudentItem {
   program: string;
   status?: string | null;
   parent_id?: string | null;
+  parent_name?: string | null;
+  parent_email?: string | null;
+  whatsapp?: string | null;
   profiles?: any;
   [key: string]: any;
 }
@@ -58,10 +61,37 @@ export function useStudentData() {
     try {
       const { data: studentData, error: errS } = await supabase
         .from("students")
-        .select(`id, name, age, program, status, parent_id, profiles (id, full_name)`)
+        .select(`id, name, age, program, status, parent_id, profiles (id, full_name, email)`)
         .order("name");
 
       if (errS) throw errS;
+
+      const { data: regData } = await supabase
+        .from("registrations")
+        .select("student_name, parent_name, parent_email, whatsapp, created_at")
+        .order("created_at", { ascending: false });
+
+      const regMap = new Map<string, { parent_name?: string | null; parent_email?: string | null; whatsapp?: string | null }>();
+      (regData || []).forEach((r: any) => {
+        const key = (r.student_name || "").trim().toLowerCase();
+        if (key && !regMap.has(key)) {
+          regMap.set(key, {
+            parent_name: r.parent_name || null,
+            parent_email: r.parent_email || null,
+            whatsapp: r.whatsapp && r.whatsapp !== "-" ? r.whatsapp : null,
+          });
+        }
+      });
+
+      const enrichedStudents = (studentData || []).map((st: any) => {
+        const matchedReg = regMap.get((st.name || "").trim().toLowerCase());
+        return {
+          ...st,
+          parent_name: matchedReg?.parent_name || st.profiles?.full_name || null,
+          parent_email: matchedReg?.parent_email || st.profiles?.email || null,
+          whatsapp: matchedReg?.whatsapp || null,
+        };
+      });
 
       const { data: parentData, error: errP } = await supabase
         .from("profiles")
@@ -86,7 +116,7 @@ export function useStudentData() {
         });
       });
 
-      setStudents((studentData as any) || []);
+      setStudents((enrichedStudents as any) || []);
       setParents((parentData as any) || []);
       setScheduleCounts(counts);
     } catch (err: any) {
