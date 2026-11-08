@@ -103,14 +103,15 @@ export async function processPublicCheckout(data: { student_name: string; parent
   const effectiveProgram = target.program || data.program;
   const { baseAmount, feeAmount } = await getProgramSppWithFee(effectiveProgram);
   const orderId = buildCompactOrderId(target.prefix, target.id, data.month);
-  const finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success";
+  const midtransFinishUrl = "https://www.ibraglobalenglish.uk/checkout";
+  const xenditSuccessUrl = "https://www.ibraglobalenglish.uk/checkout?gateway=xendit&status=paid";
   const safeEmail = data.email || "parent@ibraglobalenglish.uk";
   const safePhone = data.whatsapp || "";
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, finishUrl, safePhone);
+    return createMidtransTransaction(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, midtransFinishUrl, safePhone);
   }
-  return createXenditInvoice(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, finishUrl, safePhone);
+  return createXenditInvoice(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, xenditSuccessUrl, safePhone);
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {
@@ -128,7 +129,7 @@ export async function getProgramSppWithFee(program: string): Promise<{ baseAmoun
   return { baseAmount, feeAmount: validFee, totalAmount: baseAmount + validFee };
 }
 
-export async function createMidtransTransaction(orderId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success", phone = "") {
+export async function createMidtransTransaction(orderId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, finishUrl = "https://www.ibraglobalenglish.uk/checkout", phone = "") {
   const serverKey = process.env.MIDTRANS_SERVER_KEY;
   if (!serverKey) throw new Error("MIDTRANS_SERVER_KEY belum dikonfigurasi di server.");
   const isProd = process.env.MIDTRANS_IS_PRODUCTION === "true";

@@ -62,6 +62,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const [loadingGateway, setLoadingGateway] = useState<"midtrans" | "xendit" | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [paymentSuccessBanner, setPaymentSuccessBanner] = useState<boolean>(false);
+  const [paymentPendingBanner, setPaymentPendingBanner] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -72,6 +73,8 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     const wa = params.get("whatsapp");
     const prog = params.get("program");
     const st = params.get("status");
+    const gw = params.get("gateway");
+    const txStatus = params.get("transaction_status");
 
     if (sName) setStudentName(sName);
     if (pName) setParentName(pName);
@@ -80,7 +83,11 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     if (prog && ["Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"].includes(prog)) {
       setSelectedProgram(prog);
     }
-    if (st === "success") setPaymentSuccessBanner(true);
+    if (txStatus === "settlement" || txStatus === "capture" || (gw === "xendit" && st === "paid")) {
+      setPaymentSuccessBanner(true);
+    } else if (txStatus === "pending") {
+      setPaymentPendingBanner(true);
+    }
   }, []);
 
   const activeProduct = products.find((p) => p.id === selectedProgram) || products[0];
@@ -151,6 +158,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     loadingGateway,
     errorMsg,
     paymentSuccessBanner,
+    paymentPendingBanner,
     handleCheckout,
   };
 }

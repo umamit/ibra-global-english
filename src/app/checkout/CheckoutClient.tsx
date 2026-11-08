@@ -30,6 +30,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
     loadingGateway,
     errorMsg,
     paymentSuccessBanner,
+    paymentPendingBanner,
     handleCheckout,
   } = usePublicCheckout(initialSettings);
 
@@ -56,7 +57,13 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
 
         {paymentSuccessBanner && (
           <div style={{ padding: "1.1rem 1.25rem", borderRadius: "14px", backgroundColor: "#ecfdf5", border: "1px solid #10b981", color: "#065f46", fontSize: "0.9rem", fontWeight: 700, marginBottom: "1.5rem" }}>
-            Pembayaran Anda telah berhasil diterima oleh sistem. Status SPP akan diperbarui secara otomatis.
+            Pembayaran Anda telah berhasil diterima oleh sistem. Status SPP telah diperbarui secara otomatis.
+          </div>
+        )}
+
+        {paymentPendingBanner && (
+          <div style={{ padding: "1.1rem 1.25rem", borderRadius: "14px", backgroundColor: "#fffbeb", border: "1px solid #f59e0b", color: "#92400e", fontSize: "0.9rem", fontWeight: 700, marginBottom: "1.5rem" }}>
+            Instruksi pembayaran (Virtual Account) telah dibuat dan menunggu transfer Anda. Status SPP akan otomatis berubah menjadi Lunas segera setelah Anda menyelesaikan pembayaran.
           </div>
         )}
 
