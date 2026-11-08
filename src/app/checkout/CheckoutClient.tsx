@@ -110,8 +110,8 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Nama Orang Tua / Wali *</label>
-                    <input type="text" value={parentName} onChange={(e) => setParentName(e.target.value)} placeholder="Nama Wali Murid" style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} required />
+                    <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Nama Orang Tua / Wali (Opsional)</label>
+                    <input type="text" value={parentName} onChange={(e) => setParentName(e.target.value)} placeholder="Boleh dikosongkan" style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Periode Bulan SPP *</label>
@@ -120,12 +120,12 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Email Penerima Bukti Bayar *</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email@contoh.com" style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} required />
+                    <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Email Bukti Bayar (Opsional)</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Boleh dikosongkan" style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Nomor WhatsApp Aktif *</label>
-                    <input type="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="0813xxxxxxx" style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} required />
+                    <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Nomor WhatsApp (Opsional)</label>
+                    <input type="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="0813xxxxxxx (Opsional)" style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} />
                   </div>
                 </div>
               </div>

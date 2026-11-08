@@ -90,8 +90,8 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
 
   const handleCheckout = async (gateway: "midtrans" | "xendit") => {
     setErrorMsg("");
-    if (!studentName.trim() || !parentName.trim() || !email.trim() || !whatsapp.trim()) {
-      setErrorMsg("Mohon lengkapi seluruh data siswa, orang tua, email, dan nomor WhatsApp.");
+    if (!studentName.trim()) {
+      setErrorMsg("Mohon isi Nama Lengkap Siswa terlebih dahulu.");
       return;
     }
     if (!agreedTerms) {

@@ -19,42 +19,19 @@ function safeCompareStrings(a: string, b: string): boolean {
 }
 
 async function ensureNotAlreadyPaid(studentId: string, month: string) {
-  const { data: existingPayment } = await supabaseAdmin
-    .from("tuition_payments")
-    .select("status")
-    .eq("student_id", studentId)
-    .eq("month", month)
-    .maybeSingle();
-
-  if (existingPayment?.status === "lunas") {
-    throw new Error(`Tagihan SPP siswa untuk periode ${month} sudah tercatat LUNAS.`);
-  }
+  const { data: existingPayment } = await supabaseAdmin.from("tuition_payments").select("status").eq("student_id", studentId).eq("month", month).maybeSingle();
+  if (existingPayment?.status === "lunas") throw new Error(`Tagihan SPP siswa untuk periode ${month} sudah tercatat LUNAS.`);
 }
 
 function buildCompactOrderId(prefix: "S" | "R", entityId: string, month: string): string {
-  const cleanUuid = entityId.replace(/-/g, "");
-  const cleanMonth = month.replace(/-/g, "");
-  const ts = Date.now().toString(36);
-  return `${prefix}_${cleanUuid}_${cleanMonth}_${ts}`;
+  return `${prefix}_${entityId.replace(/-/g, "")}_${month.replace(/-/g, "")}_${Date.now().toString(36)}`;
 }
 
-export async function resolveOrCreatePublicStudent(data: {
-  student_name: string;
-  parent_name: string;
-  whatsapp: string;
-  program: string;
-}): Promise<{ id: string; name: string; program: string; prefix: "S" | "R" }> {
+export async function resolveOrCreatePublicStudent(data: { student_name: string; parent_name?: string; whatsapp?: string; program: string }): Promise<{ id: string; name: string; program: string; prefix: "S" | "R" }> {
   const cleanName = escapeLikePattern(data.student_name.trim());
-  if (!cleanName || cleanName.length < 2) {
-    throw new Error("Nama lengkap siswa tidak valid.");
-  }
+  if (!cleanName || cleanName.length < 2) throw new Error("Nama lengkap siswa tidak valid.");
 
-  const { data: matchedStudents } = await supabaseAdmin
-    .from("students")
-    .select("id, name, program")
-    .ilike("name", cleanName)
-    .limit(10);
-
+  const { data: matchedStudents } = await supabaseAdmin.from("students").select("id, name, program").ilike("name", cleanName).limit(10);
   const norm = data.student_name.trim().toLowerCase();
   const baseProgram = data.program.split("(")[0].trim().toLowerCase();
   const list = matchedStudents || [];
@@ -64,26 +41,16 @@ export async function resolveOrCreatePublicStudent(data: {
 
   if (existing) return { ...existing, prefix: "S" };
 
-  const { data: pendingReg } = await supabaseAdmin
+  const { data: pendingReg } = await supabaseAdmin.from("registrations").select("id, student_name, program").ilike("student_name", cleanName).order("created_at", { ascending: false }).limit(1).maybeSingle();
+  if (pendingReg) return { id: pendingReg.id, name: pendingReg.student_name || data.student_name.trim(), program: pendingReg.program || data.program, prefix: "R" };
+
+  const { data: createdReg, error: regErr } = await supabaseAdmin
     .from("registrations")
+    .insert({ student_name: data.student_name.trim(), parent_name: data.parent_name?.trim() || null, whatsapp: data.whatsapp || "-", program: data.program, status: "pending", notes: "Checkout Langsung" })
     .select("id, student_name, program")
-    .ilike("student_name", cleanName)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (pendingReg) {
-    return {
-      id: pendingReg.id,
-      name: pendingReg.student_name || data.student_name.trim(),
-      program: pendingReg.program || data.program,
-      prefix: "R",
-    };
-  }
-
-  throw new Error(
-    `Data siswa "${data.student_name.trim()}" belum terdaftar di sistem. Silakan lakukan Pendaftaran Siswa Baru terlebih dahulu atau pastikan ejaan nama lengkap siswa sesuai dengan data pendaftaran.`
-  );
+    .single();
+  if (regErr || !createdReg) throw new Error("Gagal menyiapkan data transaksi siswa.");
+  return { id: createdReg.id, name: createdReg.student_name || data.student_name.trim(), program: createdReg.program || data.program, prefix: "R" };
 }
 
 export async function processCreateInvoice(student_id: string, month: string, gateway: "midtrans" | "xendit") {
@@ -116,21 +83,22 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, student.program, month, email, "https://www.ibraglobalenglish.uk/parent", phone);
 }
 
-export async function processPublicCheckout(data: { student_name: string; parent_name: string; email: string; whatsapp: string; program: string; month: string; gateway: "midtrans" | "xendit" }) {
+export async function processPublicCheckout(data: { student_name: string; parent_name?: string; email?: string; whatsapp?: string; program: string; month: string; gateway: "midtrans" | "xendit" }) {
   const target = await resolveOrCreatePublicStudent({ student_name: data.student_name, parent_name: data.parent_name, whatsapp: data.whatsapp, program: data.program });
   if (target.prefix === "S") {
     await ensureNotAlreadyPaid(target.id, data.month);
   }
-
   const effectiveProgram = target.program || data.program;
   const { baseAmount, feeAmount } = await getProgramSppWithFee(effectiveProgram);
   const orderId = buildCompactOrderId(target.prefix, target.id, data.month);
   const finishUrl = "https://www.ibraglobalenglish.uk/checkout?status=success";
+  const safeEmail = data.email || "parent@ibraglobalenglish.uk";
+  const safePhone = data.whatsapp || "";
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
+    return createMidtransTransaction(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, finishUrl, safePhone);
   }
-  return createXenditInvoice(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, data.email, finishUrl, data.whatsapp);
+  return createXenditInvoice(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, finishUrl, safePhone);
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {
