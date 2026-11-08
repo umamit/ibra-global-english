@@ -91,7 +91,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const handleCheckout = async (gateway: "midtrans" | "xendit") => {
     setErrorMsg("");
     if (!studentName.trim()) {
-      setErrorMsg("Mohon isi Nama Lengkap Siswa terlebih dahulu.");
+      setErrorMsg("Mohon isi Kode ID Siswa (IGE-XXXXXX) atau Nama Lengkap Siswa terlebih dahulu.");
       return;
     }
     if (!agreedTerms) {

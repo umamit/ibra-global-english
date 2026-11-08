@@ -28,11 +28,27 @@ function buildCompactOrderId(prefix: "S" | "R", entityId: string, month: string)
 }
 
 export async function resolveOrCreatePublicStudent(data: { student_name: string; parent_name?: string; whatsapp?: string; program: string }): Promise<{ id: string; name: string; program: string; prefix: "S" | "R" }> {
-  const cleanName = escapeLikePattern(data.student_name.trim());
-  if (!cleanName || cleanName.length < 2) throw new Error("Nama lengkap siswa tidak valid.");
+  const rawInput = data.student_name.trim();
+  const cleanName = escapeLikePattern(rawInput);
+  if (!cleanName || cleanName.length < 2) throw new Error("Nama lengkap atau Kode ID siswa tidak valid.");
+
+  const upperInput = rawInput.toUpperCase().replace(/\s+/g, "");
+  const codeMatch = upperInput.match(/^(?:IGE[-_]?)?([0-9A-F]{6,32})$/);
+  if (codeMatch) {
+    const hexPrefix = codeMatch[1].toLowerCase();
+    const { data: allStudents } = await supabaseAdmin.from("students").select("id, name, program");
+    const matchedByCode = (allStudents || []).find((s) => s.id.replace(/-/g, "").toLowerCase().startsWith(hexPrefix));
+    if (matchedByCode) return { ...matchedByCode, prefix: "S" };
+
+    const { data: allRegs } = await supabaseAdmin.from("registrations").select("id, student_name, program").order("created_at", { ascending: false });
+    const matchedRegByCode = (allRegs || []).find((r) => r.id.replace(/-/g, "").toLowerCase().startsWith(hexPrefix));
+    if (matchedRegByCode) {
+      return { id: matchedRegByCode.id, name: matchedRegByCode.student_name || rawInput, program: matchedRegByCode.program || data.program, prefix: "R" };
+    }
+  }
 
   const { data: matchedStudents } = await supabaseAdmin.from("students").select("id, name, program").ilike("name", cleanName).limit(10);
-  const norm = data.student_name.trim().toLowerCase();
+  const norm = rawInput.toLowerCase();
   const baseProgram = data.program.split("(")[0].trim().toLowerCase();
   const list = matchedStudents || [];
   const existing =
@@ -42,10 +58,10 @@ export async function resolveOrCreatePublicStudent(data: { student_name: string;
   if (existing) return { ...existing, prefix: "S" };
 
   const { data: pendingReg } = await supabaseAdmin.from("registrations").select("id, student_name, program").ilike("student_name", cleanName).order("created_at", { ascending: false }).limit(1).maybeSingle();
-  if (pendingReg) return { id: pendingReg.id, name: pendingReg.student_name || data.student_name.trim(), program: pendingReg.program || data.program, prefix: "R" };
+  if (pendingReg) return { id: pendingReg.id, name: pendingReg.student_name || rawInput, program: pendingReg.program || data.program, prefix: "R" };
 
   throw new Error(
-    `Nama siswa "${data.student_name.trim()}" belum terdaftar di sistem. Bagi siswa baru, silakan mendaftar terlebih dahulu melalui formulir Pendaftaran Online di Halaman Utama.`
+    `Kode ID atau Nama Siswa "${rawInput}" belum terdaftar di sistem. Bagi siswa baru, silakan mendaftar terlebih dahulu melalui formulir Pendaftaran Online di Halaman Utama.`
   );
 }
 

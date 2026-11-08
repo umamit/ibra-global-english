@@ -1,5 +1,10 @@
 "use client";
 
+export function formatStudentQrCodeId(studentId: string): string {
+  const clean = String(studentId || "").replace(/-/g, "").toUpperCase();
+  return clean ? `IGE-${clean.slice(0, 6)}` : "IGE-000000";
+}
+
 export function formatIndonesianDate(dateStr: string): string {
   if (!dateStr) return "-";
   try {
@@ -23,9 +28,10 @@ export function handleExportStudentsCSV(students: any[]) {
     return;
   }
 
-  const headers = ["No", "Nama Siswa", "Usia", "Program / Level CEFR", "Status", "Nama Orang Tua / Wali", "Nomor WhatsApp", "Email Orang Tua"];
+  const headers = ["No", "Kode ID Siswa", "Nama Siswa", "Usia", "Program / Level CEFR", "Status", "Nama Orang Tua / Wali", "Nomor WhatsApp", "Email Orang Tua"];
   const rows = students.map((s, idx) => [
     idx + 1,
+    `"${formatStudentQrCodeId(s.id)}"`,
     `"${(s.name || "").replace(/"/g, '""')}"`,
     s.age || "",
     `"${(s.program || "").replace(/"/g, '""')}"`,

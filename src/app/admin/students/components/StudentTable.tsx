@@ -2,6 +2,7 @@
 
 import React from "react";
 import { StudentItem } from "../hooks/useStudentData";
+import { formatStudentQrCodeId } from "../studentsHelpers";
 
 interface StudentTableProps {
   students: StudentItem[];
@@ -59,6 +60,7 @@ export default function StudentTable({
     const printWin = window.open("", "_blank");
     if (!printWin) return;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(student.id)}`;
+    const qrCodeId = formatStudentQrCodeId(student.id);
     printWin.document.write(`
       <!DOCTYPE html>
       <html>
@@ -69,8 +71,9 @@ export default function StudentTable({
             .card { width: 320px; background: linear-gradient(135deg, #164d57 0%, #216c7e 100%); border-radius: 20px; color: #fff; padding: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
             .logo { height: 38px; margin-bottom: 6px; }
             .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #A68849; margin-bottom: 14px; }
-            .qr-box { background: #fff; padding: 10px; border-radius: 16px; display: inline-block; margin-bottom: 14px; }
+            .qr-box { background: #fff; padding: 10px; border-radius: 16px; display: inline-block; margin-bottom: 10px; }
             .qr-box img { width: 160px; height: 160px; display: block; }
+            .code-badge { display: inline-block; background: rgba(166, 136, 73, 0.25); border: 1px solid #A68849; color: #fde68a; font-size: 13px; font-weight: 800; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }
             .name { font-size: 17px; font-weight: 800; margin-bottom: 4px; color: #ffffff; }
             .program { font-size: 12px; color: #e2e8f0; margin-bottom: 10px; }
             .footer { font-size: 10px; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; }
@@ -79,8 +82,9 @@ export default function StudentTable({
         <body>
           <div class="card">
             <img src="https://ibraglobalenglish.uk/assets/logo.png" class="logo" alt="Logo" />
-            <div class="title">KARTU ABSENSI RESMI SISWA</div>
+            <div class="title">KARTU ABSENSI &amp; ID SISWA</div>
             <div class="qr-box"><img src="${qrUrl}" alt="QR Code" /></div>
+            <div><span class="code-badge">ID: ${qrCodeId}</span></div>
             <div class="name">${student.name}</div>
             <div class="program">${student.program || "Kids Program"}</div>
             <div class="footer">LKP Ibra Global English Bobong</div>
@@ -152,7 +156,12 @@ export default function StudentTable({
               return (
                 <tr key={student.id} style={{ opacity: isInactive ? 0.55 : 1, backgroundColor: isInactive ? "var(--color-gray-50)" : "transparent" }}>
                   <td style={{ fontWeight: "700", color: isInactive ? "var(--color-gray-400)" : undefined }}>{idx + 1}</td>
-                  <td style={{ fontWeight: "700", color: isInactive ? "var(--color-gray-400)" : "var(--color-gray-900)" }}>{student.name}</td>
+                  <td style={{ fontWeight: "700", color: isInactive ? "var(--color-gray-400)" : "var(--color-gray-900)" }}>
+                    <div>{student.name}</div>
+                    <div style={{ fontSize: "0.72rem", fontWeight: "800", color: "var(--color-primary)", letterSpacing: "0.5px", marginTop: "2px" }}>
+                      {formatStudentQrCodeId(student.id)}
+                    </div>
+                  </td>
                   <td style={{ color: isInactive ? "var(--color-gray-400)" : undefined }}>{student.age} Tahun</td>
                   <td>
                     <select
