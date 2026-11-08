@@ -20,7 +20,8 @@ export const getLandingSettings = cache(async (): Promise<LandingSettings> => {
   try {
     const { data, error } = await supabase
       .from("landing_settings")
-      .select("key, value");
+      .select("key, value")
+      .not("key", "like", "pay_lock_%");
 
     if (error) {
       console.error("Error mengambil landing_settings di metadata:", error);

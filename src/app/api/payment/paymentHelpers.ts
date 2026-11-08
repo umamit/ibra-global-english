@@ -1,6 +1,9 @@
 import crypto from "crypto";
 import { getAdminSupabase } from "@/app/api/_middleware";
 import { createClient } from "@/utils/supabase/server";
+import { createMidtransTransaction, createXenditInvoice, clearCachedSessionByOrderId } from "./gatewaySessionHelpers";
+
+export { createMidtransTransaction, createXenditInvoice };
 
 const supabaseAdmin = getAdminSupabase();
 
@@ -129,71 +132,6 @@ export async function getProgramSppWithFee(program: string): Promise<{ baseAmoun
   return { baseAmount, feeAmount: validFee, totalAmount: baseAmount + validFee };
 }
 
-export async function createMidtransTransaction(orderId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, finishUrl = "https://www.ibraglobalenglish.uk/checkout", phone = "") {
-  const serverKey = process.env.MIDTRANS_SERVER_KEY;
-  if (!serverKey) throw new Error("MIDTRANS_SERVER_KEY belum dikonfigurasi di server.");
-  const isProd = process.env.MIDTRANS_IS_PRODUCTION === "true";
-  const endpoint = isProd ? "https://app.midtrans.com/snap/v1/transactions" : "https://app.sandbox.midtrans.com/snap/v1/transactions";
-  const authHeader = "Basic " + Buffer.from(`${serverKey}:`).toString("base64");
-  const totalAmount = baseAmount + feeAmount;
-  const items = [{ id: `SPP-${month}`, price: baseAmount, quantity: 1, name: `SPP ${program} (${month})`.slice(0, 50) }];
-  if (feeAmount > 0) items.push({ id: "ADMIN-FEE", price: feeAmount, quantity: 1, name: "Biaya Layanan Payment Gateway" });
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: authHeader },
-    body: JSON.stringify({
-      transaction_details: { order_id: orderId.slice(0, 50), gross_amount: totalAmount },
-      item_details: items,
-      customer_details: { first_name: studentName.slice(0, 50), email: email || "parent@ibraglobalenglish.uk", ...(phone ? { phone: phone.slice(0, 20) } : {}) },
-      callbacks: { finish: finishUrl },
-    }),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.error_messages?.join(", ") || "Gagal membuat transaksi Midtrans.");
-  return { gateway: "midtrans", token: json.token, redirect_url: json.redirect_url, order_id: orderId };
-}
-
-function formatIdPhone(raw: string): string {
-  const digits = String(raw || "").replace(/[^0-9]/g, "");
-  if (!digits) return "";
-  if (digits.startsWith("0")) return `+62${digits.slice(1)}`;
-  return digits.startsWith("62") ? `+${digits}` : `+62${digits}`;
-}
-
-export async function createXenditInvoice(externalId: string, baseAmount: number, feeAmount: number, studentName: string, program: string, month: string, email: string, redirectUrl?: string, phone = "") {
-  const secretKey = process.env.XENDIT_SECRET_KEY;
-  if (!secretKey) throw new Error("XENDIT_SECRET_KEY belum dikonfigurasi di server.");
-  const authHeader = "Basic " + Buffer.from(`${secretKey}:`).toString("base64");
-  const totalAmount = baseAmount + feeAmount;
-  const fees = feeAmount > 0 ? [{ type: "Biaya Layanan Transaksi Otomatis", value: feeAmount }] : undefined;
-  const items = [{ name: `SPP ${program} (${month})`, quantity: 1, price: baseAmount, category: "Education" }];
-  if (feeAmount > 0) items.push({ name: "Biaya Layanan Transaksi Otomatis", quantity: 1, price: feeAmount, category: "Service Fee" });
-  const mobile = formatIdPhone(phone);
-  const targetUrl = redirectUrl || "https://www.ibraglobalenglish.uk/parent";
-  const failUrl = targetUrl.includes("/checkout") ? "https://www.ibraglobalenglish.uk/checkout" : targetUrl;
-
-  const res = await fetch("https://api.xendit.co/v2/invoices", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: authHeader },
-    body: JSON.stringify({
-      external_id: externalId,
-      amount: totalAmount,
-      fees,
-      items,
-      customer: { given_names: studentName.slice(0, 50) || "Siswa IGE", email: email || "parent@ibraglobalenglish.uk", ...(mobile ? { mobile_number: mobile } : {}) },
-      description: `Pembayaran SPP ${program} - ${studentName} (Bulan ${month})`,
-      payer_email: email || "parent@ibraglobalenglish.uk",
-      currency: "IDR",
-      success_redirect_url: targetUrl,
-      failure_redirect_url: failUrl,
-    }),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || "Gagal membuat invoice Xendit.");
-  return { gateway: "xendit", invoice_url: json.invoice_url, redirect_url: json.invoice_url, order_id: externalId };
-}
-
 export function verifyMidtransSignature(orderId: string, statusCode: string, grossAmount: string, signatureKey: string): boolean {
   const serverKey = process.env.MIDTRANS_SERVER_KEY || "";
   if (!serverKey || !signatureKey) return false;
@@ -248,6 +186,7 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
       const prevNotes = (reg.notes || "").replace(/\[PAID_SPP:[^\]]+\]\s*/g, "").trim();
       const updatedNotes = prevNotes ? `${paidMarker} ${prevNotes}` : paidMarker;
       await supabaseAdmin.from("registrations").update({ notes: updatedNotes }).eq("id", meta.entityId);
+      await clearCachedSessionByOrderId(orderId);
       return;
     }
   } else {
@@ -272,4 +211,5 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
     { onConflict: "student_id,month" }
   );
   if (error) throw new Error(error.message);
+  await clearCachedSessionByOrderId(orderId);
 }
