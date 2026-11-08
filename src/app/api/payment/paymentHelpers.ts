@@ -166,7 +166,6 @@ export async function createMidtransTransaction(orderId: string, baseAmount: num
       item_details: items,
       customer_details: { first_name: studentName.slice(0, 50), email: email || "parent@ibraglobalenglish.uk", ...(phone ? { phone: phone.slice(0, 20) } : {}) },
       callbacks: { finish: finishUrl },
-      shopeepay: { callback_url: finishUrl },
     }),
   });
   const json = await res.json();
