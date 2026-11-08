@@ -105,7 +105,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Kode ID Kartu QR (IGE-XXXXXX) atau Nama Lengkap Siswa *</label>
-                  <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} placeholder="Contoh: IGE-40EEAC atau Nama Lengkap Siswa" style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} required />
+                  <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} required />
                   <input type="text" name="website_url" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }} />
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>

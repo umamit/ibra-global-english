@@ -11,6 +11,7 @@ const fs = require('fs');
 const path = require('path');
 
 const EMOJI_REGEX = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}]/u;
+const LEAKED_IGE_ID_REGEX = /\bIGE-(?!000000)[0-9A-F]{6}\b/i;
 
 function walkDir(dir, callback) {
   const files = fs.readdirSync(dir);
@@ -29,6 +30,7 @@ let errorsCount = 0;
 const overLimitCode = [];
 const overLimitCss = [];
 const emojiFound = [];
+const leakedStudentIdFound = [];
 
 const srcDir = path.join(__dirname, '..', 'src');
 
@@ -45,9 +47,13 @@ walkDir(srcDir, (filePath) => {
       errorsCount++;
     }
 
-    // Check emojis across entire src (including admin & public components)
+    // Check emojis & hardcoded student IDs across entire src (including admin & public components)
     const lineList = content.split('\n');
     lineList.forEach((lineText, idx) => {
+      if (LEAKED_IGE_ID_REGEX.test(lineText)) {
+        leakedStudentIdFound.push({ relPath, line: idx + 1, text: lineText.trim() });
+        errorsCount++;
+      }
       // Exclude audio cleanup regex in AIChatWidget
       if (lineText.includes('replace(/[👋🤖📚🗣️✅🎯⚠️💡]/g') || lineText.includes('replace(/[')) return;
       if (EMOJI_REGEX.test(lineText)) {
@@ -85,6 +91,13 @@ if (emojiFound.length > 0) {
   emojiFound.forEach(item => console.error(`   - ${item.relPath}:${item.line}: ${item.text}`));
 } else {
   console.log('✅ Bebas emoji di seluruh komponen aplikasi (Admin & Publik).');
+}
+
+if (leakedStudentIdFound.length > 0) {
+  console.error(`❌ Terdeteksi Hardcoded ID Siswa (Rule 21u) (${leakedStudentIdFound.length}):`);
+  leakedStudentIdFound.forEach(item => console.error(`   - ${item.relPath}:${item.line}: ${item.text}`));
+} else {
+  console.log('✅ Bebas dari eksposur Kode ID Siswa hardcoded (Rule 21u).');
 }
 
 console.log('\n===============================================');

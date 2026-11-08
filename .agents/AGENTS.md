@@ -243,6 +243,11 @@ npm run check-limits
     - AI DILARANG KERAS menambahkan garis aksen tebal atau warna strip di samping kiri kartu (seperti `border-left: 4px solid ...` atau `border-left: 5px solid ...`) pada seluruh elemen kartu antarmuka (agenda, timeline, jadwal, maupun kartu modul dashboard).
     - Seluruh elemen kartu (card) WAJIB menggunakan garis tepi pembatas yang halus, seragam, dan melingkar penuh di seluruh sisinya (`border: 1px solid rgba(0, 0, 0, 0.06)` atau `border: 1px solid var(--color-border)`) serta `border-radius` melengkung halus sesuai standar Apple Human Interface Guidelines (HIG).
 
+21u. **Kunci Anti-Kebocoran Data Siswa & PII di Kode / Placeholder (Strict Zero Student Data & PII Leak Rule):**
+    - AI DILARANG KERAS menuliskan, menyalin, atau menampilkan data asli siswa/orang tua dari database (seperti Kode ID Siswa `IGE-[HEX]`, UUID siswa, nama asli siswa, nomor WhatsApp/telepon siswa, atau alamat email wali murid) ke dalam teks `placeholder`, contoh label UI, komentar kode, skrip pengujian publik, maupun komponen frontend.
+    - Jika suatu input membutuhkan teks petunjuk format, AI WAJIB mengosongkan `placeholder` atau hanya menggunakan pola mask generik murni (seperti `IGE-XXXXXX`) yang bukan berasal dari data riil di Supabase.
+    - Skrip `npm run check-limits` wajib memblokir secara otomatis setiap kemunculan kode ID heksadesimal siswa (`IGE-[0-9A-F]{6}`) yang di-hardcode di dalam folder `src/`.
+
 28. **Aturan Matikan Server Lokal Otomatis (Dev Server Auto-Cleanup):**
     - Setiap kali AI menyalakan server lokal (misal `npm run dev`), AI WAJIB segera menghentikan/mematikan server tersebut (`npx kill-port 3000`) setelah verifikasi selesai sebelum mengakhiri turn kerja.
 
