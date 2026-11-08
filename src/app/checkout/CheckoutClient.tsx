@@ -168,7 +168,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                 disabled={Boolean(loadingGateway)}
                 style={{ width: "100%", padding: "0.9rem 1rem", borderRadius: "12px", border: "none", backgroundColor: "#216c7e", color: "#ffffff", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer" }}
               >
-                {loadingGateway === "xendit" ? "Memproses Invoice Xendit..." : "Bayar Sekarang via Xendit (QRIS / Virtual Account)"}
+                {loadingGateway === "xendit" ? "Memproses Invoice Xendit..." : "Bayar Sekarang via Xendit (QRIS / Virtual Account / Indomaret)"}
               </button>
               <button
                 type="button"
@@ -176,7 +176,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                 disabled={Boolean(loadingGateway)}
                 style={{ width: "100%", padding: "0.9rem 1rem", borderRadius: "12px", border: "1px solid #216c7e", backgroundColor: "#ffffff", color: "#216c7e", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer" }}
               >
-                {loadingGateway === "midtrans" ? "Memproses Sesi Midtrans..." : "Bayar Sekarang via Midtrans (ShopeePay / GoPay / QRIS / VA)"}
+                {loadingGateway === "midtrans" ? "Memproses Sesi Midtrans..." : "Bayar Sekarang via Midtrans (Virtual Account Bank / GoPay / Kartu)"}
               </button>
             </div>
 

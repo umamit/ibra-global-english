@@ -168,7 +168,7 @@ export default function FinanceView({
                               style={{ padding: "0.5rem 0.85rem", fontSize: "0.78rem", fontWeight: "700", display: "flex", gap: "0.35rem", alignItems: "center" }}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                              <span>{processingGateway === `${month}-midtrans` ? "Memuat..." : "Midtrans (QRIS/VA)"}</span>
+                              <span>{processingGateway === `${month}-midtrans` ? "Memuat..." : "Midtrans (VA/GoPay)"}</span>
                             </button>
                           )}
                           {showXendit && handleGatewayPayment && (
