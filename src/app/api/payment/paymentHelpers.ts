@@ -44,13 +44,9 @@ export async function resolveOrCreatePublicStudent(data: { student_name: string;
   const { data: pendingReg } = await supabaseAdmin.from("registrations").select("id, student_name, program").ilike("student_name", cleanName).order("created_at", { ascending: false }).limit(1).maybeSingle();
   if (pendingReg) return { id: pendingReg.id, name: pendingReg.student_name || data.student_name.trim(), program: pendingReg.program || data.program, prefix: "R" };
 
-  const { data: createdReg, error: regErr } = await supabaseAdmin
-    .from("registrations")
-    .insert({ student_name: data.student_name.trim(), parent_name: data.parent_name?.trim() || null, whatsapp: data.whatsapp || "-", program: data.program, status: "pending", notes: "Checkout Langsung" })
-    .select("id, student_name, program")
-    .single();
-  if (regErr || !createdReg) throw new Error("Gagal menyiapkan data transaksi siswa.");
-  return { id: createdReg.id, name: createdReg.student_name || data.student_name.trim(), program: createdReg.program || data.program, prefix: "R" };
+  throw new Error(
+    `Nama siswa "${data.student_name.trim()}" belum terdaftar di sistem. Bagi siswa baru, silakan mendaftar terlebih dahulu melalui formulir Pendaftaran Online di Halaman Utama.`
+  );
 }
 
 export async function processCreateInvoice(student_id: string, month: string, gateway: "midtrans" | "xendit") {
@@ -219,19 +215,24 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
   let student: { id: string; name: string; program: string } | null = null;
 
   if (meta.prefix === "R") {
-    const { data: reg } = await supabaseAdmin.from("registrations").select("student_name, student_age, program").eq("id", meta.entityId).maybeSingle();
+    const { data: reg } = await supabaseAdmin.from("registrations").select("student_name, program, notes").eq("id", meta.entityId).maybeSingle();
     if (!reg) return;
+    const netSpp = reg.program ? (await getProgramSppWithFee(reg.program)).baseAmount : grossAmount;
+    if (!isNaN(grossAmount) && grossAmount > 0 && grossAmount < netSpp) {
+      throw new Error(`Nominal pembayaran (${grossAmount}) kurang dari tagihan SPP (${netSpp}).`);
+    }
     const cleanName = escapeLikePattern(reg.student_name.trim());
     const { data: existingStu } = await supabaseAdmin.from("students").select("id, name, program").ilike("name", cleanName).limit(1).maybeSingle();
     if (existingStu) {
       student = existingStu;
+      studentId = existingStu.id;
     } else {
-      const validAge = reg.student_age && reg.student_age > 0 ? reg.student_age : 7;
-      const { data: created } = await supabaseAdmin.from("students").insert([{ name: reg.student_name.trim(), age: validAge, program: reg.program, parent_id: null }]).select("id, name, program").single();
-      student = created;
+      const paidMarker = `[PAID_SPP:${meta.month}:${netSpp}:${gatewayLabel}]`;
+      const prevNotes = (reg.notes || "").replace(/\[PAID_SPP:[^\]]+\]\s*/g, "").trim();
+      const updatedNotes = prevNotes ? `${paidMarker} ${prevNotes}` : paidMarker;
+      await supabaseAdmin.from("registrations").update({ notes: updatedNotes }).eq("id", meta.entityId);
+      return;
     }
-    if (!student) return;
-    studentId = student.id;
   } else {
     const { data: s } = await supabaseAdmin.from("students").select("id, name, program").eq("id", studentId).maybeSingle();
     student = s;
@@ -254,9 +255,4 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
     { onConflict: "student_id,month" }
   );
   if (error) throw new Error(error.message);
-
-  if (student?.name) {
-    const cleanName = escapeLikePattern(student.name.trim());
-    await supabaseAdmin.from("registrations").update({ status: "approved" }).ilike("student_name", cleanName).eq("status", "pending");
-  }
 }

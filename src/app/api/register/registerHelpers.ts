@@ -31,14 +31,36 @@ export async function processStudentApproval(reg: any) {
 
   if (checkExistError) console.error("Gagal memeriksa duplikasi siswa:", checkExistError);
 
-  if (!existingStudent) {
-    const { error: insertError } = await supabaseAdmin
-      .from("students")
-      .insert({ name: reg.student_name.trim(), age: validAge, program: normalizedProgram, parent_id: null });
+  let finalStudentId = existingStudent?.id;
 
-    if (insertError) {
-      return { success: false, error: "Gagal menambahkan siswa ke database.", details: insertError.message, status: 500 };
+  if (!existingStudent) {
+    const { data: createdStu, error: insertError } = await supabaseAdmin
+      .from("students")
+      .insert({ name: reg.student_name.trim(), age: validAge, program: normalizedProgram, parent_id: null })
+      .select("id")
+      .single();
+
+    if (insertError || !createdStu) {
+      return { success: false, error: "Gagal menambahkan siswa ke database.", details: insertError?.message, status: 500 };
     }
+    finalStudentId = createdStu.id;
+  }
+
+  const paidMatch = String(reg.notes || "").match(/\[PAID_SPP:(\d{4}-\d{2}):(\d+):([^\]]+)\]/);
+  if (paidMatch && finalStudentId) {
+    const [, paidMonth, paidAmountStr, paidGateway] = paidMatch;
+    await supabaseAdmin.from("tuition_payments").upsert(
+      {
+        student_id: finalStudentId,
+        month: paidMonth,
+        amount: parseInt(paidAmountStr, 10) || 300000,
+        status: "lunas",
+        payment_method: paidGateway,
+        payment_date: new Date().toISOString().split("T")[0],
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "student_id,month" }
+    );
   }
 
   // Otomatis kirim notifikasi WhatsApp ke Orang Tua jika nomor telepon tersedia

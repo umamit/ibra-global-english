@@ -59,12 +59,12 @@ export function OnlineRegistrationForm({ regSuccess, setRegSuccess, lastRegister
         </div>
       </div>
       <div className="form-group">
-        <label className="form-label">Nama Orang Tua / Wali</label>
-        <input type="text" className="form-input" value={regForm.parent_name} onChange={(e) => setRegForm({ ...regForm, parent_name: e.target.value })} disabled={regSubmitting} />
+        <label className="form-label">Nama Orang Tua / Wali *</label>
+        <input type="text" className="form-input" required value={regForm.parent_name} onChange={(e) => setRegForm({ ...regForm, parent_name: e.target.value })} disabled={regSubmitting} />
       </div>
       <div className="form-group">
-        <label className="form-label">Email Orang Tua / Wali</label>
-        <input type="email" className="form-input" value={regForm.parent_email} onChange={(e) => setRegForm({ ...regForm, parent_email: e.target.value })} disabled={regSubmitting} />
+        <label className="form-label">Email Orang Tua / Wali *</label>
+        <input type="email" className="form-input" required value={regForm.parent_email} onChange={(e) => setRegForm({ ...regForm, parent_email: e.target.value })} disabled={regSubmitting} />
       </div>
       <div className="form-group">
         <label className="form-label">Catatan Tambahan (Opsional)</label>
