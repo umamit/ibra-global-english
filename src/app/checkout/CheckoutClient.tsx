@@ -83,7 +83,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                       onClick={() => setSelectedProgram(item.id)}
                       style={{
                         textAlign: "left",
-                        padding: "1rem",
+                        padding: "0.85rem 1rem",
                         borderRadius: "14px",
                         border: isSelected ? "2px solid #216c7e" : "1px solid rgba(0,0,0,0.08)",
                         backgroundColor: isSelected ? "#eef6f8" : "#ffffff",
@@ -92,10 +92,8 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                       }}
                     >
                       <div style={{ fontSize: "0.92rem", fontWeight: 800, color: "#164d57" }}>{item.name}</div>
-                      <div style={{ fontSize: "0.75rem", color: "#59616e", marginTop: "2px" }}>{item.age}</div>
-                      <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#216c7e", marginTop: "4px" }}>{item.schedule}</div>
-                      <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#A68849", marginTop: "8px" }}>
-                        Rp {item.price.toLocaleString("id-ID")} <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "#59616e" }}>/ bulan</span>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#A68849", marginTop: "4px" }}>
+                        Rp {item.price.toLocaleString("id-ID")} <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "#59616e" }}>/ bln</span>
                       </div>
                     </button>
                   );
@@ -112,7 +110,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               )}
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Kode ID Kartu QR (IGE-XXXXXX) atau Nama Lengkap Siswa *</label>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>ID Siswa (IGE-...) atau Nama Lengkap *</label>
                   <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} required />
                   <input type="text" name="website_url" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }} />
                   {detectedStudent && (
@@ -147,30 +145,29 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
 
           {/* Right Column: Order Summary & Payment Buttons */}
           <div className="liquid-glass-card" style={{ borderRadius: "18px", padding: "1.75rem" }}>
-            <h2 style={{ margin: "0 0 1rem", fontSize: "1.05rem", fontWeight: 800, color: "#164d57" }}>Ringkasan Tagihan (Order Summary)</h2>
-            <div style={{ padding: "1rem", borderRadius: "12px", backgroundColor: "#eef6f8", marginBottom: "1.25rem" }}>
-              <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#164d57" }}>{activeProduct.name}</div>
-              <div style={{ fontSize: "0.8rem", color: "#59616e", marginTop: "4px" }}>{activeProduct.desc}</div>
-              <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#216c7e", marginTop: "6px" }}>Jadwal: {activeProduct.schedule}</div>
+            <h2 style={{ margin: "0 0 1rem", fontSize: "1.05rem", fontWeight: 800, color: "#164d57" }}>Ringkasan Tagihan</h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.85rem 1rem", borderRadius: "12px", backgroundColor: "#eef6f8", marginBottom: "1.25rem" }}>
+              <span style={{ fontSize: "0.95rem", fontWeight: 800, color: "#164d57" }}>{activeProduct.name}</span>
+              <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#216c7e", padding: "0.2rem 0.6rem", borderRadius: "6px", backgroundColor: "#ffffff" }}>Bulan {month}</span>
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", color: "#59616e", marginBottom: "0.5rem" }}>
-              <span>Biaya SPP Bulanan ({month})</span>
+              <span>Biaya Kursus / SPP</span>
               <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {activeProduct.price.toLocaleString("id-ID")}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", color: "#59616e", paddingBottom: "1rem", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
-              <span>Biaya Layanan Pembayaran Otomatis</span>
+              <span>Biaya Layanan Gateway</span>
               <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {serviceFee.toLocaleString("id-ID")}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 0", fontSize: "1.1rem", fontWeight: 800, color: "#164d57" }}>
-              <span>Total Pembayaran (IDR)</span>
+              <span>Total Pembayaran</span>
               <span style={{ color: "#A68849", fontSize: "1.25rem" }}>Rp {totalAmount.toLocaleString("id-ID")}</span>
             </div>
 
             <label style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", fontSize: "0.8rem", color: "#59616e", marginBottom: "1.25rem", cursor: "pointer", lineHeight: 1.45 }}>
               <input type="checkbox" checked={agreedTerms} onChange={(e) => setAgreedTerms(e.target.checked)} style={{ marginTop: "3px" }} />
               <span>
-                Saya menyetujui <Link href="/terms" style={{ color: "#216c7e", fontWeight: 700 }}>Syarat &amp; Ketentuan</Link> (termasuk kebijakan pengembalian dana/refund) serta <Link href="/privacy" style={{ color: "#216c7e", fontWeight: 700 }}>Kebijakan Privasi</Link> PT. IBRA Global English.
+                Saya menyetujui <Link href="/terms" style={{ color: "#216c7e", fontWeight: 700 }}>Syarat &amp; Ketentuan</Link> serta <Link href="/privacy" style={{ color: "#216c7e", fontWeight: 700 }}>Kebijakan Privasi</Link> IGE.
               </span>
             </label>
 
@@ -179,17 +176,23 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                 type="button"
                 onClick={() => handleCheckout("xendit")}
                 disabled={Boolean(loadingGateway)}
-                style={{ width: "100%", padding: "0.9rem 1rem", borderRadius: "12px", border: "none", backgroundColor: "#216c7e", color: "#ffffff", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer" }}
+                style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "12px", border: "none", backgroundColor: "#216c7e", color: "#ffffff", cursor: "pointer", textAlign: "center" }}
               >
-                {loadingGateway === "xendit" ? "Memproses Invoice Xendit..." : "Bayar Sekarang via Xendit (QRIS / Virtual Account / Indomaret)"}
+                <div style={{ fontWeight: 800, fontSize: "0.92rem" }}>
+                  {loadingGateway === "xendit" ? "Memproses..." : "Bayar via Xendit"}
+                </div>
+                <div style={{ fontSize: "0.72rem", opacity: 0.85, marginTop: "2px" }}>QRIS · Virtual Account · Indomaret</div>
               </button>
               <button
                 type="button"
                 onClick={() => handleCheckout("midtrans")}
                 disabled={Boolean(loadingGateway)}
-                style={{ width: "100%", padding: "0.9rem 1rem", borderRadius: "12px", border: "1px solid #216c7e", backgroundColor: "#ffffff", color: "#216c7e", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer" }}
+                style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "12px", border: "1px solid #216c7e", backgroundColor: "#ffffff", color: "#216c7e", cursor: "pointer", textAlign: "center" }}
               >
-                {loadingGateway === "midtrans" ? "Memproses Sesi Midtrans..." : "Bayar Sekarang via Midtrans (Virtual Account Bank / GoPay / Kartu)"}
+                <div style={{ fontWeight: 800, fontSize: "0.92rem" }}>
+                  {loadingGateway === "midtrans" ? "Memproses..." : "Bayar via Midtrans"}
+                </div>
+                <div style={{ fontSize: "0.72rem", color: "#59616e", marginTop: "2px" }}>Virtual Account Bank · GoPay</div>
               </button>
             </div>
 
