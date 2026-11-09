@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { getAdminSupabase } from "@/app/api/_middleware";
 import { createClient } from "@/utils/supabase/server";
 import { createMidtransTransaction, createXenditInvoice, clearCachedSessionByOrderId } from "./gatewaySessionHelpers";
+import { sendPaymentReceiptNotification } from "./paymentNotificationHelpers";
 
 export { createMidtransTransaction, createXenditInvoice };
 
@@ -39,14 +40,14 @@ export async function resolveOrCreatePublicStudent(data: { student_name: string;
   const codeMatch = upperInput.match(/^(?:IGE[-_]?)?([0-9A-F]{6,32})$/);
   if (codeMatch) {
     const hexPrefix = codeMatch[1].toLowerCase();
-    const { data: allStudents } = await supabaseAdmin.from("students").select("id, name, program");
-    const matchedByCode = (allStudents || []).find((s) => s.id.replace(/-/g, "").toLowerCase().startsWith(hexPrefix));
-    if (matchedByCode) return { ...matchedByCode, prefix: "S" };
+    const minUuid = `${hexPrefix}00-0000-0000-0000-000000000000`.slice(0, 36);
+    const maxUuid = `${hexPrefix}ff-ffff-ffff-ffff-ffffffffffff`.slice(0, 36);
+    const { data: stuByRange } = await supabaseAdmin.from("students").select("id, name, program").gte("id", minUuid).lte("id", maxUuid).limit(1).maybeSingle();
+    if (stuByRange) return { ...stuByRange, prefix: "S" };
 
-    const { data: allRegs } = await supabaseAdmin.from("registrations").select("id, student_name, program").order("created_at", { ascending: false });
-    const matchedRegByCode = (allRegs || []).find((r) => r.id.replace(/-/g, "").toLowerCase().startsWith(hexPrefix));
-    if (matchedRegByCode) {
-      return { id: matchedRegByCode.id, name: matchedRegByCode.student_name || rawInput, program: matchedRegByCode.program || data.program, prefix: "R" };
+    const { data: regByRange } = await supabaseAdmin.from("registrations").select("id, student_name, program").gte("id", minUuid).lte("id", maxUuid).limit(1).maybeSingle();
+    if (regByRange) {
+      return { id: regByRange.id, name: regByRange.student_name || rawInput, program: regByRange.program || data.program, prefix: "R" };
     }
   }
 
@@ -212,4 +213,12 @@ export async function markSppAsPaid(orderId: string, grossAmount: number, gatewa
   );
   if (error) throw new Error(error.message);
   await clearCachedSessionByOrderId(orderId);
+  await sendPaymentReceiptNotification(
+    studentId,
+    student?.name || "Siswa IGE",
+    student?.program || "Kursus",
+    meta.month,
+    netSpp,
+    gatewayLabel
+  );
 }

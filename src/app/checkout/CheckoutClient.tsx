@@ -31,6 +31,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
     errorMsg,
     paymentSuccessBanner,
     paymentPendingBanner,
+    detectedStudent,
     handleCheckout,
   } = usePublicCheckout(initialSettings);
 
@@ -114,6 +115,11 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#164d57", marginBottom: "0.35rem" }}>Kode ID Kartu QR (IGE-XXXXXX) atau Nama Lengkap Siswa *</label>
                   <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "10px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "0.9rem" }} required />
                   <input type="text" name="website_url" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }} />
+                  {detectedStudent && (
+                    <div style={{ marginTop: "0.45rem", fontSize: "0.78rem", color: "#216c7e", fontWeight: 700 }}>
+                      Siswa terverifikasi: {detectedStudent.maskedName} ({detectedStudent.billingCycle === "postpaid" ? "Siklus Pasca-Bayar" : "Siklus Pra-Bayar"}) · Program &amp; Periode disesuaikan otomatis
+                    </div>
+                  )}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
                   <div>

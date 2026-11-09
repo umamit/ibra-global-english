@@ -48,3 +48,20 @@ export function normalizeDbProgram(rawProgram: string, studentAge?: number): str
   if (studentAge && studentAge >= 13) return "Teens Program";
   return "Kids Program";
 }
+
+export function doesScheduleBelongToStudent(
+  sch: { description?: string | null; title?: string | null; recurrence_id?: string | null },
+  studentId?: string | null,
+  studentName?: string | null
+): boolean {
+  const desc = String(sch.description || "");
+  const rec = String(sch.recurrence_id || "");
+  if (studentId) {
+    if (desc.includes(`[SID:${studentId}]`)) return true;
+    if (rec.startsWith(`rec_stu_${studentId.slice(0, 8)}_`)) return true;
+    if (desc.includes("[SID:") || rec.startsWith("rec_stu_")) return false;
+  }
+  const cleanName = String(studentName || "").trim().toLowerCase();
+  if (!cleanName) return false;
+  return desc.toLowerCase().includes(cleanName) || String(sch.title || "").toLowerCase().includes(cleanName);
+}

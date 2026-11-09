@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import posthog from "posthog-js";
+import { doesScheduleBelongToStudent } from "./scheduleStudentHelpers";
 
 export interface Profile {
   id: string;
@@ -68,28 +69,38 @@ export function useStudentData() {
 
       const { data: regData } = await supabase
         .from("registrations")
-        .select("student_name, parent_name, parent_email, whatsapp, created_at")
+        .select("student_name, parent_name, parent_email, whatsapp, notes, created_at")
         .order("created_at", { ascending: false });
 
-      const regMap = new Map<string, { parent_name?: string | null; parent_email?: string | null; whatsapp?: string | null }>();
+      const { data: cycleRow } = await supabase
+        .from("landing_settings")
+        .select("value")
+        .eq("key", "student_billing_cycles")
+        .maybeSingle();
+      const billingCycles: Record<string, string> = cycleRow?.value ? JSON.parse(String(cycleRow.value)) : {};
+
+      const regBySid = new Map<string, { parent_name?: string | null; parent_email?: string | null; whatsapp?: string | null }>();
+      const regByName = new Map<string, { parent_name?: string | null; parent_email?: string | null; whatsapp?: string | null }>();
       (regData || []).forEach((r: any) => {
+        const entry = {
+          parent_name: r.parent_name || null,
+          parent_email: r.parent_email || null,
+          whatsapp: r.whatsapp && r.whatsapp !== "-" ? r.whatsapp : null,
+        };
+        const sidMatch = String(r.notes || "").match(/\[SID:([0-9a-f-]{36})\]/i);
+        if (sidMatch && !regBySid.has(sidMatch[1])) regBySid.set(sidMatch[1], entry);
         const key = (r.student_name || "").trim().toLowerCase();
-        if (key && !regMap.has(key)) {
-          regMap.set(key, {
-            parent_name: r.parent_name || null,
-            parent_email: r.parent_email || null,
-            whatsapp: r.whatsapp && r.whatsapp !== "-" ? r.whatsapp : null,
-          });
-        }
+        if (key && !regByName.has(key)) regByName.set(key, entry);
       });
 
       const enrichedStudents = (studentData || []).map((st: any) => {
-        const matchedReg = regMap.get((st.name || "").trim().toLowerCase());
+        const matchedReg = regBySid.get(st.id) || regByName.get((st.name || "").trim().toLowerCase());
         return {
           ...st,
           parent_name: matchedReg?.parent_name || st.profiles?.full_name || null,
           parent_email: matchedReg?.parent_email || st.profiles?.email || null,
           whatsapp: matchedReg?.whatsapp || null,
+          billing_cycle: billingCycles[st.id] || "prepaid",
         };
       });
 
@@ -103,14 +114,12 @@ export function useStudentData() {
 
       const { data: scheduleData } = await supabase
         .from("academic_schedules")
-        .select("id, description");
+        .select("id, title, description, recurrence_id");
 
       const counts: Record<string, number> = {};
       (scheduleData || []).forEach((sch: any) => {
-        const desc = (sch.description || "").toLowerCase();
         (studentData || []).forEach((st: any) => {
-          const sName = (st.name || "").toLowerCase();
-          if (sName && desc.includes(sName)) {
+          if (doesScheduleBelongToStudent(sch, st.id, st.name)) {
             counts[st.id] = (counts[st.id] || 0) + 1;
           }
         });

@@ -42,6 +42,7 @@ function AdminStudentsContent() {
   const [parentName, setParentName] = useState<string>("");
   const [parentEmail, setParentEmail] = useState<string>("");
   const [whatsapp, setWhatsapp] = useState<string>("");
+  const [billingCycle, setBillingCycle] = useState<string>("prepaid");
   
   const initialStatusFilter = searchParams.get("status") || "semua";
   const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter);
@@ -63,7 +64,7 @@ function AdminStudentsContent() {
   const handleOpenAddModal = () => {
     setEditingStudent(null);
     setName(""); setAge(""); setProgram("A1 Foundation 1"); setStatus("aktif"); setParentId("");
-    setParentName(""); setParentEmail(""); setWhatsapp(""); setFormErrorMsg("");
+    setParentName(""); setParentEmail(""); setWhatsapp(""); setBillingCycle("prepaid"); setFormErrorMsg("");
     setModalOpen(true);
   };
 
@@ -72,6 +73,7 @@ function AdminStudentsContent() {
     setName(student.name); setAge(String(student.age)); setProgram(student.program || "A1 Foundation 1");
     setStatus(student.status || "aktif"); setParentId(student.parent_id || "");
     setParentName(student.parent_name || ""); setParentEmail(student.parent_email || ""); setWhatsapp(student.whatsapp || "");
+    setBillingCycle((student as any).billing_cycle || "prepaid");
     setFormErrorMsg("");
     setModalOpen(true);
   };
@@ -95,6 +97,7 @@ function AdminStudentsContent() {
         parent_name: parentName.trim() || null,
         parent_email: parentEmail.trim() || null,
         whatsapp: whatsapp.trim() || null,
+        billing_cycle: billingCycle,
       };
 
       const res = await fetch("/api/admin/students", {
@@ -234,6 +237,7 @@ function AdminStudentsContent() {
         parentName={parentName} onParentNameChange={(e) => setParentName(e.target.value)}
         parentEmail={parentEmail} onParentEmailChange={(e) => setParentEmail(e.target.value)}
         whatsapp={whatsapp} onWhatsappChange={(e) => setWhatsapp(e.target.value)}
+        billingCycle={billingCycle} onBillingCycleChange={(e) => setBillingCycle(e.target.value)}
         parents={parents} submitting={submitting} errorMsg={formErrorMsg}
         onClose={() => setModalOpen(false)} onSubmit={handleSaveStudent}
       />

@@ -7,6 +7,7 @@ import {
   getWitDayAndMinutes,
   parseHHMMToMinutes,
   normalizeDbProgram,
+  doesScheduleBelongToStudent,
 } from "./scheduleStudentHelpers";
 
 export { formatScheduleLabelWIT };
@@ -92,7 +93,7 @@ export function useScheduleFromStudent() {
     }
   };
 
-  const fetchUpcomingStudentSchedules = async (studentName: string): Promise<UpcomingScheduleItem[]> => {
+  const fetchUpcomingStudentSchedules = async (studentName: string, studentId?: string): Promise<UpcomingScheduleItem[]> => {
     try {
       const todayIso = new Date(Date.now() - 86400000).toISOString().substring(0, 10);
       const { data, error } = await supabase
@@ -103,13 +104,7 @@ export function useScheduleFromStudent() {
         .limit(300);
 
       if (error) throw error;
-      const cleanName = (studentName || "").trim().toLowerCase();
-      return (data || []).filter((item: any) => {
-        if (!cleanName) return false;
-        const desc = (item.description || "").toLowerCase();
-        const title = (item.title || "").toLowerCase();
-        return desc.includes(cleanName) || title.includes(cleanName);
-      });
+      return (data || []).filter((item: any) => doesScheduleBelongToStudent(item, studentId, studentName));
     } catch {
       return [];
     }
@@ -146,7 +141,7 @@ export function useScheduleFromStudent() {
             start_time: `${dateStr}T${input.startTime}:00+09:00`,
             end_time: `${dateStr}T${input.endTime}:00+09:00`,
             instructor: input.instructor || "Tutor Ibra",
-            description: `Rutin ${input.program} untuk ${input.studentName} (${input.room || "Ruang Kelas A"}) (WIT)`,
+            description: `Rutin ${input.program} untuk ${input.studentName} (${input.room || "Ruang Kelas A"}) (WIT) [SID:${input.studentId}]`,
             recurrence_id: recurrenceId,
           });
         }
@@ -225,20 +220,19 @@ export function useScheduleFromStudent() {
     }
   };
 
-  const deleteAllStudentSchedules = async (studentName: string): Promise<{ success: boolean; message: string }> => {
+  const deleteAllStudentSchedules = async (studentName: string, studentId?: string): Promise<{ success: boolean; message: string }> => {
     setSubmitting(true);
     try {
       const cleanName = (studentName || "").trim();
-      if (!cleanName) return { success: false, message: "Nama siswa tidak valid." };
+      if (!cleanName && !studentId) return { success: false, message: "Nama siswa tidak valid." };
 
       const { data: allRows, error: fetchErr } = await supabase
         .from("academic_schedules")
-        .select("id, title, description");
+        .select("id, title, description, recurrence_id");
       if (fetchErr) throw fetchErr;
 
-      const lower = cleanName.toLowerCase();
       const targetIds = (allRows || [])
-        .filter((r: any) => (r.description || "").toLowerCase().includes(lower) || (r.title || "").toLowerCase().includes(lower))
+        .filter((r: any) => doesScheduleBelongToStudent(r, studentId, cleanName))
         .map((r: any) => r.id);
 
       if (targetIds.length === 0) {

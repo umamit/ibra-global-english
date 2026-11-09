@@ -89,7 +89,15 @@ export function useAdminFinance() {
       const { data: allPaymentsData, error: allPaymentsError } = await supabase
         .from("tuition_payments")
         .select("*")
-        .order("month", { ascending: true });
+        .order("month", { ascending: true })
+        .limit(1000);
+
+      const { data: cycleRow } = await supabase
+        .from("landing_settings")
+        .select("value")
+        .eq("key", "student_billing_cycles")
+        .maybeSingle();
+      const billingCycles: Record<string, string> = cycleRow?.value ? JSON.parse(String(cycleRow.value)) : {};
 
       if (allPaymentsError) throw allPaymentsError;
 
@@ -100,6 +108,7 @@ export function useAdminFinance() {
         parent_id: s.parent_id,
         due_day: s.due_day,
         created_at: s.created_at,
+        billing_cycle: billingCycles[s.id] || "prepaid",
         profiles: Array.isArray(s.profiles) ? s.profiles[0] : s.profiles,
       }));
 

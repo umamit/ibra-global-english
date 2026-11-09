@@ -97,14 +97,17 @@ export const useFinanceModal = (
         payment_method: modalMethod,
         receipt_url: modalReceiptUrl || null,
         payment_date: modalPaymentDate || null,
-        updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
-        .from("tuition_payments")
-        .upsert(payload, { onConflict: "student_id,month" });
-
-      if (error) throw error;
+      const res = await fetch("/api/admin/finance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.error || "Gagal menyimpan pembayaran.");
+      }
 
       posthog.capture("admin_payment_recorded", {
         status: modalStatus,
@@ -115,9 +118,9 @@ export const useFinanceModal = (
       showToast("Status pembayaran SPP berhasil disimpan!");
       setIsModalOpen(false);
       fetchData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gagal menyimpan pembayaran:", err);
-      showToast("Gagal menyimpan data pembayaran SPP.", "error");
+      showToast(err.message || "Gagal menyimpan data pembayaran SPP.", "error");
     } finally {
       setSavingPayment(false);
     }
@@ -137,23 +140,21 @@ export const useFinanceModal = (
         payment_type: newType,
         payment_date: pay.payment_date || null,
         receipt_url: pay.receipt_url || null,
-        updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
-        .from("tuition_payments")
-        .upsert(payload, { onConflict: "student_id,month" });
-
-      if (error && (error.code === "42703" || error.message?.includes("payment_type"))) {
-        showToast("Jalankan perintah SQL 'payment_type' di Supabase SQL Editor agar opsi ini tersimpan!", "error");
-        return;
+      const res = await fetch("/api/admin/finance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.error || "Gagal memperbarui tipe pembayaran.");
       }
-
-      if (error) throw error;
       fetchData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gagal merubah tipe pembayaran:", err);
-      showToast("Gagal memperbarui tipe pembayaran. Pastikan kolom SQL sudah ditambah di Supabase.", "error");
+      showToast(err.message || "Gagal memperbarui tipe pembayaran.", "error");
     }
   };
 
@@ -190,14 +191,17 @@ export const useFinanceModal = (
         payment_method: pay.payment_method || "Transfer Bank",
         receipt_url: pay.receipt_url || null,
         payment_date: pay.payment_date || getWitDateString(),
-        updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
-        .from("tuition_payments")
-        .upsert(payload, { onConflict: "student_id,month" });
-
-      if (error) throw error;
+      const res = await fetch("/api/admin/finance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.error || "Gagal mengonfirmasi lunas.");
+      }
 
       posthog.capture("admin_payment_quick_confirmed", {
         month: selectedMonth,
@@ -205,9 +209,9 @@ export const useFinanceModal = (
       });
       showToast("Pembayaran dikonfirmasi LUNAS!");
       fetchData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gagal melakukan konfirmasi cepat:", err);
-      showToast("Gagal mengonfirmasi lunas.", "error");
+      showToast(err.message || "Gagal mengonfirmasi lunas.", "error");
     }
   };
 

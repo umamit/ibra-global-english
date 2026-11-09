@@ -12,6 +12,7 @@ export const studentInsertSchema = z.object({
     const d = String(v || "").replace(/[^0-9]/g, "");
     return d.length > 0 ? d : null;
   }, z.string().max(20).nullable().optional()),
+  billing_cycle: z.enum(["prepaid", "postpaid"]).optional(),
 });
 
 export const studentUpdateSchema = studentInsertSchema.partial().extend({

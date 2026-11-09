@@ -20,6 +20,7 @@ interface Props {
   parentName?: string;
   parentEmail?: string;
   whatsapp?: string;
+  billingCycle?: string;
   parents: Parent[];
   errorMsg: string;
   submitting: boolean;
@@ -31,11 +32,12 @@ interface Props {
   onParentNameChange?: React.ChangeEventHandler<HTMLInputElement>;
   onParentEmailChange?: React.ChangeEventHandler<HTMLInputElement>;
   onWhatsappChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onBillingCycleChange?: React.ChangeEventHandler<HTMLSelectElement>;
   onClose: () => void;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 }
 
-export default function StudentFormModal({ open, editing, name, age, program, status = "aktif", parentId, parentName = "", parentEmail = "", whatsapp = "", parents, errorMsg, submitting, onNameChange, onAgeChange, onProgramChange, onStatusChange, onParentIdChange, onParentNameChange, onParentEmailChange, onWhatsappChange, onClose, onSubmit }: Props) {
+export default function StudentFormModal({ open, editing, name, age, program, status = "aktif", parentId, parentName = "", parentEmail = "", whatsapp = "", billingCycle = "prepaid", parents, errorMsg, submitting, onNameChange, onAgeChange, onProgramChange, onStatusChange, onParentIdChange, onParentNameChange, onParentEmailChange, onWhatsappChange, onBillingCycleChange, onClose, onSubmit }: Props) {
   if (!open) return null;
 
   return (
@@ -53,7 +55,7 @@ export default function StudentFormModal({ open, editing, name, age, program, st
             <label className="form-label">Nama Lengkap Siswa</label>
             <input type="text" className="form-input" placeholder="Masukkan nama lengkap siswa" required value={name} onChange={onNameChange} disabled={submitting} />
           </div>
-          <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+          <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}>
             <div className="form-group">
               <label className="form-label">Usia Siswa</label>
               <input type="number" className="form-input" placeholder="Contoh: 8" required value={age} onChange={onAgeChange} disabled={submitting} />
@@ -68,12 +70,19 @@ export default function StudentFormModal({ open, editing, name, age, program, st
               </select>
             </div>
             <div className="form-group">
-              <label className="form-label">Status Keaktifan</label>
+              <label className="form-label">Status</label>
               <select className="form-input" value={status} onChange={onStatusChange} disabled={submitting}>
                 <option value="aktif">Aktif</option>
                 <option value="cuti">Cuti</option>
                 <option value="alumnus">Alumnus / Lulus</option>
                 <option value="non_aktif">Non-Aktif</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Siklus SPP</label>
+              <select className="form-input" value={billingCycle} onChange={onBillingCycleChange} disabled={submitting}>
+                <option value="prepaid">Prepaid (Pra-Bayar)</option>
+                <option value="postpaid">Postpaid (Pasca-Bayar)</option>
               </select>
             </div>
           </div>

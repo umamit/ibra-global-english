@@ -63,6 +63,37 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [paymentSuccessBanner, setPaymentSuccessBanner] = useState<boolean>(false);
   const [paymentPendingBanner, setPaymentPendingBanner] = useState<boolean>(false);
+  const [detectedStudent, setDetectedStudent] = useState<{ maskedName: string; billingCycle: string } | null>(null);
+
+  useEffect(() => {
+    const raw = studentName.trim();
+    if (raw.length < 3) {
+      setDetectedStudent(null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/payment/student-info?q=${encodeURIComponent(raw)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.found) {
+          setDetectedStudent({ maskedName: data.maskedName, billingCycle: data.billingCycle });
+          const prog = data.program;
+          if (prog && ["Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"].includes(prog)) {
+            setSelectedProgram(prog);
+          }
+          if (data.suggestedMonth && data.suggestedMonth !== month) {
+            setMonth(data.suggestedMonth);
+          }
+        } else {
+          setDetectedStudent(null);
+        }
+      } catch {
+        // Ignore lookup error on checkout typing
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [studentName]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -159,6 +190,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     errorMsg,
     paymentSuccessBanner,
     paymentPendingBanner,
+    detectedStudent,
     handleCheckout,
   };
 }

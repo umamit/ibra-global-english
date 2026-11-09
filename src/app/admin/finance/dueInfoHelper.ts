@@ -17,12 +17,10 @@ export const getStudentSPPDueInfo = (
 ): SPPDueInfo => {
   const nameLower = (student.name || "").toLowerCase().trim();
 
-  const isPostPaidTgl5 = ["athira", "firman", "syafa", "yunda", "akhtar", "syauqi"].some(p => {
-    const regex = new RegExp(`\\b${p}\\b`, "i");
-    return regex.test(nameLower);
+  const isPostPaidNamed = ["athira", "firman", "syafa", "yunda", "akhtar", "syauqi", "nasya"].some(p => {
+    return new RegExp(`\\b${p}\\b`, "i").test(nameLower);
   });
-  const isNasyaPostPaid19 = (/\bnasya\b/i).test(nameLower);
-  const isPostPaid = isPostPaidTgl5 || isNasyaPostPaid19;
+  const isPostPaid = (student as any).billing_cycle === "postpaid" || isPostPaidNamed;
 
   let dueDay = 10;
   if (typeof student.due_day === "number" && student.due_day >= 1 && student.due_day <= 31) {
