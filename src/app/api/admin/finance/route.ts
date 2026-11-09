@@ -17,7 +17,7 @@ const financeUpdateSchema = z.object({
   payment_type: z.enum(["prepaid", "postpaid"]).nullable().optional(),
 });
 
-export const POST = withAdminAuth(async (req: NextRequest, user: any) => {
+export const POST = withAdminAuth(async (req: NextRequest) => {
   try {
     const body = await req.json();
     const parsed = financeUpdateSchema.safeParse(body);
@@ -25,7 +25,7 @@ export const POST = withAdminAuth(async (req: NextRequest, user: any) => {
       return NextResponse.json({ error: parsed.error.issues[0]?.message || "Data tidak valid" }, { status: 400 });
     }
     await upsertTuitionRecord(parsed.data);
-    await logFinanceAudit(user.email, parsed.data.student_id, parsed.data.month, "UPDATE_SPP", `Status: ${parsed.data.status}, Nominal: Rp ${parsed.data.amount.toLocaleString("id-ID")}`);
+    await logFinanceAudit("admin@ibraglobalenglish.uk", parsed.data.student_id, parsed.data.month, "UPDATE_SPP", `Status: ${parsed.data.status}, Nominal: Rp ${parsed.data.amount.toLocaleString("id-ID")}`);
     revalidatePath("/admin/finance");
     revalidatePath("/parent");
     return NextResponse.json({ success: true }, { status: 200 });
