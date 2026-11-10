@@ -11,6 +11,7 @@ export type PaymentMethodType =
   | "va_permata"
   | "va_seabank"
   | "gopay"
+  | "shopeepay"
   | "card"
   | "qris"
   | "indomaret";
@@ -96,6 +97,14 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     category: "ewallet",
     title: "GoPay / GoPay App",
     subtitle: "Pembayaran langsung via aplikasi Gojek / GoPay",
+    gateway: "midtrans",
+    badge: "Midtrans",
+  },
+  {
+    id: "shopeepay",
+    category: "ewallet",
+    title: "ShopeePay / SPay",
+    subtitle: "Pembayaran instan via aplikasi Shopee (QR / Deeplink)",
     gateway: "midtrans",
     badge: "Midtrans",
   },

@@ -11,6 +11,7 @@ const LOGO_PATHS: Record<PaymentMethodType, { src: string; alt: string }> = {
   va_danamon: { src: "/assets/payment-logos/danamon.png", alt: "Logo Resmi Bank Danamon" },
   va_seabank: { src: "/assets/payment-logos/seabank.png", alt: "Logo Resmi SeaBank" },
   gopay: { src: "/assets/payment-logos/gopay.png", alt: "Logo Resmi GoPay" },
+  shopeepay: { src: "/assets/payment-logos/shopeepay.png", alt: "Logo Resmi ShopeePay" },
   card: { src: "/assets/payment-logos/card.png", alt: "Logo Resmi Visa & Mastercard" },
   qris: { src: "/assets/payment-logos/qris.png", alt: "Logo Resmi QRIS Standar Nasional" },
   indomaret: { src: "/assets/payment-logos/indomaret.png", alt: "Logo Resmi Indomaret" },
