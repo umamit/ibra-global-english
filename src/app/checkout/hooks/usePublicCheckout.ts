@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { LandingSettings } from "@/utils/getLandingSettings";
+import { PaymentMethodType, PAYMENT_METHODS } from "../components/PaymentMethodSelector";
 
 export interface CourseProduct {
   id: string;
@@ -52,6 +53,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   ];
 
   const [selectedProgram, setSelectedProgram] = useState<string>("Kids Program");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodType>("qris");
   const [studentName, setStudentName] = useState<string>("");
   const [parentName, setParentName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -59,7 +61,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const [month, setMonth] = useState<string>(defaultMonth);
   const [websiteUrl, setWebsiteUrl] = useState<string>("");
   const [agreedTerms, setAgreedTerms] = useState<boolean>(false);
-  const [loadingGateway, setLoadingGateway] = useState<"midtrans" | "xendit" | null>(null);
+  const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [paymentSuccessBanner, setPaymentSuccessBanner] = useState<boolean>(false);
   const [paymentPendingBanner, setPaymentPendingBanner] = useState<boolean>(false);
@@ -126,7 +128,9 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const serviceFee = isNaN(rawFee) ? 5000 : rawFee;
   const totalAmount = activeProduct.price + serviceFee;
 
-  const handleCheckout = async (gateway: "midtrans" | "xendit") => {
+  const currentOption = PAYMENT_METHODS.find((m) => m.id === selectedPaymentMethod) || PAYMENT_METHODS[0];
+
+  const handleCheckout = async () => {
     setErrorMsg("");
     if (!studentName.trim()) {
       setErrorMsg("Mohon isi Kode ID Siswa (IGE-XXXXXX) atau Nama Lengkap Siswa terlebih dahulu.");
@@ -137,7 +141,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
       return;
     }
 
-    setLoadingGateway(gateway);
+    setLoadingPayment(true);
     try {
       const res = await fetch("/api/payment/public-checkout", {
         method: "POST",
@@ -149,7 +153,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
           whatsapp,
           program: selectedProgram,
           month,
-          gateway,
+          gateway: currentOption.gateway,
           website_url: websiteUrl,
         }),
       });
@@ -161,7 +165,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     } catch (err: any) {
       setErrorMsg(err.message || "Terjadi kendala saat menghubungkan ke gerbang pembayaran.");
     } finally {
-      setLoadingGateway(null);
+      setLoadingPayment(false);
     }
   };
 
@@ -169,6 +173,9 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     products,
     selectedProgram,
     setSelectedProgram,
+    selectedPaymentMethod,
+    setSelectedPaymentMethod,
+    currentOption,
     activeProduct,
     serviceFee,
     totalAmount,
@@ -186,7 +193,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     setWebsiteUrl,
     agreedTerms,
     setAgreedTerms,
-    loadingGateway,
+    loadingPayment,
     errorMsg,
     paymentSuccessBanner,
     paymentPendingBanner,

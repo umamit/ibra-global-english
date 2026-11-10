@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePublicCheckout } from "./hooks/usePublicCheckout";
+import PaymentMethodSelector from "./components/PaymentMethodSelector";
 import { LandingSettings } from "@/utils/getLandingSettings";
 
 export default function CheckoutClient({ initialSettings }: { initialSettings: LandingSettings }) {
@@ -10,6 +11,9 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
     products,
     selectedProgram,
     setSelectedProgram,
+    selectedPaymentMethod,
+    setSelectedPaymentMethod,
+    currentOption,
     activeProduct,
     serviceFee,
     totalAmount,
@@ -27,7 +31,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
     setWebsiteUrl,
     agreedTerms,
     setAgreedTerms,
-    loadingGateway,
+    loadingPayment,
     errorMsg,
     paymentSuccessBanner,
     paymentPendingBanner,
@@ -64,12 +68,12 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
 
         {paymentPendingBanner && (
           <div style={{ padding: "1.1rem 1.25rem", borderRadius: "14px", backgroundColor: "#fffbeb", border: "1px solid #f59e0b", color: "#92400e", fontSize: "0.9rem", fontWeight: 700, marginBottom: "1.5rem" }}>
-            Instruksi pembayaran (Virtual Account) telah dibuat dan menunggu transfer Anda. Status SPP akan otomatis berubah menjadi Lunas segera setelah Anda menyelesaikan pembayaran.
+            Instruksi pembayaran telah dibuat dan menunggu transfer Anda. Status SPP akan otomatis berubah menjadi Lunas segera setelah pembayaran diselesaikan.
           </div>
         )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1.75rem", alignItems: "start" }}>
-          {/* Left Column: Course Catalog & Customer Form */}
+          {/* Left Column: Course Catalog, Customer Form & Payment Method Selector */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
             <div className="liquid-glass-card" style={{ borderRadius: "18px", padding: "1.75rem" }}>
               <h2 style={{ margin: "0 0 1rem", fontSize: "1.05rem", fontWeight: 800, color: "#164d57" }}>1. Pilih Program Kursus</h2>
@@ -141,10 +145,13 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
                 </div>
               </div>
             </div>
+
+            {/* 3. Metode Pembayaran Ala Shopee/Tokopedia */}
+            <PaymentMethodSelector selectedMethod={selectedPaymentMethod} onSelectMethod={setSelectedPaymentMethod} />
           </div>
 
-          {/* Right Column: Order Summary & Payment Buttons */}
-          <div className="liquid-glass-card" style={{ borderRadius: "18px", padding: "1.75rem" }}>
+          {/* Right Column: Order Summary & Single Pay Button */}
+          <div className="liquid-glass-card" style={{ borderRadius: "18px", padding: "1.75rem", position: "sticky", top: "2rem" }}>
             <h2 style={{ margin: "0 0 1rem", fontSize: "1.05rem", fontWeight: 800, color: "#164d57" }}>Ringkasan Tagihan</h2>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.85rem 1rem", borderRadius: "12px", backgroundColor: "#eef6f8", marginBottom: "1.25rem" }}>
               <span style={{ fontSize: "0.95rem", fontWeight: 800, color: "#164d57" }}>{activeProduct.name}</span>
@@ -155,13 +162,17 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               <span>Biaya Kursus / SPP</span>
               <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {activeProduct.price.toLocaleString("id-ID")}</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", color: "#59616e", paddingBottom: "1rem", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
-              <span>Biaya Layanan Gateway</span>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", color: "#59616e", marginBottom: "0.5rem" }}>
+              <span>Biaya Layanan Sistem</span>
               <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {serviceFee.toLocaleString("id-ID")}</span>
             </div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: "#216c7e", paddingBottom: "1rem", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
+              <span>Metode Dipilih</span>
+              <span style={{ fontWeight: 700 }}>{currentOption.title}</span>
+            </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 0", fontSize: "1.1rem", fontWeight: 800, color: "#164d57" }}>
-              <span>Total Pembayaran</span>
-              <span style={{ color: "#A68849", fontSize: "1.25rem" }}>Rp {totalAmount.toLocaleString("id-ID")}</span>
+              <span>Total Tagihan</span>
+              <span style={{ color: "#A68849", fontSize: "1.3rem" }}>Rp {totalAmount.toLocaleString("id-ID")}</span>
             </div>
 
             <label style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", fontSize: "0.8rem", color: "#59616e", marginBottom: "1.25rem", cursor: "pointer", lineHeight: 1.45 }}>
@@ -171,30 +182,31 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               </span>
             </label>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <button
-                type="button"
-                onClick={() => handleCheckout("xendit")}
-                disabled={Boolean(loadingGateway)}
-                style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "12px", border: "none", backgroundColor: "#216c7e", color: "#ffffff", cursor: "pointer", textAlign: "center" }}
-              >
-                <div style={{ fontWeight: 800, fontSize: "0.92rem" }}>
-                  {loadingGateway === "xendit" ? "Memproses..." : "Bayar via Xendit"}
-                </div>
-                <div style={{ fontSize: "0.72rem", opacity: 0.85, marginTop: "2px" }}>QRIS · Virtual Account · Indomaret</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCheckout("midtrans")}
-                disabled={Boolean(loadingGateway)}
-                style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "12px", border: "1px solid #216c7e", backgroundColor: "#ffffff", color: "#216c7e", cursor: "pointer", textAlign: "center" }}
-              >
-                <div style={{ fontWeight: 800, fontSize: "0.92rem" }}>
-                  {loadingGateway === "midtrans" ? "Memproses..." : "Bayar via Midtrans"}
-                </div>
-                <div style={{ fontSize: "0.72rem", color: "#59616e", marginTop: "2px" }}>Virtual Account Bank · GoPay</div>
-              </button>
-            </div>
+            {/* Single Checkout CTA Button */}
+            <button
+              type="button"
+              onClick={handleCheckout}
+              disabled={loadingPayment}
+              style={{
+                width: "100%",
+                padding: "0.95rem 1rem",
+                borderRadius: "14px",
+                border: "none",
+                backgroundColor: "#216c7e",
+                color: "#ffffff",
+                cursor: loadingPayment ? "not-allowed" : "pointer",
+                textAlign: "center",
+                transition: "all 0.2s ease",
+                boxShadow: "0 4px 14px rgba(33, 108, 126, 0.25)",
+              }}
+            >
+              <div style={{ fontWeight: 800, fontSize: "1rem" }}>
+                {loadingPayment ? "Memproses Pembayaran..." : `Bayar Sekarang · Rp ${totalAmount.toLocaleString("id-ID")}`}
+              </div>
+              <div style={{ fontSize: "0.74rem", opacity: 0.9, marginTop: "2px" }}>
+                Metode: {currentOption.title}
+              </div>
+            </button>
 
             <div className="selectable" style={{ marginTop: "1.25rem", padding: "0.9rem", borderRadius: "10px", backgroundColor: "#f5f5f7", fontSize: "0.78rem", color: "#59616e", lineHeight: 1.5 }}>
               <strong>Alternatif Transfer Bank Manual:</strong><br />
