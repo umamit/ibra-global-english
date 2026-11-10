@@ -1,18 +1,30 @@
 import React from "react";
 
-export type PaymentMethodType = "va_bri" | "va_mandiri" | "va_bni" | "va_bca" | "gopay" | "qris" | "va_bsi" | "indomaret";
+export type PaymentMethodType =
+  | "va_bri"
+  | "va_mandiri"
+  | "va_bni"
+  | "va_bsi"
+  | "va_cimb"
+  | "va_danamon"
+  | "va_permata"
+  | "va_seabank"
+  | "gopay"
+  | "card"
+  | "qris"
+  | "indomaret";
 
 export interface PaymentOption {
   id: PaymentMethodType;
   title: string;
-  category: "qris" | "va" | "ewallet" | "retail";
+  category: "qris" | "va" | "ewallet" | "retail" | "card";
   subtitle: string;
   gateway: "midtrans" | "xendit";
   badge?: string;
 }
 
-// Midtrans sebagai gerbang utama untuk bank & e-wallet yang aktif di akun Midtrans
-// Xendit sebagai pelengkap untuk saluran yang belum ada di Midtrans (QRIS, BSI VA, Indomaret)
+// Midtrans sebagai gerbang utama untuk saluran yang aktif di dasbor Midtrans
+// Xendit sebagai pelengkap untuk saluran yang belum ada di Midtrans (QRIS & Indomaret)
 export const PAYMENT_METHODS: PaymentOption[] = [
   {
     id: "va_bri",
@@ -20,15 +32,15 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     title: "BRI Virtual Account (BRIVA)",
     subtitle: "Verifikasi instan via BRImo / ATM BRI",
     gateway: "midtrans",
-    badge: "Utama",
+    badge: "Midtrans",
   },
   {
     id: "va_mandiri",
     category: "va",
-    title: "Mandiri Virtual Account / Bill",
+    title: "Bank Mandiri (Bill / E-Channel)",
     subtitle: "Verifikasi instan via Livin' by Mandiri / ATM",
     gateway: "midtrans",
-    badge: "Utama",
+    badge: "Midtrans",
   },
   {
     id: "va_bni",
@@ -36,15 +48,47 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     title: "BNI Virtual Account",
     subtitle: "Verifikasi instan via BNI Mobile Banking / ATM",
     gateway: "midtrans",
-    badge: "Utama",
+    badge: "Midtrans",
   },
   {
-    id: "va_bca",
+    id: "va_bsi",
     category: "va",
-    title: "BCA & Bank Lainnya (Virtual Account)",
-    subtitle: "Transfer otomatis via jaringan ATM Bersama / Prima",
+    title: "BSI Virtual Account (Bank Syariah)",
+    subtitle: "Verifikasi instan via BSI Mobile / ATM",
     gateway: "midtrans",
-    badge: "Utama",
+    badge: "Midtrans",
+  },
+  {
+    id: "va_cimb",
+    category: "va",
+    title: "CIMB Niaga Virtual Account",
+    subtitle: "Verifikasi instan via OCTO Mobile / Clicks",
+    gateway: "midtrans",
+    badge: "Midtrans",
+  },
+  {
+    id: "va_permata",
+    category: "va",
+    title: "PermataBank Virtual Account",
+    subtitle: "Verifikasi instan via PermataMobile X / ATM",
+    gateway: "midtrans",
+    badge: "Midtrans",
+  },
+  {
+    id: "va_danamon",
+    category: "va",
+    title: "Bank Danamon Virtual Account",
+    subtitle: "Verifikasi instan via D-Bank PRO / ATM",
+    gateway: "midtrans",
+    badge: "Midtrans",
+  },
+  {
+    id: "va_seabank",
+    category: "va",
+    title: "SeaBank Virtual Account",
+    subtitle: "Transfer instan via SeaBank App / ShopeePay",
+    gateway: "midtrans",
+    badge: "Midtrans",
   },
   {
     id: "gopay",
@@ -52,21 +96,21 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     title: "GoPay / GoPay App",
     subtitle: "Pembayaran langsung via aplikasi Gojek / GoPay",
     gateway: "midtrans",
-    badge: "Utama",
+    badge: "Midtrans",
+  },
+  {
+    id: "card",
+    category: "card",
+    title: "Kartu Kredit / Debit & Google Pay",
+    subtitle: "Visa, Mastercard, JCB, American Express",
+    gateway: "midtrans",
+    badge: "Midtrans",
   },
   {
     id: "qris",
     category: "qris",
     title: "QRIS (Semua E-Wallet & M-Banking)",
-    subtitle: "BCA Mobile, Livin', BRImo, ShopeePay, GoPay, DANA, OVO",
-    gateway: "xendit",
-    badge: "Pelengkap Xendit",
-  },
-  {
-    id: "va_bsi",
-    category: "va",
-    title: "BSI Virtual Account (Bank Syariah)",
-    subtitle: "Verifikasi instan via BSI Mobile / ATM",
+    subtitle: "BCA Mobile, ShopeePay, DANA, OVO, dll.",
     gateway: "xendit",
     badge: "Pelengkap Xendit",
   },
