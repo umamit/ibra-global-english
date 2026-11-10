@@ -53,7 +53,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   ];
 
   const [selectedProgram, setSelectedProgram] = useState<string>("Kids Program");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodType>("qris");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodType>("va_bri");
   const [studentName, setStudentName] = useState<string>("");
   const [parentName, setParentName] = useState<string>("");
   const [email, setEmail] = useState<string>("");

@@ -1,50 +1,42 @@
 import React from "react";
 
-export type PaymentMethodType = "qris" | "va_bca" | "va_bri" | "va_mandiri" | "va_bni" | "va_bsi" | "gopay" | "indomaret";
+export type PaymentMethodType = "va_bri" | "va_mandiri" | "va_bni" | "va_bca" | "gopay" | "qris" | "va_bsi" | "indomaret";
 
 export interface PaymentOption {
   id: PaymentMethodType;
   title: string;
   category: "qris" | "va" | "ewallet" | "retail";
   subtitle: string;
-  gateway: "xendit" | "midtrans";
+  gateway: "midtrans" | "xendit";
+  badge?: string;
 }
 
+// Midtrans sebagai gerbang utama untuk bank & e-wallet yang aktif di akun Midtrans
+// Xendit sebagai pelengkap untuk saluran yang belum ada di Midtrans (QRIS, BSI VA, Indomaret)
 export const PAYMENT_METHODS: PaymentOption[] = [
-  {
-    id: "qris",
-    category: "qris",
-    title: "QRIS (Semua E-Wallet & M-Banking)",
-    subtitle: "BCA Mobile, Livin', BRImo, ShopeePay, GoPay, DANA, OVO",
-    gateway: "xendit",
-  },
   {
     id: "va_bri",
     category: "va",
     title: "BRI Virtual Account (BRIVA)",
     subtitle: "Verifikasi instan via BRImo / ATM BRI",
-    gateway: "xendit",
+    gateway: "midtrans",
+    badge: "Utama",
   },
   {
     id: "va_mandiri",
     category: "va",
-    title: "Mandiri Virtual Account",
+    title: "Mandiri Virtual Account / Bill",
     subtitle: "Verifikasi instan via Livin' by Mandiri / ATM",
-    gateway: "xendit",
+    gateway: "midtrans",
+    badge: "Utama",
   },
   {
     id: "va_bni",
     category: "va",
     title: "BNI Virtual Account",
     subtitle: "Verifikasi instan via BNI Mobile Banking / ATM",
-    gateway: "xendit",
-  },
-  {
-    id: "va_bsi",
-    category: "va",
-    title: "BSI Virtual Account",
-    subtitle: "Verifikasi instan via BSI Mobile / ATM",
-    gateway: "xendit",
+    gateway: "midtrans",
+    badge: "Utama",
   },
   {
     id: "va_bca",
@@ -52,6 +44,7 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     title: "BCA & Bank Lainnya (Virtual Account)",
     subtitle: "Transfer otomatis via jaringan ATM Bersama / Prima",
     gateway: "midtrans",
+    badge: "Utama",
   },
   {
     id: "gopay",
@@ -59,6 +52,23 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     title: "GoPay / GoPay App",
     subtitle: "Pembayaran langsung via aplikasi Gojek / GoPay",
     gateway: "midtrans",
+    badge: "Utama",
+  },
+  {
+    id: "qris",
+    category: "qris",
+    title: "QRIS (Semua E-Wallet & M-Banking)",
+    subtitle: "BCA Mobile, Livin', BRImo, ShopeePay, GoPay, DANA, OVO",
+    gateway: "xendit",
+    badge: "Pelengkap Xendit",
+  },
+  {
+    id: "va_bsi",
+    category: "va",
+    title: "BSI Virtual Account (Bank Syariah)",
+    subtitle: "Verifikasi instan via BSI Mobile / ATM",
+    gateway: "xendit",
+    badge: "Pelengkap Xendit",
   },
   {
     id: "indomaret",
@@ -66,6 +76,7 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     title: "Gerai Indomaret",
     subtitle: "Bayar tunai di kasir Indomaret seluruh Indonesia",
     gateway: "xendit",
+    badge: "Pelengkap Xendit",
   },
 ];
 
@@ -115,18 +126,29 @@ export default function PaymentMethodSelector({ selectedMethod, onSelectMethod }
                 }}
               />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: "0.88rem", fontWeight: 800, color: isSelected ? "#164d57" : "#2d3748" }}>
-                  {method.title}
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "0.88rem", fontWeight: 800, color: isSelected ? "#164d57" : "#2d3748" }}>
+                    {method.title}
+                  </span>
+                  {method.badge && (
+                    <span
+                      style={{
+                        fontSize: "0.68rem",
+                        fontWeight: 700,
+                        padding: "0.1rem 0.45rem",
+                        borderRadius: "5px",
+                        backgroundColor: method.gateway === "midtrans" ? "rgba(33, 108, 126, 0.1)" : "rgba(166, 136, 73, 0.12)",
+                        color: method.gateway === "midtrans" ? "#216c7e" : "#A68849",
+                      }}
+                    >
+                      {method.badge}
+                    </span>
+                  )}
                 </div>
                 <div style={{ fontSize: "0.74rem", color: "#59616e", marginTop: "2px" }}>
                   {method.subtitle}
                 </div>
               </div>
-              {method.id === "qris" && (
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#ffffff", backgroundColor: "#A68849", padding: "0.15rem 0.5rem", borderRadius: "6px" }}>
-                  Favorit
-                </span>
-              )}
             </div>
           );
         })}
