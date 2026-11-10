@@ -1,4 +1,5 @@
 import React from "react";
+import { PaymentMethodLogo } from "./PaymentMethodLogo";
 
 export type PaymentMethodType =
   | "va_bri"
@@ -169,6 +170,7 @@ export default function PaymentMethodSelector({ selectedMethod, onSelectMethod }
                   boxSizing: "border-box",
                 }}
               />
+              <PaymentMethodLogo method={method.id} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
                   <span style={{ fontSize: "0.88rem", fontWeight: 800, color: isSelected ? "#164d57" : "#2d3748" }}>
