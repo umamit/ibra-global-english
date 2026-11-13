@@ -106,6 +106,8 @@ export async function processPublicCheckout(data: { student_name: string; parent
   }
   const effectiveProgram = target.program || data.program;
   const { baseAmount, feeAmount } = await getProgramSppWithFee(effectiveProgram);
+  const registrationFee = target.prefix === "R" ? 25000 : 0;
+  const totalFee = feeAmount + registrationFee;
   const orderId = buildCompactOrderId(target.prefix, target.id, data.month);
   const midtransFinishUrl = "https://www.ibraglobalenglish.uk/checkout";
   const xenditSuccessUrl = "https://www.ibraglobalenglish.uk/checkout?gateway=xendit&status=paid";
@@ -113,9 +115,9 @@ export async function processPublicCheckout(data: { student_name: string; parent
   const safePhone = data.whatsapp || "";
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, midtransFinishUrl, safePhone);
+    return createMidtransTransaction(orderId, baseAmount, totalFee, target.name, effectiveProgram, data.month, safeEmail, midtransFinishUrl, safePhone);
   }
-  return createXenditInvoice(orderId, baseAmount, feeAmount, target.name, effectiveProgram, data.month, safeEmail, xenditSuccessUrl, safePhone);
+  return createXenditInvoice(orderId, baseAmount, totalFee, target.name, effectiveProgram, data.month, safeEmail, xenditSuccessUrl, safePhone);
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {

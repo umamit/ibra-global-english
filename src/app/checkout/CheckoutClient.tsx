@@ -16,6 +16,7 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
     currentOption,
     activeProduct,
     serviceFee,
+    registrationFee,
     totalAmount,
     studentName,
     setStudentName,
@@ -166,6 +167,12 @@ export default function CheckoutClient({ initialSettings }: { initialSettings: L
               <span>Biaya Layanan Sistem</span>
               <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {serviceFee.toLocaleString("id-ID")}</span>
             </div>
+            {registrationFee > 0 && (
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", color: "#59616e", marginBottom: "0.5rem" }}>
+                <span>Biaya Admin Pendaftaran (Siswa Baru)</span>
+                <span style={{ fontWeight: 700, color: "#164d57" }}>Rp {registrationFee.toLocaleString("id-ID")}</span>
+              </div>
+            )}
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: "#216c7e", paddingBottom: "1rem", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
               <span>Metode Dipilih</span>
               <span style={{ fontWeight: 700 }}>{currentOption.title}</span>

@@ -65,7 +65,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [paymentSuccessBanner, setPaymentSuccessBanner] = useState<boolean>(false);
   const [paymentPendingBanner, setPaymentPendingBanner] = useState<boolean>(false);
-  const [detectedStudent, setDetectedStudent] = useState<{ maskedName: string; billingCycle: string } | null>(null);
+  const [detectedStudent, setDetectedStudent] = useState<{ maskedName: string; billingCycle: string; isNewRegistration?: boolean } | null>(null);
 
   useEffect(() => {
     const raw = studentName.trim();
@@ -79,7 +79,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
         if (!res.ok) return;
         const data = await res.json();
         if (data.found) {
-          setDetectedStudent({ maskedName: data.maskedName, billingCycle: data.billingCycle });
+          setDetectedStudent({ maskedName: data.maskedName, billingCycle: data.billingCycle, isNewRegistration: Boolean(data.isNewRegistration) });
           const prog = data.program;
           if (prog && ["Kids Program", "Teens Program", "Fun Calistung", "Matematika Dasar"].includes(prog)) {
             setSelectedProgram(prog);
@@ -126,7 +126,8 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
   const activeProduct = products.find((p) => p.id === selectedProgram) || products[0];
   const rawFee = parseInt(String(initialSettings?.payment_gateway_fee || "5000"), 10);
   const serviceFee = isNaN(rawFee) ? 5000 : rawFee;
-  const totalAmount = activeProduct.price + serviceFee;
+  const registrationFee = detectedStudent?.isNewRegistration ? 25000 : 0;
+  const totalAmount = activeProduct.price + serviceFee + registrationFee;
 
   const currentOption = PAYMENT_METHODS.find((m) => m.id === selectedPaymentMethod) || PAYMENT_METHODS[0];
 
@@ -178,6 +179,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
     currentOption,
     activeProduct,
     serviceFee,
+    registrationFee,
     totalAmount,
     studentName,
     setStudentName,

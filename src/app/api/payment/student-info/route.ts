@@ -82,6 +82,7 @@ export async function GET(req: NextRequest) {
       program: student.program || "Kids Program",
       billingCycle,
       suggestedMonth,
+      isNewRegistration: isRegistration,
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Gagal memverifikasi siswa" }, { status: 500 });
