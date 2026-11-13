@@ -16,11 +16,11 @@ const LOGO_PATHS: Partial<Record<PaymentMethodType, { src: string; alt: string }
   qris: { src: "/assets/payment-logos/qris.png", alt: "Logo Resmi QRIS Standar Nasional" },
   indomaret: { src: "/assets/payment-logos/indomaret.png", alt: "Logo Resmi Indomaret" },
   akulaku: { src: "/assets/payment-logos/akulaku.png", alt: "Logo Resmi Akulaku" },
-  va_sampoerna: { src: "/assets/payment-logos/bss.png", alt: "Logo Resmi Bank Sahabat Sampoerna" },
 };
 
 const CUSTOM_BADGES: Partial<Record<PaymentMethodType, { label: string; bg: string; color: string }>> = {
   astrapay: { label: "AstraPay", bg: "#0055A5", color: "#ffffff" },
+  va_sampoerna: { label: "BSS", bg: "#1B5E20", color: "#ffffff" },
 };
 
 export function PaymentMethodLogo({ method }: { method: PaymentMethodType }) {
