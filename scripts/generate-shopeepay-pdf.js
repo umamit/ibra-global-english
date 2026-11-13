@@ -2,212 +2,160 @@ const fs = require("fs");
 const path = require("path");
 const { PDFDocument, rgb, StandardFonts } = require("pdf-lib");
 
+const SHOTS = [
+  {
+    step: "Langkah 1: Halaman Utama Website (Homepage)",
+    url: "https://www.ibraglobalenglish.uk",
+    desc: [
+      "1. Wali murid / calon siswa membuka halaman utama resmi PT. IBRA GLOBAL ENGLISH.",
+      "2. Halaman menampilkan informasi program kursus (Kids, Teens, Fun Calistung, Matematika),",
+      "   legalitas lembaga (NPSN K7069872), serta tombol navigasi menuju Portal & Pembayaran.",
+    ],
+    imgPath: "/Users/husnitausman/.gemini/antigravity/brain/21a1b31b-b2f7-4001-932c-64b90c161204/browser_sandbox/screenshots/step_4_shot_1.png",
+  },
+  {
+    step: "Langkah 2: Pemilihan Program Kursus & Pengisian Data Siswa",
+    url: "https://www.ibraglobalenglish.uk/checkout",
+    desc: [
+      "1. Pengguna mengakses halaman checkout resmi di https://www.ibraglobalenglish.uk/checkout.",
+      "2. Pengguna memilih Program Kursus yang akan dibayar beserta nominal SPP bulanan.",
+      "3. Pengguna mengisi ID Siswa (IGE-XXXXXX) atau Nama Lengkap Siswa, Periode Bulan SPP,",
+      "   serta kontak opsional (Email / WhatsApp) untuk pengiriman kuitansi otomatis.",
+    ],
+    imgPath: "/Users/husnitausman/.gemini/antigravity/brain/21a1b31b-b2f7-4001-932c-64b90c161204/browser_sandbox/screenshots/step_6_shot_1.png",
+  },
+  {
+    step: "Langkah 3: Pemilihan Metode Pembayaran & Tombol Bayar Sekarang",
+    url: "https://www.ibraglobalenglish.uk/checkout",
+    desc: [
+      "1. Pada bagian '3. Metode Pembayaran', pengguna memilih metode pembayaran yang tersedia",
+      "   (terintegrasi dengan Midtrans Snap: Virtual Account Bank, GoPay, Kartu Kredit/Google Pay,",
+      "   serta ShopeePay setelah aktivasi disetujui).",
+      "2. Pengguna menyetujui Syarat & Ketentuan serta Kebijakan Privasi IGE, lalu menekan tombol",
+      "   'Bayar Sekarang' untuk masuk ke jendela pembayaran resmi Midtrans Snap.",
+    ],
+    imgPath: "/Users/husnitausman/.gemini/antigravity/brain/21a1b31b-b2f7-4001-932c-64b90c161204/browser_sandbox/screenshots/step_16_shot_1.png",
+  },
+];
+
 async function generatePdf() {
   const pdfDoc = await PDFDocument.create();
-  let page = pdfDoc.addPage([595.28, 841.89]); // A4
-  const { width, height } = page.getSize();
-
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontOblique = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
-  // Brand Colors
-  const tealPrimary = rgb(0.129, 0.424, 0.494); // #216c7e
-  const tealDark = rgb(0.086, 0.302, 0.341);    // #164d57
-  const grayText = rgb(0.349, 0.38, 0.431);     // #59616e
-  const darkText = rgb(0.11, 0.14, 0.17);       // #1c242c
-  const goldAccent = rgb(0.651, 0.533, 0.286);  // #A68849
-  const lightBg = rgb(0.96, 0.965, 0.97);       // #f5f6f8
+  const tealPrimary = rgb(0.129, 0.424, 0.494);
+  const tealDark = rgb(0.086, 0.302, 0.341);
+  const grayText = rgb(0.349, 0.38, 0.431);
+  const darkText = rgb(0.11, 0.14, 0.17);
+  const goldAccent = rgb(0.651, 0.533, 0.286);
+  const lightBg = rgb(0.96, 0.965, 0.97);
   const borderColor = rgb(0.85, 0.88, 0.9);
 
-  let y = height - 45;
+  // Page 1: Cover + Step 1
+  for (let i = 0; i < SHOTS.length; i++) {
+    const item = SHOTS[i];
+    const page = pdfDoc.addPage([595.28, 841.89]);
+    const { width, height } = page.getSize();
+    let y = height - 40;
 
-  // Header Bar Box
-  page.drawRectangle({
-    x: 40,
-    y: y - 65,
-    width: width - 80,
-    height: 75,
-    color: lightBg,
-    borderColor: borderColor,
-    borderWidth: 1,
-  });
+    if (i === 0) {
+      page.drawRectangle({ x: 40, y: y - 62, width: width - 80, height: 70, color: lightBg, borderColor, borderWidth: 1 });
+      page.drawText("PANDUAN ALUR TRANSAKSI & SHOPEEPAY (CUSTOMER JOURNEY)", { x: 52, y: y - 18, size: 12.5, font: fontBold, color: tealDark });
+      page.drawText("Dokumen Verifikasi & Aktivasi Saluran Pembayaran Midtrans Snap", { x: 52, y: y - 34, size: 9, font: fontRegular, color: grayText });
+      page.drawText("Merchant: PT. IBRA GLOBAL ENGLISH (NPSN: K7069872) | https://www.ibraglobalenglish.uk", { x: 52, y: y - 49, size: 8.5, font: fontBold, color: goldAccent });
+      y -= 86;
+    }
 
-  // Header Title
-  page.drawText("PANDUAN ALUR PEMBAYARAN SHOPEEPAY (USER JOURNEY)", {
-    x: 55,
-    y: y - 20,
-    size: 13,
-    font: fontBold,
-    color: tealDark,
-  });
+    // Step Header
+    page.drawRectangle({ x: 40, y: y - 6, width: width - 80, height: 22, color: rgb(0.93, 0.96, 0.97) });
+    page.drawText(item.step, { x: 50, y: y + 1, size: 10.5, font: fontBold, color: tealPrimary });
+    y -= 22;
 
-  page.drawText("Dokumen Standar Verifikasi & Aktivasi Saluran Pembayaran Midtrans Snap", {
-    x: 55,
-    y: y - 36,
-    size: 9,
-    font: fontRegular,
-    color: grayText,
-  });
+    page.drawText(`URL: ${item.url}`, { x: 45, y, size: 8, font: fontOblique, color: grayText });
+    y -= 15;
 
-  page.drawText("Merchant: PT. IBRA GLOBAL ENGLISH (NPSN: K7069872) | URL: https://www.ibraglobalenglish.uk", {
-    x: 55,
-    y: y - 52,
-    size: 8.5,
-    font: fontBold,
-    color: goldAccent,
-  });
+    for (const line of item.desc) {
+      page.drawText(line, { x: 45, y, size: 8.8, font: fontRegular, color: darkText });
+      y -= 13.5;
+    }
+    y -= 8;
 
-  y -= 90;
+    // Embed Screenshot
+    if (fs.existsSync(item.imgPath)) {
+      const imgBytes = fs.readFileSync(item.imgPath);
+      const pngImage = await pdfDoc.embedPng(imgBytes);
+      const maxW = width - 80;
+      const maxH = y - 60;
+      const scale = Math.min(maxW / pngImage.width, maxH / pngImage.height);
+      const drawW = pngImage.width * scale;
+      const drawH = pngImage.height * scale;
+      const drawX = (width - drawW) / 2;
+      const drawY = y - drawH;
 
-  function drawSectionHeader(title) {
-    page.drawRectangle({
-      x: 40,
-      y: y - 6,
-      width: width - 80,
-      height: 20,
-      color: rgb(0.93, 0.96, 0.97),
-    });
-    page.drawText(title, {
-      x: 50,
-      y: y,
-      size: 10,
-      font: fontBold,
-      color: tealPrimary,
-    });
-    y -= 24;
+      page.drawRectangle({ x: drawX - 2, y: drawY - 2, width: drawW + 4, height: drawH + 4, borderColor, borderWidth: 1 });
+      page.drawImage(pngImage, { x: drawX, y: drawY, width: drawW, height: drawH });
+    }
+
+    page.drawText(`Halaman ${i + 1} dari ${SHOTS.length + 1} - PT. IBRA GLOBAL ENGLISH`, { x: 40, y: 25, size: 7.5, font: fontOblique, color: grayText });
   }
 
-  function drawTextLine(text, isBold = false, indent = 45, customColor = darkText, size = 8.5) {
-    page.drawText(text, {
-      x: indent,
-      y: y,
-      size: size,
-      font: isBold ? fontBold : fontRegular,
-      color: customColor,
-    });
-    y -= 13.5;
+  // Final Page: Midtrans Snap ShopeePay Flow & Refund Policy
+  const lastPage = pdfDoc.addPage([595.28, 841.89]);
+  const { width, height } = lastPage.getSize();
+  let y = height - 50;
+
+  lastPage.drawRectangle({ x: 40, y: y - 6, width: width - 80, height: 22, color: rgb(0.93, 0.96, 0.97) });
+  lastPage.drawText("Langkah 4: Pemrosesan Pembayaran ShopeePay di Midtrans Snap & Verifikasi", { x: 50, y: y + 1, size: 10.5, font: fontBold, color: tealPrimary });
+  y -= 28;
+
+  const flowLines = [
+    "A. Skenario Mobile (Smartphone / Ponsel Pintar):",
+    "   - Jendela Midtrans Snap menampilkan tombol 'Bayar dengan ShopeePay'.",
+    "   - Sistem melakukan Deeplink Redirect langsung ke aplikasi Shopee di perangkat pengguna.",
+    "   - Aplikasi Shopee menampilkan nama merchant (PT. IBRA GLOBAL ENGLISH) dan nominal terkunci.",
+    "   - Pengguna memasukkan PIN ShopeePay / verifikasi biometrik untuk menyelesaikan pembayaran.",
+    "",
+    "B. Skenario Desktop (Laptop / Komputer):",
+    "   - Jendela Midtrans Snap menampilkan QR Code Dinamis resmi ShopeePay.",
+    "   - Pengguna membuka aplikasi Shopee di smartphone, memilih Scan QR, dan memindai kode di layar.",
+    "   - Pengguna mengonfirmasi pembayaran dan memasukkan PIN ShopeePay.",
+    "",
+    "C. Penyelesaian Transaksi & Verifikasi Status (Post-Payment):",
+    "   - Midtrans mengirimkan HTTP POST Webhook ke endpoint /api/payment/midtrans-webhook.",
+    "   - Server IGE memvalidasi SHA-512 Signature Key dan mengubah status tagihan SPP menjadi 'Lunas'.",
+    "   - Pengguna diarahkan kembali ke halaman status pembayaran (/checkout) dan kuitansi WhatsApp terbit.",
+  ];
+
+  for (const line of flowLines) {
+    const isSub = line.startsWith("A.") || line.startsWith("B.") || line.startsWith("C.");
+    lastPage.drawText(line, { x: 45, y, size: 9, font: isSub ? fontBold : fontRegular, color: isSub ? tealDark : darkText });
+    y -= 14.5;
   }
 
-  // 1. Informasi Merchant & Profil Bisnis
-  drawSectionHeader("1. INFORMASI MERCHANT & PLATFORM");
-  drawTextLine("Nama Entitas Usaha : PT. IBRA GLOBAL ENGLISH", true);
-  drawTextLine("Model Bisnis       : Lembaga Kursus Bahasa Inggris & Pendidikan Non-Formal Berkelanjutan");
-  drawTextLine("Domain Web         : https://www.ibraglobalenglish.uk");
-  drawTextLine("Halaman Checkout   : https://www.ibraglobalenglish.uk/checkout");
-  drawTextLine("Integrasi Gateway  : Midtrans Snap (REST API v2 / Core API / Mobile App Deeplink)");
-  y -= 8;
+  y -= 18;
+  lastPage.drawRectangle({ x: 40, y: y - 6, width: width - 80, height: 22, color: rgb(0.93, 0.96, 0.97) });
+  lastPage.drawText("Ketentuan Transaksi & Kebijakan Pengembalian Dana (Refund Policy)", { x: 50, y: y + 1, size: 10.5, font: fontBold, color: tealPrimary });
+  y -= 26;
 
-  // 2. Alur Pengguna (User Journey)
-  drawSectionHeader("2. ALUR TRANSAKSI PENGGUNA (STEP-BY-STEP USER JOURNEY)");
-  drawTextLine("Langkah 1: Pemilihan Program & Identitas Siswa", true, 45, tealDark);
-  drawTextLine("- Wali murid mengakses halaman checkout resmi: https://www.ibraglobalenglish.uk/checkout");
-  drawTextLine("- Wali murid memilih program kursus (Kids Program / Teens Program / Fun Calistung / Matematika).");
-  drawTextLine("- Wali murid menginput Kode ID Kartu QR Siswa (IGE-XXXXXX) atau Nama Lengkap, dan Periode Bulan SPP.");
-  y -= 4;
+  const policyLines = [
+    "- Nominal Terkunci: Nominal tagihan SPP dikunci oleh server dan tidak dapat diubah oleh pengguna.",
+    "- Batas Waktu Sesi: Sesi QR / Deeplink ShopeePay aktif selama 15 menit sebelum otomatis kedaluwarsa.",
+    "- Kebijakan Refund: Pembayaran SPP yang telah berstatus settlement bersifat definitif (No Refund).",
+    "- Pusat Bantuan: Admin Keuangan PT. IGE - WhatsApp: 0813-5491-0370 | info@ibraglobalenglish.uk",
+  ];
+  for (const line of policyLines) {
+    lastPage.drawText(line, { x: 45, y, size: 9, font: fontRegular, color: darkText });
+    y -= 15;
+  }
 
-  drawTextLine("Langkah 2: Pemilihan Metode Pembayaran ShopeePay", true, 45, tealDark);
-  drawTextLine("- Pada daftar metode pembayaran e-commerce, wali murid memilih opsi 'ShopeePay'.");
-  drawTextLine("- Wali murid menyetujui Syarat & Ketentuan serta Kebijakan Privasi IGE, lalu menekan tombol 'Bayar Sekarang'.");
-  y -= 4;
-
-  drawTextLine("Langkah 3: Pemrosesan melalui Midtrans Snap", true, 45, tealDark);
-  drawTextLine("A. Skenario Mobile (Smartphone / Ponsel Pintar):", true, 55, darkText);
-  drawTextLine("   - Jendela pop-up Midtrans Snap menginisiasi tombol 'Bayar dengan ShopeePay'.", false, 55);
-  drawTextLine("   - Sistem Midtrans melakukan Deeplink Redirect yang otomatis membuka aplikasi Shopee di perangkat pengguna.", false, 55);
-  drawTextLine("   - Aplikasi Shopee menampilkan rincian nama merchant (PT. IBRA GLOBAL ENGLISH) dan nominal tagihan terkunci.", false, 55);
-  drawTextLine("   - Pengguna mengonfirmasi transaksi dan memasukkan PIN ShopeePay atau verifikasi biometrik (Fingerprint/Face ID).", false, 55);
-
-  drawTextLine("B. Skenario Desktop (Laptop / Komputer):", true, 55, darkText);
-  drawTextLine("   - Jendela Midtrans Snap menampilkan QR Code Dinamis resmi ShopeePay.", false, 55);
-  drawTextLine("   - Pengguna membuka aplikasi Shopee di smartphone, memilih menu Scan QR, dan memindai kode di layar desktop.", false, 55);
-  drawTextLine("   - Rincian transaksi dikonfirmasi di aplikasi Shopee, lalu pengguna memasukkan PIN ShopeePay.", false, 55);
-  y -= 4;
-
-  drawTextLine("Langkah 4: Notifikasi & Penyelesaian Transaksi (Post-Payment Callback)", true, 45, tealDark);
-  drawTextLine("- Midtrans mengirimkan notifikasi Webhook resmi (POST) ke endpoint server IGE: /api/payment/midtrans-webhook.");
-  drawTextLine("- Server IGE memvalidasi SHA-512 Signature Key secara otomatis. Status SPP diupdate seketika menjadi 'Lunas'.");
-  drawTextLine("- Pengguna dialihkan ke halaman notifikasi sukses (/checkout?status=success) dan kuitansi resmi otomatis terbit.");
-  y -= 8;
-
-  // 3. Diagram Alur
-  drawSectionHeader("3. DIAGRAM SKEMATIK INTEGRASI API");
-  page.drawRectangle({
-    x: 45,
-    y: y - 58,
-    width: width - 90,
-    height: 65,
-    color: rgb(0.97, 0.98, 0.99),
-    borderColor: borderColor,
-    borderWidth: 1,
-  });
-
-  page.drawText("[ Pengguna di Website IGE ]  --->  [ Backend IGE (/api/payment/public-checkout) ]", {
-    x: 55,
-    y: y - 15,
-    size: 8,
-    font: fontBold,
-    color: tealDark,
-  });
-  page.drawText("                                                | (Request Snap Token via POST /snap/v1/transactions)", {
-    x: 55,
-    y: y - 28,
-    size: 7.5,
-    font: fontRegular,
-    color: grayText,
-  });
-  page.drawText("                                                v", {
-    x: 55,
-    y: y - 38,
-    size: 8,
-    font: fontBold,
-    color: tealDark,
-  });
-  page.drawText("[ Aplikasi Shopee (Mobile Deeplink) / Scan QR ] <--- [ Midtrans Snap Payment Gateway UI ]", {
-    x: 55,
-    y: y - 48,
-    size: 8,
-    font: fontBold,
-    color: tealPrimary,
-  });
-  y -= 74;
-
-  // 4. Kebijakan Transaksi
-  drawSectionHeader("4. KETENTUAN TRANSAKSI & KEBIJAKAN PENGEMBALIAN DANA (REFUND)");
-  drawTextLine("Nominal Terkunci   : Nominal transaksi pada sesi Snap bersifat mutlak sesuai biaya SPP resmi dan tidak dapat dimanipulasi.");
-  drawTextLine("Batas Waktu Bayar  : Setiap sesi QR / Deeplink dibatasi waktu aktif selama 15 menit (otomatis kedaluwarsa jika lewat waktu).");
-  drawTextLine("Kebijakan Refund   : Pembayaran yang telah berstatus settlement bersifat definitif untuk periode berjalan (No Refund).");
-  drawTextLine("Pusat Bantuan Resmi: Admin Keuangan PT. IGE: 0813-5491-0370 | info@ibraglobalenglish.uk");
-  y -= 14;
-
-  // Footer Signature Line
-  page.drawLine({
-    start: { x: 40, y: y },
-    end: { x: width - 40, y: y },
-    thickness: 1,
-    color: borderColor,
-  });
-
-  page.drawText("Disusun oleh: IT & Financial Operations Division - PT. IBRA GLOBAL ENGLISH", {
-    x: 45,
-    y: y - 14,
-    size: 8,
-    font: fontBold,
-    color: grayText,
-  });
-  page.drawText("Dokumen Resmi untuk Persyaratan Verifikasi Merchant Midtrans - November 2026", {
-    x: width - 330,
-    y: y - 14,
-    size: 7.5,
-    font: fontOblique,
-    color: grayText,
-  });
+  lastPage.drawText(`Halaman ${SHOTS.length + 1} dari ${SHOTS.length + 1} - PT. IBRA GLOBAL ENGLISH`, { x: 40, y: 25, size: 7.5, font: fontOblique, color: grayText });
 
   const pdfBytes = await pdfDoc.save();
   const outputPath = path.join(process.cwd(), "public/docs/Panduan_Payment_Flow_ShopeePay_Midtrans_IGE.pdf");
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, pdfBytes);
-  console.log("PDF created successfully at: " + outputPath);
+  console.log("PDF with screenshots created at:", outputPath);
 }
 
 generatePdf().catch((err) => {

@@ -113,9 +113,9 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     id: "qris",
     category: "qris",
     title: "QRIS (Semua E-Wallet & M-Banking)",
-    subtitle: "BCA Mobile, ShopeePay, DANA, OVO, dll.",
-    gateway: "xendit",
-    badge: "Pelengkap Xendit",
+    subtitle: "BCA Mobile, ShopeePay, DANA, OVO, GoPay, dll.",
+    gateway: "midtrans",
+    badge: "Midtrans",
   },
   {
     id: "indomaret",
