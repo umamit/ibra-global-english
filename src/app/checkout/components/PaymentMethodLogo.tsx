@@ -55,7 +55,7 @@ export function PaymentMethodLogo({ method }: { method: PaymentMethodType }) {
         width: "56px",
         height: "32px",
         borderRadius: "8px",
-        backgroundColor: "#ffffff",
+        backgroundColor: method === "astrapay" ? "#0055A5" : "#ffffff",
         border: "1px solid rgba(0, 0, 0, 0.08)",
         display: "flex",
         alignItems: "center",
