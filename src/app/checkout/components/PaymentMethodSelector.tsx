@@ -14,7 +14,10 @@ export type PaymentMethodType =
   | "shopeepay"
   | "card"
   | "qris"
-  | "indomaret";
+  | "indomaret"
+  | "akulaku"
+  | "astrapay"
+  | "va_sampoerna";
 
 export interface PaymentOption {
   id: PaymentMethodType;
@@ -122,6 +125,30 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     category: "retail",
     title: "Gerai Indomaret",
     subtitle: "Bayar tunai di kasir Indomaret seluruh Indonesia",
+    gateway: "xendit",
+    badge: "Pelengkap Xendit",
+  },
+  {
+    id: "akulaku",
+    category: "ewallet",
+    title: "Akulaku PayLater",
+    subtitle: "Cicilan atau bayar nanti via akun Akulaku",
+    gateway: "xendit",
+    badge: "Pelengkap Xendit",
+  },
+  {
+    id: "astrapay",
+    category: "ewallet",
+    title: "AstraPay",
+    subtitle: "Pembayaran instan via aplikasi e-wallet AstraPay",
+    gateway: "xendit",
+    badge: "Pelengkap Xendit",
+  },
+  {
+    id: "va_sampoerna",
+    category: "va",
+    title: "Bank Sahabat Sampoerna (VA)",
+    subtitle: "Transfer otomatis via Virtual Account Bank Sampoerna",
     gateway: "xendit",
     badge: "Pelengkap Xendit",
   },

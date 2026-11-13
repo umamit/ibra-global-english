@@ -1,7 +1,7 @@
 import React from "react";
 import { PaymentMethodType } from "./PaymentMethodSelector";
 
-const LOGO_PATHS: Record<PaymentMethodType, { src: string; alt: string }> = {
+const LOGO_PATHS: Partial<Record<PaymentMethodType, { src: string; alt: string }>> = {
   va_bri: { src: "/assets/payment-logos/bri.png", alt: "Logo Resmi Bank BRI" },
   va_mandiri: { src: "/assets/payment-logos/mandiri.png", alt: "Logo Resmi Bank Mandiri" },
   va_bni: { src: "/assets/payment-logos/bni.png", alt: "Logo Resmi Bank BNI" },
@@ -17,7 +17,36 @@ const LOGO_PATHS: Record<PaymentMethodType, { src: string; alt: string }> = {
   indomaret: { src: "/assets/payment-logos/indomaret.png", alt: "Logo Resmi Indomaret" },
 };
 
+const CUSTOM_BADGES: Partial<Record<PaymentMethodType, { label: string; bg: string; color: string }>> = {
+  akulaku: { label: "Akulaku", bg: "#E52323", color: "#ffffff" },
+  astrapay: { label: "AstraPay", bg: "#0055A5", color: "#ffffff" },
+  va_sampoerna: { label: "BSS", bg: "#1B5E20", color: "#ffffff" },
+};
+
 export function PaymentMethodLogo({ method }: { method: PaymentMethodType }) {
+  const custom = CUSTOM_BADGES[method];
+  if (custom) {
+    return (
+      <div
+        style={{
+          width: "56px",
+          height: "32px",
+          borderRadius: "8px",
+          backgroundColor: custom.bg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          color: custom.color,
+          fontWeight: 900,
+          fontSize: "0.62rem",
+          letterSpacing: "0.02em",
+        }}
+      >
+        {custom.label}
+      </div>
+    );
+  }
   const logo = LOGO_PATHS[method];
   if (!logo) return null;
 
