@@ -782,6 +782,10 @@ Seluruh AI Agent WAJIB mematuhi pemetaan rute, domain, dan fungsi halaman websit
 ### B. Aturan Pemisahan Logo & Identitas Brand Rute
 * **Logo IGE (Ibra Global English)**: `public/assets/logo.png` (Digunakan di Domain Utama, Admin, Parent, Student, Tutor).
 
+### C. Larangan Logo Palsu / Ilustrasi Buatan (Rule 21v - Strict Authentic Brand Logo Rule)
+* **Wajib Logo Asli Resmi**: AI dilarang keras membuat logo palsu, ilustrasi SVG buatan sendiri, atau badge teks pengganti untuk merek pihak ketiga (seperti bank, e-wallet, metode pembayaran, atau mitra resmi).
+* **Verifikasi Aset Gambar**: Setiap logo merek wajib diunduh dari sumber resmi (situs resmi merek terkait atau repositori tepercaya seperti Wikimedia Commons), diverifikasi header berkasnya (misal valid PNG/SVG), dan disimpan di `public/assets/`. Jika gagal mengunduh, AI wajib mencari tautan resmi yang valid atau meminta file logo langsung kepada pengguna.
+
 ## Compliance & Strict Rule Enforcement
 30. **Strict Enforcement:** If the agent fails to comply with any of the rules defined in this AGENTS.md file, the execution must immediately abort and result in an error. No unauthorized file writes, modifications, or commits are permitted without explicit human verification and confirmation.
 
