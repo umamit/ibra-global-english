@@ -27,6 +27,7 @@ export interface PaymentOption {
 
 // Midtrans sebagai gerbang utama untuk saluran yang aktif di dasbor Midtrans
 // Xendit sebagai pelengkap untuk saluran yang belum ada di Midtrans (QRIS & Indomaret)
+// Opsi ShopeePay disembunyikan sementara menunggu persetujuan aktivasi resmi dari tim Midtrans
 export const PAYMENT_METHODS: PaymentOption[] = [
   {
     id: "va_bri",
@@ -97,14 +98,6 @@ export const PAYMENT_METHODS: PaymentOption[] = [
     category: "ewallet",
     title: "GoPay / GoPay App",
     subtitle: "Pembayaran langsung via aplikasi Gojek / GoPay",
-    gateway: "midtrans",
-    badge: "Midtrans",
-  },
-  {
-    id: "shopeepay",
-    category: "ewallet",
-    title: "ShopeePay / SPay",
-    subtitle: "Pembayaran instan via aplikasi Shopee (QR / Deeplink)",
     gateway: "midtrans",
     badge: "Midtrans",
   },
