@@ -99,7 +99,7 @@ export async function processCreateInvoice(student_id: string, month: string, ga
   return createXenditInvoice(orderId, baseAmount, feeAmount, student.name, student.program, month, email, "https://www.ibraglobalenglish.uk/parent", phone);
 }
 
-export async function processPublicCheckout(data: { student_name: string; parent_name?: string; email?: string; whatsapp?: string; program: string; month: string; gateway: "midtrans" | "xendit" }) {
+export async function processPublicCheckout(data: { student_name: string; parent_name?: string; email?: string; whatsapp?: string; program: string; month: string; gateway: "midtrans" | "xendit"; payment_method?: string }) {
   const target = await resolveOrCreatePublicStudent({ student_name: data.student_name, parent_name: data.parent_name, whatsapp: data.whatsapp, program: data.program });
   if (target.prefix === "S") {
     await ensureNotAlreadyPaid(target.id, data.month);
@@ -115,9 +115,9 @@ export async function processPublicCheckout(data: { student_name: string; parent
   const safePhone = data.whatsapp || "";
 
   if (data.gateway === "midtrans") {
-    return createMidtransTransaction(orderId, baseAmount, totalFee, target.name, effectiveProgram, data.month, safeEmail, midtransFinishUrl, safePhone);
+    return createMidtransTransaction(orderId, baseAmount, totalFee, target.name, effectiveProgram, data.month, safeEmail, midtransFinishUrl, safePhone, data.payment_method);
   }
-  return createXenditInvoice(orderId, baseAmount, totalFee, target.name, effectiveProgram, data.month, safeEmail, xenditSuccessUrl, safePhone);
+  return createXenditInvoice(orderId, baseAmount, totalFee, target.name, effectiveProgram, data.month, safeEmail, xenditSuccessUrl, safePhone, data.payment_method);
 }
 
 export async function getProgramSppWithFee(program: string): Promise<{ baseAmount: number; feeAmount: number; totalAmount: number }> {

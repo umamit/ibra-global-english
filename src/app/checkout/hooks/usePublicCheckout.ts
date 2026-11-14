@@ -155,6 +155,7 @@ export function usePublicCheckout(initialSettings: LandingSettings) {
           program: selectedProgram,
           month,
           gateway: currentOption.gateway,
+          payment_method: selectedPaymentMethod,
           website_url: websiteUrl,
         }),
       });

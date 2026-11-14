@@ -1,10 +1,12 @@
 import crypto from "crypto";
 import { getAdminSupabase } from "@/app/api/_middleware";
+import { MIDTRANS_CHANNEL_MAP, XENDIT_CHANNEL_MAP } from "./paymentChannelMaps";
 
 const supabaseAdmin = getAdminSupabase();
 
 interface CachedGatewaySession {
   gateway: "midtrans" | "xendit";
+  payment_method?: string;
   order_id: string;
   token?: string;
   invoice_id?: string;
@@ -151,7 +153,8 @@ export async function createMidtransTransaction(
   month: string,
   email: string,
   finishUrl = "https://www.ibraglobalenglish.uk/checkout",
-  phone = ""
+  phone = "",
+  paymentMethod?: string
 ) {
   const serverKey = process.env.MIDTRANS_SERVER_KEY;
   if (!serverKey) throw new Error("MIDTRANS_SERVER_KEY belum dikonfigurasi di server.");
@@ -166,7 +169,8 @@ export async function createMidtransTransaction(
 
   if (cached) {
     const ageMs = Date.now() - cached.created_at;
-    if (cached.gateway === "midtrans" && cached.token && cached.amount === totalAmount && ageMs < 22 * 3600 * 1000) {
+    const sameMethod = !paymentMethod || cached.payment_method === paymentMethod;
+    if (cached.gateway === "midtrans" && sameMethod && cached.token && cached.amount === totalAmount && ageMs < 22 * 3600 * 1000) {
       const active = await isMidtransSessionStillActive(cached.token, cached.order_id, authHeader, isProd);
       if (active) {
         return { gateway: "midtrans", token: cached.token, redirect_url: cached.redirect_url, order_id: cached.order_id, reused: true };
@@ -179,6 +183,8 @@ export async function createMidtransTransaction(
   const items = [{ id: `SPP-${month}`, price: baseAmount, quantity: 1, name: `SPP ${program} (${month})`.slice(0, 50) }];
   if (feeAmount > 0) items.push({ id: "ADMIN-FEE", price: feeAmount, quantity: 1, name: "Biaya Layanan Payment Gateway" });
 
+  const enabledPayments = paymentMethod ? MIDTRANS_CHANNEL_MAP[paymentMethod] : undefined;
+
   const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: authHeader },
@@ -186,6 +192,7 @@ export async function createMidtransTransaction(
       transaction_details: { order_id: orderId.slice(0, 50), gross_amount: totalAmount },
       item_details: items,
       customer_details: { first_name: studentName.slice(0, 50), email: email || "parent@ibraglobalenglish.uk", ...(phone ? { phone: phone.slice(0, 20) } : {}) },
+      ...(enabledPayments ? { enabled_payments: enabledPayments } : {}),
       callbacks: { finish: finishUrl },
     }),
   });
@@ -194,6 +201,7 @@ export async function createMidtransTransaction(
 
   await writeCachedSession(orderPrefix, {
     gateway: "midtrans",
+    payment_method: paymentMethod,
     order_id: orderId,
     token: json.token,
     redirect_url: json.redirect_url,
@@ -213,7 +221,8 @@ export async function createXenditInvoice(
   month: string,
   email: string,
   redirectUrl?: string,
-  phone = ""
+  phone = "",
+  paymentMethod?: string
 ) {
   const secretKey = process.env.XENDIT_SECRET_KEY;
   if (!secretKey) throw new Error("XENDIT_SECRET_KEY belum dikonfigurasi di server.");
@@ -254,6 +263,8 @@ export async function createXenditInvoice(
   const targetUrl = redirectUrl || "https://www.ibraglobalenglish.uk/parent";
   const failUrl = targetUrl.includes("/checkout") ? "https://www.ibraglobalenglish.uk/checkout" : targetUrl;
 
+  const xenditMethods = paymentMethod ? XENDIT_CHANNEL_MAP[paymentMethod] : undefined;
+
   const res = await fetch("https://api.xendit.co/v2/invoices", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: authHeader },
@@ -262,6 +273,7 @@ export async function createXenditInvoice(
       amount: totalAmount,
       fees,
       items,
+      ...(xenditMethods ? { payment_methods: xenditMethods } : {}),
       customer: { given_names: studentName.slice(0, 50) || "Siswa IGE", email: email || "parent@ibraglobalenglish.uk", ...(mobile ? { mobile_number: mobile } : {}) },
       description: `Pembayaran SPP ${program} - ${studentName} (Bulan ${month})`,
       payer_email: email || "parent@ibraglobalenglish.uk",
