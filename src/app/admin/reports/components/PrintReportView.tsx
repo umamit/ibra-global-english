@@ -1,6 +1,7 @@
 "use client";
 
 import RadarChart from "@/components/RadarChart";
+import CanDoChecklistSection from "./CanDoChecklistSection";
 
 interface PrintReportViewProps {
   printReport: any;
@@ -121,8 +122,20 @@ export default function PrintReportView({ printReport, contactAddress, onClose }
 
         </div>
 
+        <CanDoChecklistSection
+          isMath={isMath}
+          isCalistung={isCalistung}
+          scores={{
+            speaking: printReport.speaking_score,
+            grammar: printReport.grammar_score,
+            listening: printReport.listening_score ?? printReport.speaking_score,
+            vocabulary: printReport.vocabulary_score,
+            active: printReport.active_score,
+          }}
+        />
+
         <h3 style={{ fontSize: "1rem", fontWeight: "800", borderBottom: "1.5px solid var(--color-gray-300)", paddingBottom: "0.4rem", marginBottom: "0.75rem", color: "var(--color-gray-800)" }}>
-          B. ULASAN & CATATAN MASUKAN TUTOR
+          C. ULASAN & CATATAN MASUKAN TUTOR
         </h3>
 
         <div className="report-notes-container" style={{ borderLeft: "4px solid var(--color-accent)", margin: "1rem 0 2rem", backgroundColor: "var(--color-gray-50)", padding: "1rem", borderRadius: "0 8px 8px 0" }}>
